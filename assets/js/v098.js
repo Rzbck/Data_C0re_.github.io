@@ -16,4 +16,18 @@
     }
   `;
   document.head.appendChild(style);
+
+  const general = lumina.querySelector('[data-tech-src*="technical-general.svg"]');
+  const dimensions = lumina.querySelector('[data-tech-src*="technical-dimensions-v2.svg"]');
+  const image = lumina.querySelector('[data-tech-image]');
+  const caption = lumina.querySelector('[data-tech-caption]');
+
+  if (general) general.dataset.techSrc = './assets/media/lumina/technical-general.svg?v=104';
+  if (dimensions) dimensions.dataset.techSrc = './assets/media/lumina/technical-dimensions-v2.svg?v=104';
+
+  if (image && general?.classList.contains('active')) {
+    image.src = './assets/media/lumina/technical-general.svg?v=104';
+    image.alt = 'LUMINA original general construction plan';
+    if (caption) caption.textContent = '01 / GENERAL STRUCTURE / ORIGINAL CAD PLAN';
+  }
 })();
