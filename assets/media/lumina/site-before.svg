@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="LUMINA site survey diagram before installation">
+  <rect width="1600" height="900" fill="#0a0a0a"/>
+  <g fill="none" stroke="#8b8b88" stroke-width="3" opacity=".9">
+    <path d="M80 110 L790 360 L1510 130"/>
+    <path d="M80 790 L790 520 L1510 770"/>
+    <path d="M80 110 L80 790 M1510 130 L1510 770"/>
+    <path d="M300 185 L300 710 M510 260 L510 635 M1040 280 L1040 625 M1270 205 L1270 700"/>
+    <path d="M80 450 H1510" stroke="#3b3b38"/>
+  </g>
+  <g fill="none" stroke="#f3f1eb" stroke-width="5">
+    <path d="M118 145 L790 378 L1465 162"/>
+    <path d="M118 754 L790 505 L1465 736"/>
+  </g>
+  <g fill="#f3f1eb" font-family="Arial,Helvetica,sans-serif">
+    <text x="90" y="70" font-size="24" letter-spacing="5">SITE SURVEY / TUNNEL DU MONT-BLANC / GENEVA</text>
+    <text x="90" y="845" font-size="18" fill="#8b8b88" letter-spacing="3">PRE-INSTALLATION SPATIAL STUDY / 2024</text>
+  </g>
+  <g font-family="Arial,Helvetica,sans-serif" font-size="18" letter-spacing="2" fill="#8b8b88">
+    <text x="610" y="415">EXISTING PASSAGE</text>
+    <text x="610" y="565">LUMINA FOOTPRINT / 12.05 M</text>
+  </g>
+  <path d="M500 585 H1090" stroke="#dfff00" stroke-width="4"/>
+  <path d="M500 574 V596 M1090 574 V596" stroke="#dfff00" stroke-width="4"/>
+</svg>
