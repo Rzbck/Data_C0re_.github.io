@@ -124,4 +124,7 @@
 
   reduceMotion.addEventListener?.('change', e => { if (e.matches) { motionOff=true; applyMotionState(); } });
   applyMotionState();
+
+  // Load V0.8 theatre / touring-system enrichment after the base UI is ready.
+  import('./v08.js?v=8').catch(() => {});
 })();
