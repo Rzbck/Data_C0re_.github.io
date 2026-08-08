@@ -67,4 +67,6 @@
         </div>
       </details>
     </section>`;
+
+  import('./v092.js?v=92').catch(() => {});
 })();
