@@ -1,0 +1,1 @@
+Temporary note: static FX JPEG assets are being normalized for GitHub Pages.
