@@ -1,6 +1,5 @@
 (() => {
   const q = (s, root = document) => root.querySelector(s);
-  const qa = (s, root = document) => [...root.querySelectorAll(s)];
 
   const realtime = q('#realtime');
   if (!realtime) return;
@@ -18,7 +17,7 @@
   style.textContent = `
     /* V0.9.6 — compact source-grounded realtime FX research */
     #realtime{min-height:auto!important;padding-bottom:clamp(70px,8vw,120px)!important}
-    .fx-research-block{border-top:1px solid var(--line);margin-top:clamp(30px,4vw,52px);padding-top:clamp(24px,3vw,36px)}
+    .fx-research-block{border-top:1px solid var(--line);margin-top:clamp(30px,4vw,52px);padding-top:clamp(24px,3vw,36px);opacity:1!important;transform:none!important;visibility:visible!important}
     .fx-research-head{display:grid;grid-template-columns:minmax(260px,.58fr) minmax(0,1.42fr);gap:clamp(28px,5vw,72px);align-items:end}
     .fx-research-head h3{margin:5px 0 0;font-size:clamp(38px,4.3vw,68px);line-height:.9;letter-spacing:-.055em}
     .fx-research-copy{margin:0;max-width:900px;color:#bbb9b3;font-size:clamp(14px,1.04vw,17px);line-height:1.5}
@@ -67,7 +66,7 @@
   document.head.appendChild(style);
 
   realtime.insertAdjacentHTML('beforeend', `
-    <div class="fx-research-block reveal">
+    <div class="fx-research-block">
       <div class="fx-research-head">
         <div>
           <p class="eyebrow accent-cyan">C / Solo research / 2026</p>
