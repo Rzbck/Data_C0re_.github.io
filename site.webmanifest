@@ -1,0 +1,9 @@
+{
+  "name": "DATA C0RE — Portfolio",
+  "short_name": "DATA C0RE",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#070707",
+  "theme_color": "#070707",
+  "icons": []
+}
