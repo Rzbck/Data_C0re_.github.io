@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="LUMINA general structure drawing">
+<rect width="1200" height="720" fill="#070707"/><g fill="none" stroke="#f3f1eb" stroke-width="3">
+<path d="M170 205 L370 90 L830 90 L1030 205 L1030 405 L830 520 L370 520 L170 405 Z" opacity=".9"/>
+<path d="M235 225 L405 128 L795 128 L965 225 L965 385 L795 482 L405 482 L235 385 Z" opacity=".7"/>
+<path d="M300 245 L440 166 L760 166 L900 245 L900 365 L760 444 L440 444 L300 365 Z" opacity=".55"/>
+<path d="M365 265 L475 204 L725 204 L835 265 L835 345 L725 406 L475 406 L365 345 Z" opacity=".4"/>
+</g><g fill="#8b8b88" font-family="Arial,Helvetica,sans-serif" font-size="18" letter-spacing="3"><text x="80" y="70">LUMINA / GENERAL STRUCTURE</text><text x="80" y="650">4 MODULAR BLOCK ARCHES / FUSION 360 / FABRICATION LOGIC</text></g><g stroke="#dfff00" stroke-width="2"><line x1="170" y1="580" x2="1030" y2="580"/><line x1="170" y1="568" x2="170" y2="592"/><line x1="1030" y1="568" x2="1030" y2="592"/></g><text x="525" y="615" fill="#dfff00" font-family="Arial" font-size="22">12.05 M</text></svg>
