@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 760" role="img" aria-label="LUMINA realtime system diagram">
+<rect width="1600" height="760" fill="#070707"/>
+<g fill="none" stroke="#3b3b38" stroke-width="2">
+<path d="M120 380 H1480"/>
+<path d="M420 380 V180 M420 380 V580"/>
+<path d="M800 380 V180 M800 380 V580"/>
+<path d="M1180 380 V180 M1180 380 V580"/>
+</g>
+<g font-family="Arial,Helvetica,sans-serif" fill="#f3f1eb">
+<text x="90" y="70" font-size="24" letter-spacing="5">LUMINA / REALTIME CONTROL ARCHITECTURE</text>
+<text x="90" y="710" font-size="18" fill="#8b8b88" letter-spacing="3">SANITIZED PORTFOLIO SCHEMATIC — NO NETWORK CREDENTIALS / NO DEVICE ADDRESSES</text>
+</g>
+<g font-family="Arial,Helvetica,sans-serif">
+<g transform="translate(70 300)"><rect width="250" height="160" rx="3" fill="#f3f1eb"/><text x="24" y="60" font-size="28" font-weight="700" fill="#070707">TOUCHDESIGNER</text><text x="24" y="102" font-size="18" fill="#555">animation / logic</text></g>
+<g transform="translate(430 300)"><rect width="250" height="160" rx="3" fill="#0d0d0d" stroke="#00b7ff" stroke-width="3"/><text x="24" y="60" font-size="28" font-weight="700" fill="#f3f1eb">ART-NET</text><text x="24" y="102" font-size="18" fill="#8b8b88">network transport</text></g>
+<g transform="translate(790 300)"><rect width="250" height="160" rx="3" fill="#0d0d0d" stroke="#f2298a" stroke-width="3"/><text x="24" y="60" font-size="28" font-weight="700" fill="#f3f1eb">4 CONTROL ZONES</text><text x="24" y="102" font-size="18" fill="#8b8b88">PixLite / power</text></g>
+<g transform="translate(1150 300)"><rect width="330" height="160" rx="3" fill="#dfff00"/><text x="24" y="60" font-size="28" font-weight="700" fill="#070707">8,556 LEDs</text><text x="24" y="102" font-size="18" fill="#333">addressable WS2815</text></g>
+</g>
+<g fill="#f3f1eb" font-family="Arial,Helvetica,sans-serif" font-size="18" letter-spacing="2">
+<text x="355" y="350">→</text><text x="715" y="350">→</text><text x="1075" y="350">→</text>
+</g>
+<g font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#8b8b88" letter-spacing="2">
+<text x="360" y="165">SITE INPUTS / SENSOR LAYER</text>
+<text x="740" y="165">4 BLOCK ARCHES</text>
+<text x="1110" y="165">12.05 M OVERALL LENGTH</text>
+<text x="360" y="625">12 V LED SYSTEM</text>
+<text x="740" y="625">4 × 1000 W POWER</text>
+<text x="1110" y="625">2025 → 2027 REINSTALLATION</text>
+</g>
+<circle cx="420" cy="380" r="7" fill="#00b7ff"/><circle cx="800" cy="380" r="7" fill="#f2298a"/><circle cx="1180" cy="380" r="7" fill="#dfff00"/>
+</svg>
