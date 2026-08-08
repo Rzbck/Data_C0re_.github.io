@@ -129,5 +129,6 @@
     .then(() => import('./v094.js?v=94'))
     .then(() => import('./v095.js?v=95'))
     .then(() => import('./v096.js?v=96'))
+    .then(() => import('./v098.js?v=98'))
     .catch(() => {});
 })();
