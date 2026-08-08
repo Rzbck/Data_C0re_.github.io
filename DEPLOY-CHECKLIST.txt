@@ -1,0 +1,19 @@
+DATA C0RE / GITHUB PAGES — DEPLOY CHECKLIST
+===========================================
+
+READY NOW
+[✓] index.html is at repository root
+[✓] all local CSS / JS / media links use relative paths
+[✓] no backend or build step
+[✓] responsive CSS included
+[✓] reduced-motion support included
+[✓] videos are short optimized MP4 loops
+[✓] .nojekyll included
+[✓] no CNAME / custom-domain configuration included yet
+
+UPLOAD
+Copy every file and folder in this package to the GitHub Pages publishing root.
+Do not upload the outer ZIP itself as the website content.
+
+LATER, WHEN THE CUSTOM DOMAIN IS READY
+Add the GitHub Pages custom-domain configuration / CNAME separately.
