@@ -509,3 +509,110 @@ figcaption { margin-top: 9px; font-size: 11px; letter-spacing: .08em; text-trans
   .technical-viewer img { height:auto; max-height:65svh; }
   .cloud-stills { grid-template-columns:1fr; }
 }
+
+
+/* v0.7 — LUMINA precision + institutional media + mobile usability */
+.lumina-stats { grid-template-columns:repeat(6,1fr); }
+.lumina-stats div:nth-child(5) strong { color:var(--acid); }
+.lumina-site-grid { display:grid; grid-template-columns:1fr 1fr .82fr; gap:10px; align-items:stretch; margin-top:10px; }
+.lumina-site-card { background:#030303; display:flex; flex-direction:column; min-width:0; }
+.lumina-site-card img,.lumina-site-card video { aspect-ratio:16/9; width:100%; height:auto; object-fit:cover; }
+.lumina-site-card figcaption { border-top:1px solid var(--line); padding:10px 0 0; }
+.lumina-site-card figcaption b { color:var(--acid); margin-right:8px; }
+.lumina-site-grid .role-card--compact { min-height:100%; }
+.lumina-architecture { display:grid; grid-template-columns:1fr auto 1fr auto 1fr auto 1.2fr; gap:12px; align-items:center; margin:clamp(38px,5vw,68px) 0 0; }
+.lumina-architecture>b { color:var(--grey); font-weight:500; }
+.architecture-node { min-height:134px; padding:20px; border:1px solid var(--line); display:flex; flex-direction:column; justify-content:center; background:#0a0a0a; }
+.architecture-node strong { font-size:clamp(19px,1.8vw,28px); line-height:1; letter-spacing:-.035em; }
+.architecture-node span { margin-top:12px; color:#9b9994; font-size:11px; line-height:1.35; }
+.architecture-node--paper { background:var(--paper); color:#080808; }
+.architecture-node--paper span,.architecture-node--acid span { color:#454541; }
+.architecture-node--cyan { border-color:var(--cyan); }
+.architecture-node--magenta { border-color:var(--magenta); }
+.architecture-node--acid { background:var(--acid); color:#070707; border-color:var(--acid); }
+.lumina-system-line { justify-content:flex-start!important; gap:18px!important; flex-wrap:wrap; }
+.technical-tabs { display:grid!important; grid-template-columns:repeat(4,1fr)!important; flex-wrap:initial!important; }
+.technical-tabs button { width:100%; min-width:0; border-bottom:0!important; white-space:nowrap; text-align:center; }
+.technical-tabs button:last-child { border-right:0; }
+.technical-viewer { min-height:0; }
+.technical-viewer img { height:auto!important; max-height:min(68vh,720px); object-fit:contain!important; padding:16px; }
+.technical-viewer figcaption { min-height:30px; }
+.institutional-story-strip { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+.institutional-story-strip figure { background:#020202; min-width:0; }
+.institutional-story-strip video { width:100%; height:min(44vh,480px); object-fit:contain; background:#000; }
+.institutional-story-strip figcaption { border-top:1px solid var(--line); padding-top:9px; }
+.system-case-media--pair video { width:100%; height:100%; min-height:310px; object-fit:contain; background:#000; }
+
+@media (max-width:1100px) {
+  .lumina-stats { grid-template-columns:repeat(3,1fr)!important; }
+  .lumina-stats div:nth-child(3n) { border-right:0!important; }
+  .lumina-stats div:nth-child(n+4) { border-top:1px solid var(--line); }
+  .lumina-site-grid { grid-template-columns:1fr 1fr; }
+  .lumina-site-grid .role-card--compact { grid-column:1/-1; }
+  .lumina-architecture { grid-template-columns:1fr auto 1fr; }
+  .lumina-architecture .architecture-node:nth-of-type(3),.lumina-architecture .architecture-node:nth-of-type(4) { margin-top:0; }
+  .lumina-architecture>b:nth-of-type(2) { display:none; }
+  .lumina-architecture .architecture-node:nth-of-type(3) { grid-column:1; }
+  .lumina-architecture>b:nth-of-type(3) { grid-column:2; }
+  .lumina-architecture .architecture-node:nth-of-type(4) { grid-column:3; }
+}
+
+@media (max-width:680px) {
+  :root { --gutter:18px; --header-h:54px; }
+  body { font-size:15px; }
+  .site-header { padding:0 18px; }
+  .motion-toggle { display:none!important; }
+  .menu-toggle { border-left:0!important; padding-right:0; }
+  .brand { font-size:12px; }
+  .section,.project { padding:70px 18px!important; }
+  .hero-copy { left:18px; bottom:16vh; }
+  .hero h1 { font-size:clamp(68px,24vw,98px)!important; line-height:.76!important; }
+  .hero-kicker { font-size:13px!important; }
+  .position-grid,.project-head,.systems-head,.research-head { grid-template-columns:1fr!important; gap:20px!important; }
+  .position-title h2,.work-index h2,.systems-head h2,.research-head h2 { font-size:clamp(36px,10.2vw,48px)!important; line-height:.96!important; letter-spacing:-.045em!important; }
+  .position-copy>p { font-size:17px!important; }
+  .work-index-head { display:block!important; margin-bottom:36px!important; }
+  .project-head { margin-bottom:30px!important; }
+  .project-head h2 { font-size:clamp(42px,12vw,58px)!important; line-height:.9!important; letter-spacing:-.055em!important; }
+  .project-summary { font-size:16px!important; line-height:1.4!important; max-width:none!important; }
+  .project-facts { margin:-6px 0 28px!important; }
+  .index-rows a { grid-template-columns:28px minmax(0,1fr) 46px!important; gap:8px!important; padding:11px 0!important; }
+  .index-rows strong { font-size:clamp(19px,5.7vw,25px)!important; line-height:1.02!important; }
+  .index-group-label { margin-top:18px; }
+  .lumina-stats { grid-template-columns:1fr 1fr!important; margin-bottom:28px!important; }
+  .lumina-stats div { padding:12px 10px!important; border-right:1px solid var(--line)!important; border-top:1px solid var(--line)!important; }
+  .lumina-stats div:nth-child(even) { border-right:0!important; }
+  .lumina-stats strong { font-size:24px!important; }
+  .lumina-site-grid { grid-template-columns:1fr!important; }
+  .lumina-site-grid .role-card--compact { grid-column:auto; }
+  .role-card--compact { padding:20px!important; }
+  .lumina-architecture { grid-template-columns:1fr!important; gap:8px; }
+  .lumina-architecture>b { transform:rotate(90deg); justify-self:center; }
+  .lumina-architecture>b:nth-of-type(2) { display:block!important; }
+  .lumina-architecture .architecture-node:nth-of-type(3),.lumina-architecture .architecture-node:nth-of-type(4),.lumina-architecture>b:nth-of-type(3) { grid-column:auto!important; }
+  .architecture-node { min-height:104px; padding:17px; }
+  .architecture-node strong { font-size:23px; }
+  .lumina-system-line { overflow:visible!important; white-space:normal!important; gap:8px 13px!important; line-height:1.5; }
+  .technical-intro h3 { font-size:36px!important; }
+  .technical-tabs { grid-template-columns:1fr 1fr!important; }
+  .technical-tabs button { min-height:42px; font-size:9px!important; border-right:1px solid var(--line)!important; border-bottom:1px solid var(--line)!important; }
+  .technical-tabs button:nth-child(even) { border-right:0!important; }
+  .technical-viewer img { padding:8px; max-height:54svh; }
+  .institutional-story-strip { grid-template-columns:1fr; }
+  .institutional-story-strip video { height:auto; max-height:64svh; }
+  .systems-small-grid { grid-template-columns:1fr!important; }
+  .system-case-media,.system-case-media--pair { grid-template-columns:1fr!important; }
+  .system-case-media--pair video { min-height:0; height:auto; aspect-ratio:9/16; }
+  .study-split,.portrait-layout,.process-grid,.amen-grid,.timeline-media,.stage-video-pair { grid-template-columns:1fr!important; }
+  .portrait-hero { min-height:60svh!important; }
+  .study-media { height:58svh!important; }
+  .amen-live { grid-column:auto!important; height:58svh!important; }
+  .timeline-media figure { min-height:0!important; }
+  .timeline-media video { aspect-ratio:9/16; height:auto!important; }
+  .cloud-presentation { max-width:100%!important; }
+  .direction,.about { min-height:auto!important; }
+  .direction-copy h2 { font-size:clamp(42px,11vw,58px)!important; line-height:.9!important; }
+  .about-top h2 { font-size:clamp(48px,13vw,70px)!important; }
+  .skills span { font-size:9px!important; padding:7px 9px!important; }
+  .site-footer { padding-bottom:34px; }
+}

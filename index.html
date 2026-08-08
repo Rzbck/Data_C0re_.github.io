@@ -196,51 +196,59 @@
       </div>
       <div class="lumina-stats reveal" aria-label="LUMINA key technical figures">
         <div><strong>12.05 m</strong><span>overall length</span></div>
-        <div><strong>8,556</strong><span>addressable LEDs</span></div>
-        <div><strong>4</strong><span>Block Arch sections</span></div>
-        <div><strong>4 × 1000 W</strong><span>power zones</span></div>
-        <div><strong>2025→27</strong><span>designed for reinstallation</span></div>
+        <div><strong>8,556</strong><span>RGB LEDs / WS2815</span></div>
+        <div><strong>25,668</strong><span>DMX channels</span></div>
+        <div><strong>51</strong><span>Art-Net universes</span></div>
+        <div><strong>60 FPS</strong><span>realtime output</span></div>
+        <div><strong>4</strong><span>control zones / PixLite</span></div>
       </div>
-      <div class="lumina-context-grid reveal">
-        <div class="lumina-compare" data-compare>
-          <div class="compare-stage">
-            <img class="compare-before" src="./assets/media/lumina/site-before.svg" alt="Geneva Lux tunnel during site survey before LUMINA was installed.">
-            <div class="compare-after" data-compare-after><img src="./assets/media/lumina/tunnel-blue.webp" alt="LUMINA installed in the tunnel during Geneva Lux."></div>
-            <div class="compare-handle" data-compare-handle aria-hidden="true"></div>
-          </div>
-          <input type="range" min="8" max="92" value="50" aria-label="Compare the Geneva Lux site before and after LUMINA installation" data-compare-range>
-          <div class="compare-labels"><span>site survey / 2024</span><span>installation / 2025</span></div>
-        </div>
-        <div class="lumina-role-stack">
-          <figure class="lumina-human"><img src="./assets/media/lumina/human-scale.webp" alt="Visitor moving through the LUMINA installation." loading="lazy"><figcaption>human scale / public interaction</figcaption></figure>
-          <div class="role-card role-card--compact">
-            <p class="eyebrow">My contribution</p>
-            <ul>
-              <li>Fusion 360 structure / fabrication drawings</li>
-              <li>network planning / LED integration / Art-Net</li>
-              <li>TouchDesigner programming / realtime light behaviour</li>
-              <li>budgeting / workshop and fabrication coordination</li>
-              <li>profile / groove optimisation with the carpenter</li>
-              <li>custom flycase / storage / transport design</li>
-            </ul>
-          </div>
+      <div class="lumina-site-grid reveal">
+        <figure class="lumina-site-card">
+          <img src="./assets/media/lumina/site-before.svg" alt="Tunnel du Mont-Blanc site survey before LUMINA installation." loading="lazy">
+          <figcaption><b>01</b> site survey / Tunnel du Mont-Blanc / 2024</figcaption>
+        </figure>
+        <figure class="lumina-site-card lumina-site-card--video">
+          <video class="media-video" autoplay muted loop playsinline preload="metadata" poster="./assets/media/lumina/tunnel-blue.webp" data-autoplay>
+            <source src="./assets/media/lumina/loop.mp4" type="video/mp4">
+          </video>
+          <figcaption><b>02</b> installed work / Geneva Lux / 2025</figcaption>
+        </figure>
+        <div class="role-card role-card--compact">
+          <p class="eyebrow">My contribution</p>
+          <ul>
+            <li>Fusion 360 structure / fabrication drawings</li>
+            <li>network planning / LED integration / Art-Net</li>
+            <li>TouchDesigner programming / realtime light behaviour</li>
+            <li>budgeting / workshop and fabrication coordination</li>
+            <li>profile / groove optimisation with the carpenter</li>
+            <li>custom flycase / storage / transport design</li>
+          </ul>
         </div>
       </div>
-      <div class="lumina-system-line reveal"><span>TOUCHDESIGNER</span><b>→</b><span>ART-NET</span><b>→</b><span>4 CONTROL ZONES</span><b>→</b><span>8,556 LEDs</span><b>→</b><span>SPATIAL LIGHT</span></div>
+      <div class="lumina-architecture reveal" aria-label="LUMINA realtime control architecture">
+        <div class="architecture-node architecture-node--paper"><strong>TOUCHDESIGNER</strong><span>animation / logic / 60 FPS</span></div>
+        <b>→</b>
+        <div class="architecture-node architecture-node--cyan"><strong>ART-NET</strong><span>51 universes / 25,668 channels</span></div>
+        <b>→</b>
+        <div class="architecture-node architecture-node--magenta"><strong>4 × PIXLITE</strong><span>E4-S Mk3 / distributed control</span></div>
+        <b>→</b>
+        <div class="architecture-node architecture-node--acid"><strong>8,556 RGB LEDs</strong><span>WS2815 / spatial output</span></div>
+      </div>
+      <div class="lumina-system-line reveal"><span>4 BLOCK ARCHES</span><b>·</b><span>4 × 1000 W POWER</span><b>·</b><span>12 V LED SYSTEM</span><b>·</b><span>2025 → 2027 REINSTALLATION</span></div>
       <div class="lumina-technical reveal" aria-label="LUMINA design and fabrication documentation">
         <div class="technical-intro">
           <div><p class="eyebrow">Design / fabrication / transport</p><h3>One system, from drawing to reinstallation.</h3></div>
           <p>The project documentation covers structure, grooved timber profiles, LED integration, network/control architecture and a dedicated flycase. The viewer below keeps the technical depth visible without turning the portfolio into an engineering dossier.</p>
         </div>
         <div class="technical-tabs" role="tablist" aria-label="LUMINA technical drawings">
-          <button type="button" class="active" data-tech-src="./assets/media/lumina/technical-structure.svg" data-tech-caption="01 / STRUCTURE + ASSEMBLY" data-tech-alt="LUMINA structure and assembly drawing">structure</button>
-          <button type="button" data-tech-src="./assets/media/lumina/technical-profiles.svg" data-tech-caption="02 / PROFILES + RAINURAGE" data-tech-alt="LUMINA profile dimensions and groove planning">profiles</button>
-          <button type="button" data-tech-src="./assets/media/lumina/technical-flycase.svg" data-tech-caption="03 / CUSTOM FLYCASE" data-tech-alt="Custom flycase drawing for LUMINA storage and transport">flycase</button>
-          <button type="button" data-tech-src="./assets/media/lumina/technical-system.svg" data-tech-caption="04 / REALTIME CONTROL ARCHITECTURE" data-tech-alt="Sanitized LUMINA realtime control architecture diagram">system</button>
+          <button type="button" class="active" data-tech-src="./assets/media/lumina/technical-structure.svg" data-tech-caption="01 / STRUCTURE + ASSEMBLY / FINAL GEOMETRY" data-tech-alt="LUMINA structure and assembly drawing">structure</button>
+          <button type="button" data-tech-src="./assets/media/lumina/technical-system.svg" data-tech-caption="02 / LED CABLING / 4 ADVATEK CONTROL ZONES" data-tech-alt="LUMINA LED cabling and controller-zone drawing">wiring</button>
+          <button type="button" data-tech-src="./assets/media/lumina/technical-profiles.svg" data-tech-caption="03 / ALUMINIUM PROFILES + RAINURAGE" data-tech-alt="LUMINA profile dimensions and groove planning">profiles</button>
+          <button type="button" data-tech-src="./assets/media/lumina/technical-flycase.svg" data-tech-caption="04 / CUSTOM FLYCASE / STORAGE + TRANSPORT" data-tech-alt="Custom flycase drawing for LUMINA storage and transport">flycase</button>
         </div>
         <figure class="technical-viewer">
           <img src="./assets/media/lumina/technical-structure.svg" alt="LUMINA structure and assembly drawing" data-tech-image>
-          <figcaption data-tech-caption>01 / STRUCTURE + ASSEMBLY</figcaption>
+          <figcaption data-tech-caption>01 / STRUCTURE + ASSEMBLY / FINAL GEOMETRY</figcaption>
         </figure>
       </div>
     </section>
