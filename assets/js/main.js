@@ -22,7 +22,6 @@
   `;
   document.head.appendChild(style);
 
-  // LUMINA: replace the confusing before/after slider with clear project documentation.
   const stats = q('#lumina .lumina-stats');
   if (stats) stats.innerHTML = `
     <div><strong>12.05 m</strong><span>overall length</span></div>
@@ -50,7 +49,6 @@
     sysLine.innerHTML = '<span>4 BLOCK ARCHES</span><b>·</b><span>4 × 1000 W POWER</span><b>·</b><span>12 V LED SYSTEM</span><b>·</b><span>2025 → 2027 REINSTALLATION</span>';
   }
 
-  // Technical viewer: fixed-size labels, no unstable changing tab titles, no clipped synthetic system diagram.
   const tabs = q('#lumina .technical-tabs');
   const techImage = q('[data-tech-image]');
   const techCaption = q('[data-tech-caption]');
@@ -73,7 +71,6 @@
     }, 100);
   }));
 
-  // Base navigation / motion / scroll behaviour.
   const body = document.body;
   const menu = q('[data-menu]');
   const menuToggle = q('[data-menu-toggle]');
@@ -113,7 +110,6 @@
   }), { threshold:.08, rootMargin:'0px 0px -5% 0px' });
   qa('.reveal').forEach(el => revealObserver.observe(el));
 
-  // Restrained index preview on desktop.
   const menuPreview = q('[data-menu-preview]');
   menu?.querySelectorAll('[data-preview]').forEach(link => link.addEventListener('mouseenter', () => {
     if (!menuPreview) return; const next = link.dataset.preview;
@@ -125,6 +121,5 @@
   reduceMotion.addEventListener?.('change', e => { if (e.matches) { motionOff=true; applyMotionState(); } });
   applyMotionState();
 
-  // Load V0.8 theatre / touring-system enrichment after the base UI is ready.
-  import('./v08.js?v=8').catch(() => {});
+  import('./v08.js?v=8').then(() => import('./v09.js?v=9')).catch(() => {});
 })();
