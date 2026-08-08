@@ -1,127 +1,116 @@
 (() => {
   const q = (s, root = document) => root.querySelector(s);
-  const qa = (s, root = document) => [...root.querySelectorAll(s)];
   const fx = q('#realtime .fx-research-block');
   if (!fx) return;
 
-  const TRANSPARENT = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
-
   const style = document.createElement('style');
   style.textContent = `
-    /* V0.9.8 — deterministic FX media: no marquee, no layout jump */
-    #realtime .fx-research-media{height:clamp(250px,23vw,350px)!important;align-items:stretch!important}
-    #realtime .fx-film-window{background:#070707!important;overflow:hidden!important}
+    /* V0.9.8 CLEAN — static lightweight FX media */
+    #realtime .fx-research-media{
+      display:grid!important;
+      grid-template-columns:minmax(0,1.55fr) minmax(300px,.75fr)!important;
+      gap:10px!important;
+      height:auto!important;
+      min-height:0!important;
+      align-items:start!important;
+    }
+    #realtime .fx-film,#realtime .fx-process{
+      height:auto!important;
+      min-height:0!important;
+      overflow:hidden!important;
+      background:#070707!important;
+    }
+    #realtime .fx-film-window{
+      height:auto!important;
+      min-height:0!important;
+      background:#070707!important;
+      overflow:hidden!important;
+    }
     #realtime .fx-film-track{
       display:block!important;
       width:100%!important;
-      height:100%!important;
+      height:auto!important;
       animation:none!important;
       transform:none!important;
       will-change:auto!important;
     }
-    #realtime .fx-film-track img{
-      display:none!important;
+    #realtime .fx-film-track img{display:none!important}
+    #realtime .fx-film-track img:first-child{
+      display:block!important;
       width:100%!important;
-      height:100%!important;
+      height:auto!important;
       min-width:0!important;
-      max-width:none!important;
-      object-fit:cover!important;
-      object-position:center center!important;
+      max-width:100%!important;
+      object-fit:contain!important;
       transform:none!important;
     }
-    #realtime .fx-film-track img:first-child{display:block!important}
-    #realtime .fx-film:hover .fx-film-track{animation:none!important}
-    #realtime .fx-process{background:#070707!important}
-    #realtime .fx-network{position:relative!important;overflow:hidden!important}
+    #realtime .fx-process{display:block!important;padding:0!important}
     #realtime .fx-network img{
       display:block!important;
       width:100%!important;
-      height:100%!important;
+      height:auto!important;
+      max-height:330px!important;
       object-fit:contain!important;
       background:#070707!important;
     }
-    #realtime .fx-media-fallback{
-      height:100%;min-height:0;display:grid;place-items:center;padding:18px;
-      border:1px solid #242424;background:#080808;color:#77756f;
-      font-size:9px;line-height:1.45;letter-spacing:.08em;text-transform:uppercase;text-align:center;
+    #realtime .fx-process-line{margin:0!important;padding:10px 0 0!important}
+    #realtime .fx-film figcaption,#realtime .fx-network figcaption{padding:8px 0!important}
+    #realtime .fx-media-fallback,#realtime .fx-network-fallback{display:none!important}
+    @media(max-width:900px){
+      #realtime .fx-research-media{grid-template-columns:1fr!important}
+      #realtime .fx-process{margin-top:8px!important}
     }
-    #realtime .fx-network-fallback{
-      height:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;align-items:center;
-      padding:16px;background:#070707;
-    }
-    #realtime .fx-network-fallback span{
-      min-height:58px;border:1px solid #292929;display:flex;align-items:center;justify-content:center;
-      padding:7px;color:#96938d;font-size:8px;line-height:1.25;text-align:center;text-transform:uppercase;letter-spacing:.06em;
-    }
-    #realtime .fx-network-fallback b{color:var(--cyan);font-weight:500;text-align:center}
-    @media(max-width:1000px){#realtime .fx-research-media{height:auto!important}#realtime .fx-film{height:280px!important}#realtime .fx-process{height:300px!important}}
-    @media(max-width:680px){#realtime .fx-film{height:220px!important}#realtime .fx-process{height:250px!important}.fx-network-fallback{padding:10px!important;gap:4px!important}.fx-network-fallback span{font-size:7px!important;min-height:48px!important}}
   `;
   document.head.appendChild(style);
 
-  const filmImgs = qa('.fx-film-track img', fx);
-  const hero = filmImgs[0];
-  const duplicate = filmImgs[1];
-  const network = q('.fx-network img', fx);
+  const filmTrack = q('.fx-film-track', fx);
+  const networkFigure = q('.fx-network', fx);
+  if (!filmTrack || !networkFigure) return;
 
-  if (hero) {
-    hero.loading = 'eager';
-    hero.src = TRANSPARENT;
-    hero.alt = 'Selected realtime TouchDesigner FX studies';
-  }
-  if (duplicate) {
-    duplicate.src = TRANSPARENT;
-    duplicate.alt = '';
-    duplicate.setAttribute('aria-hidden', 'true');
-  }
-  if (network) {
-    network.loading = 'eager';
-    network.src = TRANSPARENT;
-    network.alt = 'TouchDesigner network used to build the modular realtime FX library';
-  }
+  filmTrack.innerHTML = '<img alt="Selected realtime TouchDesigner FX studies">';
+  const fxImage = q('img', filmTrack);
 
-  const extractEmbeddedRaster = async path => {
-    const response = await fetch(`${path}?v=098`, { cache: 'reload' });
-    if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
-    const svg = await response.text();
-    const match = svg.match(/(?:href|xlink:href)=["'](data:image\/(?:jpeg|jpg|png|webp);base64,[^"']+)["']/i);
-    if (!match) throw new Error(`${path}: embedded raster not found`);
-    return match[1];
+  let networkImage = q('img', networkFigure);
+  if (!networkImage) {
+    networkImage = document.createElement('img');
+    networkFigure.prepend(networkImage);
+  }
+  networkImage.alt = 'TouchDesigner network used to build the modular realtime FX library';
+
+  const loadBase64Text = async (path) => {
+    const response = await fetch(path, { cache: 'force-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const base64 = (await response.text()).trim();
+    if (!base64.startsWith('/9j/')) throw new Error('Invalid JPEG payload');
+    return `data:image/jpeg;base64,${base64}`;
   };
 
-  const preload = src => new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => resolve(src);
-    image.onerror = reject;
-    image.src = src;
-  });
-
-  const showFilmFallback = () => {
-    const windowEl = q('.fx-film-window', fx);
-    if (!windowEl) return;
-    windowEl.innerHTML = '<div class="fx-media-fallback">FX library media unavailable in this build.<br>Realtime research remains documented below.</div>';
+  let started = false;
+  const loadMedia = async () => {
+    if (started) return;
+    started = true;
+    try {
+      const [selection, network] = await Promise.all([
+        loadBase64Text('./assets/media/research/fx-selection.jpg?v=101'),
+        loadBase64Text('./assets/media/research/fx-network.jpg?v=101')
+      ]);
+      fxImage.src = selection;
+      networkImage.src = network;
+    } catch (error) {
+      console.warn('FX static media load failed', error);
+      q('.fx-research-media', fx)?.remove();
+    }
   };
 
-  const showNetworkFallback = () => {
-    const figure = q('.fx-network', fx);
-    const caption = figure?.querySelector('figcaption');
-    if (!figure) return;
-    figure.querySelector('img')?.remove();
-    const diagram = document.createElement('div');
-    diagram.className = 'fx-network-fallback';
-    diagram.innerHTML = '<span>source</span><b>→</b><span>analysis</span><b>→</b><span>feedback / transform</span>';
-    figure.insertBefore(diagram, caption || null);
-  };
-
-  Promise.all([
-    extractEmbeddedRaster('./assets/media/research/fx-sprite.svg').then(preload),
-    extractEmbeddedRaster('./assets/media/research/fx-network.svg').then(preload)
-  ]).then(([spriteData, networkData]) => {
-    if (hero) hero.src = spriteData;
-    if (network) network.src = networkData;
-  }).catch(error => {
-    console.warn('V0.9.8 FX media fallback', error);
-    showFilmFallback();
-    showNetworkFallback();
-  });
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        observer.disconnect();
+        loadMedia();
+      }
+    }, { rootMargin: '700px 0px', threshold: 0 });
+    observer.observe(fx);
+  } else {
+    loadMedia();
+  }
 })();
