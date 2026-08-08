@@ -125,5 +125,10 @@
   reduceMotion.addEventListener?.('change', e => { if (e.matches) { motionOff=true; applyMotionState(); } });
   applyMotionState();
 
-  import('./v08.js?v=8').then(() => import('./v09.js?v=9')).then(() => import('./v091.js?v=91')).catch(() => {});
+  import('./v08.js?v=8')
+    .then(() => import('./v09.js?v=9'))
+    .then(() => import('./v091.js?v=91'))
+    .then(() => import('./v092.js?v=92'))
+    .then(() => import('./v093.js?v=93'))
+    .catch(() => {});
 })();
