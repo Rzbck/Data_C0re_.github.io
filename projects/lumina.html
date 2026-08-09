@@ -43,9 +43,9 @@
 
 <section class="project-section" data-lumina-experience-section>
   <div class="experience-motion-grid reveal">
-    <figure class="experience-main"><video muted loop playsinline preload="auto" poster="assets/media/lumina/nested.webp" data-stagger-video data-lumina-experience data-timeline="0.08" data-rate="1"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Nested structure / spatial depth</figcaption></figure>
-    <figure class="experience-small experience-small--a"><video muted loop playsinline preload="auto" poster="assets/media/lumina/human-scale.webp" data-stagger-video data-lumina-experience data-timeline="0.48" data-rate="1"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Human scale</figcaption></figure>
-    <figure class="experience-small experience-small--b"><video muted loop playsinline preload="auto" poster="assets/media/lumina/tunnel-blue.webp" data-stagger-video data-lumina-experience data-timeline="0.83" data-rate="1"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Installed work</figcaption></figure>
+    <figure class="experience-main"><video muted loop playsinline preload="auto" poster="assets/media/lumina/nested.webp" data-stagger-video data-lumina-experience data-timeline="0.08" data-rate="1"><source src="assets/media/lumina/experience-long.mp4?v=20260809-1" type="video/mp4"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Nested structure / spatial depth</figcaption></figure>
+    <figure class="experience-small experience-small--a"><video muted loop playsinline preload="auto" poster="assets/media/lumina/human-scale.webp" data-stagger-video data-lumina-experience data-timeline="0.48" data-rate="1"><source src="assets/media/lumina/experience-long.mp4?v=20260809-1" type="video/mp4"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Human scale</figcaption></figure>
+    <figure class="experience-small experience-small--b"><video muted loop playsinline preload="auto" poster="assets/media/lumina/tunnel-blue.webp" data-stagger-video data-lumina-experience data-timeline="0.83" data-rate="1"><source src="assets/media/lumina/experience-long.mp4?v=20260809-1" type="video/mp4"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Installed work</figcaption></figure>
   </div>
   <div class="system-flow reveal"><span>TouchDesigner</span><b>→</b><span>Art-Net</span><b>→</b><span>PixLite control</span><b>→</b><span>addressable LED</span></div>
 </section>
@@ -67,8 +67,8 @@
   <span hidden data-tab-caption>01 / GENERAL STRUCTURE</span>
   <div class="tech-tabs" role="tablist">
     <button class="active" type="button" role="tab" aria-selected="true" data-tab-src="assets/media/lumina/technical-general-original-inverted.webp?v=20260809-2" data-tab-caption="01 / GENERAL STRUCTURE">GENERAL STRUCTURE</button>
-    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-dimensions-original-inverted.webp?v=20260809-2" data-tab-caption="02 / DIMENSIONS">DIMENSIONS</button>
-    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-profiles.svg" data-tab-caption="03 / PROFILES + RAINURAGE">PROFILES</button>
+    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-dimensions-original-inverted-v2.webp" data-tab-fallback="assets/media/lumina/technical-dimensions-original-inverted.webp?v=20260809-2" data-tab-caption="02 / DIMENSIONS">DIMENSIONS</button>
+    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-profiles-original-inverted.webp" data-tab-fallback="assets/media/lumina/technical-profiles.svg" data-tab-caption="03 / PROFILES + RAINURAGE">PROFILES</button>
     <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-flycase.svg" data-tab-caption="04 / CUSTOM FLYCASE">FLYCASE</button>
   </div>
   <figure class="tech-viewer"><img src="assets/media/lumina/technical-general-original-inverted.webp?v=20260809-2" alt="LUMINA general structure drawing" data-tab-image><figcaption>Technical drawing</figcaption></figure>
@@ -128,6 +128,15 @@
     if(entry.isIntersecting)startFabrication(v);else v.pause();
   }),{rootMargin:'180px 0px',threshold:.12});
   fabrication.forEach(v=>fabricationObserver.observe(v));
+
+  const techImage=document.querySelector('[data-tab-image]');
+  techImage?.addEventListener('error',()=>{
+    const active=document.querySelector('.tech-tabs button.active');
+    const fallback=active?.dataset.tabFallback;
+    if(!fallback)return;
+    const fallbackUrl=new URL(fallback,document.baseURI).href;
+    if(techImage.src!==fallbackUrl)techImage.src=fallback;
+  });
 
   const sync=()=>{
     if(motionOff()){
