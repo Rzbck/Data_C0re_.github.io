@@ -1,1 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1083 550" role="img" aria-label="LUMINA general structure drawing"><rect width="1083" height="550" fill="#030303"/><image width="1083" height="550" href="data:image/png;base64,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" preserveAspectRatio="xMidYMid meet"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+<title id="title">LUMINA general structure</title>
+<desc id="desc">General structure drawing of the Geneva Lux luminous tunnel, shown as nested perspective frames and front elevation.</desc>
+<rect width="1600" height="900" fill="#050505"/>
+<g fill="none" stroke="#f3f3f0" stroke-width="2.2" vector-effect="non-scaling-stroke">
+  <rect x="55" y="55" width="1490" height="790" opacity=".65"/>
+  <line x1="800" y1="25" x2="800" y2="80" opacity=".7"/>
+  <line x1="25" y1="610" x2="88" y2="610" opacity=".7"/>
+  <line x1="1512" y1="610" x2="1575" y2="610" opacity=".7"/>
+  <g id="perspective">
+    <rect x="530" y="95" width="540" height="365"/>
+    <rect x="555" y="112" width="490" height="331"/>
+    <rect x="580" y="129" width="440" height="297"/>
+    <rect x="605" y="146" width="390" height="263"/>
+    <rect x="630" y="163" width="340" height="229"/>
+    <rect x="655" y="180" width="290" height="195"/>
+    <rect x="680" y="197" width="240" height="161"/>
+    <rect x="705" y="214" width="190" height="127"/>
+    <rect x="730" y="231" width="140" height="93"/>
+    <line x1="530" y1="460" x2="730" y2="324"/>
+    <line x1="1070" y1="460" x2="870" y2="324"/>
+    <line x1="530" y1="95" x2="730" y2="231"/>
+    <line x1="1070" y1="95" x2="870" y2="231"/>
+  </g>
+  <g id="elevation">
+    <rect x="110" y="505" width="1380" height="245"/>
+    <line x1="110" y1="627.5" x2="1490" y2="627.5"/>
+    <line x1="282.5" y1="505" x2="282.5" y2="750"/>
+    <line x1="455" y1="505" x2="455" y2="750"/>
+    <line x1="627.5" y1="505" x2="627.5" y2="750"/>
+    <line x1="800" y1="505" x2="800" y2="750"/>
+    <line x1="972.5" y1="505" x2="972.5" y2="750"/>
+    <line x1="1145" y1="505" x2="1145" y2="750"/>
+    <line x1="1317.5" y1="505" x2="1317.5" y2="750"/>
+    <path d="M110 505 l18 18 h136.5 l18-18 M282.5 505 l18 18 h136.5 l18-18 M455 505 l18 18 h136.5 l18-18 M627.5 505 l18 18 h136.5 l18-18 M800 505 l18 18 h136.5 l18-18 M972.5 505 l18 18 h136.5 l18-18 M1145 505 l18 18 h136.5 l18-18 M1317.5 505 l18 18 H1490" opacity=".8"/>
+    <path d="M110 750 l18-18 h136.5 l18 18 M282.5 750 l18-18 h136.5 l18 18 M455 750 l18-18 h136.5 l18 18 M627.5 750 l18-18 h136.5 l18 18 M800 750 l18-18 h136.5 l18 18 M972.5 750 l18-18 h136.5 l18 18 M1145 750 l18-18 h136.5 l18 18 M1317.5 750 l18-18 H1490" opacity=".8"/>
+  </g>
+</g>
+<g fill="#9a9a96" font-family="Arial,Helvetica,sans-serif" font-size="18" letter-spacing="2">
+  <text x="70" y="822">01 / GENERAL STRUCTURE</text>
+  <text x="1260" y="822">GENEVA LUX / LUMINA</text>
+</g>
+</svg>
