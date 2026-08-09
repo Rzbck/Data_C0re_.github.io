@@ -2,24 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../">
-  <title>Realtime Studies — DATA C0RE</title><meta name="description" content="Realtime audiovisual research by DATA C0RE exploring sound, motion, feedback and image transformation."><meta name="theme-color" content="#070707"><link rel="stylesheet" href="assets/css/styles.css">
+  <title>Realtime Studies — DATA C0RE</title><meta name="description" content="Realtime audiovisual research by DATA C0RE exploring sound, motion, feedback and image transformation."><meta name="theme-color" content="#070707">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/css/styles.css">
   <style>
     .realtime-motion-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(290px,.65fr);gap:12px;align-items:stretch}
     .realtime-motion-grid figure{min-width:0;background:#020202}.realtime-motion-grid video{width:100%;height:100%;min-height:340px;object-fit:cover;background:#000}
     .realtime-motion-grid figure:nth-child(2){margin-top:clamp(36px,6vw,100px);margin-bottom:clamp(16px,3vw,52px)}
     .realtime-motion-grid figcaption,.fx-showcase figcaption,.fx-network-card figcaption{padding-top:9px;color:var(--grey);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 
-    .fx-library-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);gap:clamp(18px,3vw,48px);align-items:start}
-    .curated-fx{position:relative;aspect-ratio:16/9;overflow:hidden;background:#020202;border:1px solid var(--line);isolation:isolate}
-    .curated-fx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.012);transition:opacity .72s var(--ease),transform 1.5s var(--ease);background:#020202}
+    .fx-library-grid{display:grid;grid-template-columns:minmax(0,1.28fr) minmax(300px,.72fr);gap:clamp(18px,3vw,48px);align-items:start}
+    .curated-fx{position:relative;aspect-ratio:16/9;overflow:hidden;background:#020202;border:1px solid var(--line);isolation:isolate;cursor:crosshair}
+    .curated-fx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.006);transition:opacity .16s linear,transform .5s var(--ease);background:#020202;will-change:opacity,transform}
     .curated-fx img.is-active{opacity:1;transform:scale(1)}
-    .curated-fx-status{position:absolute;z-index:5;left:12px;bottom:11px;display:flex;gap:8px;align-items:baseline;padding:7px 9px;background:rgba(0,0,0,.68);backdrop-filter:blur(8px);font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:var(--grey)}
+    .curated-fx-status{position:absolute;z-index:5;left:12px;bottom:11px;display:flex;gap:8px;align-items:baseline;padding:7px 9px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:var(--grey)}
     .curated-fx-status b{color:var(--acid);font-size:12px}.curated-fx-status strong{color:var(--paper);font-weight:700}
     .curated-fx-loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--grey);font-size:10px;letter-spacing:.1em;text-transform:uppercase}.curated-fx.is-ready .curated-fx-loading{display:none}
     .fx-showcase figcaption{display:flex;justify-content:space-between;gap:18px}.fx-showcase figcaption span:last-child{white-space:nowrap}
     .network-visual{position:relative;aspect-ratio:500/256;background:#020202;border:1px solid var(--line);overflow:hidden}
-    .network-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#020202;opacity:0;transition:opacity .3s ease}.network-visual img.is-loaded{opacity:1}
-    .network-status{position:absolute;inset:0;display:grid;place-items:center;color:var(--grey);font-size:10px;text-transform:uppercase;letter-spacing:.1em}.network-visual:has(img.is-loaded) .network-status{display:none}
+    .network-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#020202;opacity:0;transition:opacity .22s ease}.network-visual.is-ready img{opacity:1}
+    .network-status{position:absolute;inset:0;display:grid;place-items:center;color:var(--grey);font-size:10px;text-transform:uppercase;letter-spacing:.1em}.network-visual.is-ready .network-status{display:none}.network-visual.is-error .network-status{color:#ff7777}
     .fx-network-card figcaption{display:flex;justify-content:space-between;gap:16px}.fx-network-card figcaption span:last-child{color:#c8c6c0}
     .fx-source-list{display:grid;grid-template-columns:repeat(3,1fr);margin-top:34px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
     .fx-source-list div{padding:13px 12px;border-right:1px solid var(--line)}.fx-source-list div:first-child{padding-left:0}.fx-source-list div:last-child{border-right:0}
@@ -41,25 +42,26 @@
   <figure><video muted loop playsinline poster="assets/media/realtime/game-of-life.webp" data-lazy-video><source data-src="assets/media/realtime/gol-loop.mp4" type="video/mp4"></video><figcaption>Game of Life / cellular audio-reactive study</figcaption></figure>
 </div></section>
 
-<section class="project-section project-section--split"><div class="section-kicker reveal"><span>B</span><p>Realtime FX library</p></div><div class="prose-large reveal"><h2>One system, radically different image behaviours.</h2><p>The FX research library contains forty-three exported states. Rather than showing them as a contact sheet, this page cycles through a small contrasting selection and keeps the underlying TouchDesigner network visible as technical evidence.</p></div></section>
+<section class="project-section project-section--split"><div class="section-kicker reveal"><span>B</span><p>Realtime FX library</p></div><div class="prose-large reveal"><h2>One system, radically different image behaviours.</h2><p>The library contains forty-three exported FX states. This view samples ten contrasting states in a fast randomized sequence while the underlying TouchDesigner network remains visible as technical evidence.</p></div></section>
 <section class="project-section"><div class="fx-library-grid reveal">
   <figure class="fx-showcase">
-    <div class="curated-fx" data-curated-fx data-sources="assets/media/research/fx-curated/bio-generative.txt|assets/media/research/fx-curated/cymatic.txt|assets/media/research/fx-curated/semiotic-density.txt" data-labels="Bio Generative Invasion|Cymatic Synesthesia|Semiotic Density">
-      <div class="curated-fx-loading">loading selected FX states</div>
-      <img alt="Bio Generative Invasion realtime FX state" data-curated-frame>
-      <img alt="Cymatic Synesthesia realtime FX state" data-curated-frame>
-      <img alt="Semiotic Density realtime FX state" data-curated-frame>
-      <div class="curated-fx-status"><b data-curated-index>01</b><span>/ 03</span><strong data-curated-label>Bio Generative Invasion</strong></div>
+    <div class="curated-fx" data-curated-fx
+      data-sources="assets/media/research/fx-curated/05-contours-neon.b64|assets/media/research/fx-curated/14-fisheye-gopro.b64|assets/media/research/fx-curated/16-flouzoom.b64|assets/media/research/fx-curated/18-grain-cinema-nb.b64|assets/media/research/fx-curated/30-pixelisation-8bit.b64|assets/media/research/fx-curated/37-syntax-cloud.b64|assets/media/research/fx-curated/43-volumetric-amnesia.b64|assets/media/research/fx-curated/bio-generative.txt|assets/media/research/fx-curated/cymatic.txt|assets/media/research/fx-curated/semiotic-density.txt"
+      data-labels="Contours Neon|Fisheye GoPro|FlouZoom|Grain Cinema NB|Pixelisation 8 Bit|Syntax Cloud|Volumetric Amnesia|Bio Generative Invasion|Cymatic Synesthesia|Semiotic Density">
+      <div class="curated-fx-loading">loading 10 selected FX states</div>
+      <img alt="Selected realtime TouchDesigner FX state" data-curated-frame>
+      <img alt="Selected realtime TouchDesigner FX state" data-curated-frame>
+      <div class="curated-fx-status"><b data-curated-index>01</b><span>/ 10</span><strong data-curated-label>Contours Neon</strong></div>
     </div>
-    <figcaption><span>Selected realtime FX / automatic crossfade</span><span>3 states from 43 exported FX</span></figcaption>
+    <figcaption><span>Selected realtime FX / fast randomized crossfade</span><span>10 states from 43 exported FX</span></figcaption>
   </figure>
   <figure class="fx-network-card">
-    <div class="network-visual"><div class="network-status">decoding TouchDesigner network</div><img alt="TouchDesigner node network used for the modular realtime FX research system" data-base64-source="assets/media/research/fx-network.jpg"></div>
+    <div class="network-visual" data-network-visual><div class="network-status" data-network-status>loading TouchDesigner network</div><img alt="TouchDesigner node network used for the modular realtime FX research system" data-network-image></div>
     <figcaption><span>Reusable processing architecture</span><span>TouchDesigner network</span></figcaption>
   </figure>
 </div>
-<div class="fx-source-list reveal"><div><b>03</b><span>Bio Generative Invasion</span></div><div><b>06</b><span>Cymatic Synesthesia</span></div><div><b>33</b><span>Semiotic Density</span></div></div>
-<p class="fx-note reveal">Selected for contrast: organic field / radial generative structure / semiotic image density.</p>
+<div class="fx-source-list reveal"><div><b>10</b><span>selected states in rotation</span></div><div><b>43</b><span>exported FX in the archive</span></div><div><b>0.55—0.95 s</b><span>randomized shuffle interval</span></div></div>
+<p class="fx-note reveal">Hover the FX field to force an immediate new state. The automatic sequence avoids recent repeats and stops with motion off.</p>
 </section>
 
 <nav class="project-next"><a href="projects/lumina.html"><span>Previous</span><b>LUMINA</b></a><a href="projects/hardwinner.html"><span>Next</span><b>Hardwinner</b></a></nav>
@@ -67,19 +69,92 @@
 <script src="assets/js/main.js" defer></script>
 <script>
 (() => {
-  const player=document.querySelector('[data-curated-fx]');if(!player)return;
-  const frames=[...player.querySelectorAll('[data-curated-frame]')],sources=(player.dataset.sources||'').split('|'),labels=(player.dataset.labels||'').split('|'),counter=player.querySelector('[data-curated-index]'),label=player.querySelector('[data-curated-label]');
-  let current=0,visible=true,timer;
-  const load=async()=>{
-    const data=await Promise.all(sources.map(async src=>{const r=await fetch(src,{cache:'force-cache'});if(!r.ok)throw new Error(src);return (await r.text()).replace(/\s+/g,'')}));
-    frames.forEach((img,i)=>{img.src=`data:image/jpeg;base64,${data[i]}`;if(i===0)img.classList.add('is-active')});player.classList.add('is-ready');
+  const decodeBase64BlobUrl=(raw,mime='image/jpeg')=>{
+    const clean=raw.replace(/\s+/g,'');
+    const binary=atob(clean);
+    const bytes=new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+    return URL.createObjectURL(new Blob([bytes],{type:mime}));
   };
-  const next=()=>{
-    if(!document.body.classList.contains('motion-off')&&visible&&frames.length>1){let n=current;while(n===current)n=Math.floor(Math.random()*frames.length);frames.forEach((f,i)=>f.classList.toggle('is-active',i===n));current=n;if(counter)counter.textContent=String(n+1).padStart(2,'0');if(label)label.textContent=labels[n]||''}
-    timer=setTimeout(next,2300+Math.random()*1900);
+  const loadBase64Asset=async src=>{
+    const response=await fetch(src,{cache:'force-cache'});
+    if(!response.ok)throw new Error(`${response.status} ${src}`);
+    const raw=await response.text();
+    const clean=raw.trim();
+    if(!clean.startsWith('/9j/')&&!clean.startsWith('iVBOR'))throw new Error(`invalid base64 asset ${src}`);
+    return decodeBase64BlobUrl(clean,clean.startsWith('iVBOR')?'image/png':'image/jpeg');
   };
-  new IntersectionObserver(es=>es.forEach(e=>visible=e.isIntersecting),{rootMargin:'120px 0px',threshold:.05}).observe(player);
-  load().then(()=>{timer=setTimeout(next,1800)}).catch(()=>{player.querySelector('.curated-fx-loading').textContent='FX source unavailable'});
+
+  const network=document.querySelector('[data-network-visual]');
+  if(network){
+    const image=network.querySelector('[data-network-image]');
+    const status=network.querySelector('[data-network-status]');
+    loadBase64Asset('assets/media/research/fx-network.jpg').then(url=>{
+      image.addEventListener('load',()=>network.classList.add('is-ready'),{once:true});
+      image.src=url;
+      image.dataset.blobUrl=url;
+    }).catch(()=>{
+      network.classList.add('is-error');
+      if(status)status.textContent='TouchDesigner network unavailable';
+    });
+  }
+
+  const player=document.querySelector('[data-curated-fx]');
+  if(!player)return;
+  const frames=[...player.querySelectorAll('[data-curated-frame]')];
+  const sources=(player.dataset.sources||'').split('|').filter(Boolean);
+  const labels=(player.dataset.labels||'').split('|');
+  const counter=player.querySelector('[data-curated-index]');
+  const label=player.querySelector('[data-curated-label]');
+  let urls=[],current=-1,activeLayer=0,visible=true,timer=null,history=[],lastForced=0;
+
+  const chooseNext=()=>{
+    if(urls.length<2)return 0;
+    let next=current,guard=0;
+    while((next===current||history.slice(-3).includes(next))&&guard++<50)next=Math.floor(Math.random()*urls.length);
+    if(next===current)next=(current+1)%urls.length;
+    return next;
+  };
+  const showIndex=index=>{
+    if(!urls[index]||!frames.length)return;
+    const incoming=(activeLayer+1)%frames.length;
+    const frame=frames[incoming];
+    frame.src=urls[index];
+    frame.alt=`${labels[index]||'Realtime FX'} / TouchDesigner realtime FX state`;
+    requestAnimationFrame(()=>{
+      frames.forEach((item,i)=>item.classList.toggle('is-active',i===incoming));
+      activeLayer=incoming;current=index;history.push(index);if(history.length>5)history.shift();
+      if(counter)counter.textContent=String(index+1).padStart(2,'0');
+      if(label)label.textContent=labels[index]||'';
+    });
+  };
+  const advance=forced=>{
+    if(!document.body.classList.contains('motion-off')&&visible&&urls.length){
+      showIndex(chooseNext());
+    }
+    if(!forced){
+      clearTimeout(timer);
+      timer=setTimeout(()=>advance(false),550+Math.random()*400);
+    }
+  };
+  new IntersectionObserver(entries=>entries.forEach(entry=>{
+    visible=entry.isIntersecting;
+    if(visible&&!document.body.classList.contains('motion-off')&&urls.length)advance(true);
+  }),{rootMargin:'160px 0px',threshold:.04}).observe(player);
+  player.addEventListener('pointerenter',()=>{
+    const now=performance.now();if(now-lastForced<220)return;lastForced=now;advance(true);
+  });
+
+  Promise.all(sources.map(loadBase64Asset)).then(loaded=>{
+    urls=loaded;
+    player.classList.add('is-ready');
+    showIndex(Math.floor(Math.random()*urls.length));
+    timer=setTimeout(()=>advance(false),650);
+  }).catch(error=>{
+    const loading=player.querySelector('.curated-fx-loading');
+    if(loading)loading.textContent='FX source unavailable';
+    console.error('Realtime FX load failed',error);
+  });
 })();
 </script>
 </body></html>
