@@ -21,15 +21,87 @@
   const updateHeader=()=>header?.classList.toggle('scrolled',scrollY>24);updateHeader();addEventListener('scroll',updateHeader,{passive:true});
 
   const directVideos=qa('[data-autoplay]'), lazyVideos=qa('[data-lazy-video]');
+  const hoverPreviewStage=q('[data-hover-preview-stage]');
+  const hoverPreviewPoster=q('[data-hover-preview-poster]');
+  const hoverPreviewVideo=q('[data-hover-preview-video]');
+  let hoverPreviewToken=0;
+
   const loadLazy=v=>{if(v.dataset.loaded==='true')return;qa('source[data-src]',v).forEach(s=>{s.src=s.dataset.src||'';s.removeAttribute('data-src')});v.load();v.dataset.loaded='true'};
   const syncVideo=v=>{const visible=v.dataset.visible!=='false';if(!motionOff&&visible){if(v.matches('[data-lazy-video]'))loadLazy(v);v.play().catch(()=>{})}else v.pause()};
   const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{const v=entry.target;v.dataset.visible=String(entry.isIntersecting);if(entry.isIntersecting&&v.matches('[data-lazy-video]'))loadLazy(v);syncVideo(v)}),{rootMargin:'180px 0px',threshold:.05});
   [...directVideos,...lazyVideos].forEach(v=>observer.observe(v));
-  const applyMotion=()=>{motion?.setAttribute('aria-pressed',String(motionOff));if(motionLabel)motionLabel.textContent=motionOff?'motion off':'motion on';[...directVideos,...lazyVideos].forEach(syncVideo)};
+
+  const randomPreviewStart=video=>{
+    const duration=video.duration;
+    if(!Number.isFinite(duration)||duration<=.5)return;
+    const edge=Math.min(2,duration*.08);
+    const min=edge;
+    const max=Math.max(min,duration-Math.min(3,duration*.12));
+    let target=min+Math.random()*Math.max(.01,max-min);
+    const previous=Number(video.dataset.lastRandomStart);
+    if(Number.isFinite(previous)&&duration>5&&Math.abs(target-previous)<duration*.16){
+      target=min+((target-min)+(duration*.37))%Math.max(.01,max-min);
+    }
+    target=Math.max(min,Math.min(max,target));
+    try{video.currentTime=target;video.dataset.lastRandomStart=String(target)}catch{}
+  };
+
+  const activateHoverPreview=row=>{
+    if(!hoverPreviewStage||!hoverPreviewPoster||!hoverPreviewVideo)return;
+    const poster=row.dataset.previewPoster||'';
+    const src=row.dataset.previewVideo||'';
+    if(poster&&hoverPreviewPoster.getAttribute('src')!==poster)hoverPreviewPoster.src=poster;
+    hoverPreviewStage.classList.add('is-changing');
+    const token=++hoverPreviewToken;
+
+    if(!src){
+      hoverPreviewVideo.pause();
+      hoverPreviewVideo.removeAttribute('src');
+      hoverPreviewVideo.dataset.activeSrc='';
+      hoverPreviewStage.classList.remove('has-video','is-changing');
+      return;
+    }
+
+    const showVideo=()=>{
+      if(token!==hoverPreviewToken||hoverPreviewVideo.dataset.activeSrc!==src)return;
+      randomPreviewStart(hoverPreviewVideo);
+      hoverPreviewStage.classList.remove('is-changing');
+      hoverPreviewStage.classList.add('has-video');
+      if(!motionOff)hoverPreviewVideo.play().catch(()=>{});else hoverPreviewVideo.pause();
+    };
+
+    if(hoverPreviewVideo.dataset.activeSrc===src){
+      showVideo();
+      return;
+    }
+
+    hoverPreviewVideo.pause();
+    hoverPreviewStage.classList.remove('has-video');
+    hoverPreviewVideo.dataset.activeSrc=src;
+    hoverPreviewVideo.src=src;
+    hoverPreviewVideo.load();
+    if(hoverPreviewVideo.readyState>=1)showVideo();
+    else hoverPreviewVideo.addEventListener('loadedmetadata',showVideo,{once:true});
+  };
+
+  qa('[data-preview-video]').forEach(row=>{
+    row.addEventListener('mouseenter',()=>activateHoverPreview(row));
+    row.addEventListener('focus',()=>activateHoverPreview(row));
+  });
+
+  const applyMotion=()=>{
+    motion?.setAttribute('aria-pressed',String(motionOff));if(motionLabel)motionLabel.textContent=motionOff?'motion off':'motion on';
+    [...directVideos,...lazyVideos].forEach(syncVideo);
+    if(hoverPreviewVideo?.src){
+      if(motionOff)hoverPreviewVideo.pause();
+      else if(hoverPreviewStage?.classList.contains('has-video'))hoverPreviewVideo.play().catch(()=>{});
+    }
+  };
   motion?.addEventListener('click',()=>{motionOff=!motionOff;applyMotion()});reduce.addEventListener?.('change',e=>{if(e.matches){motionOff=true;applyMotion()}});applyMotion();
 
   const reveal=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');reveal.unobserve(e.target)}}),{threshold:.07,rootMargin:'0px 0px -4% 0px'});qa('.reveal').forEach(el=>reveal.observe(el));
 
+  // Static image preview used on the full Work index.
   const preview=q('[data-index-preview]');
   const setPreview=src=>{if(!preview||!src||preview.getAttribute('src')===src)return;const wrap=preview.closest('.index-preview');wrap?.classList.add('is-changing');setTimeout(()=>{preview.src=src;wrap?.classList.remove('is-changing')},90)};
   qa('[data-preview]').forEach(row=>{const fn=()=>setPreview(row.dataset.preview);row.addEventListener('mouseenter',fn);row.addEventListener('focus',fn)});
