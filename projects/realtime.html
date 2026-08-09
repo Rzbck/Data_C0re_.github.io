@@ -12,7 +12,7 @@
 
     .fx-library-grid{display:grid;grid-template-columns:minmax(0,1.28fr) minmax(300px,.72fr);gap:clamp(18px,3vw,48px);align-items:start}
     .curated-fx{position:relative;aspect-ratio:16/9;overflow:hidden;background:#020202;border:1px solid var(--line);isolation:isolate;cursor:crosshair}
-    .curated-fx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.006);transition:opacity .16s linear,transform .5s var(--ease);background:#020202;will-change:opacity,transform}
+    .curated-fx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.004);transition:opacity .12s linear,transform .42s var(--ease);background:#020202;will-change:opacity,transform}
     .curated-fx img.is-active{opacity:1;transform:scale(1)}
     .curated-fx-status{position:absolute;z-index:5;left:12px;bottom:11px;display:flex;gap:8px;align-items:baseline;padding:7px 9px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:var(--grey)}
     .curated-fx-status b{color:var(--acid);font-size:12px}.curated-fx-status strong{color:var(--paper);font-weight:700}
@@ -42,25 +42,25 @@
   <figure><video muted loop playsinline poster="assets/media/realtime/game-of-life.webp" data-lazy-video><source data-src="assets/media/realtime/gol-loop.mp4" type="video/mp4"></video><figcaption>Game of Life / cellular audio-reactive study</figcaption></figure>
 </div></section>
 
-<section class="project-section project-section--split"><div class="section-kicker reveal"><span>B</span><p>Realtime FX library</p></div><div class="prose-large reveal"><h2>One system, radically different image behaviours.</h2><p>The library contains forty-three exported FX states. This view samples ten contrasting states in a fast randomized sequence while the underlying TouchDesigner network remains visible as technical evidence.</p></div></section>
+<section class="project-section project-section--split"><div class="section-kicker reveal"><span>B</span><p>Realtime FX library</p></div><div class="prose-large reveal"><h2>One system, radically different image behaviours.</h2><p>The library contains forty-three exported FX states. This view samples twelve contrasting states in a fast randomized sequence while the underlying TouchDesigner network remains visible as technical evidence.</p></div></section>
 <section class="project-section"><div class="fx-library-grid reveal">
   <figure class="fx-showcase">
     <div class="curated-fx" data-curated-fx
-      data-sources="assets/media/research/fx-curated/05-contours-neon.b64|assets/media/research/fx-curated/14-fisheye-gopro.b64|assets/media/research/fx-curated/16-flouzoom.b64|assets/media/research/fx-curated/18-grain-cinema-nb.b64|assets/media/research/fx-curated/30-pixelisation-8bit.b64|assets/media/research/fx-curated/37-syntax-cloud.b64|assets/media/research/fx-curated/43-volumetric-amnesia.b64|assets/media/research/fx-curated/bio-generative.txt|assets/media/research/fx-curated/cymatic.txt|assets/media/research/fx-curated/semiotic-density.txt"
-      data-labels="Contours Neon|Fisheye GoPro|FlouZoom|Grain Cinema NB|Pixelisation 8 Bit|Syntax Cloud|Volumetric Amnesia|Bio Generative Invasion|Cymatic Synesthesia|Semiotic Density">
-      <div class="curated-fx-loading">loading 10 selected FX states</div>
+      data-sources="assets/media/research/fx-curated/05-contours-neon.b64|assets/media/research/fx-curated/14-fisheye-gopro.b64|assets/media/research/fx-curated/16-flouzoom.b64|assets/media/research/fx-curated/17-glitch-vhs.b64|assets/media/research/fx-curated/18-grain-cinema-nb.b64|assets/media/research/fx-curated/19-halftone-points.b64|assets/media/research/fx-curated/30-pixelisation-8bit.b64|assets/media/research/fx-curated/37-syntax-cloud.b64|assets/media/research/fx-curated/43-volumetric-amnesia.b64|assets/media/research/fx-curated/bio-generative.txt|assets/media/research/fx-curated/cymatic.txt|assets/media/research/fx-curated/semiotic-density.txt"
+      data-labels="Contours Neon|Fisheye GoPro|FlouZoom|Glitch VHS|Grain Cinema NB|Halftone Points|Pixelisation 8 Bit|Syntax Cloud|Volumetric Amnesia|Bio Generative Invasion|Cymatic Synesthesia|Semiotic Density">
+      <div class="curated-fx-loading">loading 12 selected FX states</div>
       <img alt="Selected realtime TouchDesigner FX state" data-curated-frame>
       <img alt="Selected realtime TouchDesigner FX state" data-curated-frame>
-      <div class="curated-fx-status"><b data-curated-index>01</b><span>/ 10</span><strong data-curated-label>Contours Neon</strong></div>
+      <div class="curated-fx-status"><b data-curated-index>01</b><span>/ 12</span><strong data-curated-label>Contours Neon</strong></div>
     </div>
-    <figcaption><span>Selected realtime FX / fast randomized crossfade</span><span>10 states from 43 exported FX</span></figcaption>
+    <figcaption><span>Selected realtime FX / fast randomized crossfade</span><span>12 states from 43 exported FX</span></figcaption>
   </figure>
   <figure class="fx-network-card">
     <div class="network-visual" data-network-visual><div class="network-status" data-network-status>loading TouchDesigner network</div><img alt="TouchDesigner node network used for the modular realtime FX research system" data-network-image></div>
     <figcaption><span>Reusable processing architecture</span><span>TouchDesigner network</span></figcaption>
   </figure>
 </div>
-<div class="fx-source-list reveal"><div><b>10</b><span>selected states in rotation</span></div><div><b>43</b><span>exported FX in the archive</span></div><div><b>0.55—0.95 s</b><span>randomized shuffle interval</span></div></div>
+<div class="fx-source-list reveal"><div><b>12</b><span>selected states in rotation</span></div><div><b>43</b><span>exported FX in the archive</span></div><div><b>0.45—0.80 s</b><span>randomized shuffle interval</span></div></div>
 <p class="fx-note reveal">Hover the FX field to force an immediate new state. The automatic sequence avoids recent repeats and stops with motion off.</p>
 </section>
 
@@ -111,7 +111,7 @@
   const chooseNext=()=>{
     if(urls.length<2)return 0;
     let next=current,guard=0;
-    while((next===current||history.slice(-3).includes(next))&&guard++<50)next=Math.floor(Math.random()*urls.length);
+    while((next===current||history.slice(-4).includes(next))&&guard++<60)next=Math.floor(Math.random()*urls.length);
     if(next===current)next=(current+1)%urls.length;
     return next;
   };
@@ -123,18 +123,16 @@
     frame.alt=`${labels[index]||'Realtime FX'} / TouchDesigner realtime FX state`;
     requestAnimationFrame(()=>{
       frames.forEach((item,i)=>item.classList.toggle('is-active',i===incoming));
-      activeLayer=incoming;current=index;history.push(index);if(history.length>5)history.shift();
+      activeLayer=incoming;current=index;history.push(index);if(history.length>6)history.shift();
       if(counter)counter.textContent=String(index+1).padStart(2,'0');
       if(label)label.textContent=labels[index]||'';
     });
   };
   const advance=forced=>{
-    if(!document.body.classList.contains('motion-off')&&visible&&urls.length){
-      showIndex(chooseNext());
-    }
+    if(!document.body.classList.contains('motion-off')&&visible&&urls.length)showIndex(chooseNext());
     if(!forced){
       clearTimeout(timer);
-      timer=setTimeout(()=>advance(false),550+Math.random()*400);
+      timer=setTimeout(()=>advance(false),450+Math.random()*350);
     }
   };
   new IntersectionObserver(entries=>entries.forEach(entry=>{
@@ -142,14 +140,14 @@
     if(visible&&!document.body.classList.contains('motion-off')&&urls.length)advance(true);
   }),{rootMargin:'160px 0px',threshold:.04}).observe(player);
   player.addEventListener('pointerenter',()=>{
-    const now=performance.now();if(now-lastForced<220)return;lastForced=now;advance(true);
+    const now=performance.now();if(now-lastForced<180)return;lastForced=now;advance(true);
   });
 
   Promise.all(sources.map(loadBase64Asset)).then(loaded=>{
     urls=loaded;
     player.classList.add('is-ready');
     showIndex(Math.floor(Math.random()*urls.length));
-    timer=setTimeout(()=>advance(false),650);
+    timer=setTimeout(()=>advance(false),500);
   }).catch(error=>{
     const loading=player.querySelector('.curated-fx-loading');
     if(loading)loading.textContent='FX source unavailable';
