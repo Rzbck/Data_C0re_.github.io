@@ -20,7 +20,8 @@
     .fabrication-grid video{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#020202}
     .fabrication-grid figcaption{padding-top:9px;color:var(--grey);font-size:9px;text-transform:uppercase;letter-spacing:.08em}
     .fabrication-note{max-width:760px;margin:18px 0 0;color:#aaa8a2;font-size:11px;line-height:1.5}
-    .tech-tabs{border-bottom:1px solid var(--line)}
+    .tech-tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;border-bottom:1px solid var(--line)}
+    .tech-tabs button{flex:0 0 auto}
     .tech-viewer{margin:0;background:#030303!important;border:1px solid var(--line);overflow:hidden;padding:0!important}
     .tech-viewer img{display:block;width:100%;height:auto;max-height:82vh;object-fit:contain;background:#030303!important;margin:0!important;padding:0!important;filter:none!important;mix-blend-mode:normal!important;image-rendering:auto!important}
     .tech-viewer figcaption{padding:10px 0 0;color:var(--grey);background:#070707;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
@@ -42,9 +43,9 @@
 
 <section class="project-section">
   <div class="experience-motion-grid reveal">
-    <figure class="experience-main"><video muted loop playsinline preload="auto" poster="assets/media/lumina/nested.webp" data-stagger-video data-timeline="0.08" data-rate="0.985"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Nested structure / spatial depth</figcaption></figure>
-    <figure class="experience-small experience-small--a"><video muted loop playsinline preload="auto" poster="assets/media/lumina/human-scale.webp" data-stagger-video data-timeline="0.47" data-rate="1.015"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Human scale</figcaption></figure>
-    <figure class="experience-small experience-small--b"><video muted loop playsinline preload="auto" poster="assets/media/lumina/tunnel-blue.webp" data-stagger-video data-timeline="0.82" data-rate="1"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Installed work</figcaption></figure>
+    <figure class="experience-main"><video muted loop playsinline preload="auto" poster="assets/media/lumina/nested.webp" data-stagger-video data-timeline="0.07" data-rate="0.985"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Nested structure / spatial depth</figcaption></figure>
+    <figure class="experience-small experience-small--a"><video muted loop playsinline preload="auto" poster="assets/media/lumina/human-scale.webp" data-stagger-video data-timeline="0.48" data-rate="1.015"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Human scale</figcaption></figure>
+    <figure class="experience-small experience-small--b"><video muted loop playsinline preload="auto" poster="assets/media/lumina/tunnel-blue.webp" data-stagger-video data-timeline="0.84" data-rate="1"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Installed work</figcaption></figure>
   </div>
   <div class="system-flow reveal"><span>TouchDesigner</span><b>→</b><span>Art-Net</span><b>→</b><span>PixLite control</span><b>→</b><span>addressable LED</span></div>
 </section>
