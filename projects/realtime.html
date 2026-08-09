@@ -3,57 +3,26 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../">
   <title>Realtime Studies — DATA C0RE</title>
-  <meta name="description" content="Realtime audiovisual research by DATA C0RE exploring sound, motion, feedback and image transformation.">
+  <meta name="description" content="Realtime audiovisual research by DATA C0RE exploring sound, motion and temporal image systems.">
   <meta name="theme-color" content="#070707">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/css/styles.css">
   <style>
-    .realtime-motion-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(290px,.65fr);gap:12px;align-items:stretch}.realtime-motion-grid figure{min-width:0;background:#020202}.realtime-motion-grid video{width:100%;height:100%;min-height:340px;object-fit:cover;background:#000}.realtime-motion-grid figure:nth-child(2){margin-top:clamp(36px,6vw,100px);margin-bottom:clamp(16px,3vw,52px)}.realtime-motion-grid figcaption,.fx-showcase figcaption,.fx-network-card figcaption{padding-top:9px;color:var(--grey);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
-    .fx-library-grid{display:grid;grid-template-columns:minmax(0,1.28fr) minmax(300px,.72fr);gap:clamp(18px,3vw,48px);align-items:start}.fx-video-shell,.network-visual{position:relative;aspect-ratio:16/9;overflow:hidden;background:#020202;border:1px solid var(--line)}.fx-video-shell video,.network-visual img{display:block;width:100%;height:100%;object-fit:cover;background:#020202}.network-visual img{object-fit:contain;opacity:0;transition:opacity .18s ease}.network-visual.is-ready img{opacity:1}.media-status{position:absolute;inset:0;display:grid;place-items:center;color:var(--grey);font-size:10px;text-transform:uppercase;letter-spacing:.1em;pointer-events:none}.is-ready>.media-status{display:none}.is-error>.media-status{color:#ff7777}.fx-showcase figcaption,.fx-network-card figcaption{display:flex;justify-content:space-between;gap:18px}.fx-showcase figcaption span:last-child,.fx-network-card figcaption span:last-child{white-space:nowrap;color:#c8c6c0}.fx-source-list{display:grid;grid-template-columns:repeat(3,1fr);margin-top:34px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.fx-source-list div{padding:13px 12px;border-right:1px solid var(--line)}.fx-source-list div:first-child{padding-left:0}.fx-source-list div:last-child{border-right:0}.fx-source-list b{display:block;color:var(--acid);font-size:9px;letter-spacing:.09em}.fx-source-list span{display:block;margin-top:5px;color:var(--grey);font-size:9px;text-transform:uppercase;letter-spacing:.07em}.fx-note{margin-top:16px;color:var(--grey);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
-    @media(max-width:900px){.realtime-motion-grid,.fx-library-grid{grid-template-columns:1fr}.realtime-motion-grid figure:nth-child(2){margin:0}.realtime-motion-grid video{min-height:260px}.fx-source-list{grid-template-columns:1fr}.fx-source-list div{border-right:0;border-bottom:1px solid var(--line)}.fx-source-list div:last-child{border-bottom:0}.fx-showcase figcaption,.fx-network-card figcaption{display:block}.fx-showcase figcaption span,.fx-network-card figcaption span{display:block;margin-bottom:4px}}
+    .realtime-motion-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(290px,.65fr);gap:12px;align-items:stretch}
+    .realtime-motion-grid figure{min-width:0;background:#020202}
+    .realtime-motion-grid video{width:100%;height:100%;min-height:340px;object-fit:cover;background:#000}
+    .realtime-motion-grid figure:nth-child(2){margin-top:clamp(36px,6vw,100px);margin-bottom:clamp(16px,3vw,52px)}
+    .realtime-motion-grid figcaption{padding-top:9px;color:var(--grey);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+    @media(max-width:900px){.realtime-motion-grid{grid-template-columns:1fr}.realtime-motion-grid figure:nth-child(2){margin:0}.realtime-motion-grid video{min-height:260px}}
   </style>
 </head>
 <body>
 <header class="site-header" data-header><a class="brand" href="index.html">DATA C0RE</a><div class="header-actions"><button class="motion-toggle" type="button" aria-pressed="false" data-motion-toggle><span class="motion-dot"></span><span data-motion-label>motion on</span></button><a class="nav-text" href="work.html">work</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>index ↗</button></div></header>
 <nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="lab.html">Lab</a><a href="about.html">About</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav>
 <main><article>
-<header class="project-hero"><div class="project-hero-copy reveal"><div><p class="eyebrow accent-acid">Solo research / 2025—2026</p><h1>Realtime<br>Studies</h1></div><p class="project-intent">Independent research threads where sound, movement, feedback and stored image history become causes inside the image rather than decorative modifiers.</p></div><div class="project-facts reveal"><span><b>Format</b> independent research threads</span><span><b>Method</b> audio / motion / temporal image systems</span><span><b>Tools</b> TouchDesigner / GLSL</span></div><figure class="project-hero-media reveal"><video muted loop playsinline poster="assets/media/realtime/audio-material.webp" data-lazy-video><source data-src="assets/media/realtime/audio-loop.mp4" type="video/mp4"></video></figure></header>
+<header class="project-hero"><div class="project-hero-copy reveal"><div><p class="eyebrow accent-acid">Solo research / 2025—2026</p><h1>Realtime<br>Studies</h1></div><p class="project-intent">Independent research threads where sound, movement and stored image history become causes inside the image rather than decorative modifiers.</p></div><div class="project-facts reveal"><span><b>Format</b> independent research threads</span><span><b>Method</b> audio / motion / temporal image systems</span><span><b>Tools</b> TouchDesigner / GLSL</span></div><figure class="project-hero-media reveal"><video muted loop playsinline poster="assets/media/realtime/audio-material.webp" data-lazy-video><source data-src="assets/media/realtime/audio-loop.mp4" type="video/mp4"></video></figure></header>
 <section class="project-section project-section--split"><div class="section-kicker reveal"><span>A</span><p>Audio / cellular studies</p></div><div class="prose-large reveal"><h2>Sound as a structural force.</h2><p>Two research threads run in parallel: a material study whose surface changes with sonic structure, and a cellular system in which evolving states become an audiovisual timing device.</p></div></section>
 <section class="project-section"><div class="realtime-motion-grid reveal"><figure><video muted loop playsinline poster="assets/media/realtime/audio-material.webp" data-lazy-video><source data-src="assets/media/realtime/audio-loop.mp4" type="video/mp4"></video><figcaption>Audio-reactive material / realtime output</figcaption></figure><figure><video muted loop playsinline poster="assets/media/realtime/game-of-life.webp" data-lazy-video><source data-src="assets/media/realtime/gol-loop.mp4" type="video/mp4"></video><figcaption>Game of Life / cellular audio-reactive study</figcaption></figure></div></section>
-<section class="project-section project-section--split"><div class="section-kicker reveal"><span>B</span><p>Realtime FX library</p></div><div class="prose-large reveal"><h2>One system, radically different image behaviours.</h2><p>The FX archive is presented as one continuous generated showreel, with the underlying TouchDesigner network kept beside it as technical evidence.</p></div></section>
-<section class="project-section"><div class="fx-library-grid reveal">
-  <figure class="fx-showcase"><div class="fx-video-shell" data-fx-video-shell><div class="media-status">loading FX showreel</div><video muted loop playsinline autoplay preload="auto" data-fx-showreel aria-label="Fast showreel of realtime TouchDesigner FX states"></video></div><figcaption><span>Realtime FX archive / generated showreel</span><span>42 states from 43 exported FX</span></figcaption></figure>
-  <figure class="fx-network-card"><div class="network-visual" data-network-visual><div class="media-status">loading TouchDesigner network</div><img alt="TouchDesigner node network used for the modular realtime FX research system" data-network-image></div><figcaption><span>Reusable processing architecture</span><span>TouchDesigner network</span></figcaption></figure>
-</div><div class="fx-source-list reveal"><div><b>42</b><span>FX states in the generated sequence</span></div><div><b>~14 s</b><span>fast continuous loop</span></div><div><b>1 network</b><span>direct technical view</span></div></div><p class="fx-note reveal">Single showreel + single network view. No per-effect image requests in the page.</p></section>
 <nav class="project-next"><a href="projects/lumina.html"><span>Previous</span><b>LUMINA</b></a><a href="projects/hardwinner.html"><span>Next</span><b>Hardwinner</b></a></nav>
 </article></main>
 <script src="assets/js/main.js" defer></script>
-<script>
-(() => {
-  const RAW='https://raw.githubusercontent.com/Rzbck/Data_C0re_.github.io/main/assets/media/research/';
-  const clean=s=>s.replace(/\s+/g,'');
-  const bytesFromB64=b64=>{const bin=atob(clean(b64)),out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out};
-
-  const video=document.querySelector('[data-fx-showreel]');
-  const videoShell=document.querySelector('[data-fx-video-shell]');
-  if(video&&videoShell){
-    fetch(RAW+'fx-showreel.b64',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('video '+r.status);return r.text()}).then(raw=>{
-      const url=URL.createObjectURL(new Blob([bytesFromB64(raw)],{type:'video/mp4'}));
-      video.addEventListener('loadeddata',()=>{videoShell.classList.add('is-ready');if(!document.body.classList.contains('motion-off'))video.play().catch(()=>{})},{once:true});
-      video.addEventListener('error',()=>videoShell.classList.add('is-error'),{once:true});video.src=url;video.load();
-    }).catch(err=>{videoShell.classList.add('is-error');videoShell.querySelector('.media-status').textContent='FX showreel unavailable';console.error(err)});
-  }
-
-  const network=document.querySelector('[data-network-visual]');
-  const networkImg=document.querySelector('[data-network-image]');
-  if(network&&networkImg){
-    fetch(RAW+'fx-network.jpg',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('network '+r.status);return r.text()}).then(raw=>{
-      let payload=clean(raw);
-      for(let i=0;i<3&&!payload.startsWith('/9j/')&&!payload.startsWith('iVBOR');i++)payload=clean(atob(payload));
-      if(!payload.startsWith('/9j/')&&!payload.startsWith('iVBOR'))throw new Error('network payload invalid');
-      networkImg.addEventListener('load',()=>network.classList.add('is-ready'),{once:true});
-      networkImg.src=`data:${payload.startsWith('iVBOR')?'image/png':'image/jpeg'};base64,${payload}`;
-    }).catch(err=>{network.classList.add('is-error');network.querySelector('.media-status').textContent='TouchDesigner network unavailable';console.error(err)});
-  }
-})();
-</script>
 </body></html>
