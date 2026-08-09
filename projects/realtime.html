@@ -1,1 +1,68 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><title>Realtime Studies — DATA C0RE</title><meta name="description" content="Realtime audiovisual research by DATA C0RE exploring sound, motion, feedback and image transformation."><meta name="theme-color" content="#070707"><link rel="stylesheet" href="assets/css/styles.css"></head><body><header class="site-header" data-header><a class="brand" href="index.html">DATA C0RE</a><div class="header-actions"><button class="motion-toggle" type="button" aria-pressed="false" data-motion-toggle><span class="motion-dot"></span><span data-motion-label>motion on</span></button><a class="nav-text" href="work.html">work</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>index ↗</button></div></header><nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="lab.html">Lab</a><a href="about.html">About</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav><main><article><header class="project-hero"><div class="project-hero-copy reveal"><div><p class="eyebrow accent-acid">Solo research / 2025—2026</p><h1>Realtime<br>Studies</h1></div><p class="project-intent">A set of independent research threads where sound, movement, feedback and stored image history act as causes rather than decorative modifiers.</p></div><div class="project-facts reveal"><span><b>Format</b> independent research threads</span><span><b>Method</b> audio / motion / temporal image systems</span><span><b>Tools</b> TouchDesigner / GLSL</span></div><figure class="project-hero-media reveal"><video muted loop playsinline poster="assets/media/realtime/audio-material.webp" data-lazy-video><source data-src="assets/media/realtime/audio-loop.mp4" type="video/mp4"></video></figure></header><section class="project-section project-section--split"><div class="section-kicker reveal"><span>A</span><p>Audio-reactive material</p></div><div class="prose-large reveal"><h2>Sound as a structural force.</h2><p>The first thread looks at surface and particle behaviour driven by sonic structure. The goal is not to visualise a waveform literally, but to let sound alter the material rules of the image.</p></div></section><section class="project-section"><div class="media-grid media-grid--process reveal"><figure class="media-wide"><video muted loop playsinline poster="assets/media/realtime/audio-material.webp" data-lazy-video><source data-src="assets/media/realtime/audio-loop.mp4" type="video/mp4"></video><figcaption>Audio-reactive material</figcaption></figure><figure><img src="assets/media/realtime/game-of-life.webp" alt="Game of Life audio-reactive study" loading="lazy"><figcaption>Cellular system</figcaption></figure><figure><img src="assets/media/research/fx-network.svg" alt="TouchDesigner modular FX network" loading="lazy"><figcaption>Reusable processing architecture</figcaption></figure></div></section><section class="project-section project-section--split"><div class="section-kicker reveal"><span>B</span><p>Realtime FX library</p></div><div class="prose reveal"><p>A modular research system extends the same logic through feedback, persistence, movement-driven erosion, image analysis and controlled signal failure. These are studies and tools, not presented as a single finished artwork.</p></div></section><nav class="project-next"><a href="projects/lumina.html"><span>Previous</span><b>LUMINA</b></a><a href="projects/hardwinner.html"><span>Next</span><b>Hardwinner</b></a></nav></article></main><script src="assets/js/main.js" defer></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <base href="../">
+  <title>Realtime Studies — DATA C0RE</title>
+  <meta name="description" content="Realtime audiovisual research by DATA C0RE exploring sound, motion, feedback and image transformation.">
+  <meta name="theme-color" content="#070707">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .realtime-media-pair{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.55fr);gap:10px;align-items:stretch}
+    .realtime-media-pair figure{min-width:0;background:#020202}
+    .realtime-media-pair video,.realtime-media-pair img{width:100%;height:100%;min-height:340px;object-fit:cover;background:#000}
+    .realtime-media-pair figcaption,.fx-library-grid figcaption{padding-top:9px;color:var(--grey);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+
+    .fx-library-section{padding-top:clamp(34px,4vw,64px)}
+    .fx-library-grid{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(320px,.82fr);gap:clamp(12px,2vw,26px);align-items:start}
+    .fx-showcase,.fx-network-card{min-width:0}
+    .fx-player{position:relative;aspect-ratio:16/9;overflow:hidden;background:#020202;border:1px solid var(--line);isolation:isolate}
+    .fx-frame{position:absolute;inset:0;background-image:url('assets/media/research/fx-sprite.svg');background-repeat:no-repeat;background-size:700% 100%;background-position:0 center;opacity:0;transform:scale(1.002);transition:opacity .72s var(--ease),transform 1.6s var(--ease)}
+    .fx-frame.is-active{opacity:1;transform:scale(1)}
+    .fx-player::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 18%,transparent 82%,rgba(0,0,0,.16))}
+    .fx-counter{position:absolute;z-index:5;left:12px;bottom:10px;display:flex;gap:5px;align-items:baseline;padding:6px 8px;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);font-size:9px;line-height:1;text-transform:uppercase;letter-spacing:.1em;color:var(--grey)}
+    .fx-counter b{color:var(--acid);font-size:12px}
+    .fx-showcase figcaption{display:flex;justify-content:space-between;gap:18px}
+    .fx-showcase figcaption span:last-child{white-space:nowrap}
+    .fx-network-card img{width:100%;aspect-ratio:640/328;object-fit:contain;background:#050505;border:1px solid var(--line)}
+    .fx-network-card figcaption{display:flex;justify-content:space-between;gap:16px}
+    .fx-network-card figcaption span:last-child{color:#c6c4be}
+    .fx-note{margin-top:30px;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .fx-note span{padding:12px 10px;color:var(--grey);font-size:9.5px;text-transform:uppercase;letter-spacing:.075em;border-right:1px solid var(--line)}
+    .fx-note span:first-child{padding-left:0}.fx-note span:last-child{border-right:0}
+    @media(max-width:900px){.realtime-media-pair,.fx-library-grid{grid-template-columns:1fr}.realtime-media-pair video,.realtime-media-pair img{min-height:260px}.fx-note{grid-template-columns:1fr 1fr}.fx-note span{border-top:1px solid var(--line)}.fx-note span:nth-child(even){border-right:0}.fx-note span:last-child{grid-column:1/-1;border-right:0}}
+  </style>
+</head>
+<body>
+<header class="site-header" data-header><a class="brand" href="index.html">DATA C0RE</a><div class="header-actions"><button class="motion-toggle" type="button" aria-pressed="false" data-motion-toggle><span class="motion-dot"></span><span data-motion-label>motion on</span></button><a class="nav-text" href="work.html">work</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>index ↗</button></div></header>
+<nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="lab.html">Lab</a><a href="about.html">About</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav>
+<main><article>
+<header class="project-hero"><div class="project-hero-copy reveal"><div><p class="eyebrow accent-acid">Solo research / 2025—2026</p><h1>Realtime<br>Studies</h1></div><p class="project-intent">A set of independent research threads where sound, movement, feedback and stored image history act as causes rather than decorative modifiers.</p></div><div class="project-facts reveal"><span><b>Format</b> independent research threads</span><span><b>Method</b> audio / motion / temporal image systems</span><span><b>Tools</b> TouchDesigner / GLSL</span></div><figure class="project-hero-media reveal"><video muted loop playsinline poster="assets/media/realtime/audio-material.webp" data-lazy-video><source data-src="assets/media/realtime/audio-loop.mp4" type="video/mp4"></video></figure></header>
+
+<section class="project-section project-section--split"><div class="section-kicker reveal"><span>A</span><p>Audio-reactive material</p></div><div class="prose-large reveal"><h2>Sound as a structural force.</h2><p>The first thread looks at surface and particle behaviour driven by sonic structure. The goal is not to visualise a waveform literally, but to let sound alter the material rules of the image.</p></div></section>
+<section class="project-section"><div class="realtime-media-pair reveal"><figure><video muted loop playsinline poster="assets/media/realtime/audio-material.webp" data-lazy-video><source data-src="assets/media/realtime/audio-loop.mp4" type="video/mp4"></video><figcaption>Audio-reactive material / realtime output</figcaption></figure><figure><img src="assets/media/realtime/game-of-life.webp" alt="Game of Life audio-reactive study" loading="lazy"><figcaption>Cellular system / alternate research thread</figcaption></figure></div></section>
+
+<section class="project-section project-section--split"><div class="section-kicker reveal"><span>B</span><p>Realtime FX library</p></div><div class="prose-large reveal"><h2>One network, multiple image behaviours.</h2><p>A modular research system extends the same logic through feedback, persistence, movement-driven erosion, image analysis and controlled signal failure. The outputs below cycle through seven selected states while the actual TouchDesigner network remains visible beside them.</p></div></section>
+
+<section class="project-section fx-library-section"><div class="fx-library-grid reveal">
+  <figure class="fx-showcase">
+    <div class="fx-player" data-fx-player data-frame-count="7" aria-label="Animated selection of seven realtime TouchDesigner FX states">
+      <div class="fx-frame is-active" data-fx-frame></div>
+      <div class="fx-frame" data-fx-frame></div>
+      <div class="fx-counter"><b data-fx-index>01</b><span>/ 07 selected states</span></div>
+    </div>
+    <figcaption><span>Selected realtime FX / changing automatically</span><span>source: TouchDesigner FX image set</span></figcaption>
+  </figure>
+  <figure class="fx-network-card">
+    <img src="assets/media/research/fx-network.jpg" alt="TouchDesigner node network used for the modular realtime FX research system" loading="lazy">
+    <figcaption><span>Reusable processing architecture</span><span>TouchDesigner network</span></figcaption>
+  </figure>
+</div>
+<div class="fx-note reveal"><span>feedback / persistence</span><span>movement-driven change</span><span>image analysis</span><span>temporal processing</span><span>controlled signal failure</span></div>
+</section>
+
+<nav class="project-next"><a href="projects/lumina.html"><span>Previous</span><b>LUMINA</b></a><a href="projects/hardwinner.html"><span>Next</span><b>Hardwinner</b></a></nav>
+</article></main>
+<script src="assets/js/main.js" defer></script>
+</body></html>
