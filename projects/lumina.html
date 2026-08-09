@@ -22,7 +22,7 @@
     .fabrication-note{max-width:760px;margin:18px 0 0;color:#aaa8a2;font-size:11px;line-height:1.5}
     .tech-tabs{border-bottom:1px solid var(--line)}
     .tech-viewer{margin:0;background:#030303!important;border:1px solid var(--line);overflow:hidden;padding:0!important}
-    .tech-viewer img{display:block;width:100%;height:auto;max-height:82vh;object-fit:contain;background:#030303!important;margin:0!important;padding:0!important}
+    .tech-viewer img{display:block;width:100%;height:auto;max-height:82vh;object-fit:contain;background:#030303!important;margin:0!important;padding:0!important;filter:none!important;mix-blend-mode:normal!important;image-rendering:auto!important}
     .tech-viewer figcaption{padding:10px 0 0;color:var(--grey);background:#070707;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
     @media(max-width:800px){.experience-motion-grid{grid-template-columns:1fr;grid-template-rows:auto}.experience-motion-grid .experience-main{grid-row:auto}.experience-motion-grid .experience-small--a,.experience-motion-grid .experience-small--b{transform:none}.experience-motion-grid .experience-main video,.experience-motion-grid .experience-small video{min-height:0;aspect-ratio:16/10}.fabrication-grid{grid-template-columns:1fr}.fabrication-grid video{aspect-ratio:16/10}.tech-viewer img{max-height:70vh}}
   </style>
@@ -42,9 +42,9 @@
 
 <section class="project-section">
   <div class="experience-motion-grid reveal">
-    <figure class="experience-main"><video muted loop playsinline preload="metadata" poster="assets/media/lumina/nested.webp" data-stagger-video data-delay="0"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Nested structure / spatial depth</figcaption></figure>
-    <figure class="experience-small experience-small--a"><video muted loop playsinline preload="metadata" poster="assets/media/lumina/human-scale.webp" data-stagger-video data-delay="850"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Human scale</figcaption></figure>
-    <figure class="experience-small experience-small--b"><video muted loop playsinline preload="metadata" poster="assets/media/lumina/tunnel-blue.webp" data-stagger-video data-delay="1750"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Installed work</figcaption></figure>
+    <figure class="experience-main"><video muted loop playsinline preload="auto" poster="assets/media/lumina/nested.webp" data-stagger-video data-timeline="0.08" data-rate="0.985"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Nested structure / spatial depth</figcaption></figure>
+    <figure class="experience-small experience-small--a"><video muted loop playsinline preload="auto" poster="assets/media/lumina/human-scale.webp" data-stagger-video data-timeline="0.47" data-rate="1.015"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Human scale</figcaption></figure>
+    <figure class="experience-small experience-small--b"><video muted loop playsinline preload="auto" poster="assets/media/lumina/tunnel-blue.webp" data-stagger-video data-timeline="0.82" data-rate="1"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Installed work</figcaption></figure>
   </div>
   <div class="system-flow reveal"><span>TouchDesigner</span><b>→</b><span>Art-Net</span><b>→</b><span>PixLite control</span><b>→</b><span>addressable LED</span></div>
 </section>
@@ -53,23 +53,23 @@
 
 <section class="project-section">
   <div class="section-head reveal"><div><p class="eyebrow">Fabrication / integration archive</p><h2>From profile<br>to live system.</h2></div></div>
-  <p class="fabrication-note reveal">Selected workshop footage from the Geneva Lux production archive: profile preparation, LED-strip work and cabling. The three loops enter at different moments instead of starting in sync.</p>
+  <p class="fabrication-note reveal">Selected workshop footage from the Geneva Lux production archive: profile preparation, LED-strip work and cabling. Each loop opens at a different point in its source timeline.</p>
   <div class="fabrication-grid reveal" data-fabrication-grid>
-    <figure><video muted loop playsinline preload="metadata" data-stagger-video data-delay="0"><source src="assets/media/lumina/fabrication-profile.mp4" type="video/mp4"></video><figcaption>01 / profile + rainurage</figcaption></figure>
-    <figure><video muted loop playsinline preload="metadata" data-stagger-video data-delay="1100"><source src="assets/media/lumina/fabrication-led.mp4" type="video/mp4"></video><figcaption>02 / LED strip soldering</figcaption></figure>
-    <figure><video muted loop playsinline preload="metadata" data-stagger-video data-delay="2300"><source src="assets/media/lumina/fabrication-wiring.mp4" type="video/mp4"></video><figcaption>03 / cabling + connectors</figcaption></figure>
+    <figure><video muted loop playsinline preload="auto" data-stagger-video data-timeline="0.12" data-rate="1"><source src="assets/media/lumina/fabrication-profile.mp4" type="video/mp4"></video><figcaption>01 / profile + rainurage</figcaption></figure>
+    <figure><video muted loop playsinline preload="auto" data-stagger-video data-timeline="0.53" data-rate="0.99"><source src="assets/media/lumina/fabrication-led.mp4" type="video/mp4"></video><figcaption>02 / LED strip soldering</figcaption></figure>
+    <figure><video muted loop playsinline preload="auto" data-stagger-video data-timeline="0.86" data-rate="1.01"><source src="assets/media/lumina/fabrication-wiring.mp4" type="video/mp4"></video><figcaption>03 / cabling + connectors</figcaption></figure>
   </div>
 </section>
 
 <section class="project-section" data-tabs>
   <div class="section-head"><div><p class="eyebrow">Design / fabrication</p><h2>Technical depth,<br>kept secondary.</h2></div></div>
   <div class="tech-tabs" role="tablist">
-    <button class="active" type="button" role="tab" aria-selected="true" data-tab-src="assets/media/lumina/technical-general.svg" data-tab-caption="01 / GENERAL STRUCTURE">general</button>
-    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-dimensions.svg" data-tab-caption="02 / DIMENSIONS">dimensions</button>
+    <button class="active" type="button" role="tab" aria-selected="true" data-tab-src="assets/media/lumina/technical-general-original-inverted.webp" data-tab-caption="01 / GENERAL STRUCTURE">general</button>
+    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-dimensions-original-inverted.webp" data-tab-caption="02 / DIMENSIONS">dimensions</button>
     <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-profiles.svg" data-tab-caption="03 / PROFILES + RAINURAGE">profiles</button>
     <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-flycase.svg" data-tab-caption="04 / CUSTOM FLYCASE">flycase</button>
   </div>
-  <figure class="tech-viewer"><img src="assets/media/lumina/technical-general.svg" alt="LUMINA general structure drawing" data-tab-image><figcaption data-tab-caption>01 / GENERAL STRUCTURE</figcaption></figure>
+  <figure class="tech-viewer"><img src="assets/media/lumina/technical-general-original-inverted.webp" alt="LUMINA general structure drawing" data-tab-image><figcaption data-tab-caption>01 / GENERAL STRUCTURE</figcaption></figure>
 </section>
 
 <nav class="project-next"><a href="projects/snake.html"><span>Previous</span><b>Snake</b></a><a href="projects/realtime.html"><span>Next</span><b>Realtime Studies</b></a></nav>
@@ -79,25 +79,39 @@
 (() => {
   const videos=[...document.querySelectorAll('[data-stagger-video]')];
   if(!videos.length)return;
-  const timers=new Map();
-  const start=v=>{
-    clearTimeout(timers.get(v));
-    const delay=Number(v.dataset.delay)||0;
-    timers.set(v,setTimeout(()=>{
-      if(document.body.classList.contains('motion-off')||v.dataset.visible!=='true')return;
-      const d=v.duration;
-      if(Number.isFinite(d)&&d>.8){try{v.currentTime=Math.random()*Math.max(.2,d-.35)}catch{}}
-      v.play().catch(()=>{});
-    },delay));
+  const lastSeek=new WeakMap();
+
+  const seekAndPlay=v=>{
+    if(document.body.classList.contains('motion-off')||v.dataset.visible!=='true')return;
+    const d=v.duration;
+    if(!Number.isFinite(d)||d<1)return;
+    const anchor=Math.max(.02,Math.min(.94,Number(v.dataset.timeline)||.08));
+    const jitter=(Math.random()-.5)*.025;
+    let t=d*Math.max(.02,Math.min(.96,anchor+jitter));
+    const previous=lastSeek.get(v);
+    if(Number.isFinite(previous)&&Math.abs(previous-t)<d*.06){
+      t=d*Math.max(.02,Math.min(.96,anchor+(jitter>=0?.045:-.045)));
+    }
+    lastSeek.set(v,t);
+    try{v.currentTime=t}catch{}
+    v.playbackRate=Number(v.dataset.rate)||1;
+    v.play().catch(()=>{});
   };
+
+  const start=v=>{
+    if(v.readyState>=1)seekAndPlay(v);
+    else v.addEventListener('loadedmetadata',()=>seekAndPlay(v),{once:true});
+  };
+
   const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
     const v=entry.target;
     v.dataset.visible=String(entry.isIntersecting);
-    if(entry.isIntersecting)start(v);else{clearTimeout(timers.get(v));v.pause()}
-  }),{rootMargin:'120px 0px',threshold:.12});
+    if(entry.isIntersecting)start(v);else v.pause();
+  }),{rootMargin:'180px 0px',threshold:.12});
+
   videos.forEach(v=>observer.observe(v));
   const sync=()=>videos.forEach(v=>{
-    if(document.body.classList.contains('motion-off')){clearTimeout(timers.get(v));v.pause()}
+    if(document.body.classList.contains('motion-off'))v.pause();
     else if(v.dataset.visible==='true')start(v);
   });
   document.querySelector('[data-motion-toggle]')?.addEventListener('click',()=>setTimeout(sync,0));
