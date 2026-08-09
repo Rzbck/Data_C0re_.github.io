@@ -89,8 +89,53 @@
     row.addEventListener('focus',()=>activateHoverPreview(row));
   });
 
+  // Realtime FX image player: the source is a curated 7-frame horizontal sprite.
+  // Two layers crossfade between randomly chosen states so the sequence does not repeat mechanically.
+  qa('[data-fx-player]').forEach(player=>{
+    const layers=qa('[data-fx-frame]',player);
+    const counter=q('[data-fx-index]',player);
+    const count=Math.max(1,Number(player.dataset.frameCount)||7);
+    if(!layers.length)return;
+    const positions=Array.from({length:count},(_,i)=>count===1?0:(i/(count-1))*100);
+    let current=0,activeLayer=0,history=[0],timer=null,visible=true;
+
+    const setLayer=(layer,index)=>{
+      layer.style.backgroundPosition=`${positions[index]}% center`;
+    };
+    setLayer(layers[0],0);
+
+    const chooseNext=()=>{
+      if(count<2)return 0;
+      let next=current,guard=0;
+      while((next===current||history.slice(-2).includes(next))&&guard<30){next=Math.floor(Math.random()*count);guard++}
+      if(next===current)next=(current+1)%count;
+      return next;
+    };
+
+    const advance=()=>{
+      if(!motionOff&&!document.hidden&&visible){
+        const next=chooseNext();
+        const incoming=(activeLayer+1)%layers.length;
+        setLayer(layers[incoming],next);
+        requestAnimationFrame(()=>{
+          layers.forEach((layer,i)=>layer.classList.toggle('is-active',i===incoming));
+          activeLayer=incoming;
+          current=next;
+          history.push(next);if(history.length>4)history.shift();
+          if(counter)counter.textContent=String(next+1).padStart(2,'0');
+        });
+      }
+      timer=setTimeout(advance,2600+Math.random()*1700);
+    };
+
+    const visibilityObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{visible=entry.isIntersecting})},{rootMargin:'160px 0px',threshold:.02});
+    visibilityObserver.observe(player);
+    timer=setTimeout(advance,1800+Math.random()*900);
+  });
+
   const applyMotion=()=>{
     motion?.setAttribute('aria-pressed',String(motionOff));if(motionLabel)motionLabel.textContent=motionOff?'motion off':'motion on';
+    body.classList.toggle('motion-off',motionOff);
     [...directVideos,...lazyVideos].forEach(syncVideo);
     if(hoverPreviewVideo?.src){
       if(motionOff)hoverPreviewVideo.pause();
