@@ -49,7 +49,7 @@
     qa('source[data-src]',v).forEach(s=>{s.src=s.dataset.src||'';s.removeAttribute('data-src')});
     v.load();v.dataset.loaded='true';
   };
-  const pageVideos=qa('video:not([data-hover-preview-video])');
+  const pageVideos=qa('video:not([data-hover-preview-video]):not([data-stagger-video])');
   const syncVideo=v=>{
     const visible=v.dataset.visible!=='false';
     if(!motionOff&&visible){if(v.matches('[data-lazy-video]'))loadLazy(v);v.play().catch(()=>{})}
