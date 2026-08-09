@@ -21,7 +21,7 @@
     .fabrication-grid figcaption{padding-top:9px;color:var(--grey);font-size:9px;text-transform:uppercase;letter-spacing:.08em}
     .fabrication-note{max-width:760px;margin:18px 0 0;color:#aaa8a2;font-size:11px;line-height:1.5}
     .tech-tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;border-bottom:1px solid var(--line)}
-    .tech-tabs button{flex:0 0 auto}
+    .tech-tabs button{flex:0 0 auto;white-space:nowrap}
     .tech-viewer{margin:0;background:#030303!important;border:1px solid var(--line);overflow:hidden;padding:0!important}
     .tech-viewer img{display:block;width:100%;height:auto;max-height:82vh;object-fit:contain;background:#030303!important;margin:0!important;padding:0!important;filter:none!important;mix-blend-mode:normal!important;image-rendering:auto!important}
     .tech-viewer figcaption{padding:10px 0 0;color:var(--grey);background:#070707;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
@@ -41,11 +41,11 @@
 
 <section class="project-section project-section--split"><div class="section-kicker reveal"><span>01</span><p>Experience</p></div><div class="prose-large reveal"><h2>Light becomes architecture through repetition.</h2><p>The work is read first as a space rather than as a screen. Nested frames exaggerate perspective and allow colour and temporal behaviour to reorganise the tunnel continuously around the visitor.</p></div></section>
 
-<section class="project-section">
+<section class="project-section" data-lumina-experience-section>
   <div class="experience-motion-grid reveal">
-    <figure class="experience-main"><video muted loop playsinline preload="auto" poster="assets/media/lumina/nested.webp" data-stagger-video data-timeline="0.07" data-rate="0.985"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Nested structure / spatial depth</figcaption></figure>
-    <figure class="experience-small experience-small--a"><video muted loop playsinline preload="auto" poster="assets/media/lumina/human-scale.webp" data-stagger-video data-timeline="0.48" data-rate="1.015"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Human scale</figcaption></figure>
-    <figure class="experience-small experience-small--b"><video muted loop playsinline preload="auto" poster="assets/media/lumina/tunnel-blue.webp" data-stagger-video data-timeline="0.84" data-rate="1"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Installed work</figcaption></figure>
+    <figure class="experience-main"><video muted loop playsinline preload="auto" poster="assets/media/lumina/nested.webp" data-stagger-video data-lumina-experience data-timeline="0.08" data-rate="1"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Nested structure / spatial depth</figcaption></figure>
+    <figure class="experience-small experience-small--a"><video muted loop playsinline preload="auto" poster="assets/media/lumina/human-scale.webp" data-stagger-video data-lumina-experience data-timeline="0.48" data-rate="1"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Human scale</figcaption></figure>
+    <figure class="experience-small experience-small--b"><video muted loop playsinline preload="auto" poster="assets/media/lumina/tunnel-blue.webp" data-stagger-video data-lumina-experience data-timeline="0.83" data-rate="1"><source src="assets/media/lumina/loop.mp4" type="video/mp4"></video><figcaption>Installed work</figcaption></figure>
   </div>
   <div class="system-flow reveal"><span>TouchDesigner</span><b>→</b><span>Art-Net</span><b>→</b><span>PixLite control</span><b>→</b><span>addressable LED</span></div>
 </section>
@@ -64,13 +64,14 @@
 
 <section class="project-section" data-tabs>
   <div class="section-head"><div><p class="eyebrow">Design / fabrication</p><h2>Technical depth,<br>kept secondary.</h2></div></div>
+  <span hidden data-tab-caption>01 / GENERAL STRUCTURE</span>
   <div class="tech-tabs" role="tablist">
-    <button class="active" type="button" role="tab" aria-selected="true" data-tab-src="assets/media/lumina/technical-general-original-inverted.webp" data-tab-caption="01 / GENERAL STRUCTURE">general</button>
-    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-dimensions-original-inverted.webp" data-tab-caption="02 / DIMENSIONS">dimensions</button>
-    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-profiles.svg" data-tab-caption="03 / PROFILES + RAINURAGE">profiles</button>
-    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-flycase.svg" data-tab-caption="04 / CUSTOM FLYCASE">flycase</button>
+    <button class="active" type="button" role="tab" aria-selected="true" data-tab-src="assets/media/lumina/technical-general-original-inverted.webp?v=20260809-2" data-tab-caption="01 / GENERAL STRUCTURE">GENERAL STRUCTURE</button>
+    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-dimensions-original-inverted.webp?v=20260809-2" data-tab-caption="02 / DIMENSIONS">DIMENSIONS</button>
+    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-profiles.svg" data-tab-caption="03 / PROFILES + RAINURAGE">PROFILES</button>
+    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-flycase.svg" data-tab-caption="04 / CUSTOM FLYCASE">FLYCASE</button>
   </div>
-  <figure class="tech-viewer"><img src="assets/media/lumina/technical-general-original-inverted.webp" alt="LUMINA general structure drawing" data-tab-image><figcaption data-tab-caption>01 / GENERAL STRUCTURE</figcaption></figure>
+  <figure class="tech-viewer"><img src="assets/media/lumina/technical-general-original-inverted.webp?v=20260809-2" alt="LUMINA general structure drawing" data-tab-image><figcaption>Technical drawing</figcaption></figure>
 </section>
 
 <nav class="project-next"><a href="projects/snake.html"><span>Previous</span><b>Snake</b></a><a href="projects/realtime.html"><span>Next</span><b>Realtime Studies</b></a></nav>
@@ -78,43 +79,65 @@
 <script src="assets/js/main.js" defer></script>
 <script>
 (() => {
-  const videos=[...document.querySelectorAll('[data-stagger-video]')];
-  if(!videos.length)return;
-  const lastSeek=new WeakMap();
+  const experience=[...document.querySelectorAll('[data-lumina-experience]')];
+  const experienceSection=document.querySelector('[data-lumina-experience-section]');
+  const fabrication=[...document.querySelectorAll('[data-stagger-video]:not([data-lumina-experience])')];
+  let experienceVisible=false;
 
-  const seekAndPlay=v=>{
-    if(document.body.classList.contains('motion-off')||v.dataset.visible!=='true')return;
+  const metadata=v=>v.readyState>=1?Promise.resolve():new Promise(resolve=>v.addEventListener('loadedmetadata',resolve,{once:true}));
+  const motionOff=()=>document.body.classList.contains('motion-off');
+
+  const startExperience=async()=>{
+    if(!experienceVisible||motionOff()||!experience.length)return;
+    await Promise.all(experience.map(metadata));
+    if(!experienceVisible||motionOff())return;
+    requestAnimationFrame(()=>{
+      experience.forEach(v=>{
+        const d=v.duration;
+        if(!Number.isFinite(d)||d<1)return;
+        const anchor=Math.max(.02,Math.min(.96,Number(v.dataset.timeline)||.08));
+        try{v.currentTime=d*anchor}catch{}
+        v.playbackRate=1;
+      });
+      requestAnimationFrame(()=>experience.forEach(v=>v.play().catch(()=>{})));
+    });
+  };
+
+  if(experienceSection&&experience.length){
+    const experienceObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      experienceVisible=entry.isIntersecting;
+      experience.forEach(v=>v.dataset.visible=String(entry.isIntersecting));
+      if(entry.isIntersecting)startExperience();else experience.forEach(v=>v.pause());
+    }),{rootMargin:'180px 0px',threshold:.12});
+    experienceObserver.observe(experienceSection);
+  }
+
+  const seekFabrication=v=>{
+    if(motionOff()||v.dataset.visible!=='true')return;
     const d=v.duration;
     if(!Number.isFinite(d)||d<1)return;
     const anchor=Math.max(.02,Math.min(.94,Number(v.dataset.timeline)||.08));
-    const jitter=(Math.random()-.5)*.025;
-    let t=d*Math.max(.02,Math.min(.96,anchor+jitter));
-    const previous=lastSeek.get(v);
-    if(Number.isFinite(previous)&&Math.abs(previous-t)<d*.06){
-      t=d*Math.max(.02,Math.min(.96,anchor+(jitter>=0?.045:-.045)));
-    }
-    lastSeek.set(v,t);
-    try{v.currentTime=t}catch{}
+    try{v.currentTime=d*anchor}catch{}
     v.playbackRate=Number(v.dataset.rate)||1;
     v.play().catch(()=>{});
   };
-
-  const start=v=>{
-    if(v.readyState>=1)seekAndPlay(v);
-    else v.addEventListener('loadedmetadata',()=>seekAndPlay(v),{once:true});
-  };
-
-  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+  const startFabrication=v=>v.readyState>=1?seekFabrication(v):v.addEventListener('loadedmetadata',()=>seekFabrication(v),{once:true});
+  const fabricationObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
     const v=entry.target;
     v.dataset.visible=String(entry.isIntersecting);
-    if(entry.isIntersecting)start(v);else v.pause();
+    if(entry.isIntersecting)startFabrication(v);else v.pause();
   }),{rootMargin:'180px 0px',threshold:.12});
+  fabrication.forEach(v=>fabricationObserver.observe(v));
 
-  videos.forEach(v=>observer.observe(v));
-  const sync=()=>videos.forEach(v=>{
-    if(document.body.classList.contains('motion-off'))v.pause();
-    else if(v.dataset.visible==='true')start(v);
-  });
+  const sync=()=>{
+    if(motionOff()){
+      experience.forEach(v=>v.pause());
+      fabrication.forEach(v=>v.pause());
+      return;
+    }
+    if(experienceVisible)startExperience();
+    fabrication.forEach(v=>{if(v.dataset.visible==='true')startFabrication(v)});
+  };
   document.querySelector('[data-motion-toggle]')?.addEventListener('click',()=>setTimeout(sync,0));
 })();
 </script>
