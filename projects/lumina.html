@@ -35,7 +35,7 @@
 <header class="project-hero">
   <div class="project-hero-copy reveal"><div><p class="eyebrow accent-magenta">Collaborative public installation / Geneva Lux / 2025—2027</p><h1>LUMINA</h1></div><p class="project-intent">A repeated luminous frame turns a pedestrian passage into a changing field of depth, rhythm and movement. The realtime system is inseparable from the physical architecture.</p></div>
   <div class="project-facts reveal"><span><b>Role</b> Creative Technologist / Realtime Systems &amp; Integration</span><span><b>Context</b> Geneva Lux / StripLab / 2025—2027</span><span><b>System</b> TouchDesigner / Art-Net / addressable LED</span></div>
-  <figure class="project-hero-media reveal"><video muted loop playsinline poster="assets/media/lumina/tunnel-blue.webp" data-lazy-video><source data-src="assets/media/lumina/loop.mp4" type="video/mp4"></video></figure>
+  <figure class="project-hero-media reveal"><video muted loop playsinline poster="assets/media/lumina/tunnel-blue.webp" data-lazy-video><source data-src="assets/media/lumina/experience-long.mp4?v=20260809-2" type="video/mp4"></video></figure>
   <div class="stats-grid reveal"><div><strong>12.05 m</strong><span>overall length</span></div><div><strong>8,556</strong><span>RGB LEDs</span></div><div><strong>25,668</strong><span>DMX channels</span></div><div><strong>51</strong><span>Art-Net universes</span></div><div><strong>60 FPS</strong><span>realtime output</span></div></div>
 </header>
 
@@ -68,7 +68,7 @@
   <div class="tech-tabs" role="tablist">
     <button class="active" type="button" role="tab" aria-selected="true" data-tab-src="assets/media/lumina/technical-general-original-inverted.webp?v=20260809-2" data-tab-caption="01 / GENERAL STRUCTURE">GENERAL STRUCTURE</button>
     <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-dimensions-original-inverted-v2.webp" data-tab-fallback="assets/media/lumina/technical-dimensions-original-inverted.webp?v=20260809-2" data-tab-caption="02 / DIMENSIONS">DIMENSIONS</button>
-    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-profiles-original.png" data-tab-fallback="assets/media/lumina/technical-profiles.svg" data-tab-caption="03 / PROFILES + RAINURAGE">PROFILES</button>
+    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-profiles-original-inverted.webp" data-tab-fallback="assets/media/lumina/technical-profiles-original.png" data-tab-caption="03 / PROFILES + RAINURAGE">PROFILES</button>
     <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-flycase.svg" data-tab-caption="04 / CUSTOM FLYCASE">FLYCASE</button>
   </div>
   <figure class="tech-viewer"><img src="assets/media/lumina/technical-general-original-inverted.webp?v=20260809-2" alt="LUMINA general structure drawing" data-tab-image><figcaption>Technical drawing</figcaption></figure>
@@ -137,6 +137,39 @@
     const fallbackUrl=new URL(fallback,document.baseURI).href;
     if(techImage.src!==fallbackUrl)techImage.src=fallback;
   });
+
+  const tabsSection=document.querySelector('[data-tabs]');
+  const tabButtons=tabsSection?[...tabsSection.querySelectorAll('.tech-tabs button')]:[];
+  let tabsTimer=null;
+  let tabsPaused=false;
+  const stopTabs=()=>{if(tabsTimer){clearInterval(tabsTimer);tabsTimer=null;}};
+  const currentTabIndex=()=>tabButtons.findIndex(button=>button.classList.contains('active')||button.getAttribute('aria-selected')==='true');
+  const stepTabs=()=>{
+    if(tabsPaused||document.hidden||tabButtons.length<2)return;
+    const index=currentTabIndex();
+    const next=(index>=0?index+1:1)%tabButtons.length;
+    tabButtons[next]?.click();
+  };
+  const startTabs=()=>{
+    stopTabs();
+    if(motionOff()||tabButtons.length<2)return;
+    tabsTimer=setInterval(stepTabs,3200);
+  };
+  if(tabsSection&&tabButtons.length>1){
+    const tabsObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      if(entry.isIntersecting&&!motionOff())startTabs();
+      else stopTabs();
+    }),{rootMargin:'120px 0px',threshold:.2});
+    tabsObserver.observe(tabsSection);
+    tabsSection.addEventListener('mouseenter',()=>{tabsPaused=true;});
+    tabsSection.addEventListener('mouseleave',()=>{tabsPaused=false;});
+    tabsSection.addEventListener('focusin',()=>{tabsPaused=true;});
+    tabsSection.addEventListener('focusout',()=>{tabsPaused=false;});
+    document.addEventListener('visibilitychange',()=>{
+      if(document.hidden)stopTabs();
+      else if(!motionOff())startTabs();
+    });
+  }
 
   const sync=()=>{
     if(motionOff()){
