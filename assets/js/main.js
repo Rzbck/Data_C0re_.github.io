@@ -81,8 +81,6 @@
     const poster=row.dataset.previewPoster||row.dataset.preview||'',src=chooseSource(row),token=++hoverPreviewToken;
     if(poster&&hoverPreviewPoster.getAttribute('src')!==poster)hoverPreviewPoster.src=poster;
 
-    // Keep the poster fully visible while the requested video loads/seeks.
-    // The video is revealed only after the browser has a decodable frame.
     hoverPreviewStage.classList.add('is-changing');
     hoverPreviewStage.classList.remove('has-video');
 
@@ -124,7 +122,6 @@
     row.addEventListener('focus',()=>activateHoverPreview(row));
   });
 
-  // Legacy compatibility for assets that were stored as base64 text.
   qa('[data-base64-source]').forEach(async img=>{
     try{
       const res=await fetch(img.dataset.base64Source,{cache:'force-cache'});if(!res.ok)throw new Error(String(res.status));
@@ -132,38 +129,6 @@
       if(!raw.startsWith('/9j/')&&!raw.startsWith('iVBOR'))throw new Error('not base64 image data');
       img.src=`data:${raw.startsWith('/9j/')?'image/jpeg':'image/png'};base64,${raw}`;img.classList.add('is-loaded');
     }catch{img.removeAttribute('src');img.classList.add('is-error')}
-  });
-
-  // Legacy FX sprite player kept for older project fragments that still use it.
-  qa('[data-fx-player]').forEach(async player=>{
-    const layers=qa('[data-fx-frame]',player),counter=q('[data-fx-index]',player),label=q('[data-fx-label]',player);
-    const count=Math.max(1,Number(player.dataset.frameCount)||7);if(!layers.length)return;
-    const labels=(player.dataset.frameLabels||'').split('|');
-    try{
-      const res=await fetch(player.dataset.spriteSource||'assets/media/research/fx-sprite.svg',{cache:'force-cache'});if(!res.ok)throw new Error(String(res.status));
-      const text=await res.text(),match=text.match(/data:image\/(?:jpeg|jpg);base64,([^"']+)/i);if(!match)throw new Error('sprite data missing');
-      const uri=`data:image/jpeg;base64,${match[1].replace(/\s+/g,'')}`;
-      layers.forEach(layer=>{layer.style.backgroundImage=`url(${uri})`;layer.style.backgroundSize=`${count*100}% 100%`});
-      player.classList.add('is-ready');
-    }catch{player.classList.add('is-error');return;}
-    const positions=Array.from({length:count},(_,i)=>count===1?0:(i/(count-1))*100);
-    let current=0,activeLayer=0,history=[0],visible=true;
-    const setLayer=(layer,index)=>{layer.style.backgroundPosition=`${positions[index]}% center`};
-    setLayer(layers[0],0);if(counter)counter.textContent='01';if(label&&labels[0])label.textContent=labels[0];
-    const chooseNext=()=>{
-      if(count<2)return 0;let next=current,guard=0;
-      while((next===current||history.slice(-2).includes(next))&&guard++<30)next=Math.floor(Math.random()*count);
-      return next===current?(current+1)%count:next;
-    };
-    const advance=()=>{
-      if(!motionOff&&!document.hidden&&visible){
-        const next=chooseNext(),incoming=(activeLayer+1)%layers.length;setLayer(layers[incoming],next);
-        requestAnimationFrame(()=>{layers.forEach((layer,i)=>layer.classList.toggle('is-active',i===incoming));activeLayer=incoming;current=next;history.push(next);if(history.length>4)history.shift();if(counter)counter.textContent=String(next+1).padStart(2,'0');if(label&&labels[next])label.textContent=labels[next]});
-      }
-      setTimeout(advance,2200+Math.random()*1900);
-    };
-    new IntersectionObserver(es=>es.forEach(e=>visible=e.isIntersecting),{rootMargin:'160px 0px',threshold:.02}).observe(player);
-    setTimeout(advance,1000+Math.random()*900);
   });
 
   const applyMotion=()=>{
