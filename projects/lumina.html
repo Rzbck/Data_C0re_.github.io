@@ -1,1 +1,93 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><title>LUMINA / Geneva Lux — DATA C0RE</title><meta name="description" content="LUMINA — collaborative public light installation for Geneva Lux, with realtime systems and integration by DATA C0RE."><meta name="theme-color" content="#070707"><link rel="stylesheet" href="assets/css/styles.css"></head><body><header class="site-header" data-header><a class="brand" href="index.html">DATA C0RE</a><div class="header-actions"><button class="motion-toggle" type="button" aria-pressed="false" data-motion-toggle><span class="motion-dot"></span><span data-motion-label>motion on</span></button><a class="nav-text" href="work.html">work</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>index ↗</button></div></header><nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="lab.html">Lab</a><a href="about.html">About</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav><main><article><header class="project-hero"><div class="project-hero-copy reveal"><div><p class="eyebrow accent-magenta">Collaborative public installation / Geneva Lux / 2025</p><h1>LUMINA</h1></div><p class="project-intent">A repeated luminous frame turns a pedestrian passage into a changing field of depth, rhythm and movement. The realtime system is inseparable from the physical architecture.</p></div><div class="project-facts reveal"><span><b>Role</b> Creative Technologist / Realtime Systems &amp; Integration</span><span><b>Context</b> Geneva Lux / StripLab</span><span><b>System</b> TouchDesigner / Art-Net / addressable LED</span></div><figure class="project-hero-media reveal"><video muted loop playsinline poster="assets/media/lumina/tunnel-blue.webp" data-lazy-video><source data-src="assets/media/lumina/loop.mp4" type="video/mp4"></video></figure><div class="stats-grid reveal"><div><strong>12.05 m</strong><span>overall length</span></div><div><strong>8,556</strong><span>RGB LEDs</span></div><div><strong>25,668</strong><span>DMX channels</span></div><div><strong>51</strong><span>Art-Net universes</span></div><div><strong>60 FPS</strong><span>realtime output</span></div></div></header><section class="project-section project-section--split"><div class="section-kicker reveal"><span>01</span><p>Experience</p></div><div class="prose-large reveal"><h2>Light becomes architecture through repetition.</h2><p>The work is read first as a space rather than as a screen. Nested frames exaggerate perspective and allow colour and temporal behaviour to reorganise the tunnel continuously around the visitor.</p></div></section><section class="project-section"><div class="media-grid media-grid--process reveal"><figure class="media-wide"><img src="assets/media/lumina/nested.webp" alt="Nested LUMINA arches" loading="lazy"><figcaption>Nested structure / spatial depth</figcaption></figure><figure><img src="assets/media/lumina/human-scale.webp" alt="Visitor inside LUMINA" loading="lazy"><figcaption>Human scale</figcaption></figure><figure><img src="assets/media/lumina/tunnel-blue.webp" alt="Blue LUMINA tunnel" loading="lazy"><figcaption>Installed work</figcaption></figure></div><div class="system-flow reveal"><span>TouchDesigner</span><b>→</b><span>Art-Net</span><b>→</b><span>PixLite control</span><b>→</b><span>addressable LED</span></div></section><section class="project-section project-section--split"><div class="section-kicker reveal"><span>02</span><p>My contribution</p></div><div class="prose reveal"><p>Fusion 360 structure and fabrication drawings, network planning, LED integration, TouchDesigner programming, realtime light behaviour, budgeting, workshop coordination, groove/profile optimisation with the carpenter, and technical integration on site.</p></div></section><section class="project-section" data-tabs><div class="section-head"><div><p class="eyebrow">Design / fabrication</p><h2>Technical depth,<br>kept secondary.</h2></div></div><div class="tech-tabs" role="tablist"><button class="active" type="button" role="tab" aria-selected="true" data-tab-src="assets/media/lumina/technical-general.svg" data-tab-caption="01 / GENERAL STRUCTURE">general</button><button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-dimensions-v2.svg" data-tab-caption="02 / DIMENSIONS">dimensions</button><button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-profiles.svg" data-tab-caption="03 / PROFILES + RAINURAGE">profiles</button><button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-flycase.svg" data-tab-caption="04 / CUSTOM FLYCASE">flycase</button></div><figure class="tech-viewer"><img src="assets/media/lumina/technical-general.svg" alt="LUMINA general structure drawing" data-tab-image><figcaption data-tab-caption>01 / GENERAL STRUCTURE</figcaption></figure></section><nav class="project-next"><a href="projects/snake.html"><span>Previous</span><b>Snake</b></a><a href="projects/realtime.html"><span>Next</span><b>Realtime Studies</b></a></nav></article></main><script src="assets/js/main.js" defer></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../">
+  <title>LUMINA / Geneva Lux — DATA C0RE</title>
+  <meta name="description" content="LUMINA — collaborative public light installation for Geneva Lux, with realtime systems and integration by DATA C0RE.">
+  <meta name="theme-color" content="#070707"><link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .fabrication-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:clamp(24px,3vw,44px)}
+    .fabrication-grid figure{margin:0;min-width:0;background:#020202;overflow:hidden}
+    .fabrication-grid video{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#020202}
+    .fabrication-grid figcaption{padding-top:9px;color:var(--grey);font-size:9px;text-transform:uppercase;letter-spacing:.08em}
+    .fabrication-note{max-width:760px;margin:18px 0 0;color:#aaa8a2;font-size:11px;line-height:1.5}
+    .tech-tabs{border-bottom:1px solid var(--line)}
+    .tech-viewer{margin:0;background:#030303!important;border:1px solid var(--line);overflow:hidden;padding:0!important}
+    .tech-viewer img{display:block;width:100%;height:auto;max-height:82vh;object-fit:contain;background:#030303!important;margin:0!important;padding:0!important}
+    .tech-viewer figcaption{padding:10px 0 0;color:var(--grey);background:#070707;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
+    @media(max-width:800px){.fabrication-grid{grid-template-columns:1fr}.fabrication-grid video{aspect-ratio:16/10}.tech-viewer img{max-height:70vh}}
+  </style>
+</head>
+<body>
+<header class="site-header" data-header><a class="brand" href="index.html">DATA C0RE</a><div class="header-actions"><button class="motion-toggle" type="button" aria-pressed="false" data-motion-toggle><span class="motion-dot"></span><span data-motion-label>motion on</span></button><a class="nav-text" href="work.html">work</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>index ↗</button></div></header>
+<nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="lab.html">Lab</a><a href="about.html">About</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav>
+<main><article>
+<header class="project-hero">
+  <div class="project-hero-copy reveal"><div><p class="eyebrow accent-magenta">Collaborative public installation / Geneva Lux / 2025</p><h1>LUMINA</h1></div><p class="project-intent">A repeated luminous frame turns a pedestrian passage into a changing field of depth, rhythm and movement. The realtime system is inseparable from the physical architecture.</p></div>
+  <div class="project-facts reveal"><span><b>Role</b> Creative Technologist / Realtime Systems &amp; Integration</span><span><b>Context</b> Geneva Lux / StripLab</span><span><b>System</b> TouchDesigner / Art-Net / addressable LED</span></div>
+  <figure class="project-hero-media reveal"><video muted loop playsinline poster="assets/media/lumina/tunnel-blue.webp" data-lazy-video><source data-src="assets/media/lumina/loop.mp4" type="video/mp4"></video></figure>
+  <div class="stats-grid reveal"><div><strong>12.05 m</strong><span>overall length</span></div><div><strong>8,556</strong><span>RGB LEDs</span></div><div><strong>25,668</strong><span>DMX channels</span></div><div><strong>51</strong><span>Art-Net universes</span></div><div><strong>60 FPS</strong><span>realtime output</span></div></div>
+</header>
+
+<section class="project-section project-section--split"><div class="section-kicker reveal"><span>01</span><p>Experience</p></div><div class="prose-large reveal"><h2>Light becomes architecture through repetition.</h2><p>The work is read first as a space rather than as a screen. Nested frames exaggerate perspective and allow colour and temporal behaviour to reorganise the tunnel continuously around the visitor.</p></div></section>
+
+<section class="project-section">
+  <div class="media-grid media-grid--process reveal"><figure class="media-wide"><img src="assets/media/lumina/nested.webp" alt="Nested LUMINA arches" loading="lazy"><figcaption>Nested structure / spatial depth</figcaption></figure><figure><img src="assets/media/lumina/human-scale.webp" alt="Visitor inside LUMINA" loading="lazy"><figcaption>Human scale</figcaption></figure><figure><img src="assets/media/lumina/tunnel-blue.webp" alt="Blue LUMINA tunnel" loading="lazy"><figcaption>Installed work</figcaption></figure></div>
+  <div class="system-flow reveal"><span>TouchDesigner</span><b>→</b><span>Art-Net</span><b>→</b><span>PixLite control</span><b>→</b><span>addressable LED</span></div>
+</section>
+
+<section class="project-section project-section--split"><div class="section-kicker reveal"><span>02</span><p>My contribution</p></div><div class="prose reveal"><p>Fusion 360 structure and fabrication drawings, network planning, LED integration, TouchDesigner programming, realtime light behaviour, budgeting, workshop coordination, groove/profile optimisation with the carpenter, and technical integration on site.</p></div></section>
+
+<section class="project-section">
+  <div class="section-head reveal"><div><p class="eyebrow">Fabrication / integration archive</p><h2>From profile<br>to live system.</h2></div></div>
+  <p class="fabrication-note reveal">Selected workshop footage from the Geneva Lux production archive: profile preparation, LED-strip work and cabling. The three loops enter at different moments instead of starting in sync.</p>
+  <div class="fabrication-grid reveal" data-fabrication-grid>
+    <figure><video muted loop playsinline preload="metadata" data-stagger-video data-delay="0"><source src="assets/media/lumina/fabrication-profile.mp4" type="video/mp4"></video><figcaption>01 / profile + rainurage</figcaption></figure>
+    <figure><video muted loop playsinline preload="metadata" data-stagger-video data-delay="1100"><source src="assets/media/lumina/fabrication-led.mp4" type="video/mp4"></video><figcaption>02 / LED strip soldering</figcaption></figure>
+    <figure><video muted loop playsinline preload="metadata" data-stagger-video data-delay="2300"><source src="assets/media/lumina/fabrication-wiring.mp4" type="video/mp4"></video><figcaption>03 / cabling + connectors</figcaption></figure>
+  </div>
+</section>
+
+<section class="project-section" data-tabs>
+  <div class="section-head"><div><p class="eyebrow">Design / fabrication</p><h2>Technical depth,<br>kept secondary.</h2></div></div>
+  <div class="tech-tabs" role="tablist">
+    <button class="active" type="button" role="tab" aria-selected="true" data-tab-src="assets/media/lumina/plan-general.webp" data-tab-caption="01 / GENERAL STRUCTURE">general</button>
+    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/plan-cote.webp" data-tab-caption="02 / DIMENSIONS">dimensions</button>
+    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-profiles.svg" data-tab-caption="03 / PROFILES + RAINURAGE">profiles</button>
+    <button type="button" role="tab" aria-selected="false" data-tab-src="assets/media/lumina/technical-flycase.svg" data-tab-caption="04 / CUSTOM FLYCASE">flycase</button>
+  </div>
+  <figure class="tech-viewer"><img src="assets/media/lumina/plan-general.webp" alt="LUMINA general structure drawing" data-tab-image><figcaption data-tab-caption>01 / GENERAL STRUCTURE</figcaption></figure>
+</section>
+
+<nav class="project-next"><a href="projects/snake.html"><span>Previous</span><b>Snake</b></a><a href="projects/realtime.html"><span>Next</span><b>Realtime Studies</b></a></nav>
+</article></main>
+<script src="assets/js/main.js" defer></script>
+<script>
+(() => {
+  const videos=[...document.querySelectorAll('[data-stagger-video]')];
+  if(!videos.length)return;
+  const timers=new Map();
+  const start=v=>{
+    clearTimeout(timers.get(v));
+    const delay=Number(v.dataset.delay)||0;
+    timers.set(v,setTimeout(()=>{
+      if(document.body.classList.contains('motion-off')||v.dataset.visible!=='true')return;
+      const d=v.duration;
+      if(Number.isFinite(d)&&d>.8){try{v.currentTime=Math.random()*Math.max(.2,d-.35)}catch{}}
+      v.play().catch(()=>{});
+    },delay));
+  };
+  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+    const v=entry.target;
+    v.dataset.visible=String(entry.isIntersecting);
+    if(entry.isIntersecting)start(v);else{clearTimeout(timers.get(v));v.pause()}
+  }),{rootMargin:'120px 0px',threshold:.12});
+  videos.forEach(v=>observer.observe(v));
+  const sync=()=>videos.forEach(v=>{
+    if(document.body.classList.contains('motion-off')){clearTimeout(timers.get(v));v.pause()}
+    else if(v.dataset.visible==='true')start(v);
+  });
+  document.querySelector('[data-motion-toggle]')?.addEventListener('click',()=>setTimeout(sync,0));
+})();
+</script>
+</body></html>
