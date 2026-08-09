@@ -7,18 +7,25 @@
   const setMenu=open=>{
     if(!menu||!toggle)return;
     if(open)lastFocused=document.activeElement;
-    menu.classList.toggle('open',open);menu.setAttribute('aria-hidden',String(!open));toggle.setAttribute('aria-expanded',String(open));body.classList.toggle('menu-open',open);
-    if(open)requestAnimationFrame(()=>q('.menu-links a',menu)?.focus());else if(lastFocused instanceof HTMLElement)lastFocused.focus();
+    menu.classList.toggle('open',open);
+    menu.setAttribute('aria-hidden',String(!open));
+    toggle.setAttribute('aria-expanded',String(open));
+    body.classList.toggle('menu-open',open);
+    if(open)requestAnimationFrame(()=>q('.menu-links a',menu)?.focus());
+    else if(lastFocused instanceof HTMLElement)lastFocused.focus();
   };
   toggle?.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));
   menu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
   addEventListener('keydown',e=>{
     if(e.key==='Escape'&&menu?.classList.contains('open'))setMenu(false);
     if(e.key!=='Tab'||!menu?.classList.contains('open'))return;
-    const f=qa('a[href],button:not([disabled])',menu);if(!f.length)return;const first=f[0],last=f[f.length-1];
-    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+    const f=qa('a[href],button:not([disabled])',menu);if(!f.length)return;
+    const first=f[0],last=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
   });
-  const updateHeader=()=>header?.classList.toggle('scrolled',scrollY>24);updateHeader();addEventListener('scroll',updateHeader,{passive:true});
+  const updateHeader=()=>header?.classList.toggle('scrolled',scrollY>24);
+  updateHeader();addEventListener('scroll',updateHeader,{passive:true});
 
   const randomStart=video=>{
     const duration=video.duration;
@@ -45,7 +52,8 @@
   const pageVideos=qa('video:not([data-hover-preview-video])');
   const syncVideo=v=>{
     const visible=v.dataset.visible!=='false';
-    if(!motionOff&&visible){if(v.matches('[data-lazy-video]'))loadLazy(v);v.play().catch(()=>{})}else v.pause();
+    if(!motionOff&&visible){if(v.matches('[data-lazy-video]'))loadLazy(v);v.play().catch(()=>{})}
+    else v.pause();
   };
   const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
     const v=entry.target,was=v.dataset.visible==='true',now=entry.isIntersecting;
@@ -70,28 +78,53 @@
   };
   const activateHoverPreview=row=>{
     if(!hoverPreviewStage||!hoverPreviewPoster||!hoverPreviewVideo)return;
-    const poster=row.dataset.previewPoster||row.dataset.preview||'',src=chooseSource(row);
+    const poster=row.dataset.previewPoster||row.dataset.preview||'',src=chooseSource(row),token=++hoverPreviewToken;
     if(poster&&hoverPreviewPoster.getAttribute('src')!==poster)hoverPreviewPoster.src=poster;
+
+    // Keep the poster fully visible while the requested video loads/seeks.
+    // The video is revealed only after the browser has a decodable frame.
     hoverPreviewStage.classList.add('is-changing');
-    const token=++hoverPreviewToken;
+    hoverPreviewStage.classList.remove('has-video');
+
     if(!src){
       hoverPreviewVideo.pause();hoverPreviewVideo.removeAttribute('src');hoverPreviewVideo.dataset.activeSrc='';
-      hoverPreviewStage.classList.remove('has-video','is-changing');return;
+      hoverPreviewStage.classList.remove('is-changing');return;
     }
-    const show=()=>{
+
+    const revealPreparedFrame=()=>{
       if(token!==hoverPreviewToken||hoverPreviewVideo.dataset.activeSrc!==src)return;
-      randomStart(hoverPreviewVideo);hoverPreviewStage.classList.remove('is-changing');hoverPreviewStage.classList.add('has-video');
-      if(!motionOff)hoverPreviewVideo.play().catch(()=>{});else hoverPreviewVideo.pause();
+      const reveal=()=>{
+        if(token!==hoverPreviewToken||hoverPreviewVideo.dataset.activeSrc!==src)return;
+        hoverPreviewStage.classList.remove('is-changing');
+        hoverPreviewStage.classList.add('has-video');
+        if(!motionOff)hoverPreviewVideo.play().catch(()=>{});else hoverPreviewVideo.pause();
+      };
+      randomStart(hoverPreviewVideo);
+      if(hoverPreviewVideo.seeking)hoverPreviewVideo.addEventListener('seeked',reveal,{once:true});
+      else if(hoverPreviewVideo.readyState>=2)requestAnimationFrame(reveal);
+      else hoverPreviewVideo.addEventListener('canplay',reveal,{once:true});
     };
-    if(hoverPreviewVideo.dataset.activeSrc===src){show();return;}
-    hoverPreviewVideo.pause();hoverPreviewStage.classList.remove('has-video');hoverPreviewVideo.dataset.activeSrc=src;hoverPreviewVideo.src=src;hoverPreviewVideo.load();
-    if(hoverPreviewVideo.readyState>=1)show();else hoverPreviewVideo.addEventListener('loadedmetadata',show,{once:true});
+
+    if(hoverPreviewVideo.dataset.activeSrc===src){
+      if(hoverPreviewVideo.readyState>=1)revealPreparedFrame();
+      else hoverPreviewVideo.addEventListener('loadedmetadata',revealPreparedFrame,{once:true});
+      return;
+    }
+
+    hoverPreviewVideo.pause();
+    hoverPreviewVideo.dataset.activeSrc=src;
+    hoverPreviewVideo.preload='auto';
+    hoverPreviewVideo.src=src;
+    hoverPreviewVideo.load();
+    if(hoverPreviewVideo.readyState>=1)revealPreparedFrame();
+    else hoverPreviewVideo.addEventListener('loadedmetadata',revealPreparedFrame,{once:true});
   };
   qa('[data-preview-video],[data-preview-videos]').forEach(row=>{
-    row.addEventListener('mouseenter',()=>activateHoverPreview(row));row.addEventListener('focus',()=>activateHoverPreview(row));
+    row.addEventListener('mouseenter',()=>activateHoverPreview(row));
+    row.addEventListener('focus',()=>activateHoverPreview(row));
   });
 
-  // Decode assets accidentally stored as base64 text instead of binary image files.
+  // Legacy compatibility for assets that were stored as base64 text.
   qa('[data-base64-source]').forEach(async img=>{
     try{
       const res=await fetch(img.dataset.base64Source,{cache:'force-cache'});if(!res.ok)throw new Error(String(res.status));
@@ -101,7 +134,7 @@
     }catch{img.removeAttribute('src');img.classList.add('is-error')}
   });
 
-  // Robustly decode the embedded JPEG from the existing FX sprite SVG before using it.
+  // Legacy FX sprite player kept for older project fragments that still use it.
   qa('[data-fx-player]').forEach(async player=>{
     const layers=qa('[data-fx-frame]',player),counter=q('[data-fx-index]',player),label=q('[data-fx-label]',player);
     const count=Math.max(1,Number(player.dataset.frameCount)||7);if(!layers.length)return;
@@ -138,11 +171,23 @@
     pageVideos.forEach(syncVideo);
     if(hoverPreviewVideo?.src){if(motionOff)hoverPreviewVideo.pause();else if(hoverPreviewStage?.classList.contains('has-video'))hoverPreviewVideo.play().catch(()=>{})}
   };
-  motion?.addEventListener('click',()=>{motionOff=!motionOff;applyMotion()});reduce.addEventListener?.('change',e=>{if(e.matches){motionOff=true;applyMotion()}});applyMotion();
+  motion?.addEventListener('click',()=>{motionOff=!motionOff;applyMotion()});
+  reduce.addEventListener?.('change',e=>{if(e.matches){motionOff=true;applyMotion()}});
+  applyMotion();
 
-  const reveal=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');reveal.unobserve(e.target)}}),{threshold:.07,rootMargin:'0px 0px -4% 0px'});qa('.reveal').forEach(el=>reveal.observe(el));
+  const reveal=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');reveal.unobserve(e.target)}}),{threshold:.07,rootMargin:'0px 0px -4% 0px'});
+  qa('.reveal').forEach(el=>reveal.observe(el));
+
   const preview=q('[data-index-preview]');
   const setPreview=src=>{if(!preview||!src||preview.getAttribute('src')===src)return;const wrap=preview.closest('.index-preview');wrap?.classList.add('is-changing');setTimeout(()=>{preview.src=src;wrap?.classList.remove('is-changing')},90)};
   qa('[data-preview]:not([data-preview-video]):not([data-preview-videos])').forEach(row=>{const fn=()=>setPreview(row.dataset.preview);row.addEventListener('mouseenter',fn);row.addEventListener('focus',fn)});
-  qa('[data-tabs]').forEach(set=>{const buttons=qa('[data-tab-src]',set),image=q('[data-tab-image]',set),caption=q('[data-tab-caption]',set);buttons.forEach(btn=>btn.addEventListener('click',()=>{buttons.forEach(b=>{const on=b===btn;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on))});if(!image)return;image.style.opacity='.2';setTimeout(()=>{image.src=btn.dataset.tabSrc||'';image.alt=btn.dataset.tabCaption||'Technical drawing';if(caption)caption.textContent=btn.dataset.tabCaption||'';image.style.opacity='1'},100)}))});
+
+  qa('[data-tabs]').forEach(set=>{
+    const buttons=qa('[data-tab-src]',set),image=q('[data-tab-image]',set),caption=q('[data-tab-caption]',set);
+    buttons.forEach(btn=>btn.addEventListener('click',()=>{
+      buttons.forEach(b=>{const on=b===btn;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on))});
+      if(!image)return;image.style.opacity='.2';
+      setTimeout(()=>{image.src=btn.dataset.tabSrc||'';image.alt=btn.dataset.tabCaption||'Technical drawing';if(caption)caption.textContent=btn.dataset.tabCaption||'';image.style.opacity='1'},100);
+    }))
+  });
 })();
