@@ -3,16 +3,52 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../">
   <title>Grand Théâtre de Genève — DATA C0RE</title>
-  <meta name="description" content="SMODE programming, projection integration and calibration for Grand Théâtre de Genève, 2023–2024.">
+  <meta name="description" content="SMODE programming, projection integration, cueing and on-site calibration for Grand Théâtre de Genève, 2023–2024.">
   <meta name="theme-color" content="#070707"><link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .pro-main-media{padding:0 clamp(20px,4vw,72px) clamp(44px,7vw,110px)}
+    .pro-main-media figure{margin:0;background:#020202}
+    .pro-main-media video{display:block;width:100%;aspect-ratio:16/9;max-height:78vh;object-fit:cover;background:#000}
+    .pro-main-media figcaption{padding-top:9px;color:var(--grey);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+    .pro-metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:28px}
+    .pro-metrics div{padding:14px;border-right:1px solid var(--line)}.pro-metrics div:first-child{padding-left:0}.pro-metrics div:last-child{border-right:0}
+    .pro-metrics strong{display:block;font-size:clamp(18px,2vw,30px);letter-spacing:-.04em}.pro-metrics span{display:block;margin-top:5px;color:var(--grey);font-size:9px;text-transform:uppercase;letter-spacing:.08em;line-height:1.35}
+    .pro-system{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:10px;align-items:center;margin-top:26px}
+    .pro-system div{min-height:96px;border:1px solid var(--line);padding:15px;background:#090909}.pro-system strong{display:block;font-size:13px}.pro-system span{display:block;margin-top:7px;color:var(--grey);font-size:9.5px;line-height:1.4}.pro-system>b{color:var(--acid)}
+    .pro-responsibilities{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:26px}.pro-responsibilities div{border-top:1px solid var(--line);padding:15px 0}.pro-responsibilities b{display:block;color:var(--cyan);font-size:9px;text-transform:uppercase;letter-spacing:.1em}.pro-responsibilities p{margin:9px 0 0;color:#b8b6b0;line-height:1.45}
+    @media(max-width:900px){.pro-main-media{padding-inline:18px}.pro-metrics{grid-template-columns:1fr 1fr}.pro-metrics div:nth-child(2){border-right:0}.pro-metrics div:nth-child(n+3){border-top:1px solid var(--line)}.pro-system{grid-template-columns:1fr}.pro-system>b{transform:rotate(90deg);justify-self:center}.pro-responsibilities{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
 <header class="site-header" data-header><a class="brand" href="index.html">DATA C0RE</a><div class="header-actions"><button class="motion-toggle" type="button" aria-pressed="false" data-motion-toggle><span class="motion-dot"></span><span data-motion-label>motion on</span></button><a class="nav-text" href="work.html">work</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>index ↗</button></div></header>
 <nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="lab.html">Lab</a><a href="about.html">About</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav>
 <main><article>
-<header class="project-hero"><div class="project-hero-copy reveal"><div><p class="eyebrow accent-cyan">Professional / institutional / 2023—2024</p><h1>Grand Théâtre<br>de Genève</h1></div><p class="project-intent">Projection content had to remain spatially coherent across monumental surfaces, strong geometric distortion and very short-throw optics.</p></div><div class="project-facts reveal"><span><b>Role</b> SMODE Programmer / Video Systems &amp; Projection Integration</span><span><b>Work</b> cues / soft edge / geometry / calibration</span><span><b>Context</b> opera / ballet / live production</span></div><figure class="project-hero-media reveal"><video muted loop playsinline poster="assets/media/grand-theatre/geometry.webp" data-lazy-video><source data-src="assets/media/grand-theatre/loop.mp4" type="video/mp4"></video></figure></header>
-<section class="project-section project-section--split"><div class="section-kicker reveal"><span>01</span><p>Projection integration</p></div><div class="prose-large reveal"><h2>Image geometry under stage constraints.</h2><p>The work covered video-system installation before performances, SMODE programming and cueing, collaboration with the artistic team, monumental soft edges, adaptation of content over strongly distorted projection planes and final on-site calibration.</p></div></section>
-<section class="project-section"><figure class="media-wide reveal"><img src="assets/media/grand-theatre/geometry.webp" alt="Projection geometry and integration work at Grand Théâtre de Genève" loading="lazy"><figcaption>Projection integration / geometry / calibration</figcaption></figure></section>
+<header class="project-hero">
+  <div class="project-hero-copy reveal"><div><p class="eyebrow accent-cyan">Professional / institutional / 2023—2024</p><h1>Grand Théâtre<br>de Genève</h1></div><p class="project-intent">Projection content had to remain spatially coherent across monumental surfaces, multiple planes, strong geometric distortion and very short-throw optics.</p></div>
+  <div class="project-facts reveal"><span><b>Role</b> SMODE Programmer / Video Systems &amp; Projection Integration</span><span><b>Work</b> installation / cues / soft edge / geometry</span><span><b>Delivery</b> calibration / performance-ready projection system</span></div>
+</header>
+
+<div class="pro-main-media reveal"><figure><video muted loop playsinline poster="assets/media/grand-theatre/hero.webp" data-lazy-video><source data-src="assets/media/grand-theatre/loop.mp4" type="video/mp4"></video><figcaption>Grand Théâtre de Genève / SMODE + projection integration / moving documentation</figcaption></figure></div>
+
+<section class="project-section project-section--split"><div class="section-kicker reveal"><span>01</span><p>Projection integration</p></div><div class="prose-large reveal"><h2>Image geometry under stage constraints.</h2><p>The work covered video-system installation before performances, SMODE programming, cue creation, collaboration with the artistic team, monumental soft-edge work and the adaptation of content across strongly distorted projection planes.</p><p>Ultra-short-throw optics made small physical variations visible immediately. Final calibration therefore connected software geometry, projector placement, surface alignment and show conditions rather than treating them as separate tasks.</p></div></section>
+
+<section class="project-section">
+  <div class="pro-metrics reveal">
+    <div><strong>SMODE</strong><span>programming / media composition</span></div>
+    <div><strong>Cues</strong><span>show states / performance operation</span></div>
+    <div><strong>Multi-plane</strong><span>projection geometry / deformation correction</span></div>
+    <div><strong>On site</strong><span>soft edge / optics / final calibration</span></div>
+  </div>
+  <div class="pro-system reveal" aria-label="Grand Théâtre projection workflow">
+    <div><strong>ARTISTIC CONTENT</strong><span>media / visual intentions / production requirements</span></div><b>→</b>
+    <div><strong>SMODE + CUES</strong><span>programming / timing / content adaptation</span></div><b>→</b>
+    <div><strong>GEOMETRY + SOFT EDGE</strong><span>multi-plane correction / overlap / masking</span></div><b>→</b>
+    <div><strong>PROJECTION + CALIBRATION</strong><span>ultra-short-throw optics / on-site validation</span></div>
+  </div>
+</section>
+
+<section class="project-section project-section--split project-section--quiet"><div class="section-kicker reveal"><span>02</span><p>Responsibility</p></div><div class="reveal"><div class="pro-responsibilities"><div><b>Before performance</b><p>Install the video system, prepare projection paths and make the SMODE environment operational for the production.</p></div><div><b>Programming</b><p>Build and adjust cues, geometry and content states in collaboration with the artistic and technical teams.</p></div><div><b>Optical integration</b><p>Manage monumental soft edges and heavily deformed surfaces while preserving continuity across projected planes.</p></div><div><b>Final validation</b><p>Calibrate the complete system on site so software, optics and stage architecture converge into one reproducible show state.</p></div></div></div></section>
+
 <nav class="project-next"><a href="projects/hardwinner.html"><span>Previous</span><b>Hardwinner</b></a><a href="projects/comedie.html"><span>Next</span><b>Comédie de Genève</b></a></nav>
 </article></main><script src="assets/js/main.js" defer></script>
 </body></html>
