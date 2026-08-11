@@ -153,10 +153,93 @@
 })();
 
 (() => {
+  if(!document.querySelector('link[data-responsive-css]')){
+    const css=document.createElement('link');
+    css.rel='stylesheet';
+    css.href=new URL('assets/css/responsive.css',document.baseURI).href;
+    css.dataset.responsiveCss='true';
+    document.head.appendChild(css);
+  }
   if(document.querySelector('script[data-fullpage-loader]'))return;
   const script=document.createElement('script');
   script.src=new URL('assets/js/fullpage.js',document.baseURI).href;
   script.defer=true;
   script.dataset.fullpageLoader='true';
   document.body.appendChild(script);
+})();
+
+(() => {
+  const panels=[...document.querySelectorAll('[data-about-panel]')];
+  if(!panels.length)return;
+  const videos=panels.map(panel=>panel.querySelector('[data-about-video]')).filter(Boolean);
+  if(!videos.length)return;
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const coarse=window.matchMedia('(pointer:coarse)');
+  const nativePause=new Map();
+  const segmentDuration=5;
+
+  const segmentBounds=video=>{
+    const segment=Number(video.dataset.segment);
+    if(!Number.isFinite(segment)||!Number.isFinite(video.duration)||video.duration<=1)return null;
+    const rawStart=segment*segmentDuration;
+    const start=Math.min(video.duration-.4,rawStart+.12);
+    const end=Math.min(video.duration-.18,rawStart+segmentDuration-.16);
+    return end>start?{start,end}:null;
+  };
+  const keepInsideSegment=video=>{
+    const bounds=segmentBounds(video);if(!bounds)return;
+    if(video.currentTime<bounds.start-.08||video.currentTime>=bounds.end){
+      try{video.currentTime=bounds.start}catch{}
+    }
+  };
+  const startVideo=video=>{
+    if(reduce.matches||document.hidden||video.dataset.ready!=='true')return;
+    keepInsideSegment(video);
+    video.play().catch(()=>{});
+  };
+
+  videos.forEach(video=>{
+    nativePause.set(video,video.pause.bind(video));
+    video.preload='auto';
+    video.loop=false;
+    try{Object.defineProperty(video,'pause',{configurable:true,value:()=>{}})}catch{}
+    const warm=()=>startVideo(video);
+    video.addEventListener('loadeddata',warm);
+    video.addEventListener('canplay',warm);
+    video.addEventListener('seeked',warm);
+    video.addEventListener('ended',()=>{keepInsideSegment(video);startVideo(video)});
+    const monitor=()=>{
+      if(!reduce.matches&&!document.hidden&&video.dataset.ready==='true')keepInsideSegment(video);
+      if('requestVideoFrameCallback' in video)video.requestVideoFrameCallback(monitor);
+      else setTimeout(monitor,80);
+    };
+    if('requestVideoFrameCallback' in video)video.requestVideoFrameCallback(monitor);else setTimeout(monitor,80);
+  });
+
+  let nearObserver=null;
+  const configurePlayback=()=>{
+    nearObserver?.disconnect();nearObserver=null;
+    if(reduce.matches){videos.forEach(video=>nativePause.get(video)?.());return}
+    if(!coarse.matches){videos.forEach(startVideo);return}
+    nearObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      const video=entry.target.querySelector('[data-about-video]');if(!video)return;
+      if(entry.isIntersecting)startVideo(video);else nativePause.get(video)?.();
+    }),{rootMargin:'110% 0px',threshold:0});
+    panels.forEach(panel=>nearObserver.observe(panel));
+  };
+  const retryWarm=()=>videos.forEach(video=>{
+    if(video.dataset.ready==='true')startVideo(video);
+    else video.addEventListener('loadedmetadata',()=>setTimeout(()=>startVideo(video),0),{once:true});
+  });
+
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden)videos.forEach(video=>nativePause.get(video)?.());
+    else{configurePlayback();retryWarm()}
+  });
+  reduce.addEventListener?.('change',configurePlayback);
+  coarse.addEventListener?.('change',configurePlayback);
+  configurePlayback();
+  retryWarm();
+  setTimeout(retryWarm,180);
+  setTimeout(retryWarm,700);
 })();
