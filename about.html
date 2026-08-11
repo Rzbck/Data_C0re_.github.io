@@ -37,7 +37,7 @@
     .system-detail b{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.11em;margin-bottom:8px}
     .system-detail p{margin:0;color:#aaa8a2;font-size:11px;line-height:1.45}
     .method-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14);margin-top:clamp(36px,5.4vh,62px);backdrop-filter:blur(3px)}
-    .method-grid article{padding:clamp(21px,2.5vw,36px) 18px;min-height:180px;border-right:1px solid rgba(255,255,255,.12);background:rgba(7,7,7,.2)}
+    .method-grid article{padding:clamp(21px,2.5vw,36px) 18px;min-height:180px;border-right:1px solid var(--line);background:rgba(7,7,7,.2)}
     .method-grid article:last-child{border-right:0}
     .method-grid h3{font-size:clamp(28px,3.4vw,52px);letter-spacing:-.05em;line-height:.9;margin:0 0 18px;text-transform:uppercase}
     .method-grid p{margin:0;color:#aaa8a2;font-size:11px;line-height:1.5;max-width:250px}
@@ -108,31 +108,16 @@
 
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
   const fullPage=()=>window.matchMedia('(min-width:821px) and (pointer:fine)').matches&&!reduce.matches;
-  const videoPool=[
-    './assets/media/about/originals/type-space.mp4',
-    './assets/media/about/originals/spatial-installation.mp4',
-    './assets/media/about/originals/graffiti-light.mp4',
-    './assets/media/about/originals/glsl-line-figure.mp4',
-    './assets/media/about/originals/iphone-nvidia-flex.mp4',
-    './assets/media/about/originals/code-console.mp4',
-    './assets/media/about/originals/particles-glsl.mp4',
-    './assets/media/about/originals/backstage-video-system.mp4',
-    './assets/media/about/originals/stage-screens.mp4',
-    './assets/media/about/originals/video-control-grid.mp4',
-    './assets/media/about/originals/touchdesigner-vs-light.mp4',
-    './assets/media/about/originals/graphic-tunnel.mp4',
-    './assets/media/about/originals/light-frame-tunnel.mp4',
-    './assets/media/about/originals/venue-projection.mp4',
-    './assets/media/about/originals/particle-field.mp4',
-    './assets/media/about/originals/building-projection.mp4',
-    './assets/media/about/originals/rgb-scanlines.mp4'
-  ];
-  const storageKey='data-c0re-about-last-videos-v1';
+  const masterVideo='./assets/media/about/about-background-master.mp4?v=20260811-1';
+  const segmentDuration=5;
+  const segmentCount=17;
+  const storageKey='data-c0re-about-last-segments-v1';
   let current=0;
   let animating=false;
   let wheelGesture=false;
   let wheelQuietTimer=null;
   let assignments=[];
+  let rates=[];
 
   const shuffled=list=>{
     const result=[...list];
@@ -144,36 +129,44 @@
   };
   const chooseAssignments=()=>{
     const previous=previousAssignments();
-    const available=shuffled(videoPool);
+    const available=shuffled(Array.from({length:segmentCount},(_,i)=>i));
     const picked=[];
     panels.forEach((_,index)=>{
-      let choice=available.find(src=>!picked.includes(src)&&src!==previous[index]);
-      if(!choice)choice=available.find(src=>!picked.includes(src));
-      if(!choice)choice=videoPool[index%videoPool.length];
+      let choice=available.find(segment=>!picked.includes(segment)&&segment!==previous[index]);
+      if(choice===undefined)choice=available.find(segment=>!picked.includes(segment));
+      if(choice===undefined)choice=index%segmentCount;
       picked.push(choice);
     });
     try{localStorage.setItem(storageKey,JSON.stringify(picked))}catch{}
     return picked;
   };
-  const randomSeek=video=>{
-    const duration=video.duration;
-    if(!Number.isFinite(duration)||duration<=1)return;
-    const min=Math.min(1,duration*.05);
-    const max=Math.max(min,duration-Math.min(1.5,duration*.1));
-    try{video.currentTime=min+Math.random()*Math.max(.01,max-min)}catch{}
+  const prepareVideo=(panel,index)=>{
+    const video=panel.querySelector('[data-about-video]');
+    if(!video)return;
+    const segment=assignments[index];
+    const rate=rates[index]||1;
+    video.pause();
+    video.dataset.ready='false';
+    video.src=masterVideo;
+    video.load();
+    const ready=()=>{
+      const duration=video.duration;
+      const segmentStart=segment*segmentDuration;
+      const latest=Math.max(segmentStart,Math.min(segmentStart+.7,duration-.5));
+      const target=Math.min(duration-.25,segmentStart+.12+Math.random()*Math.max(.05,latest-segmentStart-.12));
+      try{video.currentTime=Math.max(0,target)}catch{}
+      video.playbackRate=rate;
+      video.dataset.ready='true';
+      video.dataset.segment=String(segment);
+      if(panel.classList.contains('is-active')&&!reduce.matches)video.play().catch(()=>{});
+    };
+    if(video.readyState>=1)ready();
+    else video.addEventListener('loadedmetadata',ready,{once:true});
   };
   const assignRandomVideos=()=>{
     assignments=chooseAssignments();
-    panels.forEach((panel,index)=>{
-      const video=panel.querySelector('[data-about-video]');
-      if(!video)return;
-      video.pause();
-      video.src=assignments[index];
-      video.dataset.aboutSrc=assignments[index];
-      video.load();
-      if(video.readyState>=1)randomSeek(video);
-      else video.addEventListener('loadedmetadata',()=>randomSeek(video),{once:true});
-    });
+    rates=shuffled([.97,.99,1.01,1.03]);
+    panels.forEach(prepareVideo);
   };
 
   const clampIndex=index=>Math.max(0,Math.min(panels.length-1,index));
@@ -195,7 +188,7 @@
       panel.classList.toggle('is-active',active);
       const video=panel.querySelector('[data-about-video]');
       if(!video)return;
-      if(active&&!reduce.matches)video.play().catch(()=>{});
+      if(active&&!reduce.matches&&video.dataset.ready==='true')video.play().catch(()=>{});
       else video.pause();
     });
   };
