@@ -1,1 +1,91 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CV — DATA C0RE</title><meta name="theme-color" content="#070707"><link rel="stylesheet" href="./assets/css/styles.css"></head><body><header class="site-header" data-header><a class="brand" href="./index.html">DATA C0RE</a><div class="header-actions"><a class="nav-text" href="./work.html">work</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>index ↗</button></div></header><nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="./index.html">Home</a><a href="./work.html">Work</a><a href="./lab.html">Lab</a><a href="./about.html">About</a><a href="./cv.html">CV</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav><main><header class="page-intro reveal"><p class="eyebrow">Selected CV</p><h1>DATA<br>C0RE</h1><p>Digital artist / creative technologist / realtime audiovisual systems.</p></header><section class="page-section"><ol class="timeline reveal"><li><time>2025</time><strong>LUMINA / Geneva Lux — Creative Technologist / Realtime Systems &amp; Integration</strong><span>Fusion 360, fabrication coordination, network planning, LED integration and TouchDesigner programming.</span></li><li><time>2023—24</time><strong>Grand Théâtre de Genève — SMODE Programmer / Projection Integration</strong><span>Programming, cues, monumental soft edge and on-site projection calibration.</span></li><li><time>2021—23</time><strong>Comédie de Genève — Video systems / touring</strong><span>Venue adaptation, technical coordination, operation, surtitling and handover.</span></li><li><time>2016—18</time><strong>Hardwinner — Realtime AV Systems</strong><span>TouchDesigner, Resolume, GLSL, LED, DMX, show control and stage systems.</span></li></ol><div class="social-contact reveal"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></section></main><footer class="global-footer"><span>DATA C0RE / CV</span><div><a href="./work.html">Work</a><a href="./about.html">About</a></div></footer><script src="./assets/js/main.js" defer></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CV — DATA C0RE</title>
+  <meta name="description" content="Selected CV for DATA C0RE — digital artist and creative technologist working with realtime audiovisual systems.">
+  <meta name="theme-color" content="#070707"><link rel="stylesheet" href="./assets/css/styles.css">
+  <style>
+    .cv-intro{max-width:1040px}
+    .cv-intro p:last-child{max-width:760px}
+    .cv-section{padding:clamp(54px,8vw,112px) var(--page-pad);border-top:1px solid var(--line)}
+    .cv-head{display:grid;grid-template-columns:minmax(190px,.45fr) minmax(0,1.55fr);gap:clamp(30px,6vw,100px);margin-bottom:34px;align-items:end}
+    .cv-head p{margin:0;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
+    .cv-head h2{margin:0;font-size:clamp(36px,6vw,88px);line-height:.9;letter-spacing:-.055em;text-transform:uppercase}
+    .cv-list{border-top:1px solid var(--line)}
+    .cv-row{display:grid;grid-template-columns:130px minmax(230px,.85fr) minmax(0,1.15fr);gap:clamp(18px,3vw,48px);padding:26px 0;border-bottom:1px solid var(--line);align-items:start}
+    .cv-row time{font-size:11px;letter-spacing:.08em;color:var(--grey)}
+    .cv-title strong{display:block;font-size:clamp(17px,1.8vw,25px);line-height:1.15;letter-spacing:-.02em}
+    .cv-status{display:block;margin-top:7px;font-size:9px;text-transform:uppercase;letter-spacing:.11em;color:var(--grey)}
+    .cv-detail p{margin:0;color:#aaa8a2;font-size:12px;line-height:1.55;max-width:760px}
+    .cv-detail p + p{margin-top:8px}
+    .cv-detail b{color:var(--white);font-weight:500}
+    .cv-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .cv-tools div{padding:26px 20px 32px;border-right:1px solid var(--line)}
+    .cv-tools div:last-child{border-right:0}
+    .cv-tools b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.11em;margin-bottom:13px}
+    .cv-tools p{margin:0;color:#aaa8a2;font-size:12px;line-height:1.6}
+    .contexts{display:grid;grid-template-columns:minmax(180px,.45fr) minmax(0,1.55fr);gap:clamp(30px,6vw,100px);align-items:start}
+    .contexts-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--grey);margin:0}
+    .contexts-list{font-size:clamp(24px,4vw,58px);line-height:1.03;letter-spacing:-.04em;text-transform:uppercase;margin:0;max-width:1100px}
+    .cv-meta{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:46px;border:1px solid var(--line)}
+    .cv-meta div{background:#070707;padding:22px}
+    .cv-meta b{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.11em;margin-bottom:10px}
+    .cv-meta p{margin:0;color:#aaa8a2;font-size:12px;line-height:1.5}
+    .cv-links{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:38px}
+    .cv-links a{font-size:12px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--line);padding-bottom:5px}
+    @media(max-width:820px){.cv-head,.contexts{grid-template-columns:1fr}.cv-row{grid-template-columns:1fr;gap:10px}.cv-tools{grid-template-columns:1fr 1fr}.cv-tools div:nth-child(2){border-right:0}.cv-tools div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+    @media(max-width:520px){.cv-tools,.cv-meta{grid-template-columns:1fr}.cv-tools div{border-right:0;border-bottom:1px solid var(--line)}.cv-tools div:last-child{border-bottom:0}}
+  </style>
+</head>
+<body>
+<header class="site-header" data-header><a class="brand" href="./index.html">DATA C0RE</a><div class="header-actions"><a class="nav-text" href="./work.html">work</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>index ↗</button></div></header>
+<nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="./index.html">Home</a><a href="./work.html">Work</a><a href="./lab.html">Lab</a><a href="./about.html">About</a><a href="./cv.html">CV</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav>
+<main>
+  <header class="page-intro cv-intro reveal">
+    <p class="eyebrow">Selected CV</p>
+    <h1>DATA<br>C0RE</h1>
+    <p>Digital artist / creative technologist / realtime audiovisual systems. Selected artistic, collaborative and professional work across software, live performance, installation, projection and stage systems.</p>
+  </header>
+
+  <section class="cv-section">
+    <div class="cv-head reveal"><p>01 / Artistic + collaborative work</p><h2>Selected projects</h2></div>
+    <div class="cv-list reveal">
+      <article class="cv-row"><time>2026</time><div class="cv-title"><strong>Snake / Networked Retro System</strong><span class="cv-status">Solo project</span></div><div class="cv-detail"><p><b>Role:</b> concept, programming, visual direction and interactive system.</p><p>TouchDesigner / music sync / online leaderboard / database integration / game states.</p></div></article>
+      <article class="cv-row"><time>2025—27</time><div class="cv-title"><strong>LUMINA / Geneva Lux / StripLab</strong><span class="cv-status">Collaborative installation</span></div><div class="cv-detail"><p><b>Role:</b> Creative Technologist / Realtime Systems &amp; Integration.</p><p>Fusion 360 structure, fabrication coordination, network planning, LED integration, TouchDesigner programming, realtime light behaviour and technical integration.</p></div></article>
+      <article class="cv-row"><time>2025—26</time><div class="cv-title"><strong>Realtime Studies</strong><span class="cv-status">Solo research</span></div><div class="cv-detail"><p>Audio-reactive systems, Game of Life, realtime image behaviour and creative coding studies.</p></div></article>
+      <article class="cv-row"><time>2016—18</time><div class="cv-title"><strong>Hardwinner / Realtime AV Systems</strong><span class="cv-status">Collaborative projects</span></div><div class="cv-detail"><p><b>Role:</b> Core Creative &amp; Technical Contributor — Live AV Systems.</p><p>TouchDesigner / Resolume / GLSL / LED / DMX / show control / realtime stage systems.</p></div></article>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <div class="cv-head reveal"><p>02 / Professional + institutional</p><h2>Production work</h2></div>
+    <div class="cv-list reveal">
+      <article class="cv-row"><time>2023—24</time><div class="cv-title"><strong>Grand Théâtre de Genève</strong><span class="cv-status">Institutional production</span></div><div class="cv-detail"><p><b>Role:</b> SMODE Programmer / Video Systems &amp; Projection Integration.</p><p>Programming, cues, multi-plane projection, monumental soft-edge, adaptation to strongly distorted surfaces, ultra-short-throw optics and on-site calibration.</p></div></article>
+      <article class="cv-row"><time>2021—23</time><div class="cv-title"><strong>Comédie de Genève / touring video systems</strong><span class="cv-status">Professional contribution</span></div><div class="cv-detail"><p>Venue adaptation, technical coordination, interactive video operation, multilingual surtitling, testing, troubleshooting and handover for touring contexts.</p></div></article>
+      <article class="cv-row"><time>2016</time><div class="cv-title"><strong>Fun Radio Party / Chambéry</strong><span class="cv-status">Stage systems</span></div><div class="cv-detail"><p>Stage design, TouchDesigner / Resolume workflows and synchronized video-light behaviour for live show contexts.</p></div></article>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <div class="cv-head reveal"><p>03 / Systems + tools</p><h2>Working stack</h2></div>
+    <div class="cv-tools reveal">
+      <div><b>Realtime</b><p>TouchDesigner / GLSL / Python / SMODE / Resolume / Millumin</p></div>
+      <div><b>Protocols + control</b><p>DMX / Art-Net / OSC / APIs / WebSocket / DMX to SPI</p></div>
+      <div><b>Media + space</b><p>Projection / LED / realtime video / mapping / calibration / show control</p></div>
+      <div><b>Physical + prototyping</b><p>Fusion 360 / Arduino / ESP32 / Raspberry Pi / electronics integration / wood fabrication</p></div>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <div class="contexts reveal"><p class="contexts-label">04 / Selected venues + production contexts</p><p class="contexts-list">Geneva Lux / Grand Théâtre de Genève / Comédie de Genève / La Belle Électrique / Festival d’Avignon / Odéon–Théâtre de l’Europe / Piccolo Teatro di Milano / Théâtre de Carouge</p></div>
+    <div class="cv-meta reveal">
+      <div><b>Background</b><p>Professional practice in creative coding, interactive systems, live performance and media production, supported by continuous self-directed technical research.</p></div>
+      <div><b>Fabrication</b><p>CAP menuiserie-charpente / Fusion 360 / prototyping / construction and integration of physical audiovisual systems.</p></div>
+    </div>
+    <div class="cv-links reveal"><a href="./about.html">About ↗</a><a href="./work.html">Work ↗</a><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+  </section>
+</main>
+<footer class="global-footer"><span>DATA C0RE / CV</span><div><a href="./work.html">Work</a><a href="./about.html">About</a></div></footer>
+<script src="./assets/js/main.js" defer></script>
+</body></html>
