@@ -6,6 +6,7 @@
   <meta name="description" content="About DATA C0RE — digital artist and creative technologist working with realtime audiovisual systems, code, light and space.">
   <meta name="theme-color" content="#070707"><link rel="stylesheet" href="./assets/css/styles.css">
   <style>
+    :root{--page-pad:var(--gutter)}
     html{scroll-behavior:auto}
     body{overflow-x:hidden;overscroll-behavior-y:none}
     main{position:relative}
@@ -58,7 +59,7 @@
 <nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="./index.html">Home</a><a href="./work.html">Work</a><a href="./lab.html">Lab</a><a href="./about.html">About</a><a href="./cv.html">CV</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav>
 <main>
   <section class="about-panel is-active" id="profile" data-about-panel="profile">
-    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video></video></div>
+    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="auto" data-about-video data-stagger-video></video></div>
     <div class="about-panel-inner about-hero reveal">
       <div class="about-panel-index"><span>00 / Profile</span><span>DATA C0RE</span></div>
       <h1>ARTIST +<br>TECHNOLOGIST</h1>
@@ -68,7 +69,7 @@
   </section>
 
   <section class="about-panel" id="practice" data-about-panel="practice">
-    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video></video></div>
+    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="auto" data-about-video data-stagger-video></video></div>
     <div class="about-panel-inner">
       <div class="about-panel-index"><span>01 / Practice</span><span>Software → Space</span></div>
       <div class="about-section-grid reveal">
@@ -83,7 +84,7 @@
   </section>
 
   <section class="about-panel" id="method" data-about-panel="method">
-    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video></video></div>
+    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="auto" data-about-video data-stagger-video></video></div>
     <div class="about-panel-inner">
       <div class="about-panel-index"><span>02 / Method</span><span>Build / Test / Connect / Adapt</span></div>
       <div class="about-section-grid reveal"><h2 class="about-display">Build.<br>Test.<br>Connect.<br>Adapt.</h2><p class="about-copy">Years of work across live performance, touring, fabrication and media systems shaped a practice in which experimentation and reliability are not opposites. The same project can move from a software prototype to a public installation or stage environment without treating artistic logic and technical implementation as separate disciplines.</p></div>
@@ -92,7 +93,7 @@
   </section>
 
   <section class="about-panel direction" id="direction" data-about-panel="direction">
-    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video></video></div>
+    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="auto" data-about-video data-stagger-video></video></div>
     <div class="about-panel-inner reveal">
       <div class="about-panel-index"><span>03 / Current direction / 2027</span><span>Software-first / touring-light</span></div>
       <h2 class="about-display">Portable<br>solo<br>practice.</h2>
@@ -107,17 +108,20 @@
   if(!panels.length)return;
 
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const finePointer=window.matchMedia('(pointer:fine)');
   const fullPage=()=>window.matchMedia('(min-width:821px) and (pointer:fine)').matches&&!reduce.matches;
-  const masterVideo='./assets/media/about/about-background-master.mp4?v=20260811-1';
+  const masterVideo='./assets/media/about/about-background-master.mp4?v=20260811-2';
   const segmentDuration=5;
   const segmentCount=17;
-  const storageKey='data-c0re-about-last-segments-v1';
+  const storageKey='data-c0re-about-last-segments-v2';
+  const videos=panels.map(panel=>panel.querySelector('[data-about-video]')).filter(Boolean);
   let current=0;
   let animating=false;
   let wheelGesture=false;
   let wheelQuietTimer=null;
   let assignments=[];
   let rates=[];
+  let nearObserver=null;
 
   const shuffled=list=>{
     const result=[...list];
@@ -140,33 +144,58 @@
     try{localStorage.setItem(storageKey,JSON.stringify(picked))}catch{}
     return picked;
   };
+  const playVideo=video=>{
+    if(reduce.matches||document.hidden||video.dataset.ready!=='true')return;
+    video.play().catch(()=>{});
+  };
+  const nativePause=video=>HTMLMediaElement.prototype.pause.call(video);
   const prepareVideo=(panel,index)=>{
     const video=panel.querySelector('[data-about-video]');
     if(!video)return;
     const segment=assignments[index];
     const rate=rates[index]||1;
-    video.pause();
+    nativePause(video);
+    video.preload='auto';
+    video.loop=true;
     video.dataset.ready='false';
     video.src=masterVideo;
     video.load();
-    const ready=()=>{
+    const seekToAssignment=()=>{
       const duration=video.duration;
+      if(!Number.isFinite(duration)||duration<=1)return;
       const segmentStart=segment*segmentDuration;
       const latest=Math.max(segmentStart,Math.min(segmentStart+.7,duration-.5));
       const target=Math.min(duration-.25,segmentStart+.12+Math.random()*Math.max(.05,latest-segmentStart-.12));
       try{video.currentTime=Math.max(0,target)}catch{}
       video.playbackRate=rate;
-      video.dataset.ready='true';
       video.dataset.segment=String(segment);
-      if(panel.classList.contains('is-active')&&!reduce.matches)video.play().catch(()=>{});
+      const ready=()=>{
+        video.dataset.ready='true';
+        if(finePointer.matches)playVideo(video);
+      };
+      if(video.readyState>=2&&!video.seeking)ready();
+      else if(video.seeking)video.addEventListener('seeked',ready,{once:true});
+      else video.addEventListener('canplay',ready,{once:true});
     };
-    if(video.readyState>=1)ready();
-    else video.addEventListener('loadedmetadata',ready,{once:true});
+    if(video.readyState>=1)seekToAssignment();
+    else video.addEventListener('loadedmetadata',seekToAssignment,{once:true});
   };
   const assignRandomVideos=()=>{
     assignments=chooseAssignments();
     rates=shuffled([.97,.99,1.01,1.03]);
     panels.forEach(prepareVideo);
+  };
+  const configurePlayback=()=>{
+    nearObserver?.disconnect();
+    nearObserver=null;
+    if(reduce.matches){videos.forEach(nativePause);return}
+    if(finePointer.matches){videos.forEach(playVideo);return}
+    nearObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      const video=entry.target.querySelector('[data-about-video]');
+      if(!video)return;
+      if(entry.isIntersecting)playVideo(video);else nativePause(video);
+    }),{rootMargin:'110% 0px',threshold:0});
+    panels.forEach(panel=>nearObserver.observe(panel));
   };
 
   const clampIndex=index=>Math.max(0,Math.min(panels.length-1,index));
@@ -180,17 +209,9 @@
     });
     return best;
   };
-
   const setActive=index=>{
     current=clampIndex(index);
-    panels.forEach((panel,i)=>{
-      const active=i===current;
-      panel.classList.toggle('is-active',active);
-      const video=panel.querySelector('[data-about-video]');
-      if(!video)return;
-      if(active&&!reduce.matches&&video.dataset.ready==='true')video.play().catch(()=>{});
-      else video.pause();
-    });
+    panels.forEach((panel,i)=>panel.classList.toggle('is-active',i===current));
   };
 
   const easeInOut=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
@@ -208,21 +229,15 @@
       const t=Math.min(1,(now-started)/duration);
       window.scrollTo(0,start+distance*easeInOut(t));
       if(t<1)requestAnimationFrame(frame);
-      else{
-        window.scrollTo(0,target);
-        animating=false;
-      }
+      else{window.scrollTo(0,target);animating=false}
     };
     requestAnimationFrame(frame);
   };
-
   const move=direction=>{
     const base=nearestIndex();
     const next=clampIndex(base+direction);
-    if(next!==base)goTo(next);
-    else setActive(base);
+    if(next!==base)goTo(next);else setActive(base);
   };
-
   const endWheelGestureSoon=()=>{
     clearTimeout(wheelQuietTimer);
     wheelQuietTimer=setTimeout(()=>{wheelGesture=false},190);
@@ -244,16 +259,8 @@
     let direction=0;
     if(event.key==='ArrowDown'||event.key==='PageDown'||(event.key===' '&&!event.shiftKey))direction=1;
     if(event.key==='ArrowUp'||event.key==='PageUp'||(event.key===' '&&event.shiftKey))direction=-1;
-    if(event.key==='Home'){
-      event.preventDefault();
-      if(!event.repeat&&!animating)goTo(0);
-      return;
-    }
-    if(event.key==='End'){
-      event.preventDefault();
-      if(!event.repeat&&!animating)goTo(panels.length-1);
-      return;
-    }
+    if(event.key==='Home'){event.preventDefault();if(!event.repeat&&!animating)goTo(0);return}
+    if(event.key==='End'){event.preventDefault();if(!event.repeat&&!animating)goTo(panels.length-1);return}
     if(!direction)return;
     event.preventDefault();
     if(event.repeat||animating)return;
@@ -264,26 +271,30 @@
   window.addEventListener('scroll',()=>{
     if(animating||scrollTick)return;
     scrollTick=true;
-    requestAnimationFrame(()=>{
-      setActive(nearestIndex());
-      scrollTick=false;
-    });
+    requestAnimationFrame(()=>{setActive(nearestIndex());scrollTick=false});
   },{passive:true});
 
   const syncMode=()=>{
     current=nearestIndex();
     setActive(current);
     if(fullPage()&&!animating)window.scrollTo(0,panels[current].offsetTop);
+    configurePlayback();
   };
   window.addEventListener('resize',syncMode,{passive:true});
   reduce.addEventListener?.('change',syncMode);
+  finePointer.addEventListener?.('change',configurePlayback);
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden)videos.forEach(nativePause);else configurePlayback();
+  });
   window.addEventListener('pageshow',event=>{
     if(!event.persisted)return;
     assignRandomVideos();
     setActive(nearestIndex());
+    configurePlayback();
   });
+
   assignRandomVideos();
-  requestAnimationFrame(syncMode);
+  requestAnimationFrame(()=>{syncMode();setTimeout(configurePlayback,120)});
 })();
 </script>
 </body></html>
