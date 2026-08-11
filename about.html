@@ -6,87 +6,94 @@
   <meta name="description" content="About DATA C0RE — digital artist and creative technologist working with realtime audiovisual systems, code, light and space.">
   <meta name="theme-color" content="#070707"><link rel="stylesheet" href="./assets/css/styles.css">
   <style>
-    .about-intro{max-width:980px}
-    .about-intro p:last-child{max-width:850px}
-    .about-section{padding:clamp(62px,9vw,130px) var(--page-pad);border-top:1px solid var(--line)}
-    .about-section-grid{display:grid;grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr);gap:clamp(34px,7vw,120px);align-items:start}
+    html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+    body{overflow-x:hidden}
+    main{position:relative}
+    .about-panel{position:relative;min-height:100svh;scroll-snap-align:start;scroll-snap-stop:always;display:grid;align-content:center;padding:clamp(108px,12vh,150px) var(--page-pad) clamp(64px,9vh,110px);border-top:1px solid var(--line);overflow:hidden}
+    .about-panel:first-child{border-top:0}
+    .about-panel-inner{position:relative;z-index:2;width:100%}
+    .about-panel-media{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.24;display:none}
+    .about-panel.has-media .about-panel-media{display:block}
+    .about-panel-media video{width:100%;height:100%;object-fit:cover}
+    .about-panel::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(7,7,7,.94) 0%,rgba(7,7,7,.82) 44%,rgba(7,7,7,.48) 100%)}
+    .about-panel-index{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:clamp(26px,4vh,48px);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
+    .about-panel-index span:last-child{color:#777}
+    .about-hero{max-width:1120px}
+    .about-hero h1{font-size:clamp(72px,12vw,190px);line-height:.78;letter-spacing:-.075em;margin:0;text-transform:uppercase}
+    .about-hero p{font-size:clamp(18px,2.2vw,30px);line-height:1.28;letter-spacing:-.025em;max-width:900px;margin:clamp(32px,5vh,58px) 0 0}
+    .about-scroll-cue{position:absolute;left:var(--page-pad);bottom:28px;z-index:3;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--grey)}
+    .about-section-grid{display:grid;grid-template-columns:minmax(260px,.78fr) minmax(0,1.22fr);gap:clamp(34px,7vw,120px);align-items:start}
     .about-kicker{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);margin:0}
-    .about-display{font-size:clamp(48px,8vw,128px);line-height:.83;letter-spacing:-.065em;margin:12px 0 0;text-transform:uppercase;font-weight:700}
-    .about-copy{max-width:760px;font-size:clamp(17px,2vw,27px);line-height:1.3;letter-spacing:-.02em;margin:0}
-    .about-copy + .about-copy{margin-top:1.05em}
-    .system-chain{margin-top:clamp(52px,7vw,92px);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-    .system-chain-line{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));align-items:center;min-height:110px}
-    .system-chain-line span{padding:22px 14px;border-right:1px solid var(--line);font-size:clamp(13px,1.35vw,19px);text-transform:uppercase;letter-spacing:.03em}
+    .about-display{font-size:clamp(52px,8vw,126px);line-height:.82;letter-spacing:-.065em;margin:10px 0 0;text-transform:uppercase;font-weight:700}
+    .about-copy{max-width:760px;font-size:clamp(17px,1.9vw,26px);line-height:1.3;letter-spacing:-.02em;margin:0}
+    .about-copy + .about-copy{margin-top:1em}
+    .system-chain{margin-top:clamp(32px,5vh,58px);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .system-chain-line{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));align-items:center}
+    .system-chain-line span{padding:18px 12px;border-right:1px solid var(--line);font-size:clamp(12px,1.2vw,17px);text-transform:uppercase;letter-spacing:.035em}
     .system-chain-line span:last-child{border-right:0}
-    .system-detail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:1px solid var(--line)}
-    .system-detail div{padding:22px 18px 28px;border-right:1px solid var(--line)}
+    .system-detail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line)}
+    .system-detail div{padding:18px 16px 21px;border-right:1px solid var(--line)}
     .system-detail div:last-child{border-right:0}
-    .system-detail b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.11em;margin-bottom:11px}
-    .system-detail p{margin:0;color:#aaa8a2;font-size:12px;line-height:1.5}
-    .method-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:clamp(42px,6vw,78px)}
-    .method-grid article{padding:clamp(26px,3vw,48px) 20px;min-height:230px;border-right:1px solid var(--line)}
+    .system-detail b{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.11em;margin-bottom:8px}
+    .system-detail p{margin:0;color:#aaa8a2;font-size:11px;line-height:1.45}
+    .method-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:clamp(34px,5vh,58px)}
+    .method-grid article{padding:clamp(22px,2.7vw,38px) 18px;min-height:190px;border-right:1px solid var(--line)}
     .method-grid article:last-child{border-right:0}
-    .method-grid h3{font-size:clamp(30px,4vw,64px);letter-spacing:-.05em;line-height:.9;margin:0 0 22px;text-transform:uppercase}
-    .method-grid p{margin:0;color:#aaa8a2;font-size:12px;line-height:1.55;max-width:260px}
+    .method-grid h3{font-size:clamp(28px,3.5vw,54px);letter-spacing:-.05em;line-height:.9;margin:0 0 18px;text-transform:uppercase}
+    .method-grid p{margin:0;color:#aaa8a2;font-size:11px;line-height:1.5;max-width:250px}
     .direction{background:#0b0b0b}
-    .direction .about-display{max-width:1100px}
-    .direction-copy{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:clamp(30px,8vw,120px);margin-top:clamp(42px,6vw,84px);align-items:end}
-    .direction-copy p{font-size:clamp(17px,2vw,27px);line-height:1.3;letter-spacing:-.02em;margin:0;max-width:760px}
-    .direction-tag{font-size:10px!important;line-height:1.6!important;text-transform:uppercase;letter-spacing:.12em!important;color:var(--grey);border-top:1px solid var(--line);padding-top:15px}
-    .about-links{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:36px}
+    .direction .about-display{max-width:1050px}
+    .direction-copy{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:clamp(30px,8vw,110px);margin-top:clamp(34px,5vh,62px);align-items:end}
+    .direction-copy p{font-size:clamp(17px,1.9vw,26px);line-height:1.3;letter-spacing:-.02em;margin:0;max-width:760px}
+    .direction-tag{font-size:10px!important;line-height:1.6!important;text-transform:uppercase;letter-spacing:.12em!important;color:var(--grey);border-top:1px solid var(--line);padding-top:14px}
+    .about-links{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:30px}
     .about-links a{font-size:12px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--line);padding-bottom:5px}
-    @media(max-width:820px){.about-section-grid,.direction-copy{grid-template-columns:1fr}.system-chain-line{grid-template-columns:repeat(2,1fr)}.system-chain-line span{border-bottom:1px solid var(--line)}.system-detail,.method-grid{grid-template-columns:1fr 1fr}.system-detail div:nth-child(2),.method-grid article:nth-child(2){border-right:0}.system-detail div:nth-child(-n+2),.method-grid article:nth-child(-n+2){border-bottom:1px solid var(--line)}}
-    @media(max-width:520px){.system-detail,.method-grid{grid-template-columns:1fr}.system-detail div,.method-grid article{border-right:0!important;border-bottom:1px solid var(--line)}.system-detail div:last-child,.method-grid article:last-child{border-bottom:0}}
+    @media(max-height:760px) and (min-width:821px){.about-panel{padding-top:96px;padding-bottom:48px}.about-display{font-size:clamp(44px,7vw,96px)}.about-copy,.direction-copy p{font-size:17px}.system-chain{margin-top:26px}.method-grid{margin-top:28px}.method-grid article{min-height:160px;padding-top:20px;padding-bottom:20px}}
+    @media(max-width:820px){html{scroll-snap-type:y proximity}.about-panel{min-height:100svh;scroll-snap-stop:normal}.about-section-grid,.direction-copy{grid-template-columns:1fr}.system-chain-line{grid-template-columns:repeat(2,1fr)}.system-chain-line span{border-bottom:1px solid var(--line)}.system-detail,.method-grid{grid-template-columns:1fr 1fr}.system-detail div:nth-child(2),.method-grid article:nth-child(2){border-right:0}.system-detail div:nth-child(-n+2),.method-grid article:nth-child(-n+2){border-bottom:1px solid var(--line)}.about-panel::after{background:rgba(7,7,7,.84)}}
+    @media(max-width:520px){.system-detail,.method-grid{grid-template-columns:1fr}.system-detail div,.method-grid article{border-right:0!important;border-bottom:1px solid var(--line)}.system-detail div:last-child,.method-grid article:last-child{border-bottom:0}.about-hero h1{font-size:clamp(62px,20vw,102px)}}
+    @media(prefers-reduced-motion:reduce){html{scroll-snap-type:none;scroll-behavior:auto}}
   </style>
 </head>
 <body>
 <header class="site-header" data-header><a class="brand" href="./index.html">DATA C0RE</a><div class="header-actions"><a class="nav-text" href="./work.html">work</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>index ↗</button></div></header>
 <nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="./index.html">Home</a><a href="./work.html">Work</a><a href="./lab.html">Lab</a><a href="./about.html">About</a><a href="./cv.html">CV</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav>
 <main>
-  <header class="page-intro about-intro reveal">
-    <p class="eyebrow">Profile</p>
-    <h1>ARTIST +<br>TECHNOLOGIST</h1>
-    <p>DATA C0RE is a digital artist and creative technologist working with real-time audiovisual systems. The practice connects code, sound, data, image and light to create behaviours that can exist on screen, on stage or within physical space.</p>
-  </header>
-
-  <section class="about-section">
-    <div class="about-section-grid reveal">
-      <div><p class="about-kicker">01 / Practice</p><h2 class="about-display">Systems<br>rather than<br>fixed images.</h2></div>
-      <div>
-        <p class="about-copy">The work begins with behaviours, relationships and control structures rather than a predetermined image. Systems can react to sound, data, performers, spatial constraints or their own internal logic.</p>
-        <p class="about-copy">TouchDesigner is a central environment in this practice, alongside realtime graphics, GLSL, Python and networked control. Depending on the project, the same logic can remain entirely inside a computer or extend into projection, LED, lighting and architecture.</p>
-      </div>
+  <section class="about-panel" id="profile" data-about-panel="profile">
+    <div class="about-panel-inner about-hero reveal">
+      <div class="about-panel-index"><span>00 / Profile</span><span>DATA C0RE</span></div>
+      <h1>ARTIST +<br>TECHNOLOGIST</h1>
+      <p>DATA C0RE is a digital artist and creative technologist working with real-time audiovisual systems. The practice connects code, sound, data, image and light to create behaviours that can exist on screen, on stage or within physical space.</p>
     </div>
+    <span class="about-scroll-cue">scroll ↓</span>
+  </section>
 
-    <div class="system-chain reveal" aria-label="From software to space">
-      <div class="system-chain-line"><span>Code</span><span>Behaviour</span><span>Signal</span><span>Image</span><span>Light</span><span>Space</span></div>
-      <div class="system-detail">
-        <div><b>Software</b><p>Realtime graphics / creative coding / interaction / game logic.</p></div>
-        <div><b>Signal</b><p>Sound / data / OSC / DMX / Art-Net / networked control.</p></div>
-        <div><b>Output</b><p>Video / projection / LED / light / spatial media.</p></div>
-        <div><b>Physical</b><p>Prototyping / fabrication / installation / calibration.</p></div>
+  <section class="about-panel" id="practice" data-about-panel="practice">
+    <div class="about-panel-inner">
+      <div class="about-panel-index"><span>01 / Practice</span><span>Software → Space</span></div>
+      <div class="about-section-grid reveal">
+        <div><p class="about-kicker">Practice</p><h2 class="about-display">Systems<br>rather than<br>fixed images.</h2></div>
+        <div><p class="about-copy">The work begins with behaviours, relationships and control structures rather than a predetermined image. Systems can react to sound, data, performers, spatial constraints or their own internal logic.</p><p class="about-copy">TouchDesigner is a central environment in this practice, alongside realtime graphics, GLSL, Python and networked control. Depending on the project, the same logic can remain entirely inside a computer or extend into projection, LED, lighting and architecture.</p></div>
+      </div>
+      <div class="system-chain reveal" aria-label="From software to space">
+        <div class="system-chain-line"><span>Code</span><span>Behaviour</span><span>Signal</span><span>Image</span><span>Light</span><span>Space</span></div>
+        <div class="system-detail"><div><b>Software</b><p>Realtime graphics / creative coding / interaction / game logic.</p></div><div><b>Signal</b><p>Sound / data / OSC / DMX / Art-Net / networked control.</p></div><div><b>Output</b><p>Video / projection / LED / light / spatial media.</p></div><div><b>Physical</b><p>Prototyping / fabrication / installation / calibration.</p></div></div>
       </div>
     </div>
   </section>
 
-  <section class="about-section">
-    <div class="about-section-grid reveal">
-      <div><p class="about-kicker">02 / Method</p><h2 class="about-display">Build.<br>Test.<br>Connect.<br>Adapt.</h2></div>
-      <p class="about-copy">Years of work across live performance, touring, fabrication and media systems shaped a practice in which experimentation and reliability are not opposites. The same project can move from a software prototype to a public installation or stage environment without treating artistic logic and technical implementation as separate disciplines.</p>
-    </div>
-    <div class="method-grid reveal">
-      <article><h3>Build</h3><p>Develop systems from their underlying logic upward: software, interfaces, behaviours and control structures.</p></article>
-      <article><h3>Test</h3><p>Prototype directly, expose failure modes and refine the system through use rather than presentation alone.</p></article>
-      <article><h3>Connect</h3><p>Link software to sound, networks, cameras, projection, LEDs, lighting and physical space.</p></article>
-      <article><h3>Adapt</h3><p>Design for changing technical conditions, from laptop-scale studies to installations and touring environments.</p></article>
+  <section class="about-panel" id="method" data-about-panel="method">
+    <div class="about-panel-inner">
+      <div class="about-panel-index"><span>02 / Method</span><span>Build / Test / Connect / Adapt</span></div>
+      <div class="about-section-grid reveal"><div><p class="about-kicker">Method</p><h2 class="about-display">Build.<br>Test.<br>Connect.<br>Adapt.</h2></div><p class="about-copy">Years of work across live performance, touring, fabrication and media systems shaped a practice in which experimentation and reliability are not opposites. The same project can move from a software prototype to a public installation or stage environment without treating artistic logic and technical implementation as separate disciplines.</p></div>
+      <div class="method-grid reveal"><article><h3>Build</h3><p>Develop systems from their underlying logic upward: software, interfaces, behaviours and control structures.</p></article><article><h3>Test</h3><p>Prototype directly, expose failure modes and refine the system through use rather than presentation alone.</p></article><article><h3>Connect</h3><p>Link software to sound, networks, cameras, projection, LEDs, lighting and physical space.</p></article><article><h3>Adapt</h3><p>Design for changing technical conditions, from laptop-scale studies to installations and touring environments.</p></article></div>
     </div>
   </section>
 
-  <section class="about-section direction">
-    <div class="reveal"><p class="about-kicker accent-acid">03 / Current direction / 2027</p><h2 class="about-display">Portable<br>solo<br>practice.</h2></div>
-    <div class="direction-copy reveal">
-      <p>The current direction focuses on self-contained audiovisual works with a lightweight touring footprint: software-first systems that remain compact in transport while being able to expand through sound, projection and spatial infrastructure available on site.</p>
-      <div><p class="direction-tag">Laptop-scale in transport<br>Festival-scale in sound / projection / space</p><div class="about-links"><a href="./work.html">Work ↗</a><a href="./cv.html">CV ↗</a><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div>
+  <section class="about-panel direction" id="direction" data-about-panel="direction">
+    <div class="about-panel-inner reveal">
+      <div class="about-panel-index"><span>03 / Current direction / 2027</span><span>Portable solo practice</span></div>
+      <p class="about-kicker accent-acid">Current direction / 2027</p><h2 class="about-display">Portable<br>solo<br>practice.</h2>
+      <div class="direction-copy"><p>The current direction focuses on self-contained audiovisual works with a lightweight touring footprint: software-first systems that remain compact in transport while being able to expand through sound, projection and spatial infrastructure available on site.</p><div><p class="direction-tag">Laptop-scale in transport<br>Festival-scale in sound / projection / space</p><div class="about-links"><a href="./work.html">Work ↗</a><a href="./cv.html">CV ↗</a><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></div>
     </div>
   </section>
 </main>
