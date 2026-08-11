@@ -13,10 +13,10 @@
     .about-panel:first-child{border-top:0}
     .about-panel-inner{position:relative;z-index:2;width:100%;transition:transform .72s cubic-bezier(.22,.61,.36,1),opacity .58s ease;transform:translateY(12px);opacity:.78}
     .about-panel.is-active .about-panel-inner{transform:none;opacity:1}
-    .about-panel-media{position:absolute;inset:-2%;z-index:0;pointer-events:none;background:#070707;overflow:hidden}
-    .about-panel-media video{display:block;width:100%;height:100%;object-fit:cover;background:#070707;filter:saturate(.72) contrast(1.06) brightness(.72);transform:scale(1.025)}
-    .about-panel::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(7,7,7,.91) 0%,rgba(7,7,7,.78) 43%,rgba(7,7,7,.48) 100%)}
-    .about-panel:nth-child(even)::after{background:linear-gradient(90deg,rgba(7,7,7,.88) 0%,rgba(7,7,7,.72) 51%,rgba(7,7,7,.45) 100%)}
+    .about-panel-media{position:absolute;inset:-1.5%;z-index:0;pointer-events:none;background:#070707;overflow:hidden}
+    .about-panel-media video{display:block;width:100%;height:100%;object-fit:cover;object-position:center center;background:#070707;filter:none;transform:scale(1.015)}
+    .about-panel::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(7,7,7,.92) 0%,rgba(7,7,7,.78) 43%,rgba(7,7,7,.44) 100%)}
+    .about-panel:nth-child(even)::after{background:linear-gradient(90deg,rgba(7,7,7,.89) 0%,rgba(7,7,7,.73) 51%,rgba(7,7,7,.41) 100%)}
     .about-panel-index{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:clamp(28px,4.4vh,50px);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
     .about-panel-index span:last-child{color:#777}
     .about-hero{max-width:1120px}
@@ -58,7 +58,7 @@
 <nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="./index.html">Home</a><a href="./work.html">Work</a><a href="./lab.html">Lab</a><a href="./about.html">About</a><a href="./cv.html">CV</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav>
 <main>
   <section class="about-panel is-active" id="profile" data-about-panel="profile">
-    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video><source src="./assets/media/about/about-profile-mashup.mp4" type="video/mp4"></video></div>
+    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video></video></div>
     <div class="about-panel-inner about-hero reveal">
       <div class="about-panel-index"><span>00 / Profile</span><span>DATA C0RE</span></div>
       <h1>ARTIST +<br>TECHNOLOGIST</h1>
@@ -68,7 +68,7 @@
   </section>
 
   <section class="about-panel" id="practice" data-about-panel="practice">
-    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video><source src="./assets/media/about/about-practice-mashup.mp4" type="video/mp4"></video></div>
+    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video></video></div>
     <div class="about-panel-inner">
       <div class="about-panel-index"><span>01 / Practice</span><span>Software → Space</span></div>
       <div class="about-section-grid reveal">
@@ -83,7 +83,7 @@
   </section>
 
   <section class="about-panel" id="method" data-about-panel="method">
-    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video><source src="./assets/media/about/about-method-mashup.mp4" type="video/mp4"></video></div>
+    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video></video></div>
     <div class="about-panel-inner">
       <div class="about-panel-index"><span>02 / Method</span><span>Build / Test / Connect / Adapt</span></div>
       <div class="about-section-grid reveal"><h2 class="about-display">Build.<br>Test.<br>Connect.<br>Adapt.</h2><p class="about-copy">Years of work across live performance, touring, fabrication and media systems shaped a practice in which experimentation and reliability are not opposites. The same project can move from a software prototype to a public installation or stage environment without treating artistic logic and technical implementation as separate disciplines.</p></div>
@@ -92,7 +92,7 @@
   </section>
 
   <section class="about-panel direction" id="direction" data-about-panel="direction">
-    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video><source src="./assets/media/about/about-direction-mashup.mp4" type="video/mp4"></video></div>
+    <div class="about-panel-media" aria-hidden="true"><video muted loop playsinline preload="metadata" data-about-video data-stagger-video></video></div>
     <div class="about-panel-inner reveal">
       <div class="about-panel-index"><span>03 / Current direction / 2027</span><span>Software-first / touring-light</span></div>
       <h2 class="about-display">Portable<br>solo<br>practice.</h2>
@@ -108,10 +108,73 @@
 
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
   const fullPage=()=>window.matchMedia('(min-width:821px) and (pointer:fine)').matches&&!reduce.matches;
+  const videoPool=[
+    './assets/media/about/originals/type-space.mp4',
+    './assets/media/about/originals/spatial-installation.mp4',
+    './assets/media/about/originals/graffiti-light.mp4',
+    './assets/media/about/originals/glsl-line-figure.mp4',
+    './assets/media/about/originals/iphone-nvidia-flex.mp4',
+    './assets/media/about/originals/code-console.mp4',
+    './assets/media/about/originals/particles-glsl.mp4',
+    './assets/media/about/originals/backstage-video-system.mp4',
+    './assets/media/about/originals/stage-screens.mp4',
+    './assets/media/about/originals/video-control-grid.mp4',
+    './assets/media/about/originals/touchdesigner-vs-light.mp4',
+    './assets/media/about/originals/graphic-tunnel.mp4',
+    './assets/media/about/originals/light-frame-tunnel.mp4',
+    './assets/media/about/originals/venue-projection.mp4',
+    './assets/media/about/originals/particle-field.mp4',
+    './assets/media/about/originals/building-projection.mp4',
+    './assets/media/about/originals/rgb-scanlines.mp4'
+  ];
+  const storageKey='data-c0re-about-last-videos-v1';
   let current=0;
   let animating=false;
   let wheelGesture=false;
   let wheelQuietTimer=null;
+  let assignments=[];
+
+  const shuffled=list=>{
+    const result=[...list];
+    for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]]}
+    return result;
+  };
+  const previousAssignments=()=>{
+    try{const parsed=JSON.parse(localStorage.getItem(storageKey)||'[]');return Array.isArray(parsed)?parsed:[]}catch{return[]}
+  };
+  const chooseAssignments=()=>{
+    const previous=previousAssignments();
+    const available=shuffled(videoPool);
+    const picked=[];
+    panels.forEach((_,index)=>{
+      let choice=available.find(src=>!picked.includes(src)&&src!==previous[index]);
+      if(!choice)choice=available.find(src=>!picked.includes(src));
+      if(!choice)choice=videoPool[index%videoPool.length];
+      picked.push(choice);
+    });
+    try{localStorage.setItem(storageKey,JSON.stringify(picked))}catch{}
+    return picked;
+  };
+  const randomSeek=video=>{
+    const duration=video.duration;
+    if(!Number.isFinite(duration)||duration<=1)return;
+    const min=Math.min(1,duration*.05);
+    const max=Math.max(min,duration-Math.min(1.5,duration*.1));
+    try{video.currentTime=min+Math.random()*Math.max(.01,max-min)}catch{}
+  };
+  const assignRandomVideos=()=>{
+    assignments=chooseAssignments();
+    panels.forEach((panel,index)=>{
+      const video=panel.querySelector('[data-about-video]');
+      if(!video)return;
+      video.pause();
+      video.src=assignments[index];
+      video.dataset.aboutSrc=assignments[index];
+      video.load();
+      if(video.readyState>=1)randomSeek(video);
+      else video.addEventListener('loadedmetadata',()=>randomSeek(video),{once:true});
+    });
+  };
 
   const clampIndex=index=>Math.max(0,Math.min(panels.length-1,index));
   const nearestIndex=()=>{
@@ -221,6 +284,12 @@
   };
   window.addEventListener('resize',syncMode,{passive:true});
   reduce.addEventListener?.('change',syncMode);
+  window.addEventListener('pageshow',event=>{
+    if(!event.persisted)return;
+    assignRandomVideos();
+    setActive(nearestIndex());
+  });
+  assignRandomVideos();
   requestAnimationFrame(syncMode);
 })();
 </script>
