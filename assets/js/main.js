@@ -49,7 +49,7 @@
     qa('source[data-src]',v).forEach(s=>{s.src=s.dataset.src||'';s.removeAttribute('data-src')});
     v.load();v.dataset.loaded='true';
   };
-  const pageVideos=qa('video:not([data-hover-preview-video]):not([data-stagger-video])');
+  const pageVideos=qa('video:not([data-hover-preview-video]):not([data-stagger-video]):not([data-work-preview-video])');
   const syncVideo=v=>{
     const visible=v.dataset.visible!=='false';
     if(!motionOff&&visible){if(v.matches('[data-lazy-video]'))loadLazy(v);v.play().catch(()=>{})}
@@ -80,15 +80,12 @@
     if(!hoverPreviewStage||!hoverPreviewPoster||!hoverPreviewVideo)return;
     const poster=row.dataset.previewPoster||row.dataset.preview||'',src=chooseSource(row),token=++hoverPreviewToken;
     if(poster&&hoverPreviewPoster.getAttribute('src')!==poster)hoverPreviewPoster.src=poster;
-
     hoverPreviewStage.classList.add('is-changing');
     hoverPreviewStage.classList.remove('has-video');
-
     if(!src){
       hoverPreviewVideo.pause();hoverPreviewVideo.removeAttribute('src');hoverPreviewVideo.dataset.activeSrc='';
       hoverPreviewStage.classList.remove('is-changing');return;
     }
-
     const revealPreparedFrame=()=>{
       if(token!==hoverPreviewToken||hoverPreviewVideo.dataset.activeSrc!==src)return;
       const reveal=()=>{
@@ -102,13 +99,11 @@
       else if(hoverPreviewVideo.readyState>=2)requestAnimationFrame(reveal);
       else hoverPreviewVideo.addEventListener('canplay',reveal,{once:true});
     };
-
     if(hoverPreviewVideo.dataset.activeSrc===src){
       if(hoverPreviewVideo.readyState>=1)revealPreparedFrame();
       else hoverPreviewVideo.addEventListener('loadedmetadata',revealPreparedFrame,{once:true});
       return;
     }
-
     hoverPreviewVideo.pause();
     hoverPreviewVideo.dataset.activeSrc=src;
     hoverPreviewVideo.preload='auto';
@@ -155,4 +150,13 @@
       setTimeout(()=>{image.src=btn.dataset.tabSrc||'';image.alt=btn.dataset.tabCaption||'Technical drawing';if(caption)caption.textContent=btn.dataset.tabCaption||'';image.style.opacity='1'},100);
     }))
   });
+})();
+
+(() => {
+  if(document.querySelector('script[data-fullpage-loader]'))return;
+  const script=document.createElement('script');
+  script.src=new URL('assets/js/fullpage.js',document.baseURI).href;
+  script.defer=true;
+  script.dataset.fullpageLoader='true';
+  document.body.appendChild(script);
 })();
