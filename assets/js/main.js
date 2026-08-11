@@ -1,4 +1,13 @@
 (() => {
+  if(document.querySelector('link[data-responsive-css]'))return;
+  const css=document.createElement('link');
+  css.rel='stylesheet';
+  css.href=new URL('assets/css/responsive.css',document.baseURI).href;
+  css.dataset.responsiveCss='true';
+  document.head.appendChild(css);
+})();
+
+(() => {
   const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
   const body=document.body, header=q('[data-header]'), menu=q('[data-menu]'), toggle=q('[data-menu-toggle]'), motion=q('[data-motion-toggle]'), motionLabel=q('[data-motion-label]');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -153,13 +162,6 @@
 })();
 
 (() => {
-  if(!document.querySelector('link[data-responsive-css]')){
-    const css=document.createElement('link');
-    css.rel='stylesheet';
-    css.href=new URL('assets/css/responsive.css',document.baseURI).href;
-    css.dataset.responsiveCss='true';
-    document.head.appendChild(css);
-  }
   if(document.querySelector('script[data-fullpage-loader]'))return;
   const script=document.createElement('script');
   script.src=new URL('assets/js/fullpage.js',document.baseURI).href;
@@ -176,44 +178,22 @@
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
   const coarse=window.matchMedia('(pointer:coarse)');
   const nativePause=new Map();
-  const segmentDuration=5;
 
-  const segmentBounds=video=>{
-    const segment=Number(video.dataset.segment);
-    if(!Number.isFinite(segment)||!Number.isFinite(video.duration)||video.duration<=1)return null;
-    const rawStart=segment*segmentDuration;
-    const start=Math.min(video.duration-.4,rawStart+.12);
-    const end=Math.min(video.duration-.18,rawStart+segmentDuration-.16);
-    return end>start?{start,end}:null;
-  };
-  const keepInsideSegment=video=>{
-    const bounds=segmentBounds(video);if(!bounds)return;
-    if(video.currentTime<bounds.start-.08||video.currentTime>=bounds.end){
-      try{video.currentTime=bounds.start}catch{}
-    }
-  };
   const startVideo=video=>{
     if(reduce.matches||document.hidden||video.dataset.ready!=='true')return;
-    keepInsideSegment(video);
+    video.loop=true;
     video.play().catch(()=>{});
   };
 
   videos.forEach(video=>{
     nativePause.set(video,video.pause.bind(video));
     video.preload='auto';
-    video.loop=false;
+    video.loop=true;
     try{Object.defineProperty(video,'pause',{configurable:true,value:()=>{}})}catch{}
     const warm=()=>startVideo(video);
     video.addEventListener('loadeddata',warm);
     video.addEventListener('canplay',warm);
     video.addEventListener('seeked',warm);
-    video.addEventListener('ended',()=>{keepInsideSegment(video);startVideo(video)});
-    const monitor=()=>{
-      if(!reduce.matches&&!document.hidden&&video.dataset.ready==='true')keepInsideSegment(video);
-      if('requestVideoFrameCallback' in video)video.requestVideoFrameCallback(monitor);
-      else setTimeout(monitor,80);
-    };
-    if('requestVideoFrameCallback' in video)video.requestVideoFrameCallback(monitor);else setTimeout(monitor,80);
   });
 
   let nearObserver=null;
@@ -240,6 +220,6 @@
   coarse.addEventListener?.('change',configurePlayback);
   configurePlayback();
   retryWarm();
-  setTimeout(retryWarm,180);
-  setTimeout(retryWarm,700);
+  setTimeout(retryWarm,120);
+  setTimeout(retryWarm,500);
 })();
