@@ -1,0 +1,110 @@
+@media (min-width:821px) and (pointer:fine){
+  html.fullpage-mode{scroll-behavior:auto!important}
+  body.fullpage-nav{overscroll-behavior-y:none}
+  .fullpage-panel{position:relative;box-sizing:border-box}
+  .fullpage-panel.is-fullpage-active{z-index:1}
+
+  body.fullpage-index .home-statement.fullpage-panel,
+  body.fullpage-index .home-work.fullpage-panel,
+  body.fullpage-index .home-direction.fullpage-panel,
+  body.fullpage-lab .page-intro.fullpage-panel,
+  body.fullpage-lab .page-section.fullpage-panel,
+  body.fullpage-cv .page-intro.fullpage-panel,
+  body.fullpage-cv .cv-section.fullpage-panel,
+  body.fullpage-work .page-intro.fullpage-panel,
+  body.fullpage-work .work-screen.fullpage-panel{
+    height:100svh;min-height:680px;display:grid;align-content:center;
+  }
+
+  body.fullpage-index .home-statement.fullpage-panel{padding-top:calc(var(--header) + 38px);padding-bottom:34px}
+  body.fullpage-index .home-work.fullpage-panel{padding-top:calc(var(--header) + 30px);padding-bottom:32px}
+  body.fullpage-index .home-work.fullpage-panel .section-head{margin-bottom:26px}
+  body.fullpage-index .home-work.fullpage-panel .index-row{padding-top:12px;padding-bottom:12px}
+  body.fullpage-index .home-work.fullpage-panel .index-preview{height:min(58vh,620px)}
+  body.fullpage-index .home-direction.fullpage-panel{padding-top:calc(var(--header) + 38px);padding-bottom:36px}
+
+  body.fullpage-lab .page-intro.fullpage-panel,
+  body.fullpage-cv .page-intro.fullpage-panel,
+  body.fullpage-work .page-intro.fullpage-panel{padding-top:calc(var(--header) + 48px);padding-bottom:34px}
+  body.fullpage-lab .page-section.fullpage-panel,
+  body.fullpage-cv .cv-section.fullpage-panel{padding-top:calc(var(--header) + 28px);padding-bottom:28px}
+  body.fullpage-lab .timeline li{padding-top:13px;padding-bottom:13px}
+  body.fullpage-cv .cv-head{margin-bottom:24px}
+  body.fullpage-cv .cv-row{padding-top:18px;padding-bottom:18px}
+  body.fullpage-cv .project-grid article{min-height:150px;padding-top:20px;padding-bottom:22px}
+  body.fullpage-cv .value-grid article{min-height:150px;padding-top:20px;padding-bottom:22px}
+  body.fullpage-cv .stack-grid div{padding-top:18px;padding-bottom:20px}
+  body.fullpage-cv .meta-grid article{padding:20px}
+
+  body.fullpage-work .work-screen{width:min(var(--max),100%);margin:0 auto;padding:calc(var(--header) + 30px) var(--gutter) 30px;border-top:1px solid var(--line)}
+  body.fullpage-work .work-screen-head{display:flex;align-items:end;justify-content:space-between;gap:36px;margin-bottom:24px}
+  body.fullpage-work .work-screen-head h2{margin:0;font-size:clamp(42px,5.8vw,92px);line-height:.88;letter-spacing:-.058em}
+  body.fullpage-work .work-screen-head p{margin:0;color:var(--grey);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+  body.fullpage-work .work-screen .index-row{padding-top:13px;padding-bottom:13px}
+  body.fullpage-work .work-screen .index-preview{height:min(58vh,620px)}
+
+  body.fullpage-project .project-hero.fullpage-panel{height:100svh;min-height:680px;display:grid;align-content:center;padding-top:calc(var(--header) + 24px);padding-bottom:24px}
+  body.fullpage-project .project-hero.fullpage-panel h1{font-size:clamp(54px,7.1vw,116px)}
+  body.fullpage-project .project-hero.fullpage-panel .project-hero-copy{gap:4.5vw}
+  body.fullpage-project .project-hero.fullpage-panel .project-facts{margin:22px 0 12px}
+  body.fullpage-project .project-hero.fullpage-panel .project-hero-media{height:min(46vh,520px)}
+  body.fullpage-project .project-hero.fullpage-panel .stats-grid{margin-top:10px}
+  body.fullpage-project .project-hero.fullpage-panel .stats-grid div{padding-top:11px;padding-bottom:11px}
+
+  body.fullpage-project .project-section.fullpage-panel{height:100svh;min-height:680px;padding-top:calc(var(--header) + 24px);padding-bottom:26px;align-content:center}
+  body.fullpage-project .project-section.fullpage-panel:not(.project-section--split){display:grid}
+  body.fullpage-project .project-section.fullpage-panel .media-grid--process figure{height:min(54vh,540px)}
+  body.fullpage-project .project-section.fullpage-panel .media-grid img,
+  body.fullpage-project .project-section.fullpage-panel .media-grid video{min-height:0;height:100%}
+  body.fullpage-project .project-section.fullpage-panel .system-flow{margin-top:24px}
+  body.fullpage-project .project-section.fullpage-panel .section-head{margin-bottom:28px}
+
+  body.fullpage-lumina .experience-motion-grid{height:min(52vh,560px)}
+  body.fullpage-lumina .experience-motion-grid .experience-main video,
+  body.fullpage-lumina .experience-motion-grid .experience-small video{min-height:0;height:100%;aspect-ratio:auto}
+  body.fullpage-lumina .fabrication-grid{margin-top:20px}
+  body.fullpage-lumina .fabrication-grid video{max-height:38vh}
+  body.fullpage-lumina .tech-viewer img{max-height:50vh}
+
+  body.fullpage-grand-theatre .pro-main-media.fullpage-panel,
+  body.fullpage-comedie .theatre-lead.fullpage-panel,
+  body.fullpage-stage-systems .stage-main-media.fullpage-panel{
+    height:100svh;min-height:680px;display:grid;align-content:center;padding-top:calc(var(--header) + 26px);padding-bottom:26px
+  }
+  body.fullpage-grand-theatre .pro-main-media.fullpage-panel video{max-height:72vh}
+  body.fullpage-comedie .theatre-lead.fullpage-panel img{max-height:72vh}
+  body.fullpage-stage-systems .stage-main-media.fullpage-panel video{max-height:72vh}
+
+  body.fullpage-comedie main article>.project-section,
+  body.fullpage-stage-systems main article>.project-section{padding-top:0;padding-bottom:0;border-top:0}
+  body.fullpage-comedie .production-block.fullpage-panel,
+  body.fullpage-stage-systems .stage-study.fullpage-panel{
+    height:100svh;min-height:680px;display:grid;align-content:center;padding-top:calc(var(--header) + 22px);padding-bottom:24px
+  }
+  body.fullpage-comedie .production-block.fullpage-panel .production-head{gap:3.5vw}
+  body.fullpage-comedie .production-block.fullpage-panel .production-head h2{font-size:clamp(34px,4.2vw,62px)}
+  body.fullpage-comedie .production-block.fullpage-panel .production-facts{margin:18px 0 12px}
+  body.fullpage-comedie .production-block.fullpage-panel .theatre-media{margin-top:14px}
+  body.fullpage-comedie .production-block.fullpage-panel .theatre-media img{max-height:30vh}
+  body.fullpage-comedie .production-block.fullpage-panel .route{margin-top:14px}
+  body.fullpage-comedie .production-block.fullpage-panel .credit-note{margin-top:13px}
+
+  body.fullpage-stage-systems .stage-study.fullpage-panel .stage-study-head{gap:3.5vw}
+  body.fullpage-stage-systems .stage-study.fullpage-panel .stage-study-head h2{font-size:clamp(36px,4.4vw,64px)}
+  body.fullpage-stage-systems .stage-study.fullpage-panel .stage-study-media{margin-top:18px}
+  body.fullpage-stage-systems .stage-study.fullpage-panel .stage-study-media video{max-height:39vh}
+  body.fullpage-stage-systems .stage-study.fullpage-panel .stage-facts{margin-top:16px}
+  body.fullpage-stage-systems .stage-study.fullpage-panel .stage-flow{margin-top:16px}
+
+  @media (max-height:780px){
+    body.fullpage-index .home-statement h2{font-size:clamp(42px,6.2vw,88px)}
+    body.fullpage-index .home-work .section-head h2{font-size:clamp(40px,5.5vw,78px)}
+    body.fullpage-project .project-hero.fullpage-panel h1{font-size:clamp(46px,6.4vw,92px)}
+    body.fullpage-project .project-hero.fullpage-panel .project-intent{font-size:16px}
+    body.fullpage-project .project-hero.fullpage-panel .project-hero-media{height:min(40vh,420px)}
+    body.fullpage-project .project-section.fullpage-panel .media-grid--process figure{height:min(46vh,420px)}
+    body.fullpage-lumina .experience-motion-grid{height:min(44vh,420px)}
+    body.fullpage-comedie .production-block.fullpage-panel .theatre-media img{max-height:24vh}
+    body.fullpage-stage-systems .stage-study.fullpage-panel .stage-study-media video{max-height:32vh}
+  }
+}
