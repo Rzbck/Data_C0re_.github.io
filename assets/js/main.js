@@ -1,4 +1,14 @@
 (() => {
+  if(!document.querySelector('script[data-seo-loader]')){
+    const seo=document.createElement('script');
+    seo.src=new URL('assets/js/seo.js',document.baseURI).href;
+    seo.async=false;
+    seo.dataset.seoLoader='true';
+    document.head.appendChild(seo);
+  }
+})();
+
+(() => {
   const addCss=(path,attr)=>{
     if(document.querySelector(`link[${attr}]`))return;
     const css=document.createElement('link');
