@@ -1,14 +1,16 @@
 (() => {
-  if (window.__DATA_C0RE_ASCII_CURSOR_V15__) return;
-  window.__DATA_C0RE_ASCII_CURSOR_V15__ = true;
+  if (window.__DATA_C0RE_ASCII_CURSOR_V16__) return;
+  window.__DATA_C0RE_ASCII_CURSOR_V16__ = true;
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = matchMedia('(pointer:fine) and (hover:hover)');
-  if (reduce.matches || !finePointer.matches) return;
+  const touchCapable = navigator.maxTouchPoints > 0 || matchMedia('(pointer:coarse)').matches || 'ontouchstart' in window;
+  const mobileTouch = touchCapable && (matchMedia('(pointer:coarse)').matches || innerWidth <= 820);
+  if (reduce.matches || (!finePointer.matches && !touchCapable)) return;
 
   document.body.classList.add('ascii-cursor-active');
   const layerStyle = document.createElement('style');
-  layerStyle.dataset.asciiCursorLayer = 'v15';
+  layerStyle.dataset.asciiCursorLayer = 'v16';
   layerStyle.textContent = `
     body.ascii-cursor-active main > *{position:relative;z-index:2}
     body.ascii-cursor-active main > .hero,
@@ -24,7 +26,7 @@
 
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-hidden','true');
-  canvas.dataset.asciiCursor = 'v15';
+  canvas.dataset.asciiCursor = 'v16';
   Object.assign(canvas.style, {
     position:'fixed', inset:'0', width:'100vw', height:'100vh', pointerEvents:'none',
     zIndex:'1', opacity:'0', mixBlendMode:'screen',
@@ -106,7 +108,7 @@
   const compile=(type,src)=>{const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const e=gl.getShaderInfoLog(s)||'GLSL compile error';gl.deleteShader(s);throw Error(e);}return s;};
   const makeProgram=fs=>{const p=gl.createProgram();gl.attachShader(p,compile(gl.VERTEX_SHADER,vertexSource));gl.attachShader(p,compile(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS)){const e=gl.getProgramInfoLog(p)||'WebGL link error';gl.deleteProgram(p);throw Error(e);}return p;};
   let simulationProgram,displayProgram;
-  try{simulationProgram=makeProgram(simulationSource);displayProgram=makeProgram(displaySource);}catch(e){console.warn('DATA C0RE ASCII cursor v15 disabled:',e);canvas.remove();return;}
+  try{simulationProgram=makeProgram(simulationSource);displayProgram=makeProgram(displaySource);}catch(e){console.warn('DATA C0RE ASCII cursor v16 disabled:',e);canvas.remove();return;}
 
   const quad=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,quad);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
   const bindQuad=p=>{gl.useProgram(p);gl.bindBuffer(gl.ARRAY_BUFFER,quad);const l=gl.getAttribLocation(p,'a_position');gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0);};
@@ -120,7 +122,7 @@
   const main=document.querySelector('main');
   const glyphCanvas=document.createElement('canvas');
   const glyphCtx=glyphCanvas.getContext('2d',{alpha:true,willReadFrequently:true});
-  const GLYPH_SUPERSAMPLE=8, GLYPH_ALPHA_THRESHOLD=18;
+  const GLYPH_SUPERSAMPLE=mobileTouch?4:8, GLYPH_ALPHA_THRESHOLD=mobileTouch?12:18;
 
   let simW=0,simH=0,textures=[],framebuffers=[],readIndex=0;
   let collisionTexture=null,collisionData=null,collisionRaf=0,collisionTimer=0,burstRaf=0,burstUntil=0,burstLast=0;
@@ -174,17 +176,20 @@
   const resize=()=>{const w=Math.max(1,Math.round(innerWidth)),h=Math.max(1,Math.round(innerHeight));canvas.width=w;canvas.height=h;const nc=25,nr=Math.max(1,Math.round(nc*h/w)),cc=nc*8,cr=nr*8,collisionChanged=cc!==collisionCols||cr!==collisionRows;gridCols=nc;gridRows=nr;collisionCols=cc;collisionRows=cr;const tw=Math.max(320,Math.min(680,Math.round(w*.36))),th=Math.max(180,Math.round(tw*h/w)),simChanged=tw!==simW||th!==simH;if(simChanged){textures.forEach(t=>gl.deleteTexture(t));framebuffers.forEach(f=>gl.deleteFramebuffer(f));simW=tw;simH=th;const d=blankData();textures=[makeTexture(simW,simH,d),makeTexture(simW,simH,d)];framebuffers=textures.map(makeFramebuffer);readIndex=0;}if(collisionChanged||!collisionTexture){if(collisionTexture)gl.deleteTexture(collisionTexture);collisionTexture=makeCollisionTexture();collisionData=new Uint8Array(collisionCols*collisionRows*4);}updateCollision();};
   const simulationPass=(now,scale)=>{const wi=1-readIndex;gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffers[wi]);gl.viewport(0,0,simW,simH);bindQuad(simulationProgram);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,textures[readIndex]);gl.uniform1i(simU.state,0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,collisionTexture);gl.uniform1i(simU.collision,1);gl.uniform2f(simU.texel,1/simW,1/simH);gl.uniform2f(simU.mouse,pointer.x,pointer.y);gl.uniform2f(simU.prevMouse,pointer.px,pointer.py);gl.uniform1f(simU.inject,now-pointer.lastMove<180?scale:0);gl.uniform1f(simU.time,now*.001);gl.drawArrays(gl.TRIANGLES,0,6);readIndex=wi;};
   const displayPass=()=>{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);bindQuad(displayProgram);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,textures[readIndex]);gl.uniform1i(dispU.state,0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,collisionTexture);gl.uniform1i(dispU.collision,1);gl.uniform2f(dispU.resolution,canvas.width,canvas.height);gl.uniform2f(dispU.grid,gridCols,gridRows);gl.uniform3fv(dispU.cyan,palette.cyan);gl.uniform3fv(dispU.magenta,palette.magenta);gl.uniform3fv(dispU.acid,palette.acid);gl.uniform3fv(dispU.paper,palette.paper);gl.drawArrays(gl.TRIANGLES,0,6);gl.disable(gl.BLEND);};
-  const frame=now=>{if(!running||document.hidden)return;const moving=now-pointer.lastMove<210,passes=moving?8:5;for(let i=0;i<passes;i++)simulationPass(now,i===0?1:.58);displayPass();pointer.px+=(pointer.x-pointer.px)*.34;pointer.py+=(pointer.y-pointer.py)*.34;raf=requestAnimationFrame(frame);};
+  const frame=now=>{if(!running||document.hidden)return;const moving=now-pointer.lastMove<210,passes=mobileTouch?(moving?5:3):(moving?8:5);for(let i=0;i<passes;i++)simulationPass(now,i===0?1:.58);displayPass();pointer.px+=(pointer.x-pointer.px)*.34;pointer.py+=(pointer.y-pointer.py)*.34;raf=requestAnimationFrame(frame);};
   const start=()=>{if(running)return;running=true;raf=requestAnimationFrame(frame);};
   const stopAndReset=()=>{running=false;cancelAnimationFrame(raf);canvas.style.opacity='0';resetState();};
-  const wake=e=>{if(!finePointer.matches||reduce.matches)return;if(!activated){pointer.px=e.clientX/Math.max(1,innerWidth);pointer.py=1-e.clientY/Math.max(1,innerHeight);}pointer.x=Math.max(0,Math.min(1,e.clientX/Math.max(1,innerWidth)));pointer.y=Math.max(0,Math.min(1,1-e.clientY/Math.max(1,innerHeight)));pointer.lastMove=performance.now();activated=true;canvas.style.opacity='.80';start();scheduleCollisionUpdate();clearTimeout(fadeTimer);clearTimeout(resetTimer);fadeTimer=setTimeout(()=>canvas.style.opacity='0',1150);resetTimer=setTimeout(stopAndReset,2050);};
+  const wakeAt=(clientX,clientY)=>{if(reduce.matches)return;const cx=Number(clientX),cy=Number(clientY);if(!Number.isFinite(cx)||!Number.isFinite(cy))return;const nx=Math.max(0,Math.min(1,cx/Math.max(1,innerWidth))),ny=Math.max(0,Math.min(1,1-cy/Math.max(1,innerHeight)));if(!activated){pointer.px=nx;pointer.py=ny;}pointer.x=nx;pointer.y=ny;pointer.lastMove=performance.now();activated=true;canvas.style.opacity='.80';start();scheduleCollisionUpdate();clearTimeout(fadeTimer);clearTimeout(resetTimer);fadeTimer=setTimeout(()=>canvas.style.opacity='0',1150);resetTimer=setTimeout(stopAndReset,2050);};
+  const wakePointer=e=>{if(e.pointerType==='touch')return;wakeAt(e.clientX,e.clientY);};
+  const wakeTouch=e=>{if(e.touches&&e.touches.length>1)return;const list=e.touches&&e.touches.length?e.touches:e.changedTouches;if(!list||!list.length)return;const t=list[0];wakeAt(t.clientX,t.clientY);};
 
   resize();
   addEventListener('resize',resize,{passive:true});
   addEventListener('scroll',scheduleCollisionUpdate,{passive:true});
-  addEventListener('pointermove',wake,{passive:true});
-  addEventListener('pointerover',()=>collisionBurst(650),{passive:true});
-  addEventListener('pointerout',()=>collisionBurst(650),{passive:true});
+  addEventListener('pointermove',wakePointer,{passive:true});
+  if(touchCapable){addEventListener('touchstart',wakeTouch,{passive:true});addEventListener('touchmove',wakeTouch,{passive:true});}
+  addEventListener('pointerover',e=>{if(e.pointerType!=='touch')collisionBurst(650);},{passive:true});
+  addEventListener('pointerout',e=>{if(e.pointerType!=='touch')collisionBurst(650);},{passive:true});
   document.addEventListener('data-c0re-languagechange',()=>collisionBurst(780));
   document.fonts?.ready?.then(()=>collisionBurst(250)).catch?.(()=>{});
   if(main&&'ResizeObserver'in window)new ResizeObserver(()=>collisionBurst(320)).observe(main);
