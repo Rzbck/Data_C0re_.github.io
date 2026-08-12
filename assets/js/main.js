@@ -1,14 +1,28 @@
 (() => {
-  const addCss=(path,key)=>{
-    if(document.querySelector(`link[data-${key}]`))return;
+  const addCss=(path,attr)=>{
+    if(document.querySelector(`link[${attr}]`))return;
     const css=document.createElement('link');
-    css.rel='stylesheet';css.href=new URL(path,document.baseURI).href;css.dataset[key]='true';document.head.appendChild(css);
+    css.rel='stylesheet';css.href=new URL(path,document.baseURI).href;css.setAttribute(attr,'true');document.head.appendChild(css);
   };
-  addCss('assets/css/responsive.css','responsiveCss');
-  addCss('assets/css/mobile-hardening.css','mobileHardening');
-  if(!document.querySelector('script[data-i18n-loader]')){
-    const script=document.createElement('script');script.src=new URL('assets/js/i18n.js',document.baseURI).href;script.async=false;script.dataset.i18nLoader='true';document.head.appendChild(script);
-  }
+  addCss('assets/css/responsive.css','data-responsive-css');
+  addCss('assets/css/mobile-hardening.css','data-mobile-hardening');
+
+  if(document.querySelector('script[data-i18n-loader]'))return;
+  const restore=()=>window.__DATA_C0RE_RESTORE_MUTATION_OBSERVER?.();
+  const loadExtra=()=>{
+    if(document.querySelector('script[data-i18n-extra]')){restore();return}
+    const extra=document.createElement('script');
+    extra.src=new URL('assets/js/i18n-extra.js',document.baseURI).href;
+    extra.async=false;extra.dataset.i18nExtra='true';extra.onload=restore;extra.onerror=restore;document.head.appendChild(extra);
+  };
+  const loadI18n=()=>{
+    const script=document.createElement('script');
+    script.src=new URL('assets/js/i18n.js',document.baseURI).href;
+    script.async=false;script.dataset.i18nLoader='true';script.onload=loadExtra;script.onerror=()=>{loadExtra()};document.head.appendChild(script);
+  };
+  const guard=document.createElement('script');
+  guard.src=new URL('assets/js/i18n-guard.js',document.baseURI).href;
+  guard.async=false;guard.dataset.i18nGuard='true';guard.onload=loadI18n;guard.onerror=loadI18n;document.head.appendChild(guard);
 })();
 
 (() => {
