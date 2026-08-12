@@ -72,3 +72,10 @@ html[lang="fr"] :where(p,li),html[lang="es"] :where(p,li){text-wrap:pretty}
   html[lang="fr"] #method .about-display,html[lang="es"] #method .about-display{font-size:31px!important}
   html[lang="fr"] .about-hero h1,html[lang="es"] .about-hero h1{font-size:38px!important}
 }
+
+/* ASCII overlay must never change document geometry. The V3 experiment only
+   owns paint order; these elements keep the positioning defined by the site. */
+body.ascii-cursor-active .hero-copy{position:absolute!important}
+body.ascii-cursor-active .hero-foot{position:absolute!important}
+body.ascii-cursor-active .about-panel-inner{position:relative!important}
+body.ascii-cursor-active .about-scroll-cue{position:absolute!important}
