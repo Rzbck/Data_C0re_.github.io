@@ -1,126 +1,167 @@
 (() => {
-  const panelSelector='.about-panel,.fullpage-panel';
-  const langButtonSelector='.lang-switcher button[data-lang]';
-  const root=document.documentElement;
-  const body=document.body;
-  let snapshot=null,resizeObserver=null,endTimer=null,timers=[];
-  let previousScrollBehavior='',previousOverflowAnchor='';
+  const panelSelector = '.about-panel,.fullpage-panel';
+  const langButtonSelector = '.lang-switcher button[data-lang]';
+  const root = document.documentElement;
+  const body = document.body;
+  let anchor = null;
+  let resizeObserver = null;
+  let endTimer = null;
+  let timers = [];
+  let previousScrollBehavior = '';
+  let previousOverflowAnchor = '';
 
-  const panels=()=>[...document.querySelectorAll(panelSelector)];
-  const topOf=panel=>panel.getBoundingClientRect().top+window.scrollY;
-  const nearestPanel=()=>{
-    const list=panels();
-    if(!list.length)return null;
-    const center=window.scrollY+window.innerHeight*.5;
-    let best=list[0],bestDistance=Infinity;
-    list.forEach(panel=>{
-      const centerY=topOf(panel)+panel.offsetHeight*.5;
-      const distance=Math.abs(centerY-center);
-      if(distance<bestDistance){bestDistance=distance;best=panel}
+  const style = document.createElement('style');
+  style.dataset.languageMagnetStyle = 'true';
+  style.textContent = `
+    body.language-reflowing .about-panel-inner,
+    body.language-reflowing .reveal,
+    body.language-reflowing .fullpage-panel {
+      transition: none !important;
+      animation: none !important;
+    }
+  `;
+  document.head.appendChild(style);
+
+  const panels = () => [...document.querySelectorAll(panelSelector)];
+  const topOf = panel => panel.getBoundingClientRect().top + window.scrollY;
+
+  const activePanel = () => {
+    const list = panels();
+    if (!list.length) return null;
+    const marked = list.find(panel => panel.classList.contains('is-active') || panel.classList.contains('is-fullpage-active'));
+    if (marked) return marked;
+    const center = window.scrollY + window.innerHeight * 0.5;
+    let best = list[0];
+    let bestDistance = Infinity;
+    list.forEach(panel => {
+      const panelCenter = topOf(panel) + panel.offsetHeight * 0.5;
+      const distance = Math.abs(panelCenter - center);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = panel;
+      }
     });
     return best;
   };
 
-  const captureAnchor=()=>{
-    const list=panels();
-    if(!list.length){snapshot=null;return}
-    const panel=nearestPanel();
-    if(!panel){snapshot=null;return}
-    const top=topOf(panel),height=panel.offsetHeight;
-    const maxInside=Math.max(0,height-window.innerHeight);
-    const local=Math.max(0,Math.min(maxInside||height,window.scrollY-top));
-    snapshot={
+  const capture = () => {
+    const list = panels();
+    const panel = activePanel();
+    if (!panel || !list.length) {
+      anchor = null;
+      return;
+    }
+    anchor = {
       panel,
-      index:list.indexOf(panel),
-      id:panel.id||'',
-      fits:maxInside<=2,
-      progress:maxInside>2?local/maxInside:0,
-      nearTop:Math.abs(window.scrollY-top)<48
+      id: panel.id || '',
+      index: list.indexOf(panel)
     };
   };
 
-  const resolvePanel=()=>{
-    if(snapshot?.panel?.isConnected)return snapshot.panel;
-    const list=panels();
-    if(!list.length)return null;
-    if(snapshot?.id){const byId=document.getElementById(snapshot.id);if(byId&&byId.matches(panelSelector))return byId}
-    if(Number.isInteger(snapshot?.index))return list[Math.max(0,Math.min(list.length-1,snapshot.index))]||null;
-    return nearestPanel();
+  const resolve = () => {
+    const list = panels();
+    if (!list.length) return null;
+    if (anchor?.panel?.isConnected) return anchor.panel;
+    if (anchor?.id) {
+      const byId = document.getElementById(anchor.id);
+      if (byId?.matches(panelSelector)) return byId;
+    }
+    if (Number.isInteger(anchor?.index)) return list[Math.max(0, Math.min(list.length - 1, anchor.index))] || null;
+    return activePanel();
   };
 
-  const desktopMagnet=()=>window.matchMedia('(min-width:821px) and (pointer:fine)').matches;
-  const syncAnchor=()=>{
-    if(!body.classList.contains('language-reflowing'))return;
-    const panel=resolvePanel();
-    if(!panel)return;
-    const top=topOf(panel),maxInside=Math.max(0,panel.offsetHeight-window.innerHeight);
-    let target=top;
-    if(!desktopMagnet()&&!snapshot?.fits&&!snapshot?.nearTop&&maxInside>2){
-      target=top+Math.max(0,Math.min(maxInside,(snapshot?.progress||0)*maxInside));
-    }
-    window.scrollTo(0,Math.round(target));
-    const list=panels(),index=list.indexOf(panel);
-    if(index>=0){
-      list.forEach((item,i)=>{
-        if(item.classList.contains('about-panel'))item.classList.toggle('is-active',i===index);
-        if(item.classList.contains('fullpage-panel'))item.classList.toggle('is-fullpage-active',i===index);
-      });
-    }
+  const markActive = panel => {
+    const list = panels();
+    const index = list.indexOf(panel);
+    if (index < 0) return;
+    list.forEach((item, i) => {
+      if (item.classList.contains('about-panel')) item.classList.toggle('is-active', i === index);
+      if (item.classList.contains('fullpage-panel')) item.classList.toggle('is-fullpage-active', i === index);
+    });
   };
 
-  const scheduleSync=delay=>{
-    const timer=setTimeout(()=>requestAnimationFrame(()=>requestAnimationFrame(syncAnchor)),delay);
+  const sync = () => {
+    if (!body.classList.contains('language-reflowing')) return;
+    const panel = resolve();
+    if (!panel) return;
+    window.scrollTo(0, Math.round(topOf(panel)));
+    markActive(panel);
+  };
+
+  const schedule = delay => {
+    const timer = setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(sync)), delay);
     timers.push(timer);
   };
 
-  const finish=()=>{
-    if(!body.classList.contains('language-reflowing'))return;
-    syncAnchor();
-    resizeObserver?.disconnect();resizeObserver=null;
-    timers.forEach(clearTimeout);timers=[];
-    clearTimeout(endTimer);endTimer=null;
-    body.classList.remove('language-reflowing');
-    root.style.scrollBehavior=previousScrollBehavior;
-    body.style.overflowAnchor=previousOverflowAnchor;
-    snapshot=null;
-  };
-
-  const begin=()=>{
-    if(!snapshot)captureAnchor();
-    if(!snapshot)return;
-    timers.forEach(clearTimeout);timers=[];
-    clearTimeout(endTimer);
-    if(!body.classList.contains('language-reflowing')){
-      previousScrollBehavior=root.style.scrollBehavior;
-      previousOverflowAnchor=body.style.overflowAnchor;
-    }
-    body.classList.add('language-reflowing');
-    root.style.scrollBehavior='auto';
-    body.style.overflowAnchor='none';
+  const finish = () => {
+    if (!body.classList.contains('language-reflowing')) return;
+    sync();
     resizeObserver?.disconnect();
-    resizeObserver=new ResizeObserver(()=>requestAnimationFrame(syncAnchor));
-    panels().forEach(panel=>resizeObserver.observe(panel));
-    requestAnimationFrame(()=>requestAnimationFrame(syncAnchor));
-    [60,140,280,480,720].forEach(scheduleSync);
-    endTimer=setTimeout(finish,860);
+    resizeObserver = null;
+    timers.forEach(clearTimeout);
+    timers = [];
+    clearTimeout(endTimer);
+    endTimer = null;
+    body.classList.remove('language-reflowing');
+    root.style.scrollBehavior = previousScrollBehavior;
+    body.style.overflowAnchor = previousOverflowAnchor;
+    anchor = null;
   };
 
-  // Capture the current magnetic panel before i18n changes any text dimensions.
-  document.addEventListener('pointerdown',event=>{
-    if(event.target instanceof Element&&event.target.closest(langButtonSelector))captureAnchor();
-  },true);
-  document.addEventListener('click',event=>{
-    if(event.target instanceof Element&&event.target.closest(langButtonSelector)&&!snapshot)captureAnchor();
-  },true);
+  const begin = () => {
+    if (!anchor) capture();
+    if (!anchor) return;
 
-  document.addEventListener('data-c0re-languagechange',begin);
+    timers.forEach(clearTimeout);
+    timers = [];
+    clearTimeout(endTimer);
 
-  // Do not let a wheel/key gesture race against the short layout-settling window.
-  window.addEventListener('wheel',event=>{
-    if(body.classList.contains('language-reflowing'))event.preventDefault();
-  },{capture:true,passive:false});
-  window.addEventListener('keydown',event=>{
-    if(!body.classList.contains('language-reflowing'))return;
-    if(['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' '].includes(event.key))event.preventDefault();
-  },true);
+    if (!body.classList.contains('language-reflowing')) {
+      previousScrollBehavior = root.style.scrollBehavior;
+      previousOverflowAnchor = body.style.overflowAnchor;
+    }
+
+    body.classList.add('language-reflowing');
+    root.style.scrollBehavior = 'auto';
+    body.style.overflowAnchor = 'none';
+
+    resizeObserver?.disconnect();
+    resizeObserver = new ResizeObserver(() => requestAnimationFrame(sync));
+    panels().forEach(panel => resizeObserver.observe(panel));
+
+    sync();
+    requestAnimationFrame(() => requestAnimationFrame(sync));
+    [35, 90, 170, 300, 480, 650].forEach(schedule);
+    document.fonts?.ready?.then(() => schedule(0)).catch?.(() => {});
+    endTimer = setTimeout(finish, 760);
+  };
+
+  document.addEventListener('pointerdown', event => {
+    if (event.target instanceof Element && event.target.closest(langButtonSelector)) capture();
+  }, true);
+  document.addEventListener('click', event => {
+    if (event.target instanceof Element && event.target.closest(langButtonSelector) && !anchor) capture();
+  }, true);
+
+  document.addEventListener('data-c0re-languagechange', begin);
+
+  const blockDuringReflow = event => {
+    if (!body.classList.contains('language-reflowing')) return;
+    event.preventDefault();
+  };
+  window.addEventListener('wheel', blockDuringReflow, { capture: true, passive: false });
+  window.addEventListener('touchmove', blockDuringReflow, { capture: true, passive: false });
+  window.addEventListener('keydown', event => {
+    if (!body.classList.contains('language-reflowing')) return;
+    if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) event.preventDefault();
+  }, true);
+
+  // Temporary test: desktop-only GLSL ASCII reaction-diffusion cursor.
+  if (!document.querySelector('script[data-ascii-cursor-loader]')) {
+    const script = document.createElement('script');
+    script.src = new URL('assets/js/ascii-cursor-glsl.js', document.baseURI).href;
+    script.defer = true;
+    script.dataset.asciiCursorLoader = 'true';
+    document.body.appendChild(script);
+  }
 })();
