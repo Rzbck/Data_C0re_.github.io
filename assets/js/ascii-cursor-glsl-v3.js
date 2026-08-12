@@ -1,6 +1,6 @@
 (() => {
-  if (window.__DATA_C0RE_ASCII_CURSOR_V6__) return;
-  window.__DATA_C0RE_ASCII_CURSOR_V6__ = true;
+  if (window.__DATA_C0RE_ASCII_CURSOR_V7__) return;
+  window.__DATA_C0RE_ASCII_CURSOR_V7__ = true;
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(pointer:fine) and (hover:hover)');
@@ -9,7 +9,7 @@
   document.body.classList.add('ascii-cursor-active');
 
   const layerStyle = document.createElement('style');
-  layerStyle.dataset.asciiCursorLayer = 'v6';
+  layerStyle.dataset.asciiCursorLayer = 'v7';
   layerStyle.textContent = `
     body.ascii-cursor-active main > *{position:relative;z-index:2}
     body.ascii-cursor-active main > .hero,
@@ -25,7 +25,7 @@
 
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-hidden', 'true');
-  canvas.dataset.asciiCursor = 'v6';
+  canvas.dataset.asciiCursor = 'v7';
   Object.assign(canvas.style, {
     position: 'fixed',
     inset: '0',
@@ -35,7 +35,7 @@
     zIndex: '1',
     opacity: '0',
     mixBlendMode: 'screen',
-    transition: 'opacity 260ms ease',
+    transition: 'opacity 850ms cubic-bezier(.2,.75,.25,1)',
     contain: 'strict'
   });
   document.body.appendChild(canvas);
@@ -71,7 +71,6 @@
     uniform vec2 u_prevMouse;
     uniform float u_inject;
     uniform float u_time;
-    uniform float u_alive;
     in vec2 v_uv;
     out vec4 fragColor;
 
@@ -80,12 +79,6 @@
     const float Da = 1.0;
     const float Db = 0.90;
     const float dt = 1.0;
-
-    float hash21(vec2 p){
-      p = fract(p * vec2(123.34, 456.21));
-      p += dot(p, p + 45.32);
-      return fract(p.x * p.y);
-    }
 
     float segmentDistance(vec2 p, vec2 a, vec2 b){
       vec2 pa = p - a;
@@ -142,21 +135,12 @@
         pm.x *= aspect;
 
         float dist = segmentDistance(p, pm, m);
-        float core = 1.0 - smoothstep(0.008, 0.052, dist);
-        float bloom = 1.0 - smoothstep(0.040, 0.220, dist);
+        float core = 1.0 - smoothstep(0.007, 0.048, dist);
+        float bloom = 1.0 - smoothstep(0.036, 0.240, dist);
         float grain = 0.80 + 0.20 * sin(v_uv.x * 83.0 + v_uv.y * 69.0 + u_time * 1.65);
-        float brush = clamp((core * 0.95 + bloom * 0.30) * grain, 0.0, 1.0);
+        float brush = clamp((core * 0.96 + bloom * 0.34) * grain, 0.0, 1.0);
         nextB = max(nextB, brush * u_inject);
         nextA = min(nextA, 1.0 - brush * 0.32);
-      }
-
-      if (u_alive > 0.5) {
-        vec2 cell = floor(v_uv * vec2(30.0, 18.0));
-        float epoch = floor(u_time * 0.36);
-        float n = hash21(cell + epoch * 17.71);
-        float seed = smoothstep(0.9955, 1.0, n) * 0.10;
-        nextB = max(nextB, seed);
-        nextA = min(nextA, 1.0 - seed * 0.18);
       }
 
       fragColor = vec4(clamp(nextA, 0.0, 1.0), clamp(nextB, 0.0, 1.0), 0.0, 1.0);
@@ -168,6 +152,10 @@
     uniform sampler2D u_state;
     uniform vec2 u_resolution;
     uniform vec2 u_grid;
+    uniform vec3 u_cyan;
+    uniform vec3 u_magenta;
+    uniform vec3 u_acid;
+    uniform vec3 u_paper;
     in vec2 v_uv;
     out vec4 fragColor;
 
@@ -198,16 +186,13 @@
     }
 
     vec3 getColor(float b){
-      vec3 cyan = vec3(0.00, 0.82, 1.00);
-      vec3 magenta = vec3(1.00, 0.00, 0.70);
-      vec3 yellow = vec3(1.00, 0.92, 0.00);
-      vec3 col = mix(cyan, magenta, smoothstep(0.045, 0.46, b));
-      return mix(col, yellow, smoothstep(0.48, 0.88, b));
+      vec3 col = mix(u_cyan, u_magenta, smoothstep(0.05, 0.46, b));
+      col = mix(col, u_acid, smoothstep(0.48, 0.82, b));
+      return mix(col, u_paper, smoothstep(0.82, 1.0, b) * 0.38);
     }
 
     void main(){
       vec2 fragCoord = gl_FragCoord.xy;
-
       vec2 gridPos = (fragCoord / u_resolution) * u_grid;
       vec2 cell = floor(gridPos);
       vec2 localUV = fract(gridPos);
@@ -219,8 +204,8 @@
 
       vec3 color = getColor(b);
       float glow = smoothstep(0.015, 0.50, b);
-      color *= 0.95 + glow * 0.72;
-      float alpha = charMask * smoothstep(0.003, 0.20, b) * 0.82;
+      color *= 0.96 + glow * 0.66;
+      float alpha = charMask * smoothstep(0.003, 0.20, b) * 0.84;
 
       fragColor = vec4(color * charMask, alpha);
     }
@@ -257,7 +242,7 @@
     simulationProgram = makeProgram(simulationSource);
     displayProgram = makeProgram(displaySource);
   } catch (error) {
-    console.warn('DATA C0RE ASCII cursor v6 disabled:', error);
+    console.warn('DATA C0RE ASCII cursor v7 disabled:', error);
     canvas.remove();
     return;
   }
@@ -280,14 +265,33 @@
     mouse: gl.getUniformLocation(simulationProgram, 'u_mouse'),
     prevMouse: gl.getUniformLocation(simulationProgram, 'u_prevMouse'),
     inject: gl.getUniformLocation(simulationProgram, 'u_inject'),
-    time: gl.getUniformLocation(simulationProgram, 'u_time'),
-    alive: gl.getUniformLocation(simulationProgram, 'u_alive')
+    time: gl.getUniformLocation(simulationProgram, 'u_time')
   };
 
   const displayUniforms = {
     state: gl.getUniformLocation(displayProgram, 'u_state'),
     resolution: gl.getUniformLocation(displayProgram, 'u_resolution'),
-    grid: gl.getUniformLocation(displayProgram, 'u_grid')
+    grid: gl.getUniformLocation(displayProgram, 'u_grid'),
+    cyan: gl.getUniformLocation(displayProgram, 'u_cyan'),
+    magenta: gl.getUniformLocation(displayProgram, 'u_magenta'),
+    acid: gl.getUniformLocation(displayProgram, 'u_acid'),
+    paper: gl.getUniformLocation(displayProgram, 'u_paper')
+  };
+
+  const parseColor = (value, fallback) => {
+    const raw = (value || '').trim();
+    const hex = raw.match(/^#([0-9a-f]{6})$/i);
+    if (!hex) return fallback;
+    const n = parseInt(hex[1], 16);
+    return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+  };
+
+  const siteStyle = getComputedStyle(document.documentElement);
+  const palette = {
+    cyan: parseColor(siteStyle.getPropertyValue('--cyan'), [0.0, 0.718, 1.0]),
+    magenta: parseColor(siteStyle.getPropertyValue('--magenta'), [0.949, 0.161, 0.541]),
+    acid: parseColor(siteStyle.getPropertyValue('--acid'), [0.875, 1.0, 0.0]),
+    paper: parseColor(siteStyle.getPropertyValue('--paper'), [0.953, 0.945, 0.922])
   };
 
   let simW = 0;
@@ -295,13 +299,14 @@
   let textures = [];
   let framebuffers = [];
   let readIndex = 0;
-  let gridCols = 50;
-  let gridRows = 28;
+  let gridCols = 25;
+  let gridRows = 14;
   let pointer = { x: 0.5, y: 0.5, px: 0.5, py: 0.5, lastMove: -Infinity };
   let running = false;
   let activated = false;
   let raf = 0;
-  let dimTimer = 0;
+  let fadeTimer = 0;
+  let resetTimer = 0;
 
   const makeTexture = (w, h, data) => {
     const texture = gl.createTexture();
@@ -332,13 +337,26 @@
     return data;
   };
 
+  const resetState = () => {
+    if (!simW || !simH || !textures.length) return;
+    const data = blankData();
+    textures.forEach(texture => {
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, simW, simH, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    });
+    readIndex = 0;
+    activated = false;
+    pointer.px = pointer.x;
+    pointer.py = pointer.y;
+  };
+
   const resize = () => {
     const width = Math.max(1, Math.round(window.innerWidth));
     const height = Math.max(1, Math.round(window.innerHeight));
     canvas.width = width;
     canvas.height = height;
 
-    gridCols = 50;
+    gridCols = 25;
     gridRows = Math.max(1, Math.round(gridCols * height / width));
 
     const targetW = Math.max(320, Math.min(680, Math.round(width * 0.36)));
@@ -369,7 +387,6 @@
     const moving = now - pointer.lastMove < 180;
     gl.uniform1f(simUniforms.inject, moving ? injectScale : 0);
     gl.uniform1f(simUniforms.time, now * 0.001);
-    gl.uniform1f(simUniforms.alive, activated ? 1 : 0);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     readIndex = writeIndex;
   };
@@ -387,6 +404,10 @@
     gl.uniform1i(displayUniforms.state, 0);
     gl.uniform2f(displayUniforms.resolution, canvas.width, canvas.height);
     gl.uniform2f(displayUniforms.grid, gridCols, gridRows);
+    gl.uniform3fv(displayUniforms.cyan, palette.cyan);
+    gl.uniform3fv(displayUniforms.magenta, palette.magenta);
+    gl.uniform3fv(displayUniforms.acid, palette.acid);
+    gl.uniform3fv(displayUniforms.paper, palette.paper);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     gl.disable(gl.BLEND);
   };
@@ -410,6 +431,13 @@
     raf = requestAnimationFrame(frame);
   };
 
+  const stopAndReset = () => {
+    running = false;
+    cancelAnimationFrame(raf);
+    canvas.style.opacity = '0';
+    resetState();
+  };
+
   const wake = event => {
     if (!finePointer.matches || reduce.matches) return;
     if (!activated) {
@@ -420,20 +448,20 @@
     pointer.y = Math.max(0, Math.min(1, 1 - event.clientY / Math.max(1, window.innerHeight)));
     pointer.lastMove = performance.now();
     activated = true;
-    canvas.style.opacity = '0.78';
+    canvas.style.opacity = '0.80';
     start();
-    clearTimeout(dimTimer);
-    dimTimer = setTimeout(() => {
-      canvas.style.opacity = '0.54';
-    }, 1700);
+
+    clearTimeout(fadeTimer);
+    clearTimeout(resetTimer);
+    fadeTimer = setTimeout(() => {
+      canvas.style.opacity = '0';
+    }, 1150);
+    resetTimer = setTimeout(stopAndReset, 2050);
   };
 
   resize();
   window.addEventListener('resize', resize, { passive: true });
   window.addEventListener('pointermove', wake, { passive: true });
-  window.addEventListener('scroll', () => {
-    if (activated) start();
-  }, { passive: true });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       running = false;
