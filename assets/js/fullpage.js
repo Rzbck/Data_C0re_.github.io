@@ -198,10 +198,10 @@
       try{video.currentTime=edge+Math.random()*Math.max(.01,max-edge)}catch{}
     };
     qa('.work-screen .index-browser').forEach(browser=>{
-      const stage=q('[data-work-preview-stage]',browser),poster=q('[data-work-preview-poster]',browser),video=q('[data-work-preview-video]',browser);
+      const stage=q('[data-work-preview-stage]',browser),poster=stage&&q('img[data-work-preview-poster]',stage),video=stage&&q('video[data-work-preview-video]',stage);
       if(!stage||!poster||!video)return;
       let token=0;
-      const rows=qa('[data-work-preview-video],[data-work-preview-videos]',browser);
+      const rows=qa('.index-row[data-work-preview-video],.index-row[data-work-preview-videos]',browser);
       const sources=row=>(row.dataset.workPreviewVideos||row.dataset.workPreviewVideo||'').split('|').map(v=>v.trim()).filter(Boolean);
       const activate=row=>{
         const posterSrc=row.dataset.workPreviewPoster||'',list=sources(row),src=list[Math.floor(Math.random()*Math.max(1,list.length))]||'',localToken=++token;
