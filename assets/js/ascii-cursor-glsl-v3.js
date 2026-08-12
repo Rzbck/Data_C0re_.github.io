@@ -1,6 +1,6 @@
 (() => {
-  if (window.__DATA_C0RE_ASCII_CURSOR_V12__) return;
-  window.__DATA_C0RE_ASCII_CURSOR_V12__ = true;
+  if (window.__DATA_C0RE_ASCII_CURSOR_V13__) return;
+  window.__DATA_C0RE_ASCII_CURSOR_V13__ = true;
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(pointer:fine) and (hover:hover)');
@@ -9,7 +9,7 @@
   document.body.classList.add('ascii-cursor-active');
 
   const layerStyle = document.createElement('style');
-  layerStyle.dataset.asciiCursorLayer = 'v12';
+  layerStyle.dataset.asciiCursorLayer = 'v13';
   layerStyle.textContent = `
     body.ascii-cursor-active main > *{position:relative;z-index:2}
     body.ascii-cursor-active main > .hero,
@@ -25,7 +25,7 @@
 
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-hidden', 'true');
-  canvas.dataset.asciiCursor = 'v12';
+  canvas.dataset.asciiCursor = 'v13';
   Object.assign(canvas.style, {
     position: 'fixed', inset: '0', width: '100vw', height: '100vh',
     pointerEvents: 'none', zIndex: '1', opacity: '0', mixBlendMode: 'screen',
@@ -122,7 +122,6 @@
       float reaction = a * b * b;
       float nextA = a + (Da * lap.x - reaction + feed * (1.0 - a)) * dt;
       float nextB = b + (Db * lap.y + reaction - (kill + feed) * b) * dt;
-
       nextB += max(lap.y, 0.0) * 0.12;
       nextB += max(wide.y, 0.0) * 0.22;
       nextB += max(wider.y, 0.0) * 0.10;
@@ -133,7 +132,6 @@
         vec2 m = u_mouse;
         vec2 pm = u_prevMouse;
         p.x *= aspect; m.x *= aspect; pm.x *= aspect;
-
         float dist = segmentDistance(p, pm, m);
         float core = 1.0 - smoothstep(0.007, 0.048, dist);
         float bloom = 1.0 - smoothstep(0.036, 0.240, dist);
@@ -184,26 +182,29 @@
     }
 
     float fineCollision(vec2 fineCell){
-      vec2 fineGrid = u_grid * 4.0;
+      vec2 fineGrid = u_grid * 8.0;
       vec2 uv = (fineCell + 0.5) / fineGrid;
       return step(0.5, texture(u_collision, clamp(uv, vec2(0.0), vec2(1.0))).r);
     }
 
     float baseBlocked(vec2 baseCell){
       float blocked = 0.0;
-      vec2 origin = baseCell * 4.0;
-      for (int y = 0; y < 4; y++) {
-        for (int x = 0; x < 4; x++) blocked = max(blocked, fineCollision(origin + vec2(float(x), float(y))));
-      }
+      vec2 origin = baseCell * 8.0;
+      for (int y = 0; y < 8; y++) for (int x = 0; x < 8; x++) blocked = max(blocked, fineCollision(origin + vec2(float(x), float(y))));
       return blocked;
     }
 
     float halfBlocked(vec2 baseCell, vec2 halfCell){
       float blocked = 0.0;
-      vec2 origin = baseCell * 4.0 + halfCell * 2.0;
-      for (int y = 0; y < 2; y++) {
-        for (int x = 0; x < 2; x++) blocked = max(blocked, fineCollision(origin + vec2(float(x), float(y))));
-      }
+      vec2 origin = baseCell * 8.0 + halfCell * 4.0;
+      for (int y = 0; y < 4; y++) for (int x = 0; x < 4; x++) blocked = max(blocked, fineCollision(origin + vec2(float(x), float(y))));
+      return blocked;
+    }
+
+    float quarterBlocked(vec2 baseCell, vec2 quarterCell){
+      float blocked = 0.0;
+      vec2 origin = baseCell * 8.0 + quarterCell * 2.0;
+      for (int y = 0; y < 2; y++) for (int x = 0; x < 2; x++) blocked = max(blocked, fineCollision(origin + vec2(float(x), float(y))));
       return blocked;
     }
 
@@ -216,6 +217,14 @@
       if (baseCell.y < 0.5 && halfCell.y < 0.5) return true;
       if (baseCell.x > u_grid.x - 1.5 && halfCell.x > 0.5) return true;
       if (baseCell.y > u_grid.y - 1.5 && halfCell.y > 0.5) return true;
+      return false;
+    }
+
+    bool quarterTouchesEdge(vec2 baseCell, vec2 quarterCell){
+      if (baseCell.x < 0.5 && quarterCell.x < 0.5) return true;
+      if (baseCell.y < 0.5 && quarterCell.y < 0.5) return true;
+      if (baseCell.x > u_grid.x - 1.5 && quarterCell.x > 2.5) return true;
+      if (baseCell.y > u_grid.y - 1.5 && quarterCell.y > 2.5) return true;
       return false;
     }
 
@@ -240,18 +249,28 @@
           vec2 renderPos = screenUV * renderGrid;
           renderCell = floor(renderPos);
           localUV = fract(renderPos);
-          detailGain = 0.94;
+          detailGain = 0.95;
         } else {
           vec2 quarterCell = floor(baseLocal * 4.0);
-          if (fineCollision(baseCell * 4.0 + quarterCell) > 0.5) {
-            fragColor = vec4(0.0);
-            return;
+          bool refineEighth = quarterBlocked(baseCell, quarterCell) > 0.5 || quarterTouchesEdge(baseCell, quarterCell);
+          if (!refineEighth) {
+            renderGrid = u_grid * 4.0;
+            vec2 renderPos = screenUV * renderGrid;
+            renderCell = floor(renderPos);
+            localUV = fract(renderPos);
+            detailGain = 0.89;
+          } else {
+            vec2 eighthCell = floor(baseLocal * 8.0);
+            if (fineCollision(baseCell * 8.0 + eighthCell) > 0.5) {
+              fragColor = vec4(0.0);
+              return;
+            }
+            renderGrid = u_grid * 8.0;
+            vec2 renderPos = screenUV * renderGrid;
+            renderCell = floor(renderPos);
+            localUV = fract(renderPos);
+            detailGain = 0.82;
           }
-          renderGrid = u_grid * 4.0;
-          vec2 renderPos = screenUV * renderGrid;
-          renderCell = floor(renderPos);
-          localUV = fract(renderPos);
-          detailGain = 0.86;
         }
       }
 
@@ -297,7 +316,7 @@
     simulationProgram = makeProgram(simulationSource);
     displayProgram = makeProgram(displaySource);
   } catch (error) {
-    console.warn('DATA C0RE ASCII cursor v12 disabled:', error);
+    console.warn('DATA C0RE ASCII cursor v13 disabled:', error);
     canvas.remove();
     return;
   }
@@ -355,11 +374,12 @@
   const glyphCanvas = document.createElement('canvas');
   const glyphCtx = glyphCanvas.getContext('2d', { alpha: true, willReadFrequently: true });
   const GLYPH_SUPERSAMPLE = 6;
-  const GLYPH_ALPHA_THRESHOLD = 64;
+  const GLYPH_ALPHA_THRESHOLD = 44;
+  const GLYPH_Y_NUDGE_EM = -0.075;
 
   let simW = 0, simH = 0, textures = [], framebuffers = [], readIndex = 0;
   let collisionTexture = null, collisionData = null, collisionRaf = 0, collisionTimer = 0;
-  let gridCols = 25, gridRows = 14, collisionCols = 100, collisionRows = 56;
+  let gridCols = 25, gridRows = 14, collisionCols = 200, collisionRows = 112;
   let pointer = { x: 0.5, y: 0.5, px: 0.5, py: 0.5, lastMove: -Infinity };
   let running = false, activated = false, raf = 0, fadeTimer = 0, resetTimer = 0;
 
@@ -407,7 +427,7 @@
   };
 
   const markCell = (x, yTop) => {
-    if (x < 0 || x >= collisionCols || yTop < 0 || yTop >= collisionRows) return;
+    if (!collisionData || x < 0 || x >= collisionCols || yTop < 0 || yTop >= collisionRows) return;
     const y = collisionRows - 1 - yTop;
     const i = (y * collisionCols + x) * 4;
     collisionData[i] = 255;
@@ -430,7 +450,6 @@
     const x1 = Math.min(collisionCols - 1, Math.ceil(right / vw * collisionCols) - 1);
     const y0 = Math.max(0, Math.floor(top / vh * collisionRows));
     const y1 = Math.min(collisionRows - 1, Math.ceil(bottom / vh * collisionRows) - 1);
-
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) markCell(x, y);
   };
 
@@ -457,12 +476,10 @@
       if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return;
       const rect = el.getBoundingClientRect();
       if (!visibleRect(rect)) return;
-
       const top = style.borderTopStyle !== 'none' ? borderWidth(style.borderTopWidth) : 0;
       const right = style.borderRightStyle !== 'none' ? borderWidth(style.borderRightWidth) : 0;
       const bottom = style.borderBottomStyle !== 'none' ? borderWidth(style.borderBottomWidth) : 0;
       const left = style.borderLeftStyle !== 'none' ? borderWidth(style.borderLeftWidth) : 0;
-
       if (top > 0) markRect({ left: rect.left, right: rect.right, top: rect.top, bottom: rect.top + top, width: rect.width, height: top });
       if (bottom > 0) markRect({ left: rect.left, right: rect.right, top: rect.bottom - bottom, bottom: rect.bottom, width: rect.width, height: bottom });
       if (left > 0) markRect({ left: rect.left, right: rect.left + left, top: rect.top, bottom: rect.bottom, width: left, height: rect.height });
@@ -529,21 +546,25 @@
         i += rawChar.length;
         if (!rawChar.trim()) continue;
         const char = transformedChar(rawChar, style.textTransform);
-
         try {
           range.setStart(node, start);
           range.setEnd(node, i);
-        } catch {
-          continue;
-        }
+        } catch { continue; }
+
         const rect = range.getBoundingClientRect();
         if (!visibleRect(rect)) continue;
-
         const metrics = glyphCtx.measureText(char);
-        const ascent = metrics.fontBoundingBoxAscent || metrics.actualBoundingBoxAscent || fontSize * 0.80;
-        const descent = metrics.fontBoundingBoxDescent || metrics.actualBoundingBoxDescent || fontSize * 0.20;
-        const x = rect.left + Math.max(0, (rect.width - metrics.width) * 0.5);
-        const y = rect.top + Math.max(0, (rect.height - (ascent + descent)) * 0.5) + ascent;
+        const actualLeft = Number.isFinite(metrics.actualBoundingBoxLeft) ? metrics.actualBoundingBoxLeft : 0;
+        const actualRight = Number.isFinite(metrics.actualBoundingBoxRight) ? metrics.actualBoundingBoxRight : metrics.width;
+        const actualAscent = metrics.actualBoundingBoxAscent || fontSize * 0.76;
+        const actualDescent = metrics.actualBoundingBoxDescent || fontSize * 0.18;
+        const fontAscent = metrics.fontBoundingBoxAscent || fontSize * 0.80;
+        const fontDescent = metrics.fontBoundingBoxDescent || fontSize * 0.20;
+        const inkWidth = Math.max(0.5, actualLeft + actualRight);
+        const x = rect.left + (rect.width - inkWidth) * 0.5 + actualLeft;
+        const baselineFromFontBox = rect.top + (rect.height - (fontAscent + fontDescent)) * 0.5 + fontAscent;
+        const baselineFromInk = rect.top + (rect.height - (actualAscent + actualDescent)) * 0.5 + actualAscent;
+        const y = Math.min(baselineFromFontBox, baselineFromInk) + fontSize * GLYPH_Y_NUDGE_EM;
         glyphCtx.fillText(char, x, y);
       }
     }
@@ -555,13 +576,11 @@
     for (let y = 0; y < collisionRows; y++) {
       const py0 = y * s;
       for (let x = 0; x < collisionCols; x++) {
-        const pyEnd = py0 + s;
         const px0 = x * s;
-        const pxEnd = px0 + s;
         let hit = false;
-        for (let py = py0; py < pyEnd && !hit; py++) {
+        for (let py = py0; py < py0 + s && !hit; py++) {
           let p = (py * rw + px0) * 4 + 3;
-          for (let px = px0; px < pxEnd; px++, p += 4) {
+          for (let px = px0; px < px0 + s; px++, p += 4) {
             if (pixels[p] >= GLYPH_ALPHA_THRESHOLD) { hit = true; break; }
           }
         }
@@ -596,7 +615,7 @@
         collisionRaf = 0;
         updateCollision();
       });
-    }, 36);
+    }, 44);
   };
 
   const resetState = () => {
@@ -620,8 +639,8 @@
 
     const nextCols = 25;
     const nextRows = Math.max(1, Math.round(nextCols * height / width));
-    const nextCollisionCols = nextCols * 4;
-    const nextCollisionRows = nextRows * 4;
+    const nextCollisionCols = nextCols * 8;
+    const nextCollisionRows = nextRows * 8;
     const collisionSizeChanged = nextCollisionCols !== collisionCols || nextCollisionRows !== collisionRows;
     gridCols = nextCols;
     gridRows = nextRows;
@@ -648,7 +667,6 @@
       collisionTexture = makeCollisionTexture();
       collisionData = new Uint8Array(collisionCols * collisionRows * 4);
     }
-
     updateCollision();
   };
 
@@ -733,7 +751,6 @@
     activated = true;
     canvas.style.opacity = '0.80';
     start();
-
     clearTimeout(fadeTimer);
     clearTimeout(resetTimer);
     fadeTimer = setTimeout(() => { canvas.style.opacity = '0'; }, 1150);
