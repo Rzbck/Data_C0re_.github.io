@@ -33,6 +33,9 @@ jobs:
       - name: Generate EN / FR / ES static pages
         run: node scripts/build-localized.mjs
 
+      - name: Polish localized structured data + copy
+        run: node scripts/postprocess-localized.mjs
+
       - name: Commit generated localization layer
         shell: bash
         run: |
@@ -41,7 +44,36 @@ jobs:
           git add -A en fr es sitemap.xml robots.txt assets/js/seo.js '*.html' 'projects/*.html'
           if git diff --cached --quiet; then
             echo "No localization changes to commit."
-            exit 0
+          else
+            git commit -m "Generate static EN FR ES SEO routes"
+            git push origin HEAD:main
           fi
-          git commit -m "Generate static EN FR ES SEO routes"
-          git push origin HEAD:main
+
+      - name: Submit generated multilingual URLs to IndexNow
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, re
+          from urllib.parse import urlparse
+          with open('site.config.json', encoding='utf-8') as f:
+              config=json.load(f)
+          origin=config['origin'].rstrip('/')
+          host=urlparse(origin).hostname
+          key='de2a1c7c9c8cc2396de53eec921730dc'
+          with open('sitemap.xml', encoding='utf-8') as f:
+              xml=f.read()
+          urls=re.findall(r'<loc>(.*?)</loc>', xml)
+          payload={
+              'host':host,
+              'key':key,
+              'keyLocation':f'{origin}/{key}.txt',
+              'urlList':urls,
+          }
+          with open('payload.json','w',encoding='utf-8') as f:
+              json.dump(payload,f,ensure_ascii=False)
+          print(f'IndexNow host: {host}; URLs: {len(urls)}')
+          PY
+          code=$(curl -sS -o response.txt -w "%{http_code}" -X POST "https://api.indexnow.org/indexnow" -H "Content-Type: application/json; charset=utf-8" --data-binary @payload.json)
+          cat response.txt || true
+          echo "IndexNow HTTP status: $code"
+          case "$code" in 200|202) exit 0 ;; *) exit 1 ;; esac
