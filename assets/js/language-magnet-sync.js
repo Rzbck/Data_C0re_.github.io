@@ -156,10 +156,10 @@
     if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) event.preventDefault();
   }, true);
 
-  // Temporary test: desktop-only GLSL ASCII reaction-diffusion cursor.
+  // Temporary test: larger desktop-only GLSL ASCII reaction-diffusion cursor.
   if (!document.querySelector('script[data-ascii-cursor-loader]')) {
     const script = document.createElement('script');
-    script.src = new URL('assets/js/ascii-cursor-glsl.js', document.baseURI).href;
+    script.src = new URL('assets/js/ascii-cursor-glsl-v2.js', document.baseURI).href;
     script.defer = true;
     script.dataset.asciiCursorLoader = 'true';
     document.body.appendChild(script);
