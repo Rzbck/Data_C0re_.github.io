@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const ROOT = 'https://rzbck.github.io/Data_C0re_.github.io/';
+  const ROOT = location.hostname.endsWith('github.io') ? `${location.origin}/Data_C0re_.github.io/` : `${location.origin}/`;
   const path = location.pathname.replace(/^\/Data_C0re_\.github\.io\/?/, '').replace(/^\//, '');
   const route = path || 'index.html';
   const canonicalPath = route === 'index.html' ? '' : route;

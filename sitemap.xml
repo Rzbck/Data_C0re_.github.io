@@ -1,17 +1,395 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/work.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/about.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/cv.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/lab.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/projects/ascii.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/projects/snake.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/projects/lumina.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/projects/realtime.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/projects/hardwinner.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/projects/cloud.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/projects/grand-theatre.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/projects/comedie.html</loc><lastmod>2026-08-12</lastmod></url>
-  <url><loc>https://rzbck.github.io/Data_C0re_.github.io/projects/stage-systems.html</loc><lastmod>2026-08-12</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/about.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/about.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/about.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/about.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/about.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/about.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/about.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/about.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/cv.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/cv.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/cv.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/cv.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/cv.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/cv.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/cv.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/cv.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/lab.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/lab.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/lab.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/lab.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/lab.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/lab.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/lab.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/lab.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/lab.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/work.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/work.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/work.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/work.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/work.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/work.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/work.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/work.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/work.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/work.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/work.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/work.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/work.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/work.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/work.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/work.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/work.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/work.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/work.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/work.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/projects/ascii.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/ascii.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/projects/ascii.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/ascii.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/projects/ascii.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/ascii.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/projects/ascii.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/ascii.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/ascii.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/projects/cloud.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/cloud.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/projects/cloud.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/cloud.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/projects/cloud.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/cloud.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/projects/cloud.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/cloud.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/cloud.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/projects/comedie.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/comedie.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/projects/comedie.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/comedie.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/projects/comedie.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/comedie.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/projects/comedie.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/comedie.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/comedie.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/projects/grand-theatre.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/grand-theatre.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/projects/grand-theatre.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/grand-theatre.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/projects/grand-theatre.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/grand-theatre.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/projects/grand-theatre.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/grand-theatre.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/grand-theatre.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/projects/hardwinner.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/hardwinner.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/projects/hardwinner.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/hardwinner.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/projects/hardwinner.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/hardwinner.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/projects/hardwinner.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/hardwinner.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/hardwinner.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/projects/lumina.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/lumina.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/projects/lumina.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/lumina.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/projects/lumina.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/lumina.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/projects/lumina.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/lumina.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/lumina.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/projects/realtime.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/realtime.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/projects/realtime.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/realtime.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/projects/realtime.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/realtime.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/projects/realtime.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/realtime.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/realtime.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/projects/snake.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/snake.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/projects/snake.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/snake.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/projects/snake.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/snake.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/projects/snake.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/snake.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/snake.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/projects/stage-systems.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/stage-systems.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/en/projects/stage-systems.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/stage-systems.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/fr/projects/stage-systems.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/stage-systems.html"/>
+  </url>
+  <url>
+    <loc>https://rzbck.github.io/Data_C0re_.github.io/es/projects/stage-systems.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rzbck.github.io/Data_C0re_.github.io/en/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rzbck.github.io/Data_C0re_.github.io/fr/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://rzbck.github.io/Data_C0re_.github.io/es/projects/stage-systems.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rzbck.github.io/Data_C0re_.github.io/projects/stage-systems.html"/>
+  </url>
 </urlset>
