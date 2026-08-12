@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>CV — DATA C0RE</title>
-  <meta name="description" content="Selected CV for DATA C0RE — interactive systems, realtime audiovisual production, fabrication and technical coordination.">
-  <meta name="theme-color" content="#070707"><link rel="stylesheet" href="./assets/css/styles.css">
+  <meta name="description" content="Selected CV for DATA C0RE — realtime audiovisual systems, stage media, interactive light and fabrication.">
+  <meta name="theme-color" content="#070707"><link rel="icon" href="./assets/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="./assets/css/styles.css">
   <style>
     .cv-intro{max-width:1180px;padding-bottom:clamp(58px,7vw,92px)}
     .cv-intro p:last-of-type{max-width:920px}
@@ -18,29 +18,23 @@
     .profile-grid .label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--grey);margin:0}
     .profile-copy{font-size:clamp(18px,2vw,27px);line-height:1.34;letter-spacing:-.02em;max-width:980px;margin:0}
     .cv-list{border-top:1px solid var(--line)}
-    .cv-row{display:grid;grid-template-columns:130px minmax(250px,.88fr) minmax(0,1.12fr);gap:clamp(18px,3vw,48px);padding:27px 0;border-bottom:1px solid var(--line);align-items:start}
+    .cv-row{display:grid;grid-template-columns:130px minmax(250px,.88fr) minmax(0,1.12fr);gap:clamp(18px,3vw,48px);padding:25px 0;border-bottom:1px solid var(--line);align-items:start}
     .cv-row time{font-size:11px;letter-spacing:.08em;color:var(--grey)}
     .cv-title strong{display:block;font-size:clamp(18px,1.85vw,26px);line-height:1.14;letter-spacing:-.025em}
     .cv-status{display:block;margin-top:7px;font-size:9px;text-transform:uppercase;letter-spacing:.11em;color:var(--grey)}
     .cv-detail p{margin:0;color:#aaa8a2;font-size:12px;line-height:1.58;max-width:800px}
     .cv-detail p + p{margin-top:8px}
-    .cv-detail b{color:var(--white);font-weight:500}
-    .project-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
-    .project-grid article{padding:26px 22px 30px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:190px}
+    .project-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
+    .project-grid article{padding:24px 22px 28px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:178px}
     .project-grid strong{display:block;font-size:clamp(19px,2vw,29px);line-height:1.08;letter-spacing:-.03em;margin-bottom:12px}
     .project-grid span{display:block;font-size:9px;letter-spacing:.11em;text-transform:uppercase;color:var(--grey);margin-bottom:14px}
-    .project-grid p{margin:0;color:#aaa8a2;font-size:12px;line-height:1.55;max-width:650px}
-    .value-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-    .value-grid article{padding:25px 20px 30px;border-right:1px solid var(--line);min-height:180px}
-    .value-grid article:last-child{border-right:0}
-    .value-grid h3{font-size:clamp(24px,3vw,44px);line-height:.95;letter-spacing:-.04em;text-transform:uppercase;margin:0 0 16px}
-    .value-grid p{font-size:11px;line-height:1.52;color:#aaa8a2;margin:0;max-width:260px}
-    .stack-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .project-grid p{margin:0;color:#aaa8a2;font-size:12px;line-height:1.55}
+    .stack-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
     .stack-grid div{padding:24px 18px 28px;border-right:1px solid var(--line)}
     .stack-grid div:last-child{border-right:0}
     .stack-grid b{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.11em;margin-bottom:12px}
     .stack-grid p{margin:0;color:#aaa8a2;font-size:11px;line-height:1.58}
-    .meta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+    .meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
     .meta-grid article{background:#070707;padding:24px}
     .meta-grid h3{font-size:10px;text-transform:uppercase;letter-spacing:.11em;margin:0 0 14px}
     .meta-grid p,.meta-grid li{color:#aaa8a2;font-size:12px;line-height:1.55}
@@ -50,9 +44,9 @@
     .references-list{font-size:clamp(25px,3.7vw,54px);line-height:1.04;letter-spacing:-.04em;text-transform:uppercase;margin:0;max-width:1120px}
     .cv-links{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:38px}
     .cv-links a{font-size:12px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--line);padding-bottom:5px}
-    @media(max-width:900px){.stack-grid{grid-template-columns:1fr 1fr}.stack-grid div{border-bottom:1px solid var(--line)}.stack-grid div:nth-child(2n){border-right:0}.stack-grid div:last-child{grid-column:1/-1;border-bottom:0}.value-grid{grid-template-columns:1fr 1fr}.value-grid article:nth-child(2){border-right:0}.value-grid article:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+    @media(max-width:900px){.stack-grid{grid-template-columns:1fr 1fr}.stack-grid div{border-bottom:1px solid var(--line)}.stack-grid div:nth-child(2n){border-right:0}.project-grid{grid-template-columns:1fr 1fr}}
     @media(max-width:820px){.cv-head,.profile-grid,.references{grid-template-columns:1fr}.cv-row{grid-template-columns:1fr;gap:10px}.project-grid,.meta-grid{grid-template-columns:1fr}.project-grid article{min-height:0}}
-    @media(max-width:520px){.stack-grid,.value-grid{grid-template-columns:1fr}.stack-grid div,.value-grid article{border-right:0!important;border-bottom:1px solid var(--line)}.stack-grid div:last-child,.value-grid article:last-child{border-bottom:0}.stack-grid div:last-child{grid-column:auto}}
+    @media(max-width:520px){.stack-grid{grid-template-columns:1fr}.stack-grid div{border-right:0!important;border-bottom:1px solid var(--line)}.stack-grid div:last-child{border-bottom:0}}
   </style>
 </head>
 <body>
@@ -62,69 +56,55 @@
   <header class="page-intro cv-intro reveal">
     <p class="eyebrow">Selected CV</p>
     <h1>DATA<br>C0RE</h1>
-    <p>Interactive systems / fabrication / realtime audiovisual production. More than eighteen years of professional practice across live performance, digital creation, electronics and physical integration.</p>
-    <div class="cv-intro-meta"><span>Annecy / international mobility</span><span>Design / prototype / make reliable / transmit</span></div>
+    <p>Digital artist and creative technologist working across realtime audiovisual systems, stage media, interactive light, projection and physical integration.</p>
+    <div class="cv-intro-meta"><span>Annecy / international mobility</span><span>Realtime systems / stage / installation</span></div>
   </header>
 
   <section class="cv-section cv-section--tight">
-    <div class="profile-grid reveal"><p class="label">01 / Profile</p><p class="profile-copy">I work from artistic intention through to operation: clarifying needs, choosing technical approaches, prototyping, installing, testing, diagnosing and documenting. I am used to coordinating venue teams and turning complex systems into reliable, understandable setups that can be handed over and operated independently.</p></div>
+    <div class="profile-grid reveal"><p class="label">01 / Profile</p><p class="profile-copy">More than eighteen years of professional practice across live performance and digital media. I develop and operate systems from software logic through projection, LED, lighting and physical installation, with a focus on realtime behaviour, reliable integration and clear collaboration with artistic and technical teams.</p></div>
   </section>
 
   <section class="cv-section">
     <div class="cv-head reveal"><p>02 / Selected experience</p><h2>Professional path</h2></div>
     <div class="cv-list reveal">
-      <article class="cv-row"><time>2023—24</time><div class="cv-title"><strong>Grand Théâtre de Genève</strong><span class="cv-status">SMODE programmer / projection integration</span></div><div class="cv-detail"><p>Programming, cues, multi-plane projection, monumental soft-edge and on-site calibration for large-scale stage environments.</p></div></article>
-      <article class="cv-row"><time>2021—23</time><div class="cv-title"><strong>Comédie de Genève — Entre chien et loup</strong><span class="cv-status">Video manager / interactive touring system</span></div><div class="cv-detail"><p>Responsibility for the interactive video system on tour: preparation and venue adaptation, coordination of host technical teams, multilingual surtitling, testing and troubleshooting.</p><p>Documentation and control-room handovers were prepared so the system could be operated autonomously when I was not present.</p></div></article>
-      <article class="cv-row"><time>2013—present</time><div class="cv-title"><strong>Hardwinner</strong><span class="cv-status">Light / video designer</span></div><div class="cv-detail"><p>Co-design of audiovisual installations, interactive scenography and sound-reactive systems. LED prototyping, mapping, DMX / Art-Net interfaces and tool repurposing within a DIY practice between low-tech and high-tech.</p><p>Dialogue with artists and partners from initial intention through technical implementation and live operation.</p></div></article>
-      <article class="cv-row"><time>2006—present</time><div class="cv-title"><strong>Independent technical practice</strong><span class="cv-status">Theatre / dance / opera / events</span></div><div class="cv-detail"><p>Design, installation, operation and reliability of video, lighting and streaming systems. Technical mediation with artists and teams with varied levels of expertise, including explanation, adaptation, troubleshooting and support toward autonomous use.</p></div></article>
+      <article class="cv-row"><time>2023—24</time><div class="cv-title"><strong>Grand Théâtre de Genève</strong><span class="cv-status">SMODE programmer / projection integration</span></div><div class="cv-detail"><p>Programming, show cues, multi-plane projection, monumental soft-edge, distorted surfaces and on-site calibration for large-scale stage environments.</p></div></article>
+      <article class="cv-row"><time>2021—23</time><div class="cv-title"><strong>Comédie de Genève — Entre chien et loup</strong><span class="cv-status">Video systems / interactive touring contribution</span></div><div class="cv-detail"><p>Touring video-system preparation and venue adaptation, coordination with local technical teams, multilingual surtitling, testing, troubleshooting and control-room handover.</p></div></article>
+      <article class="cv-row"><time>2013—present</time><div class="cv-title"><strong>Hardwinner</strong><span class="cv-status">Realtime AV / light + video systems</span></div><div class="cv-detail"><p>Collaborative audiovisual systems for electronic-music and spatial contexts: TouchDesigner development, realtime 3D simulation, LED / DMX integration, GLSL, Resolume and show control.</p></div></article>
+      <article class="cv-row"><time>2006—present</time><div class="cv-title"><strong>Independent technical practice</strong><span class="cv-status">Theatre / dance / opera / events</span></div><div class="cv-detail"><p>Design, installation, operation and troubleshooting of video, lighting, projection and streaming systems across live-production environments.</p></div></article>
     </div>
   </section>
 
   <section class="cv-section">
-    <div class="cv-head reveal"><p>03 / Projects + references</p><h2>Selected evidence</h2></div>
+    <div class="cv-head reveal"><p>03 / Selected production</p><h2>Installation + stage</h2></div>
     <div class="project-grid reveal">
-      <article><span>Large-scale installation</span><strong>LUMINA / Geneva Lux</strong><p>Design and delivery of an interactive light installation: Fusion 360 modelling, wood construction, LED integration, programming, technical coordination and optimisation of an approximately CHF 40,000 budget across three years.</p></article>
-      <article><span>DIY hardware</span><strong>Modular LED screen</strong><p>Needs analysis, component selection, integration and operation of a modular LED display system developed through a repairable, adaptable DIY approach.</p></article>
-      <article><span>Community / transmission</span><strong>TouchDesigner France</strong><p>Creation and structuring of French-speaking Discord and Facebook spaces dedicated to peer support, resource sharing and exchanges between practitioners.</p></article>
-      <article><span>Research / infrastructure</span><strong>Associative fablab prefiguration</strong><p>Study of expected uses, comparison of an initial equipment set and preparation of a provisional budget for a shared fabrication environment.</p></article>
+      <article><span>Interactive light installation / 2025—27</span><strong>LUMINA / Geneva Lux</strong><p>Fusion 360 structure, wood fabrication, LED integration, network planning, TouchDesigner programming, realtime light behaviour, budgeting and technical integration.</p></article>
+      <article><span>Institutional stage media / 2023—24</span><strong>Grand Théâtre de Genève</strong><p>SMODE programming, projection geometry, cueing, soft-edge and calibration within opera and ballet production environments.</p></article>
+      <article><span>Touring video systems / 2021—23</span><strong>Comédie de Genève</strong><p>Interactive video-system adaptation, cameras, routing, projection, surtitles, touring installation and operational continuity.</p></article>
     </div>
   </section>
 
   <section class="cv-section">
-    <div class="cv-head reveal"><p>04 / Working approach</p><h2>Make with / make durable</h2></div>
-    <div class="value-grid reveal">
-      <article><h3>Accompany</h3><p>Question an intention, propose several paths, make room for experimentation and guide toward autonomy.</p></article>
-      <article><h3>Coordinate</h3><p>Organise installations, distribute tasks and work with the technical teams of host venues.</p></article>
-      <article><h3>Transmit</h3><p>Explain through practice, produce clear documentation and verify independent operation.</p></article>
-      <article><h3>Make reliable</h3><p>Test, document, diagnose and anticipate fallback solutions while respecting safety constraints.</p></article>
-    </div>
-  </section>
-
-  <section class="cv-section">
-    <div class="cv-head reveal"><p>05 / Practices + tools</p><h2>Technical range</h2></div>
+    <div class="cv-head reveal"><p>04 / Practices + tools</p><h2>Technical range</h2></div>
     <div class="stack-grid reveal">
-      <div><b>Interactive systems</b><p>TouchDesigner — advanced practice, nearly 15 years / Resolume / Millumin / SMODE / video + LED mapping / streaming</p></div>
-      <div><b>Code + networks</b><p>Python / GLSL / HTML / REST APIs / Git / DMX / Art-Net / OSC / DMX to SPI</p></div>
-      <div><b>Creative electronics</b><p>Arduino / ESP32 / Raspberry Pi / connected objects / prototyping / basic electronic soldering</p></div>
-      <div><b>Design + fabrication</b><p>Fusion 360 / 3D modelling / wood construction / integration of physical audiovisual systems</p></div>
-      <div><b>Documentation + research</b><p>Diagrams / plans / technical lists / check-lists / procedures / generative AI for research, prototyping and documentation</p></div>
+      <div><b>Realtime + media</b><p>TouchDesigner / GLSL / Python / SMODE / Resolume / Millumin / realtime video / show control</p></div>
+      <div><b>Signals + control</b><p>DMX / Art-Net / OSC / APIs / WebSocket / DMX to SPI / networked media systems</p></div>
+      <div><b>Space + output</b><p>Projection / LED / mapping / calibration / cameras / routing / stage and installation integration</p></div>
+      <div><b>Fabrication</b><p>Fusion 360 / 3D modelling / woodworking / carpentry / prototyping / electronics integration</p></div>
     </div>
   </section>
 
   <section class="cv-section">
-    <div class="cv-head reveal"><p>06 / Background</p><h2>Training + culture</h2></div>
+    <div class="cv-head reveal"><p>05 / Background</p><h2>Training + languages</h2></div>
     <div class="meta-grid reveal">
-      <article><h3>Training</h3><ul><li>CAP menuiserie-charpente</li><li>Digital creation and interactive systems through professional practice, specialised workshops and continuous self-training</li></ul></article>
-      <article><h3>Languages</h3><ul><li>French — native</li><li>English — professional comprehension and operational technical communication</li></ul></article>
-      <article><h3>Working culture</h3><p>DIY, open source, low-tech and hackerspace cultures. Preference for accessible, repairable and documented tools, with attention to safety, curiosity, rigor, listening and cooperation.</p></article>
+      <article><h3>Training</h3><ul><li>Woodworking / carpentry — French CAP vocational qualification</li><li>Digital creation and interactive systems — professional practice, specialised workshops and continuous self-training</li></ul></article>
+      <article><h3>Languages</h3><ul><li>French — native</li><li>English — professional technical communication</li></ul></article>
     </div>
   </section>
 
   <section class="cv-section">
-    <div class="references reveal"><p class="references-label">07 / Selected venues + contexts</p><p class="references-list">Geneva Lux / Festival d’Avignon / Odéon–Théâtre de l’Europe / Piccolo Teatro di Milano / Théâtre de Carouge / Grand Théâtre de Genève / Comédie de Genève</p></div>
-    <div class="cv-links reveal"><a href="./about.html">About ↗</a><a href="./work.html">Work ↗</a><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+    <div class="references reveal"><p class="references-label">06 / Selected venues + contexts</p><p class="references-list">Geneva Lux / Festival d’Avignon / Odéon–Théâtre de l’Europe / Piccolo Teatro di Milano / Théâtre de Carouge / Grand Théâtre de Genève / Comédie de Genève / La Belle Électrique</p></div>
+    <div class="cv-links reveal"><a href="./work.html">Work ↗</a><a href="./about.html">About ↗</a><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div>
   </section>
 </main>
-<footer class="global-footer"><span>DATA C0RE / CV</span><div><a href="./work.html">Work</a><a href="./about.html">About</a></div></footer>
 <script src="./assets/js/main.js" defer></script>
 </body></html>
