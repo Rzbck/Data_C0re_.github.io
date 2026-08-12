@@ -2,8 +2,16 @@
   "name": "DATA C0RE — Portfolio",
   "short_name": "DATA C0RE",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#070707",
   "theme_color": "#070707",
-  "icons": []
+  "icons": [
+    {
+      "src": "./assets/img/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
 }
