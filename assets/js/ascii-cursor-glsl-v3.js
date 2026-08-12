@@ -1,14 +1,15 @@
 (() => {
-  if (window.__DATA_C0RE_ASCII_CURSOR_V5__) return;
-  window.__DATA_C0RE_ASCII_CURSOR_V5__ = true;
+  if (window.__DATA_C0RE_ASCII_CURSOR_V6__) return;
+  window.__DATA_C0RE_ASCII_CURSOR_V6__ = true;
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(pointer:fine) and (hover:hover)');
   if (reduce.matches || !finePointer.matches) return;
 
   document.body.classList.add('ascii-cursor-active');
+
   const layerStyle = document.createElement('style');
-  layerStyle.dataset.asciiCursorLayer = 'v5';
+  layerStyle.dataset.asciiCursorLayer = 'v6';
   layerStyle.textContent = `
     body.ascii-cursor-active main > *{position:relative;z-index:2}
     body.ascii-cursor-active main > .hero,
@@ -24,20 +25,34 @@
 
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-hidden', 'true');
-  canvas.dataset.asciiCursor = 'v5';
+  canvas.dataset.asciiCursor = 'v6';
   Object.assign(canvas.style, {
-    position: 'fixed', inset: '0', width: '100vw', height: '100vh',
-    pointerEvents: 'none', zIndex: '1', opacity: '0', mixBlendMode: 'screen',
-    transition: 'opacity 300ms ease', contain: 'strict'
+    position: 'fixed',
+    inset: '0',
+    width: '100vw',
+    height: '100vh',
+    pointerEvents: 'none',
+    zIndex: '1',
+    opacity: '0',
+    mixBlendMode: 'screen',
+    transition: 'opacity 260ms ease',
+    contain: 'strict'
   });
   document.body.appendChild(canvas);
 
   const gl = canvas.getContext('webgl2', {
-    alpha: true, antialias: false, depth: false, stencil: false,
-    premultipliedAlpha: false, preserveDrawingBuffer: false,
+    alpha: true,
+    antialias: false,
+    depth: false,
+    stencil: false,
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false,
     powerPreference: 'low-power'
   });
-  if (!gl) { canvas.remove(); return; }
+  if (!gl) {
+    canvas.remove();
+    return;
+  }
 
   const vertexSource = `#version 300 es
     in vec2 a_position;
@@ -63,7 +78,7 @@
     const float feed = 0.0367;
     const float kill = 0.0649;
     const float Da = 1.0;
-    const float Db = 0.86;
+    const float Db = 0.90;
     const float dt = 1.0;
 
     float hash21(vec2 p){
@@ -102,39 +117,46 @@
       wide += texture(u_state, v_uv + vec2(0.0,  u_texel.y * 3.0)).xy;
       wide = wide * 0.25 - state;
 
+      vec2 wider = vec2(0.0);
+      wider += texture(u_state, v_uv + vec2(-u_texel.x * 7.0, 0.0)).xy;
+      wider += texture(u_state, v_uv + vec2( u_texel.x * 7.0, 0.0)).xy;
+      wider += texture(u_state, v_uv + vec2(0.0, -u_texel.y * 7.0)).xy;
+      wider += texture(u_state, v_uv + vec2(0.0,  u_texel.y * 7.0)).xy;
+      wider = wider * 0.25 - state;
+
       float reaction = a * b * b;
       float nextA = a + (Da * lap.x - reaction + feed * (1.0 - a)) * dt;
       float nextB = b + (Db * lap.y + reaction - (kill + feed) * b) * dt;
 
-      // Wider transport makes the mouse gesture escape its local circle and travel.
-      nextB += max(wide.y, 0.0) * 0.19;
-      nextB += max(lap.y, 0.0) * 0.10;
+      nextB += max(lap.y, 0.0) * 0.12;
+      nextB += max(wide.y, 0.0) * 0.22;
+      nextB += max(wider.y, 0.0) * 0.10;
 
       if (u_inject > 0.001) {
         float aspect = u_texel.y / max(u_texel.x, 0.000001);
         vec2 p = v_uv;
         vec2 m = u_mouse;
         vec2 pm = u_prevMouse;
-        p.x *= aspect; m.x *= aspect; pm.x *= aspect;
+        p.x *= aspect;
+        m.x *= aspect;
+        pm.x *= aspect;
 
         float dist = segmentDistance(p, pm, m);
-        float core = 1.0 - smoothstep(0.010, 0.050, dist);
-        float bloom = 1.0 - smoothstep(0.045, 0.180, dist);
-        float grain = 0.82 + 0.18 * sin(v_uv.x * 91.0 + v_uv.y * 73.0 + u_time * 1.8);
-        float brush = clamp((core * 0.92 + bloom * 0.24) * grain, 0.0, 1.0);
+        float core = 1.0 - smoothstep(0.008, 0.052, dist);
+        float bloom = 1.0 - smoothstep(0.040, 0.220, dist);
+        float grain = 0.80 + 0.20 * sin(v_uv.x * 83.0 + v_uv.y * 69.0 + u_time * 1.65);
+        float brush = clamp((core * 0.95 + bloom * 0.30) * grain, 0.0, 1.0);
         nextB = max(nextB, brush * u_inject);
-        nextA = min(nextA, 1.0 - brush * 0.30);
+        nextA = min(nextA, 1.0 - brush * 0.32);
       }
 
-      // After the first interaction, sparse descendants appear across the viewport.
-      // They are weak enough to keep the mouse as the origin but let the field live everywhere.
       if (u_alive > 0.5) {
-        vec2 cell = floor(v_uv * vec2(36.0, 22.0));
-        float epoch = floor(u_time * 0.34);
+        vec2 cell = floor(v_uv * vec2(30.0, 18.0));
+        float epoch = floor(u_time * 0.36);
         float n = hash21(cell + epoch * 17.71);
-        float seed = smoothstep(0.9968, 1.0, n) * 0.075;
+        float seed = smoothstep(0.9955, 1.0, n) * 0.10;
         nextB = max(nextB, seed);
-        nextA = min(nextA, 1.0 - seed * 0.16);
+        nextA = min(nextA, 1.0 - seed * 0.18);
       }
 
       fragColor = vec4(clamp(nextA, 0.0, 1.0), clamp(nextB, 0.0, 1.0), 0.0, 1.0);
@@ -155,53 +177,50 @@
       float mask = 0.0;
 
       if (intensity > 0.82) {
-        mask = max(abs(p.x), abs(p.y)) < 0.88 ? 1.0 : 0.0;
+        mask = max(abs(p.x), abs(p.y)) < 0.91 ? 1.0 : 0.0;
       } else if (intensity > 0.64) {
         float box = max(abs(p.x), abs(p.y));
-        mask = (box < 0.88 && box > 0.43) ? 1.0 : 0.0;
+        mask = (box < 0.91 && box > 0.40) ? 1.0 : 0.0;
       } else if (intensity > 0.47) {
-        mask = (abs(p.x) < 0.30 || abs(p.y) < 0.30) ? 1.0 : 0.0;
+        mask = (abs(p.x) < 0.34 || abs(p.y) < 0.34) ? 1.0 : 0.0;
       } else if (intensity > 0.31) {
-        mask = (abs(p.x - p.y) < 0.30 || abs(p.x + p.y) < 0.30) ? 1.0 : 0.0;
+        mask = (abs(p.x - p.y) < 0.34 || abs(p.x + p.y) < 0.34) ? 1.0 : 0.0;
       } else if (intensity > 0.17) {
-        mask = (len < 0.76 && len > 0.35) ? 1.0 : 0.0;
+        mask = (len < 0.79 && len > 0.32) ? 1.0 : 0.0;
       } else if (intensity > 0.075) {
-        mask = abs(p.y) < 0.27 ? 1.0 : 0.0;
+        mask = abs(p.y) < 0.31 ? 1.0 : 0.0;
       } else if (intensity > 0.018) {
-        mask = len < 0.28 ? 1.0 : 0.0;
+        mask = len < 0.32 ? 1.0 : 0.0;
       }
 
       float edge = max(abs(p.x), abs(p.y));
-      return mask * (1.0 - smoothstep(0.88, 1.0, edge));
+      return mask * (1.0 - smoothstep(0.91, 1.0, edge));
     }
 
     vec3 getColor(float b){
-      vec3 cyan = vec3(0.00, 0.72, 1.00);
-      vec3 magenta = vec3(1.00, 0.02, 0.62);
-      vec3 yellow = vec3(1.00, 0.84, 0.02);
-      vec3 col = mix(cyan, magenta, smoothstep(0.06, 0.48, b));
-      return mix(col, yellow, smoothstep(0.50, 0.90, b));
+      vec3 cyan = vec3(0.00, 0.82, 1.00);
+      vec3 magenta = vec3(1.00, 0.00, 0.70);
+      vec3 yellow = vec3(1.00, 0.92, 0.00);
+      vec3 col = mix(cyan, magenta, smoothstep(0.045, 0.46, b));
+      return mix(col, yellow, smoothstep(0.48, 0.88, b));
     }
 
     void main(){
       vec2 fragCoord = gl_FragCoord.xy;
 
-      // Exact viewport-fitted grid: 200 columns, aspect-derived rows.
-      // Because gridPos is normalized by u_resolution, the first and last cells
-      // terminate exactly at the viewport bounds and are never half-cropped.
       vec2 gridPos = (fragCoord / u_resolution) * u_grid;
       vec2 cell = floor(gridPos);
       vec2 localUV = fract(gridPos);
       vec2 cellUV = (cell + 0.5) / u_grid;
 
       float b = texture(u_state, clamp(cellUV, vec2(0.0), vec2(1.0))).y;
-      float intensity = smoothstep(0.006, 0.34, b);
+      float intensity = smoothstep(0.004, 0.30, b);
       float charMask = getCharMask(localUV, intensity);
 
       vec3 color = getColor(b);
-      float glow = smoothstep(0.03, 0.55, b);
-      color *= 0.78 + glow * 0.48;
-      float alpha = charMask * smoothstep(0.006, 0.23, b) * 0.56;
+      float glow = smoothstep(0.015, 0.50, b);
+      color *= 0.95 + glow * 0.72;
+      float alpha = charMask * smoothstep(0.003, 0.20, b) * 0.82;
 
       fragColor = vec4(color * charMask, alpha);
     }
@@ -220,24 +239,25 @@
   };
 
   const makeProgram = fragmentSource => {
-    const p = gl.createProgram();
-    gl.attachShader(p, compile(gl.VERTEX_SHADER, vertexSource));
-    gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fragmentSource));
-    gl.linkProgram(p);
-    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
-      const error = gl.getProgramInfoLog(p) || 'WebGL link error';
-      gl.deleteProgram(p);
+    const program = gl.createProgram();
+    gl.attachShader(program, compile(gl.VERTEX_SHADER, vertexSource));
+    gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fragmentSource));
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      const error = gl.getProgramInfoLog(program) || 'WebGL link error';
+      gl.deleteProgram(program);
       throw new Error(error);
     }
-    return p;
+    return program;
   };
 
-  let simulationProgram, displayProgram;
+  let simulationProgram;
+  let displayProgram;
   try {
     simulationProgram = makeProgram(simulationSource);
     displayProgram = makeProgram(displaySource);
   } catch (error) {
-    console.warn('DATA C0RE ASCII cursor v5 disabled:', error);
+    console.warn('DATA C0RE ASCII cursor v6 disabled:', error);
     canvas.remove();
     return;
   }
@@ -246,10 +266,10 @@
   gl.bindBuffer(gl.ARRAY_BUFFER, quad);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
 
-  const bindQuad = p => {
-    gl.useProgram(p);
+  const bindQuad = program => {
+    gl.useProgram(program);
     gl.bindBuffer(gl.ARRAY_BUFFER, quad);
-    const location = gl.getAttribLocation(p, 'a_position');
+    const location = gl.getAttribLocation(program, 'a_position');
     gl.enableVertexAttribArray(location);
     gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 0, 0);
   };
@@ -263,16 +283,25 @@
     time: gl.getUniformLocation(simulationProgram, 'u_time'),
     alive: gl.getUniformLocation(simulationProgram, 'u_alive')
   };
+
   const displayUniforms = {
     state: gl.getUniformLocation(displayProgram, 'u_state'),
     resolution: gl.getUniformLocation(displayProgram, 'u_resolution'),
     grid: gl.getUniformLocation(displayProgram, 'u_grid')
   };
 
-  let simW = 0, simH = 0, textures = [], framebuffers = [], readIndex = 0;
-  let gridCols = 200, gridRows = 100;
+  let simW = 0;
+  let simH = 0;
+  let textures = [];
+  let framebuffers = [];
+  let readIndex = 0;
+  let gridCols = 50;
+  let gridRows = 28;
   let pointer = { x: 0.5, y: 0.5, px: 0.5, py: 0.5, lastMove: -Infinity };
-  let running = false, activated = false, raf = 0, dimTimer = 0;
+  let running = false;
+  let activated = false;
+  let raf = 0;
+  let dimTimer = 0;
 
   const makeTexture = (w, h, data) => {
     const texture = gl.createTexture();
@@ -309,10 +338,10 @@
     canvas.width = width;
     canvas.height = height;
 
-    gridCols = 200;
+    gridCols = 50;
     gridRows = Math.max(1, Math.round(gridCols * height / width));
 
-    const targetW = Math.max(320, Math.min(640, Math.round(width * 0.34)));
+    const targetW = Math.max(320, Math.min(680, Math.round(width * 0.36)));
     const targetH = Math.max(180, Math.round(targetW * height / width));
     if (targetW === simW && targetH === simH) return;
 
@@ -337,7 +366,7 @@
     gl.uniform2f(simUniforms.texel, 1 / simW, 1 / simH);
     gl.uniform2f(simUniforms.mouse, pointer.x, pointer.y);
     gl.uniform2f(simUniforms.prevMouse, pointer.px, pointer.py);
-    const moving = now - pointer.lastMove < 170;
+    const moving = now - pointer.lastMove < 180;
     gl.uniform1f(simUniforms.inject, moving ? injectScale : 0);
     gl.uniform1f(simUniforms.time, now * 0.001);
     gl.uniform1f(simUniforms.alive, activated ? 1 : 0);
@@ -364,12 +393,14 @@
 
   const frame = now => {
     if (!running || document.hidden) return;
-    const moving = now - pointer.lastMove < 190;
-    const passes = moving ? 7 : 4;
-    for (let i = 0; i < passes; i++) simulationPass(now, i === 0 ? 1.0 : 0.55);
+    const moving = now - pointer.lastMove < 210;
+    const passes = moving ? 8 : 5;
+    for (let i = 0; i < passes; i++) {
+      simulationPass(now, i === 0 ? 1.0 : 0.58);
+    }
     displayPass();
-    pointer.px += (pointer.x - pointer.px) * 0.38;
-    pointer.py += (pointer.y - pointer.py) * 0.38;
+    pointer.px += (pointer.x - pointer.px) * 0.34;
+    pointer.py += (pointer.y - pointer.py) * 0.34;
     raf = requestAnimationFrame(frame);
   };
 
@@ -389,10 +420,12 @@
     pointer.y = Math.max(0, Math.min(1, 1 - event.clientY / Math.max(1, window.innerHeight)));
     pointer.lastMove = performance.now();
     activated = true;
-    canvas.style.opacity = '0.54';
+    canvas.style.opacity = '0.78';
     start();
     clearTimeout(dimTimer);
-    dimTimer = setTimeout(() => { canvas.style.opacity = '0.34'; }, 1500);
+    dimTimer = setTimeout(() => {
+      canvas.style.opacity = '0.54';
+    }, 1700);
   };
 
   resize();
