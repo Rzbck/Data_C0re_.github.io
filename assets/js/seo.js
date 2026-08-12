@@ -70,10 +70,15 @@
   setMeta('meta[name="twitter:image"]', { name:'twitter:image', content:ogImage });
   setLink('canonical', canonical);
 
-  // Explicit icon prevents project pages from falling back to /favicon.ico on the github.io origin.
   if (!document.head.querySelector('link[rel="icon"]')) {
-    const icon = document.createElement('link'); icon.rel='icon'; icon.type='image/svg+xml'; icon.href=new URL('assets/img/favicon.svg', document.baseURI).href; document.head.appendChild(icon);
+    const icon = document.createElement('link');
+    icon.rel='icon'; icon.type='image/svg+xml';
+    icon.href=new URL('assets/img/favicon.svg', document.baseURI).href;
+    document.head.appendChild(icon);
   }
+
+  // Static JSON-LD is preferred on core pages. This fallback only fills pages that do not already ship schema in HTML.
+  if (document.head.querySelector('script[type="application/ld+json"]')) return;
 
   const person = {
     '@type':'Person', '@id':ROOT+'#data-c0re', name:'DATA C0RE', url:ROOT,
@@ -96,7 +101,7 @@
   if (route === 'cv.html') {
     graph.push({
       '@type':'Service', '@id':ROOT+'#av-services', name:'Realtime audiovisual and video systems', provider:{'@id':ROOT+'#data-c0re'},
-      areaServed:[{'@type':'Country','name':'France'},{'@type':'AdministrativeArea','name':'Europe'}],
+      areaServed:'International',
       serviceType:['Realtime video systems','TouchDesigner programming','Projection integration','Interactive media','Live AV systems','Stage media systems','Video régie and touring systems']
     });
   }
@@ -104,7 +109,8 @@
     graph.push({ '@type':'CreativeWork', '@id':canonical+'#work', url:canonical, name:p.title.replace(/ — DATA C0RE.*$/,''), description:p.description, creator:{'@id':ROOT+'#data-c0re'}, image:ogImage, inLanguage:['en','fr','es'] });
   }
 
-  let ld = document.head.querySelector('script[data-seo-jsonld]');
-  if (!ld) { ld=document.createElement('script'); ld.type='application/ld+json'; ld.dataset.seoJsonld='true'; document.head.appendChild(ld); }
+  const ld=document.createElement('script');
+  ld.type='application/ld+json'; ld.dataset.seoJsonld='true';
   ld.textContent=JSON.stringify({'@context':'https://schema.org','@graph':graph});
+  document.head.appendChild(ld);
 })();
