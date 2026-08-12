@@ -132,9 +132,9 @@
     event.preventDefault();if(event.repeat||animating)return;move(direction);
   });
 
-  // Touch magnet: native scrolling remains available inside tall mobile sections.
-  // A deliberate vertical swipe snaps only when a section fits the viewport or
-  // when the user has reached the relevant edge of a taller section.
+  // Touch keeps native scrolling inside tall panels. A vertical swipe only
+  // magnetises when the touched panel fits the viewport, or when its edge
+  // has actually been reached. Horizontal UI stays fully native.
   let touchTracking=false,touchStartY=0,touchStartX=0,touchStartScroll=0,touchStartPanel=0;
   const ignoreTouchTarget=target=>target instanceof Element&&Boolean(target.closest('.tech-tabs,.route,input,textarea,select,[contenteditable="true"]'));
   window.addEventListener('touchstart',event=>{
@@ -144,7 +144,9 @@
     touchStartY=touch.clientY;
     touchStartX=touch.clientX;
     touchStartScroll=window.scrollY;
-    touchStartPanel=nearestIndexAt(touchStartScroll+window.innerHeight*.5);
+    const touched=event.target instanceof Element?event.target.closest('.fullpage-panel'):null;
+    const touchedIndex=touched?panels.indexOf(touched):-1;
+    touchStartPanel=touchedIndex>=0?touchedIndex:nearestIndexAt(touchStartScroll+window.innerHeight*.5);
   },{passive:true});
 
   window.addEventListener('touchend',event=>{
