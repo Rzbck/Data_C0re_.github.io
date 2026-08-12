@@ -1,0 +1,74 @@
+/* Language-aware layout corrections. Keep the composition stable when translated
+   strings are materially longer than the English source. */
+html[lang="fr"] body,html[lang="es"] body{hyphens:none}
+html[lang="fr"] :where(h1,h2,h3),html[lang="es"] :where(h1,h2,h3){text-wrap:balance;overflow-wrap:normal;word-break:normal}
+html[lang="fr"] :where(p,li),html[lang="es"] :where(p,li){text-wrap:pretty}
+
+/* HOME / statement: Spanish and French need a shorter line measure and a more
+   generous text column so the fullpage section remains one controlled frame. */
+@media(min-width:821px){
+  html[lang="fr"] .home-statement-grid,html[lang="es"] .home-statement-grid{grid-template-columns:minmax(0,1.16fr) minmax(310px,.84fr);gap:clamp(64px,7.5vw,142px);align-items:end}
+  html[lang="fr"] .home-statement h2{max-width:1120px;font-size:clamp(48px,5.65vw,96px);line-height:.93;letter-spacing:-.052em}
+  html[lang="es"] .home-statement h2{max-width:1080px;font-size:clamp(46px,5.35vw,92px);line-height:.94;letter-spacing:-.049em}
+  html[lang="fr"] .home-statement-copy,html[lang="es"] .home-statement-copy{max-width:500px;font-size:clamp(16px,1.2vw,20px);line-height:1.48}
+
+  /* ABOUT / long translated verbs must never collide with the right column. */
+  html[lang="fr"] #method .about-section-grid,html[lang="es"] #method .about-section-grid{grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:clamp(88px,8.5vw,170px);align-items:start}
+  html[lang="fr"] #method .about-display{font-size:clamp(48px,5.75vw,94px);line-height:.86;letter-spacing:-.052em}
+  html[lang="es"] #method .about-display{font-size:clamp(50px,6.05vw,100px);line-height:.86;letter-spacing:-.052em}
+  html[lang="fr"] #method .about-copy,html[lang="es"] #method .about-copy{max-width:760px;font-size:clamp(16px,1.45vw,21px);line-height:1.38}
+  html[lang="fr"] #method .method-grid h3,html[lang="es"] #method .method-grid h3{font-size:clamp(24px,2.55vw,42px);letter-spacing:-.04em}
+
+  html[lang="fr"] #practice .about-display{font-size:clamp(48px,6.5vw,106px)}
+  html[lang="es"] #practice .about-display{font-size:clamp(48px,6.35vw,104px)}
+  html[lang="fr"] .direction .about-display,html[lang="es"] .direction .about-display{font-size:clamp(48px,6.65vw,108px)}
+
+  /* Generic translated headline insurance on pages that use full-screen frames. */
+  html[lang="fr"] .page-intro h1,html[lang="es"] .page-intro h1{font-size:clamp(68px,9.7vw,158px)}
+  html[lang="fr"] .work-screen-head h2,html[lang="es"] .work-screen-head h2{font-size:clamp(40px,5.25vw,82px)}
+  html[lang="fr"] .project-hero h1,html[lang="es"] .project-hero h1{font-size:clamp(58px,8vw,128px)}
+  html[lang="fr"] .prose-large h2,html[lang="es"] .prose-large h2{font-size:clamp(40px,4.9vw,78px)}
+}
+
+/* Runtime fallback used by i18n-polish.js if a translated desktop panel still
+   exceeds the viewport after the normal language rules. */
+@media(min-width:821px){
+  [data-locale-tight="1"].home-statement,[data-locale-tight="1"].page-intro,[data-locale-tight="1"].cv-section,[data-locale-tight="1"].work-screen,[data-locale-tight="1"].project-hero,[data-locale-tight="1"].project-section,[data-locale-tight="1"].about-panel{padding-top:calc(var(--header) + 24px)!important;padding-bottom:24px!important}
+  [data-locale-tight="1"] :is(.home-statement h2,.page-intro h1,.project-hero h1,.about-display,.about-hero h1,.work-screen-head h2,.cv-head h2,.prose-large h2){font-size:clamp(38px,5.15vw,84px)!important}
+  [data-locale-tight="1"] :is(.home-statement-copy,.project-intent,.about-copy,.direction-copy p,.profile-copy,.prose-large p,.prose p){font-size:15px!important;line-height:1.38!important}
+  [data-locale-tight="1"] :is(.method-grid,.system-chain,.project-facts,.stats-grid,.cv-head,.section-head){margin-top:18px!important;margin-bottom:18px!important}
+
+  [data-locale-tight="2"].home-statement,[data-locale-tight="2"].page-intro,[data-locale-tight="2"].cv-section,[data-locale-tight="2"].work-screen,[data-locale-tight="2"].project-hero,[data-locale-tight="2"].project-section,[data-locale-tight="2"].about-panel{padding-top:calc(var(--header) + 16px)!important;padding-bottom:16px!important}
+  [data-locale-tight="2"] :is(.home-statement h2,.page-intro h1,.project-hero h1,.about-display,.about-hero h1,.work-screen-head h2,.cv-head h2,.prose-large h2){font-size:clamp(34px,4.55vw,72px)!important;line-height:.92!important}
+  [data-locale-tight="2"] :is(.home-statement-copy,.project-intent,.about-copy,.direction-copy p,.profile-copy,.prose-large p,.prose p){font-size:14px!important;line-height:1.34!important}
+  [data-locale-tight="2"] .method-grid article{min-height:120px!important;padding-top:14px!important;padding-bottom:14px!important}
+}
+
+/* Tablet: translated headings get breathing room but sections are allowed to
+   grow naturally. The touch magnet only jumps once a tall panel edge is reached. */
+@media(max-width:1100px) and (min-width:621px){
+  html[lang="fr"] .home-statement h2,html[lang="es"] .home-statement h2{font-size:clamp(42px,7vw,68px)!important}
+  html[lang="fr"] #method .about-display,html[lang="es"] #method .about-display{font-size:clamp(42px,7.2vw,64px)!important}
+  html[lang="fr"] #method .about-section-grid,html[lang="es"] #method .about-section-grid{gap:44px!important}
+  html[lang="fr"] .method-grid,html[lang="es"] .method-grid{grid-template-columns:1fr 1fr!important}
+  html[lang="fr"] .method-grid article:nth-child(2),html[lang="es"] .method-grid article:nth-child(2){border-right:0}
+}
+
+/* Phone: no arbitrary word splitting. Longer locales scale typographically
+   instead of spilling horizontally. */
+@media(max-width:620px){
+  html[lang="fr"] .home-statement h2,html[lang="es"] .home-statement h2{font-size:clamp(34px,9.7vw,48px)!important;line-height:.98!important;letter-spacing:-.045em!important}
+  html[lang="fr"] .home-statement-copy,html[lang="es"] .home-statement-copy{font-size:15px!important;line-height:1.48!important}
+  html[lang="fr"] .about-hero h1{font-size:clamp(38px,10.2vw,52px)!important}
+  html[lang="es"] .about-hero h1{font-size:clamp(39px,10.5vw,54px)!important}
+  html[lang="fr"] #method .about-display{font-size:clamp(32px,8.8vw,44px)!important;line-height:.93!important}
+  html[lang="es"] #method .about-display{font-size:clamp(34px,9vw,46px)!important;line-height:.92!important}
+  html[lang="fr"] #practice .about-display,html[lang="es"] #practice .about-display{font-size:clamp(34px,9.3vw,48px)!important}
+  html[lang="fr"] .direction .about-display,html[lang="es"] .direction .about-display{font-size:clamp(35px,9.5vw,49px)!important}
+  html[lang="fr"] :is(.project-hero h1,.page-intro h1,.work-screen-head h2,.cv-head h2,.production-head h2,.stage-study-head h2),html[lang="es"] :is(.project-hero h1,.page-intro h1,.work-screen-head h2,.cv-head h2,.production-head h2,.stage-study-head h2){overflow-wrap:normal!important;word-break:normal!important;hyphens:none!important}
+}
+
+@media(max-width:390px){
+  html[lang="fr"] #method .about-display,html[lang="es"] #method .about-display{font-size:31px!important}
+  html[lang="fr"] .about-hero h1,html[lang="es"] .about-hero h1{font-size:38px!important}
+}
