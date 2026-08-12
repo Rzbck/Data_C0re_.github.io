@@ -1,6 +1,6 @@
 (() => {
-  if (window.__DATA_C0RE_ASCII_CURSOR_V13__) return;
-  window.__DATA_C0RE_ASCII_CURSOR_V13__ = true;
+  if (window.__DATA_C0RE_ASCII_CURSOR_V14__) return;
+  window.__DATA_C0RE_ASCII_CURSOR_V14__ = true;
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(pointer:fine) and (hover:hover)');
@@ -9,7 +9,7 @@
   document.body.classList.add('ascii-cursor-active');
 
   const layerStyle = document.createElement('style');
-  layerStyle.dataset.asciiCursorLayer = 'v13';
+  layerStyle.dataset.asciiCursorLayer = 'v14';
   layerStyle.textContent = `
     body.ascii-cursor-active main > *{position:relative;z-index:2}
     body.ascii-cursor-active main > .hero,
@@ -25,7 +25,7 @@
 
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-hidden', 'true');
-  canvas.dataset.asciiCursor = 'v13';
+  canvas.dataset.asciiCursor = 'v14';
   Object.assign(canvas.style, {
     position: 'fixed', inset: '0', width: '100vw', height: '100vh',
     pointerEvents: 'none', zIndex: '1', opacity: '0', mixBlendMode: 'screen',
@@ -316,7 +316,7 @@
     simulationProgram = makeProgram(simulationSource);
     displayProgram = makeProgram(displaySource);
   } catch (error) {
-    console.warn('DATA C0RE ASCII cursor v13 disabled:', error);
+    console.warn('DATA C0RE ASCII cursor v14 disabled:', error);
     canvas.remove();
     return;
   }
@@ -373,9 +373,8 @@
   const main = document.querySelector('main');
   const glyphCanvas = document.createElement('canvas');
   const glyphCtx = glyphCanvas.getContext('2d', { alpha: true, willReadFrequently: true });
-  const GLYPH_SUPERSAMPLE = 6;
-  const GLYPH_ALPHA_THRESHOLD = 44;
-  const GLYPH_Y_NUDGE_EM = -0.075;
+  const GLYPH_SUPERSAMPLE = 8;
+  const GLYPH_ALPHA_THRESHOLD = 24;
 
   let simW = 0, simH = 0, textures = [], framebuffers = [], readIndex = 0;
   let collisionTexture = null, collisionData = null, collisionRaf = 0, collisionTimer = 0;
@@ -511,7 +510,7 @@
     glyphCtx.setTransform(sx, 0, 0, sy, 0, 0);
     glyphCtx.fillStyle = '#fff';
     glyphCtx.textAlign = 'left';
-    glyphCtx.textBaseline = 'alphabetic';
+    glyphCtx.textBaseline = 'top';
 
     const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
@@ -537,6 +536,8 @@
       const fontFamily = style.fontFamily || 'sans-serif';
       glyphCtx.font = `${fontStyle} ${fontVariant} ${fontWeight} ${fontSize}px ${fontFamily}`;
       if ('fontKerning' in glyphCtx) glyphCtx.fontKerning = style.fontKerning === 'none' ? 'none' : 'normal';
+      if ('fontStretch' in glyphCtx && style.fontStretch) glyphCtx.fontStretch = style.fontStretch;
+      if ('direction' in glyphCtx) glyphCtx.direction = style.direction === 'rtl' ? 'rtl' : 'ltr';
 
       const text = node.nodeValue;
       for (let i = 0; i < text.length;) {
@@ -553,18 +554,10 @@
 
         const rect = range.getBoundingClientRect();
         if (!visibleRect(rect)) continue;
-        const metrics = glyphCtx.measureText(char);
-        const actualLeft = Number.isFinite(metrics.actualBoundingBoxLeft) ? metrics.actualBoundingBoxLeft : 0;
-        const actualRight = Number.isFinite(metrics.actualBoundingBoxRight) ? metrics.actualBoundingBoxRight : metrics.width;
-        const actualAscent = metrics.actualBoundingBoxAscent || fontSize * 0.76;
-        const actualDescent = metrics.actualBoundingBoxDescent || fontSize * 0.18;
-        const fontAscent = metrics.fontBoundingBoxAscent || fontSize * 0.80;
-        const fontDescent = metrics.fontBoundingBoxDescent || fontSize * 0.20;
-        const inkWidth = Math.max(0.5, actualLeft + actualRight);
-        const x = rect.left + (rect.width - inkWidth) * 0.5 + actualLeft;
-        const baselineFromFontBox = rect.top + (rect.height - (fontAscent + fontDescent)) * 0.5 + fontAscent;
-        const baselineFromInk = rect.top + (rect.height - (actualAscent + actualDescent)) * 0.5 + actualAscent;
-        const y = Math.min(baselineFromFontBox, baselineFromInk) + fontSize * GLYPH_Y_NUDGE_EM;
+
+        const yGuard = Math.min(5, Math.max(1.25, fontSize * 0.10));
+        const x = rect.left;
+        const y = rect.top - yGuard;
         glyphCtx.fillText(char, x, y);
       }
     }
