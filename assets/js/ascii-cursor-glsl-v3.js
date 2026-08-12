@@ -1,6 +1,6 @@
 (() => {
-  if (window.__DATA_C0RE_ASCII_CURSOR_V7__) return;
-  window.__DATA_C0RE_ASCII_CURSOR_V7__ = true;
+  if (window.__DATA_C0RE_ASCII_CURSOR_V8__) return;
+  window.__DATA_C0RE_ASCII_CURSOR_V8__ = true;
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(pointer:fine) and (hover:hover)');
@@ -9,7 +9,7 @@
   document.body.classList.add('ascii-cursor-active');
 
   const layerStyle = document.createElement('style');
-  layerStyle.dataset.asciiCursorLayer = 'v7';
+  layerStyle.dataset.asciiCursorLayer = 'v8';
   layerStyle.textContent = `
     body.ascii-cursor-active main > *{position:relative;z-index:2}
     body.ascii-cursor-active main > .hero,
@@ -25,34 +25,20 @@
 
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-hidden', 'true');
-  canvas.dataset.asciiCursor = 'v7';
+  canvas.dataset.asciiCursor = 'v8';
   Object.assign(canvas.style, {
-    position: 'fixed',
-    inset: '0',
-    width: '100vw',
-    height: '100vh',
-    pointerEvents: 'none',
-    zIndex: '1',
-    opacity: '0',
-    mixBlendMode: 'screen',
-    transition: 'opacity 850ms cubic-bezier(.2,.75,.25,1)',
-    contain: 'strict'
+    position: 'fixed', inset: '0', width: '100vw', height: '100vh',
+    pointerEvents: 'none', zIndex: '1', opacity: '0', mixBlendMode: 'screen',
+    transition: 'opacity 850ms cubic-bezier(.2,.75,.25,1)', contain: 'strict'
   });
   document.body.appendChild(canvas);
 
   const gl = canvas.getContext('webgl2', {
-    alpha: true,
-    antialias: false,
-    depth: false,
-    stencil: false,
-    premultipliedAlpha: false,
-    preserveDrawingBuffer: false,
+    alpha: true, antialias: false, depth: false, stencil: false,
+    premultipliedAlpha: false, preserveDrawingBuffer: false,
     powerPreference: 'low-power'
   });
-  if (!gl) {
-    canvas.remove();
-    return;
-  }
+  if (!gl) { canvas.remove(); return; }
 
   const vertexSource = `#version 300 es
     in vec2 a_position;
@@ -66,6 +52,7 @@
   const simulationSource = `#version 300 es
     precision highp float;
     uniform sampler2D u_state;
+    uniform sampler2D u_obstacle;
     uniform vec2 u_texel;
     uniform vec2 u_mouse;
     uniform vec2 u_prevMouse;
@@ -80,6 +67,16 @@
     const float Db = 0.90;
     const float dt = 1.0;
 
+    float obstacleAt(vec2 uv){
+      return texture(u_obstacle, clamp(uv, vec2(0.0), vec2(1.0))).r;
+    }
+
+    vec2 stateAt(vec2 uv, vec2 fallbackState){
+      uv = clamp(uv, vec2(0.0), vec2(1.0));
+      float wall = step(0.5, obstacleAt(uv));
+      return mix(texture(u_state, uv).xy, fallbackState, wall);
+    }
+
     float segmentDistance(vec2 p, vec2 a, vec2 b){
       vec2 pa = p - a;
       vec2 ba = b - a;
@@ -88,33 +85,39 @@
     }
 
     void main(){
+      float wallHere = obstacleAt(v_uv);
+      if (wallHere > 0.5) {
+        fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        return;
+      }
+
       vec2 state = texture(u_state, v_uv).xy;
       float a = state.x;
       float b = state.y;
 
       vec2 lap = vec2(0.0);
-      lap += texture(u_state, v_uv + vec2(-u_texel.x, 0.0)).xy * 0.20;
-      lap += texture(u_state, v_uv + vec2( u_texel.x, 0.0)).xy * 0.20;
-      lap += texture(u_state, v_uv + vec2(0.0, -u_texel.y)).xy * 0.20;
-      lap += texture(u_state, v_uv + vec2(0.0,  u_texel.y)).xy * 0.20;
-      lap += texture(u_state, v_uv + vec2(-u_texel.x, -u_texel.y)).xy * 0.05;
-      lap += texture(u_state, v_uv + vec2( u_texel.x, -u_texel.y)).xy * 0.05;
-      lap += texture(u_state, v_uv + vec2(-u_texel.x,  u_texel.y)).xy * 0.05;
-      lap += texture(u_state, v_uv + vec2( u_texel.x,  u_texel.y)).xy * 0.05;
+      lap += stateAt(v_uv + vec2(-u_texel.x, 0.0), state) * 0.20;
+      lap += stateAt(v_uv + vec2( u_texel.x, 0.0), state) * 0.20;
+      lap += stateAt(v_uv + vec2(0.0, -u_texel.y), state) * 0.20;
+      lap += stateAt(v_uv + vec2(0.0,  u_texel.y), state) * 0.20;
+      lap += stateAt(v_uv + vec2(-u_texel.x, -u_texel.y), state) * 0.05;
+      lap += stateAt(v_uv + vec2( u_texel.x, -u_texel.y), state) * 0.05;
+      lap += stateAt(v_uv + vec2(-u_texel.x,  u_texel.y), state) * 0.05;
+      lap += stateAt(v_uv + vec2( u_texel.x,  u_texel.y), state) * 0.05;
       lap -= state;
 
       vec2 wide = vec2(0.0);
-      wide += texture(u_state, v_uv + vec2(-u_texel.x * 3.0, 0.0)).xy;
-      wide += texture(u_state, v_uv + vec2( u_texel.x * 3.0, 0.0)).xy;
-      wide += texture(u_state, v_uv + vec2(0.0, -u_texel.y * 3.0)).xy;
-      wide += texture(u_state, v_uv + vec2(0.0,  u_texel.y * 3.0)).xy;
+      wide += stateAt(v_uv + vec2(-u_texel.x * 3.0, 0.0), state);
+      wide += stateAt(v_uv + vec2( u_texel.x * 3.0, 0.0), state);
+      wide += stateAt(v_uv + vec2(0.0, -u_texel.y * 3.0), state);
+      wide += stateAt(v_uv + vec2(0.0,  u_texel.y * 3.0), state);
       wide = wide * 0.25 - state;
 
       vec2 wider = vec2(0.0);
-      wider += texture(u_state, v_uv + vec2(-u_texel.x * 7.0, 0.0)).xy;
-      wider += texture(u_state, v_uv + vec2( u_texel.x * 7.0, 0.0)).xy;
-      wider += texture(u_state, v_uv + vec2(0.0, -u_texel.y * 7.0)).xy;
-      wider += texture(u_state, v_uv + vec2(0.0,  u_texel.y * 7.0)).xy;
+      wider += stateAt(v_uv + vec2(-u_texel.x * 7.0, 0.0), state);
+      wider += stateAt(v_uv + vec2( u_texel.x * 7.0, 0.0), state);
+      wider += stateAt(v_uv + vec2(0.0, -u_texel.y * 7.0), state);
+      wider += stateAt(v_uv + vec2(0.0,  u_texel.y * 7.0), state);
       wider = wider * 0.25 - state;
 
       float reaction = a * b * b;
@@ -125,14 +128,18 @@
       nextB += max(wide.y, 0.0) * 0.22;
       nextB += max(wider.y, 0.0) * 0.10;
 
+      float boundary = max(
+        max(obstacleAt(v_uv + vec2(u_texel.x * 2.0, 0.0)), obstacleAt(v_uv - vec2(u_texel.x * 2.0, 0.0))),
+        max(obstacleAt(v_uv + vec2(0.0, u_texel.y * 2.0)), obstacleAt(v_uv - vec2(0.0, u_texel.y * 2.0)))
+      );
+      nextB += boundary * min(b, 0.7) * 0.055;
+
       if (u_inject > 0.001) {
         float aspect = u_texel.y / max(u_texel.x, 0.000001);
         vec2 p = v_uv;
         vec2 m = u_mouse;
         vec2 pm = u_prevMouse;
-        p.x *= aspect;
-        m.x *= aspect;
-        pm.x *= aspect;
+        p.x *= aspect; m.x *= aspect; pm.x *= aspect;
 
         float dist = segmentDistance(p, pm, m);
         float core = 1.0 - smoothstep(0.007, 0.048, dist);
@@ -150,6 +157,7 @@
   const displaySource = `#version 300 es
     precision highp float;
     uniform sampler2D u_state;
+    uniform sampler2D u_obstacle;
     uniform vec2 u_resolution;
     uniform vec2 u_grid;
     uniform vec3 u_cyan;
@@ -163,24 +171,15 @@
       vec2 p = localUV * 2.0 - 1.0;
       float len = length(p);
       float mask = 0.0;
-
-      if (intensity > 0.82) {
-        mask = max(abs(p.x), abs(p.y)) < 0.91 ? 1.0 : 0.0;
-      } else if (intensity > 0.64) {
+      if (intensity > 0.82) mask = max(abs(p.x), abs(p.y)) < 0.91 ? 1.0 : 0.0;
+      else if (intensity > 0.64) {
         float box = max(abs(p.x), abs(p.y));
         mask = (box < 0.91 && box > 0.40) ? 1.0 : 0.0;
-      } else if (intensity > 0.47) {
-        mask = (abs(p.x) < 0.34 || abs(p.y) < 0.34) ? 1.0 : 0.0;
-      } else if (intensity > 0.31) {
-        mask = (abs(p.x - p.y) < 0.34 || abs(p.x + p.y) < 0.34) ? 1.0 : 0.0;
-      } else if (intensity > 0.17) {
-        mask = (len < 0.79 && len > 0.32) ? 1.0 : 0.0;
-      } else if (intensity > 0.075) {
-        mask = abs(p.y) < 0.31 ? 1.0 : 0.0;
-      } else if (intensity > 0.018) {
-        mask = len < 0.32 ? 1.0 : 0.0;
-      }
-
+      } else if (intensity > 0.47) mask = (abs(p.x) < 0.34 || abs(p.y) < 0.34) ? 1.0 : 0.0;
+      else if (intensity > 0.31) mask = (abs(p.x - p.y) < 0.34 || abs(p.x + p.y) < 0.34) ? 1.0 : 0.0;
+      else if (intensity > 0.17) mask = (len < 0.79 && len > 0.32) ? 1.0 : 0.0;
+      else if (intensity > 0.075) mask = abs(p.y) < 0.31 ? 1.0 : 0.0;
+      else if (intensity > 0.018) mask = len < 0.32 ? 1.0 : 0.0;
       float edge = max(abs(p.x), abs(p.y));
       return mask * (1.0 - smoothstep(0.91, 1.0, edge));
     }
@@ -193,7 +192,14 @@
 
     void main(){
       vec2 fragCoord = gl_FragCoord.xy;
-      vec2 gridPos = (fragCoord / u_resolution) * u_grid;
+      vec2 screenUV = clamp(fragCoord / u_resolution, vec2(0.0), vec2(1.0));
+      float obstacle = texture(u_obstacle, screenUV).r;
+      if (obstacle > 0.15) {
+        fragColor = vec4(0.0);
+        return;
+      }
+
+      vec2 gridPos = screenUV * u_grid;
       vec2 cell = floor(gridPos);
       vec2 localUV = fract(gridPos);
       vec2 cellUV = (cell + 0.5) / u_grid;
@@ -206,7 +212,6 @@
       float glow = smoothstep(0.015, 0.50, b);
       color *= 0.96 + glow * 0.66;
       float alpha = charMask * smoothstep(0.003, 0.20, b) * 0.84;
-
       fragColor = vec4(color * charMask, alpha);
     }
   `;
@@ -236,13 +241,12 @@
     return program;
   };
 
-  let simulationProgram;
-  let displayProgram;
+  let simulationProgram, displayProgram;
   try {
     simulationProgram = makeProgram(simulationSource);
     displayProgram = makeProgram(displaySource);
   } catch (error) {
-    console.warn('DATA C0RE ASCII cursor v7 disabled:', error);
+    console.warn('DATA C0RE ASCII cursor v8 disabled:', error);
     canvas.remove();
     return;
   }
@@ -261,6 +265,7 @@
 
   const simUniforms = {
     state: gl.getUniformLocation(simulationProgram, 'u_state'),
+    obstacle: gl.getUniformLocation(simulationProgram, 'u_obstacle'),
     texel: gl.getUniformLocation(simulationProgram, 'u_texel'),
     mouse: gl.getUniformLocation(simulationProgram, 'u_mouse'),
     prevMouse: gl.getUniformLocation(simulationProgram, 'u_prevMouse'),
@@ -270,6 +275,7 @@
 
   const displayUniforms = {
     state: gl.getUniformLocation(displayProgram, 'u_state'),
+    obstacle: gl.getUniformLocation(displayProgram, 'u_obstacle'),
     resolution: gl.getUniformLocation(displayProgram, 'u_resolution'),
     grid: gl.getUniformLocation(displayProgram, 'u_grid'),
     cyan: gl.getUniformLocation(displayProgram, 'u_cyan'),
@@ -294,19 +300,20 @@
     paper: parseColor(siteStyle.getPropertyValue('--paper'), [0.953, 0.945, 0.922])
   };
 
-  let simW = 0;
-  let simH = 0;
-  let textures = [];
-  let framebuffers = [];
-  let readIndex = 0;
-  let gridCols = 25;
-  let gridRows = 14;
+  const obstacleSelector = [
+    'main h1','main h2','main h3','main p','main .eyebrow','main .section-kicker','main .field-line',
+    'main .index-row','main .index-preview','main .project-facts','main .stats-grid','main .system-flow',
+    'main .tech-tabs','main .tech-viewer','main figure','main video','main img',
+    'main .method-grid article','main .project-grid article','main .value-grid article','main .cv-row',
+    'main .stack-grid > *','main .meta-grid article','main .route','main .production-facts',
+    'main .stage-facts','main .stage-flow','main .project-next a'
+  ].join(',');
+
+  let simW = 0, simH = 0, textures = [], framebuffers = [], readIndex = 0;
+  let obstacleTexture = null, obstacleData = null, obstacleRaf = 0;
+  let gridCols = 25, gridRows = 14;
   let pointer = { x: 0.5, y: 0.5, px: 0.5, py: 0.5, lastMove: -Infinity };
-  let running = false;
-  let activated = false;
-  let raf = 0;
-  let fadeTimer = 0;
-  let resetTimer = 0;
+  let running = false, activated = false, raf = 0, fadeTimer = 0, resetTimer = 0;
 
   const makeTexture = (w, h, data) => {
     const texture = gl.createTexture();
@@ -316,6 +323,17 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    return texture;
+  };
+
+  const makeObstacleTexture = (w, h) => {
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, w, h, 0, gl.RED, gl.UNSIGNED_BYTE, new Uint8Array(w * h));
     return texture;
   };
 
@@ -329,12 +347,49 @@
   const blankData = () => {
     const data = new Uint8Array(simW * simH * 4);
     for (let i = 0; i < data.length; i += 4) {
-      data[i] = 255;
-      data[i + 1] = 0;
-      data[i + 2] = 0;
-      data[i + 3] = 255;
+      data[i] = 255; data[i + 1] = 0; data[i + 2] = 0; data[i + 3] = 255;
     }
     return data;
+  };
+
+  const updateObstacleMask = () => {
+    if (!obstacleTexture || !simW || !simH) return;
+    if (!obstacleData || obstacleData.length !== simW * simH) obstacleData = new Uint8Array(simW * simH);
+    obstacleData.fill(0);
+
+    const vw = Math.max(1, window.innerWidth);
+    const vh = Math.max(1, window.innerHeight);
+    const sx = simW / vw;
+    const sy = simH / vh;
+
+    document.querySelectorAll(obstacleSelector).forEach(el => {
+      const style = getComputedStyle(el);
+      if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.width < 2 || rect.height < 2 || rect.bottom <= 0 || rect.top >= vh || rect.right <= 0 || rect.left >= vw) return;
+
+      const isMedia = el.matches('img,video,figure,.index-preview,.tech-viewer,.project-hero-media');
+      const pad = isMedia ? 7 : 11;
+      const x0 = Math.max(0, Math.floor((rect.left - pad) * sx));
+      const x1 = Math.min(simW, Math.ceil((rect.right + pad) * sx));
+      const y0 = Math.max(0, Math.floor((vh - (rect.bottom + pad)) * sy));
+      const y1 = Math.min(simH, Math.ceil((vh - (rect.top - pad)) * sy));
+      if (x1 <= x0 || y1 <= y0) return;
+      for (let y = y0; y < y1; y++) obstacleData.fill(255, y * simW + x0, y * simW + x1);
+    });
+
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, obstacleTexture);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, simW, simH, gl.RED, gl.UNSIGNED_BYTE, obstacleData);
+    gl.activeTexture(gl.TEXTURE0);
+  };
+
+  const scheduleObstacleUpdate = () => {
+    if (obstacleRaf) return;
+    obstacleRaf = requestAnimationFrame(() => {
+      obstacleRaf = 0;
+      updateObstacleMask();
+    });
   };
 
   const resetState = () => {
@@ -353,24 +408,25 @@
   const resize = () => {
     const width = Math.max(1, Math.round(window.innerWidth));
     const height = Math.max(1, Math.round(window.innerHeight));
-    canvas.width = width;
-    canvas.height = height;
-
+    canvas.width = width; canvas.height = height;
     gridCols = 25;
     gridRows = Math.max(1, Math.round(gridCols * height / width));
 
     const targetW = Math.max(320, Math.min(680, Math.round(width * 0.36)));
     const targetH = Math.max(180, Math.round(targetW * height / width));
-    if (targetW === simW && targetH === simH) return;
+    if (targetW === simW && targetH === simH) { scheduleObstacleUpdate(); return; }
 
     textures.forEach(texture => gl.deleteTexture(texture));
     framebuffers.forEach(fb => gl.deleteFramebuffer(fb));
-    simW = targetW;
-    simH = targetH;
+    if (obstacleTexture) gl.deleteTexture(obstacleTexture);
+    simW = targetW; simH = targetH;
     const data = blankData();
     textures = [makeTexture(simW, simH, data), makeTexture(simW, simH, data)];
     framebuffers = textures.map(makeFramebuffer);
+    obstacleTexture = makeObstacleTexture(simW, simH);
+    obstacleData = new Uint8Array(simW * simH);
     readIndex = 0;
+    scheduleObstacleUpdate();
   };
 
   const simulationPass = (now, injectScale) => {
@@ -381,6 +437,9 @@
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, textures[readIndex]);
     gl.uniform1i(simUniforms.state, 0);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, obstacleTexture);
+    gl.uniform1i(simUniforms.obstacle, 1);
     gl.uniform2f(simUniforms.texel, 1 / simW, 1 / simH);
     gl.uniform2f(simUniforms.mouse, pointer.x, pointer.y);
     gl.uniform2f(simUniforms.prevMouse, pointer.px, pointer.py);
@@ -402,6 +461,9 @@
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, textures[readIndex]);
     gl.uniform1i(displayUniforms.state, 0);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, obstacleTexture);
+    gl.uniform1i(displayUniforms.obstacle, 1);
     gl.uniform2f(displayUniforms.resolution, canvas.width, canvas.height);
     gl.uniform2f(displayUniforms.grid, gridCols, gridRows);
     gl.uniform3fv(displayUniforms.cyan, palette.cyan);
@@ -416,9 +478,7 @@
     if (!running || document.hidden) return;
     const moving = now - pointer.lastMove < 210;
     const passes = moving ? 8 : 5;
-    for (let i = 0; i < passes; i++) {
-      simulationPass(now, i === 0 ? 1.0 : 0.58);
-    }
+    for (let i = 0; i < passes; i++) simulationPass(now, i === 0 ? 1.0 : 0.58);
     displayPass();
     pointer.px += (pointer.x - pointer.px) * 0.34;
     pointer.py += (pointer.y - pointer.py) * 0.34;
@@ -453,21 +513,23 @@
 
     clearTimeout(fadeTimer);
     clearTimeout(resetTimer);
-    fadeTimer = setTimeout(() => {
-      canvas.style.opacity = '0';
-    }, 1150);
+    fadeTimer = setTimeout(() => { canvas.style.opacity = '0'; }, 1150);
     resetTimer = setTimeout(stopAndReset, 2050);
   };
 
   resize();
+  updateObstacleMask();
   window.addEventListener('resize', resize, { passive: true });
+  window.addEventListener('scroll', scheduleObstacleUpdate, { passive: true });
   window.addEventListener('pointermove', wake, { passive: true });
+  document.addEventListener('data-c0re-languagechange', scheduleObstacleUpdate);
+  document.fonts?.ready?.then(scheduleObstacleUpdate).catch?.(() => {});
+  const main = document.querySelector('main');
+  if (main && 'ResizeObserver' in window) new ResizeObserver(scheduleObstacleUpdate).observe(main);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       running = false;
       cancelAnimationFrame(raf);
-    } else if (activated) {
-      start();
-    }
+    } else if (activated) start();
   });
 })();
