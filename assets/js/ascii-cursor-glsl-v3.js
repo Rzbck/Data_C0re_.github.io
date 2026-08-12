@@ -1,6 +1,6 @@
 (() => {
-  if (window.__DATA_C0RE_ASCII_CURSOR_V11__) return;
-  window.__DATA_C0RE_ASCII_CURSOR_V11__ = true;
+  if (window.__DATA_C0RE_ASCII_CURSOR_V12__) return;
+  window.__DATA_C0RE_ASCII_CURSOR_V12__ = true;
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(pointer:fine) and (hover:hover)');
@@ -9,7 +9,7 @@
   document.body.classList.add('ascii-cursor-active');
 
   const layerStyle = document.createElement('style');
-  layerStyle.dataset.asciiCursorLayer = 'v11';
+  layerStyle.dataset.asciiCursorLayer = 'v12';
   layerStyle.textContent = `
     body.ascii-cursor-active main > *{position:relative;z-index:2}
     body.ascii-cursor-active main > .hero,
@@ -25,7 +25,7 @@
 
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-hidden', 'true');
-  canvas.dataset.asciiCursor = 'v11';
+  canvas.dataset.asciiCursor = 'v12';
   Object.assign(canvas.style, {
     position: 'fixed', inset: '0', width: '100vw', height: '100vh',
     pointerEvents: 'none', zIndex: '1', opacity: '0', mixBlendMode: 'screen',
@@ -193,9 +193,7 @@
       float blocked = 0.0;
       vec2 origin = baseCell * 4.0;
       for (int y = 0; y < 4; y++) {
-        for (int x = 0; x < 4; x++) {
-          blocked = max(blocked, fineCollision(origin + vec2(float(x), float(y))));
-        }
+        for (int x = 0; x < 4; x++) blocked = max(blocked, fineCollision(origin + vec2(float(x), float(y))));
       }
       return blocked;
     }
@@ -204,11 +202,21 @@
       float blocked = 0.0;
       vec2 origin = baseCell * 4.0 + halfCell * 2.0;
       for (int y = 0; y < 2; y++) {
-        for (int x = 0; x < 2; x++) {
-          blocked = max(blocked, fineCollision(origin + vec2(float(x), float(y))));
-        }
+        for (int x = 0; x < 2; x++) blocked = max(blocked, fineCollision(origin + vec2(float(x), float(y))));
       }
       return blocked;
+    }
+
+    bool baseTouchesEdge(vec2 baseCell){
+      return baseCell.x < 0.5 || baseCell.y < 0.5 || baseCell.x > u_grid.x - 1.5 || baseCell.y > u_grid.y - 1.5;
+    }
+
+    bool halfTouchesEdge(vec2 baseCell, vec2 halfCell){
+      if (baseCell.x < 0.5 && halfCell.x < 0.5) return true;
+      if (baseCell.y < 0.5 && halfCell.y < 0.5) return true;
+      if (baseCell.x > u_grid.x - 1.5 && halfCell.x > 0.5) return true;
+      if (baseCell.y > u_grid.y - 1.5 && halfCell.y > 0.5) return true;
+      return false;
     }
 
     void main(){
@@ -223,9 +231,11 @@
       vec2 localUV = baseLocal;
       float detailGain = 1.0;
 
-      if (baseBlocked(baseCell) > 0.5) {
+      bool refineHalf = baseBlocked(baseCell) > 0.5 || baseTouchesEdge(baseCell);
+      if (refineHalf) {
         vec2 halfCell = floor(baseLocal * 2.0);
-        if (halfBlocked(baseCell, halfCell) < 0.5) {
+        bool refineQuarter = halfBlocked(baseCell, halfCell) > 0.5 || halfTouchesEdge(baseCell, halfCell);
+        if (!refineQuarter) {
           renderGrid = u_grid * 2.0;
           vec2 renderPos = screenUV * renderGrid;
           renderCell = floor(renderPos);
@@ -287,7 +297,7 @@
     simulationProgram = makeProgram(simulationSource);
     displayProgram = makeProgram(displaySource);
   } catch (error) {
-    console.warn('DATA C0RE ASCII cursor v11 disabled:', error);
+    console.warn('DATA C0RE ASCII cursor v12 disabled:', error);
     canvas.remove();
     return;
   }
@@ -342,6 +352,11 @@
   };
 
   const main = document.querySelector('main');
+  const glyphCanvas = document.createElement('canvas');
+  const glyphCtx = glyphCanvas.getContext('2d', { alpha: true, willReadFrequently: true });
+  const GLYPH_SUPERSAMPLE = 6;
+  const GLYPH_ALPHA_THRESHOLD = 64;
+
   let simW = 0, simH = 0, textures = [], framebuffers = [], readIndex = 0;
   let collisionTexture = null, collisionData = null, collisionRaf = 0, collisionTimer = 0;
   let gridCols = 25, gridRows = 14, collisionCols = 100, collisionRows = 56;
@@ -391,6 +406,16 @@
     return rect.width > 0.5 && rect.height > 0.5 && rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw;
   };
 
+  const markCell = (x, yTop) => {
+    if (x < 0 || x >= collisionCols || yTop < 0 || yTop >= collisionRows) return;
+    const y = collisionRows - 1 - yTop;
+    const i = (y * collisionCols + x) * 4;
+    collisionData[i] = 255;
+    collisionData[i + 1] = 255;
+    collisionData[i + 2] = 255;
+    collisionData[i + 3] = 255;
+  };
+
   const markRect = rect => {
     if (!collisionData || !visibleRect(rect)) return;
     const vw = Math.max(1, window.innerWidth);
@@ -403,25 +428,16 @@
 
     const x0 = Math.max(0, Math.floor(left / vw * collisionCols));
     const x1 = Math.min(collisionCols - 1, Math.ceil(right / vw * collisionCols) - 1);
-    const yTop0 = Math.max(0, Math.floor(top / vh * collisionRows));
-    const yTop1 = Math.min(collisionRows - 1, Math.ceil(bottom / vh * collisionRows) - 1);
+    const y0 = Math.max(0, Math.floor(top / vh * collisionRows));
+    const y1 = Math.min(collisionRows - 1, Math.ceil(bottom / vh * collisionRows) - 1);
 
-    for (let yTop = yTop0; yTop <= yTop1; yTop++) {
-      const y = collisionRows - 1 - yTop;
-      for (let x = x0; x <= x1; x++) {
-        const i = (y * collisionCols + x) * 4;
-        collisionData[i] = 255;
-        collisionData[i + 1] = 255;
-        collisionData[i + 2] = 255;
-        collisionData[i + 3] = 255;
-      }
-    }
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) markCell(x, y);
   };
 
   const markMedia = () => {
     if (!main) return;
     main.querySelectorAll('img,video,canvas,iframe').forEach(el => {
-      if (el === canvas) return;
+      if (el === canvas || el === glyphCanvas) return;
       const style = getComputedStyle(el);
       if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return;
       markRect(el.getBoundingClientRect());
@@ -454,8 +470,32 @@
     });
   };
 
-  const markText = () => {
-    if (!main) return;
+  const transformedChar = (char, transform) => {
+    if (transform === 'uppercase') return char.toUpperCase();
+    if (transform === 'lowercase') return char.toLowerCase();
+    return char;
+  };
+
+  const rasterizeGlyphs = () => {
+    if (!main || !glyphCtx || !collisionData) return;
+    const vw = Math.max(1, window.innerWidth);
+    const vh = Math.max(1, window.innerHeight);
+    const rw = collisionCols * GLYPH_SUPERSAMPLE;
+    const rh = collisionRows * GLYPH_SUPERSAMPLE;
+    if (glyphCanvas.width !== rw || glyphCanvas.height !== rh) {
+      glyphCanvas.width = rw;
+      glyphCanvas.height = rh;
+    }
+
+    const sx = rw / vw;
+    const sy = rh / vh;
+    glyphCtx.setTransform(1, 0, 0, 1, 0, 0);
+    glyphCtx.clearRect(0, 0, rw, rh);
+    glyphCtx.setTransform(sx, 0, 0, sy, 0, 0);
+    glyphCtx.fillStyle = '#fff';
+    glyphCtx.textAlign = 'left';
+    glyphCtx.textBaseline = 'alphabetic';
+
     const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
         if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
@@ -470,21 +510,64 @@
     const range = document.createRange();
     let node;
     while ((node = walker.nextNode())) {
+      const parent = node.parentElement;
+      if (!parent) continue;
+      const style = getComputedStyle(parent);
+      const fontSize = parseFloat(style.fontSize) || 16;
+      const fontStyle = style.fontStyle || 'normal';
+      const fontVariant = style.fontVariant || 'normal';
+      const fontWeight = style.fontWeight || '400';
+      const fontFamily = style.fontFamily || 'sans-serif';
+      glyphCtx.font = `${fontStyle} ${fontVariant} ${fontWeight} ${fontSize}px ${fontFamily}`;
+      if ('fontKerning' in glyphCtx) glyphCtx.fontKerning = style.fontKerning === 'none' ? 'none' : 'normal';
+
       const text = node.nodeValue;
       for (let i = 0; i < text.length;) {
         const codePoint = text.codePointAt(i);
-        const char = String.fromCodePoint(codePoint);
+        const rawChar = String.fromCodePoint(codePoint);
         const start = i;
-        i += char.length;
-        if (!char.trim()) continue;
+        i += rawChar.length;
+        if (!rawChar.trim()) continue;
+        const char = transformedChar(rawChar, style.textTransform);
+
         try {
           range.setStart(node, start);
           range.setEnd(node, i);
-          markRect(range.getBoundingClientRect());
-        } catch {}
+        } catch {
+          continue;
+        }
+        const rect = range.getBoundingClientRect();
+        if (!visibleRect(rect)) continue;
+
+        const metrics = glyphCtx.measureText(char);
+        const ascent = metrics.fontBoundingBoxAscent || metrics.actualBoundingBoxAscent || fontSize * 0.80;
+        const descent = metrics.fontBoundingBoxDescent || metrics.actualBoundingBoxDescent || fontSize * 0.20;
+        const x = rect.left + Math.max(0, (rect.width - metrics.width) * 0.5);
+        const y = rect.top + Math.max(0, (rect.height - (ascent + descent)) * 0.5) + ascent;
+        glyphCtx.fillText(char, x, y);
       }
     }
     range.detach?.();
+
+    glyphCtx.setTransform(1, 0, 0, 1, 0, 0);
+    const pixels = glyphCtx.getImageData(0, 0, rw, rh).data;
+    const s = GLYPH_SUPERSAMPLE;
+    for (let y = 0; y < collisionRows; y++) {
+      const py0 = y * s;
+      for (let x = 0; x < collisionCols; x++) {
+        const pyEnd = py0 + s;
+        const px0 = x * s;
+        const pxEnd = px0 + s;
+        let hit = false;
+        for (let py = py0; py < pyEnd && !hit; py++) {
+          let p = (py * rw + px0) * 4 + 3;
+          for (let px = px0; px < pxEnd; px++, p += 4) {
+            if (pixels[p] >= GLYPH_ALPHA_THRESHOLD) { hit = true; break; }
+          }
+        }
+        if (hit) markCell(x, y);
+      }
+    }
   };
 
   const uploadCollision = () => {
@@ -501,7 +584,7 @@
     collisionData.fill(0);
     markMedia();
     markBorders();
-    markText();
+    rasterizeGlyphs();
     uploadCollision();
   };
 
