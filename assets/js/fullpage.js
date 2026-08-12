@@ -11,7 +11,8 @@
   const pageClass=filename.replace(/\.html$/,'').replace(/[^a-z0-9-]/gi,'-');
   const body=document.body;
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
-  const eligible=()=>window.matchMedia('(min-width:821px) and (pointer:fine)').matches&&!reduce.matches;
+  const desktopEligible=()=>window.matchMedia('(min-width:821px) and (pointer:fine)').matches&&!reduce.matches;
+  const touchEligible=()=>window.matchMedia('(max-width:820px), (pointer:coarse)').matches&&!reduce.matches;
 
   let panels=[];
   if(filename==='index.html'){
@@ -46,11 +47,21 @@
 
   let current=0,animating=false,wheelGesture=false,wheelQuietTimer=null;
   const clampIndex=index=>Math.max(0,Math.min(panels.length-1,index));
+  const panelTop=panel=>panel.getBoundingClientRect().top+window.scrollY;
   const nearestIndex=()=>{
     const center=window.scrollY+window.innerHeight*.5;
     let best=0,bestDistance=Infinity;
     panels.forEach((panel,index)=>{
-      const panelCenter=panel.offsetTop+panel.offsetHeight*.5;
+      const top=panelTop(panel),panelCenter=top+panel.offsetHeight*.5;
+      const distance=Math.abs(panelCenter-center);
+      if(distance<bestDistance){bestDistance=distance;best=index}
+    });
+    return best;
+  };
+  const nearestIndexAt=center=>{
+    let best=0,bestDistance=Infinity;
+    panels.forEach((panel,index)=>{
+      const top=panelTop(panel),panelCenter=top+panel.offsetHeight*.5;
       const distance=Math.abs(panelCenter-center);
       if(distance<bestDistance){bestDistance=distance;best=index}
     });
@@ -64,7 +75,7 @@
   const goTo=(index,duration=880)=>{
     index=clampIndex(index);
     if(animating)return;
-    const start=window.scrollY,target=panels[index].offsetTop,distance=target-start;
+    const start=window.scrollY,target=panelTop(panels[index]),distance=target-start;
     if(Math.abs(distance)<2){window.scrollTo(0,target);setActive(index);return}
     animating=true;setActive(index);
     const started=performance.now();
@@ -79,7 +90,8 @@
   const move=direction=>{
     const nearest=nearestIndex();
     const panel=panels[nearest];
-    const deltaFromPanel=window.scrollY-panel.offsetTop;
+    const top=panelTop(panel);
+    const deltaFromPanel=window.scrollY-top;
     if(direction<0&&deltaFromPanel>18){goTo(nearest);return true}
     if(direction>0&&deltaFromPanel<-18){goTo(nearest);return true}
     const next=clampIndex(nearest+direction);
@@ -92,20 +104,21 @@
   };
 
   window.addEventListener('wheel',event=>{
-    if(!eligible()||body.classList.contains('menu-open')||event.ctrlKey)return;
+    if(!desktopEligible()||body.classList.contains('menu-open')||event.ctrlKey)return;
     const direction=event.deltaY>0?1:-1;
     if(Math.abs(event.deltaY)<1)return;
     if(animating||wheelGesture){event.preventDefault();endWheelGestureSoon();return}
     const nearest=nearestIndex();
-    const atUpperEdge=nearest===0&&direction<0&&window.scrollY<=panels[0].offsetTop+2;
-    const last=panels[panels.length-1];
-    const atLowerEdge=nearest===panels.length-1&&direction>0&&window.scrollY>=last.offsetTop-2;
+    const firstTop=panelTop(panels[0]);
+    const last=panels[panels.length-1],lastTop=panelTop(last);
+    const atUpperEdge=nearest===0&&direction<0&&window.scrollY<=firstTop+2;
+    const atLowerEdge=nearest===panels.length-1&&direction>0&&window.scrollY>=lastTop-2;
     if(atUpperEdge||atLowerEdge)return;
     event.preventDefault();wheelGesture=true;endWheelGestureSoon();move(direction);
   },{passive:false});
 
   window.addEventListener('keydown',event=>{
-    if(!eligible()||body.classList.contains('menu-open'))return;
+    if(!desktopEligible()||body.classList.contains('menu-open'))return;
     const target=event.target;
     if(target instanceof HTMLElement&&target.matches('input,textarea,select,[contenteditable="true"]'))return;
     let direction=0;
@@ -119,6 +132,44 @@
     event.preventDefault();if(event.repeat||animating)return;move(direction);
   });
 
+  // Touch magnet: native scrolling remains available inside tall mobile sections.
+  // A deliberate vertical swipe snaps only when a section fits the viewport or
+  // when the user has reached the relevant edge of a taller section.
+  let touchTracking=false,touchStartY=0,touchStartX=0,touchStartScroll=0,touchStartPanel=0;
+  const ignoreTouchTarget=target=>target instanceof Element&&Boolean(target.closest('.tech-tabs,.route,input,textarea,select,[contenteditable="true"]'));
+  window.addEventListener('touchstart',event=>{
+    if(!touchEligible()||body.classList.contains('menu-open')||event.touches.length!==1||ignoreTouchTarget(event.target)){touchTracking=false;return}
+    const touch=event.touches[0];
+    touchTracking=true;
+    touchStartY=touch.clientY;
+    touchStartX=touch.clientX;
+    touchStartScroll=window.scrollY;
+    touchStartPanel=nearestIndexAt(touchStartScroll+window.innerHeight*.5);
+  },{passive:true});
+
+  window.addEventListener('touchend',event=>{
+    if(!touchTracking||!touchEligible()||animating){touchTracking=false;return}
+    touchTracking=false;
+    const touch=event.changedTouches?.[0];
+    if(!touch)return;
+    const dy=touchStartY-touch.clientY,dx=touchStartX-touch.clientX;
+    if(Math.abs(dy)<56||Math.abs(dy)<Math.abs(dx)*1.2)return;
+    const direction=dy>0?1:-1;
+    const index=clampIndex(touchStartPanel);
+    const panel=panels[index];
+    const top=panelTop(panel),bottom=top+panel.offsetHeight;
+    const viewTop=window.scrollY,viewBottom=viewTop+window.innerHeight;
+    const fits=panel.offsetHeight<=window.innerHeight*1.12;
+    const edge=Math.max(28,Math.min(84,window.innerHeight*.09));
+    let shouldSnap=fits;
+    if(!fits&&direction>0)shouldSnap=viewBottom>=bottom-edge;
+    if(!fits&&direction<0)shouldSnap=viewTop<=top+edge;
+    if(!shouldSnap)return;
+    const next=clampIndex(index+direction);
+    if(next===index)return;
+    requestAnimationFrame(()=>goTo(next,560));
+  },{passive:true});
+
   let scrollTick=false;
   window.addEventListener('scroll',()=>{
     if(animating||scrollTick)return;
@@ -128,10 +179,10 @@
 
   const syncMode=()=>{
     current=nearestIndex();setActive(current);
-    if(eligible()&&!animating){
+    if(desktopEligible()&&!animating){
       const panel=panels[current];
-      const distance=Math.abs(window.scrollY-panel.offsetTop);
-      if(distance<window.innerHeight*.45)window.scrollTo(0,panel.offsetTop);
+      const distance=Math.abs(window.scrollY-panelTop(panel));
+      if(distance<window.innerHeight*.45)window.scrollTo(0,panelTop(panel));
     }
   };
   window.addEventListener('resize',syncMode,{passive:true});
