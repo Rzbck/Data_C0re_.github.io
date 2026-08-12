@@ -12,32 +12,39 @@ jobs:
   indexnow:
     runs-on: ubuntu-latest
     steps:
-      - name: Submit public URLs to IndexNow
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build IndexNow payload from current site config + sitemap
         shell: bash
         run: |
-          cat > payload.json <<'JSON'
-          {
-            "host": "rzbck.github.io",
-            "key": "de2a1c7c9c8cc2396de53eec921730dc",
-            "keyLocation": "https://rzbck.github.io/Data_C0re_.github.io/de2a1c7c9c8cc2396de53eec921730dc.txt",
-            "urlList": [
-              "https://rzbck.github.io/Data_C0re_.github.io/",
-              "https://rzbck.github.io/Data_C0re_.github.io/work.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/about.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/cv.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/lab.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/projects/ascii.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/projects/snake.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/projects/lumina.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/projects/realtime.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/projects/hardwinner.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/projects/cloud.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/projects/grand-theatre.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/projects/comedie.html",
-              "https://rzbck.github.io/Data_C0re_.github.io/projects/stage-systems.html"
-            ]
+          python - <<'PY'
+          import json, re
+          from urllib.parse import urlparse
+
+          with open('site.config.json', encoding='utf-8') as f:
+              config = json.load(f)
+          origin = config['origin'].rstrip('/')
+          host = urlparse(origin).hostname
+          key = 'de2a1c7c9c8cc2396de53eec921730dc'
+          with open('sitemap.xml', encoding='utf-8') as f:
+              xml = f.read()
+          urls = re.findall(r'<loc>(.*?)</loc>', xml)
+          payload = {
+              'host': host,
+              'key': key,
+              'keyLocation': f'{origin}/{key}.txt',
+              'urlList': urls,
           }
-          JSON
+          with open('payload.json', 'w', encoding='utf-8') as f:
+              json.dump(payload, f, ensure_ascii=False)
+          print(f'IndexNow host: {host}')
+          print(f'URLs submitted: {len(urls)}')
+          PY
+
+      - name: Submit URLs to IndexNow
+        shell: bash
+        run: |
           code=$(curl -sS -o response.txt -w "%{http_code}" -X POST "https://api.indexnow.org/indexnow" -H "Content-Type: application/json; charset=utf-8" --data-binary @payload.json)
           cat response.txt || true
           echo "IndexNow HTTP status: $code"

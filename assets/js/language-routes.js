@@ -1,0 +1,42 @@
+(() => {
+  'use strict';
+  const supported=['en','fr','es'];
+  const storage='data-c0re-lang-v1';
+  const repoSegment=location.hostname.endsWith('github.io')&&location.pathname.startsWith('/Data_C0re_.github.io')?'/Data_C0re_.github.io':'';
+
+  const routeState=()=>{
+    let rel=location.pathname.slice(repoSegment.length).replace(/^\/+|\/+$/g,'');
+    const parts=rel?rel.split('/'):[];
+    const pathLang=supported.includes(parts[0])?parts.shift():null;
+    let route=parts.join('/');
+    if(!pathLang) route=rel;
+    if(!route||route==='index.html')route='index.html';
+    return {pathLang,route};
+  };
+
+  const destination=(lang,route)=>{
+    const tail=route==='index.html'?'':route;
+    const path=[repoSegment,lang,tail].filter(Boolean).join('/').replace(/\/+/g,'/');
+    const normalized=path.startsWith('/')?path:`/${path}`;
+    return `${location.origin}${normalized}${tail?'':'/'}${location.hash||''}`;
+  };
+
+  const state=routeState();
+  if(state.pathLang){
+    try{localStorage.setItem(storage,state.pathLang)}catch{}
+    document.documentElement.lang=state.pathLang;
+  }
+
+  document.addEventListener('click',event=>{
+    const button=event.target instanceof Element?event.target.closest('.lang-switcher [data-lang]'):null;
+    if(!button)return;
+    const lang=button.dataset.lang;
+    if(!supported.includes(lang))return;
+    const current=routeState();
+    if(current.pathLang===lang){event.preventDefault();event.stopImmediatePropagation();return;}
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    try{localStorage.setItem(storage,lang)}catch{}
+    location.assign(destination(lang,current.route));
+  },true);
+})();
