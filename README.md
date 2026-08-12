@@ -1,38 +1,33 @@
-# DATA C0RE — GitHub Pages Portfolio
+# DATA C0RE
 
-Static portfolio site prepared for GitHub Pages.
+Portfolio for **DATA C0RE** — digital artist and creative technologist working with realtime audiovisual systems, creative coding, interactive video, projection, light, live AV and stage/media-system integration.
 
-## Structure
+**Portfolio:** https://rzbck.github.io/Data_C0re_.github.io/
 
-- `index.html` — site entry point at repository root
-- `assets/css/styles.css` — visual system / responsive layout
-- `assets/js/main.js` — menu, reveal behaviour, motion controls, video visibility management
-- `assets/media/` — curated stills and short optimized video loops
-- `assets/img/` — favicon / social cover artwork
-- `.nojekyll` — asks GitHub Pages to publish the static files as-is
+## Practice
 
-All internal asset paths are **relative**, so the site works both as a user site and as a repository/project GitHub Pages site.
+- TouchDesigner / realtime audiovisual systems
+- Interactive video / projection mapping / projection integration
+- Live AV / GLSL / audio-reactive systems
+- SMODE / Resolume / Millumin / media servers
+- LED / DMX / Art-Net / OSC / show control
+- Theatre, dance, opera and touring video systems
+- Interactive installations / public-space light
+- Creative coding / Python / C++ / APIs / WebSocket
 
-## Deploy
+Based in Annecy, France; available for work across France and internationally.
 
-Push the contents of this folder to the publishing root of the GitHub Pages repository (for example the root of `main` if Pages is configured to deploy from that branch/root).
+## Selected contexts
 
-No build command, Node dependency, backend, database or server-side language is required.
+Geneva Lux · Comédie de Genève · Grand Théâtre de Genève · Festival d’Avignon · Odéon–Théâtre de l’Europe · La Belle Électrique.
 
-## Local preview
+## Selected work
 
-From this folder:
+- Snake / Networked Retro System — 2026
+- ASCII / Pixel Realtime Study — 2026
+- LUMINA / Geneva Lux — 2025–2027
+- Realtime Studies — 2025–2026
+- Hardwinner / Realtime AV Systems — 2016–2018
+- Grand Théâtre de Genève / SMODE & projection integration — 2023–2024
 
-```bash
-python -m http.server 8000
-```
-
-Then open `http://localhost:8000/`.
-
-## Domain
-
-No `CNAME` file or custom-domain configuration is included yet. Add that later when `datac0re.is-a.dev` is ready.
-
-## Content note
-
-The Comédie de Genève entry is deliberately framed as creation-period / production-context documentation. The public production title `Entre chien et loup` is included, but no unverified individual credit is claimed.
+Public artist identity: **DATA C0RE**.
