@@ -1,6 +1,6 @@
 (() => {
-  if (window.__DATA_C0RE_ASCII_CURSOR_V9__) return;
-  window.__DATA_C0RE_ASCII_CURSOR_V9__ = true;
+  if (window.__DATA_C0RE_ASCII_CURSOR_V10__) return;
+  window.__DATA_C0RE_ASCII_CURSOR_V10__ = true;
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(pointer:fine) and (hover:hover)');
@@ -9,7 +9,7 @@
   document.body.classList.add('ascii-cursor-active');
 
   const layerStyle = document.createElement('style');
-  layerStyle.dataset.asciiCursorLayer = 'v9';
+  layerStyle.dataset.asciiCursorLayer = 'v10';
   layerStyle.textContent = `
     body.ascii-cursor-active main > *{position:relative;z-index:2}
     body.ascii-cursor-active main > .hero,
@@ -17,7 +17,7 @@
     body.ascii-cursor-active .hero-copy,
     body.ascii-cursor-active .hero-foot,
     body.ascii-cursor-active .about-panel-inner,
-    body.ascii-cursor-active .about-scroll-cue{position:relative;z-index:3}
+    body.ascii-cursor-active .about-scroll-cue{z-index:3}
     body.ascii-cursor-active .about-panel-media{z-index:0}
     body.ascii-cursor-active .about-panel::after{z-index:1}
   `;
@@ -25,7 +25,7 @@
 
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-hidden', 'true');
-  canvas.dataset.asciiCursor = 'v9';
+  canvas.dataset.asciiCursor = 'v10';
   Object.assign(canvas.style, {
     position: 'fixed', inset: '0', width: '100vw', height: '100vh',
     pointerEvents: 'none', zIndex: '1', opacity: '0', mixBlendMode: 'screen',
@@ -52,7 +52,7 @@
   const simulationSource = `#version 300 es
     precision highp float;
     uniform sampler2D u_state;
-    uniform sampler2D u_obstacle;
+    uniform sampler2D u_collision;
     uniform vec2 u_texel;
     uniform vec2 u_mouse;
     uniform vec2 u_prevMouse;
@@ -67,12 +67,8 @@
     const float Db = 0.90;
     const float dt = 1.0;
 
-    float obstacleAt(vec2 uv){
-      return texture(u_obstacle, clamp(uv, vec2(0.0), vec2(1.0))).r;
-    }
-
     float wallAt(vec2 uv){
-      return smoothstep(0.20, 0.72, obstacleAt(uv));
+      return step(0.5, texture(u_collision, clamp(uv, vec2(0.0), vec2(1.0))).r);
     }
 
     vec2 stateAt(vec2 uv, vec2 fallbackState){
@@ -89,7 +85,7 @@
 
     void main(){
       float wallHere = wallAt(v_uv);
-      if (wallHere > 0.82) {
+      if (wallHere > 0.5) {
         fragColor = vec4(1.0, 0.0, 0.0, 1.0);
         return;
       }
@@ -131,12 +127,6 @@
       nextB += max(wide.y, 0.0) * 0.22;
       nextB += max(wider.y, 0.0) * 0.10;
 
-      float boundary = max(
-        max(wallAt(v_uv + vec2(u_texel.x * 2.0, 0.0)), wallAt(v_uv - vec2(u_texel.x * 2.0, 0.0))),
-        max(wallAt(v_uv + vec2(0.0, u_texel.y * 2.0)), wallAt(v_uv - vec2(0.0, u_texel.y * 2.0)))
-      );
-      nextB += boundary * min(b, 0.72) * 0.050;
-
       if (u_inject > 0.001) {
         float aspect = u_texel.y / max(u_texel.x, 0.000001);
         vec2 p = v_uv;
@@ -153,8 +143,6 @@
         nextA = min(nextA, 1.0 - brush * 0.32);
       }
 
-      nextB *= 1.0 - wallHere * 0.94;
-      nextA = mix(nextA, 1.0, wallHere * 0.94);
       fragColor = vec4(clamp(nextA, 0.0, 1.0), clamp(nextB, 0.0, 1.0), 0.0, 1.0);
     }
   `;
@@ -162,7 +150,7 @@
   const displaySource = `#version 300 es
     precision highp float;
     uniform sampler2D u_state;
-    uniform sampler2D u_obstacle;
+    uniform sampler2D u_collision;
     uniform vec2 u_resolution;
     uniform vec2 u_grid;
     uniform vec3 u_cyan;
@@ -198,17 +186,15 @@
     void main(){
       vec2 fragCoord = gl_FragCoord.xy;
       vec2 screenUV = clamp(fragCoord / u_resolution, vec2(0.0), vec2(1.0));
-      float obstacle = texture(u_obstacle, screenUV).r;
-      float openness = 1.0 - smoothstep(0.12, 0.70, obstacle);
-      if (openness < 0.01) {
-        fragColor = vec4(0.0);
-        return;
-      }
-
       vec2 gridPos = screenUV * u_grid;
       vec2 cell = floor(gridPos);
       vec2 localUV = fract(gridPos);
       vec2 cellUV = (cell + 0.5) / u_grid;
+
+      if (texture(u_collision, cellUV).r > 0.5) {
+        fragColor = vec4(0.0);
+        return;
+      }
 
       float b = texture(u_state, clamp(cellUV, vec2(0.0), vec2(1.0))).y;
       float intensity = smoothstep(0.004, 0.30, b);
@@ -216,7 +202,7 @@
       vec3 color = getColor(b);
       float glow = smoothstep(0.015, 0.50, b);
       color *= 0.96 + glow * 0.66;
-      float alpha = charMask * smoothstep(0.003, 0.20, b) * 0.84 * openness;
+      float alpha = charMask * smoothstep(0.003, 0.20, b) * 0.84;
       fragColor = vec4(color * charMask, alpha);
     }
   `;
@@ -251,7 +237,7 @@
     simulationProgram = makeProgram(simulationSource);
     displayProgram = makeProgram(displaySource);
   } catch (error) {
-    console.warn('DATA C0RE ASCII cursor v9 disabled:', error);
+    console.warn('DATA C0RE ASCII cursor v10 disabled:', error);
     canvas.remove();
     return;
   }
@@ -270,7 +256,7 @@
 
   const simUniforms = {
     state: gl.getUniformLocation(simulationProgram, 'u_state'),
-    obstacle: gl.getUniformLocation(simulationProgram, 'u_obstacle'),
+    collision: gl.getUniformLocation(simulationProgram, 'u_collision'),
     texel: gl.getUniformLocation(simulationProgram, 'u_texel'),
     mouse: gl.getUniformLocation(simulationProgram, 'u_mouse'),
     prevMouse: gl.getUniformLocation(simulationProgram, 'u_prevMouse'),
@@ -280,7 +266,7 @@
 
   const displayUniforms = {
     state: gl.getUniformLocation(displayProgram, 'u_state'),
-    obstacle: gl.getUniformLocation(displayProgram, 'u_obstacle'),
+    collision: gl.getUniformLocation(displayProgram, 'u_collision'),
     resolution: gl.getUniformLocation(displayProgram, 'u_resolution'),
     grid: gl.getUniformLocation(displayProgram, 'u_grid'),
     cyan: gl.getUniformLocation(displayProgram, 'u_cyan'),
@@ -305,12 +291,9 @@
     paper: parseColor(siteStyle.getPropertyValue('--paper'), [0.953, 0.945, 0.922])
   };
 
-  const maskCanvas = document.createElement('canvas');
-  const maskCtx = maskCanvas.getContext('2d', { alpha: true, willReadFrequently: false });
   const main = document.querySelector('main');
-
   let simW = 0, simH = 0, textures = [], framebuffers = [], readIndex = 0;
-  let obstacleTexture = null, obstacleRaf = 0, obstacleTimer = 0;
+  let collisionTexture = null, collisionData = null, collisionRaf = 0, collisionTimer = 0;
   let gridCols = 25, gridRows = 14;
   let pointer = { x: 0.5, y: 0.5, px: 0.5, py: 0.5, lastMove: -Infinity };
   let running = false, activated = false, raf = 0, fadeTimer = 0, resetTimer = 0;
@@ -326,14 +309,14 @@
     return texture;
   };
 
-  const makeObstacleTexture = (w, h) => {
+  const makeCollisionTexture = () => {
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gridCols, gridRows, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     return texture;
   };
 
@@ -352,21 +335,47 @@
     return data;
   };
 
-  const rectVisible = (rect, vw, vh) => rect.width > 1 && rect.height > 1 && rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw;
+  const visibleRect = rect => {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    return rect.width > 0.5 && rect.height > 0.5 && rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw;
+  };
 
-  const drawMediaObstacles = (sx, sy, vw, vh) => {
+  const markRect = rect => {
+    if (!collisionData || !visibleRect(rect)) return;
+    const vw = Math.max(1, window.innerWidth);
+    const vh = Math.max(1, window.innerHeight);
+    const left = Math.max(0, rect.left);
+    const right = Math.min(vw, rect.right);
+    const top = Math.max(0, rect.top);
+    const bottom = Math.min(vh, rect.bottom);
+    if (right <= left || bottom <= top) return;
+
+    const x0 = Math.max(0, Math.floor(left / vw * gridCols));
+    const x1 = Math.min(gridCols - 1, Math.ceil(right / vw * gridCols) - 1);
+    const yTop0 = Math.max(0, Math.floor(top / vh * gridRows));
+    const yTop1 = Math.min(gridRows - 1, Math.ceil(bottom / vh * gridRows) - 1);
+
+    for (let yTop = yTop0; yTop <= yTop1; yTop++) {
+      const y = gridRows - 1 - yTop;
+      for (let x = x0; x <= x1; x++) {
+        const i = (y * gridCols + x) * 4;
+        collisionData[i] = 255;
+        collisionData[i + 1] = 255;
+        collisionData[i + 2] = 255;
+        collisionData[i + 3] = 255;
+      }
+    }
+  };
+
+  const markMedia = () => {
     if (!main) return;
-    maskCtx.save();
-    maskCtx.fillStyle = '#fff';
     main.querySelectorAll('img,video,canvas,iframe').forEach(el => {
-      if (el === canvas || el === maskCanvas) return;
+      if (el === canvas) return;
       const style = getComputedStyle(el);
       if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return;
-      const rect = el.getBoundingClientRect();
-      if (!rectVisible(rect, vw, vh)) return;
-      maskCtx.fillRect(rect.left * sx, rect.top * sy, rect.width * sx, rect.height * sy);
+      markRect(el.getBoundingClientRect());
     });
-    maskCtx.restore();
   };
 
   const borderWidth = value => {
@@ -374,37 +383,28 @@
     return Number.isFinite(n) ? n : 0;
   };
 
-  const drawRealBorders = (sx, sy, vw, vh) => {
+  const markBorders = () => {
     if (!main) return;
-    maskCtx.save();
-    maskCtx.fillStyle = '#fff';
     main.querySelectorAll('*').forEach(el => {
       if (el.matches('img,video,canvas,iframe,script,style')) return;
       const style = getComputedStyle(el);
       if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return;
       const rect = el.getBoundingClientRect();
-      if (!rectVisible(rect, vw, vh)) return;
+      if (!visibleRect(rect)) return;
 
       const top = style.borderTopStyle !== 'none' ? borderWidth(style.borderTopWidth) : 0;
       const right = style.borderRightStyle !== 'none' ? borderWidth(style.borderRightWidth) : 0;
       const bottom = style.borderBottomStyle !== 'none' ? borderWidth(style.borderBottomWidth) : 0;
       const left = style.borderLeftStyle !== 'none' ? borderWidth(style.borderLeftWidth) : 0;
 
-      if (top > 0) maskCtx.fillRect(rect.left * sx, rect.top * sy, rect.width * sx, Math.max(1, top * sy));
-      if (bottom > 0) maskCtx.fillRect(rect.left * sx, (rect.bottom - bottom) * sy, rect.width * sx, Math.max(1, bottom * sy));
-      if (left > 0) maskCtx.fillRect(rect.left * sx, rect.top * sy, Math.max(1, left * sx), rect.height * sy);
-      if (right > 0) maskCtx.fillRect((rect.right - right) * sx, rect.top * sy, Math.max(1, right * sx), rect.height * sy);
+      if (top > 0) markRect({ left: rect.left, right: rect.right, top: rect.top, bottom: rect.top + top, width: rect.width, height: top });
+      if (bottom > 0) markRect({ left: rect.left, right: rect.right, top: rect.bottom - bottom, bottom: rect.bottom, width: rect.width, height: bottom });
+      if (left > 0) markRect({ left: rect.left, right: rect.left + left, top: rect.top, bottom: rect.bottom, width: left, height: rect.height });
+      if (right > 0) markRect({ left: rect.right - right, right: rect.right, top: rect.top, bottom: rect.bottom, width: right, height: rect.height });
     });
-    maskCtx.restore();
   };
 
-  const transformedChar = (char, transform) => {
-    if (transform === 'uppercase') return char.toUpperCase();
-    if (transform === 'lowercase') return char.toLowerCase();
-    return char;
-  };
-
-  const drawTextObstacles = (sx, sy, vw, vh) => {
+  const markText = () => {
     if (!main) return;
     const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
@@ -418,92 +418,52 @@
     });
 
     const range = document.createRange();
-    maskCtx.save();
-    maskCtx.fillStyle = '#fff';
-    maskCtx.shadowColor = 'rgba(255,255,255,.9)';
-    maskCtx.shadowBlur = 0.65;
-
     let node;
     while ((node = walker.nextNode())) {
-      const parent = node.parentElement;
-      if (!parent) continue;
-      const style = getComputedStyle(parent);
-      const fontSizeCss = parseFloat(style.fontSize) || 16;
-      const scaledFontSize = Math.max(1, fontSizeCss * sy);
-      const fontStyle = style.fontStyle || 'normal';
-      const fontVariant = style.fontVariant || 'normal';
-      const fontWeight = style.fontWeight || '400';
-      const fontFamily = style.fontFamily || 'sans-serif';
-      maskCtx.font = `${fontStyle} ${fontVariant} ${fontWeight} ${scaledFontSize}px ${fontFamily}`;
-      maskCtx.textAlign = 'left';
-      maskCtx.textBaseline = 'alphabetic';
-
       const text = node.nodeValue;
       for (let i = 0; i < text.length;) {
         const codePoint = text.codePointAt(i);
-        const rawChar = String.fromCodePoint(codePoint);
-        const len = rawChar.length;
-        const char = transformedChar(rawChar, style.textTransform);
+        const char = String.fromCodePoint(codePoint);
         const start = i;
-        i += len;
-        if (!rawChar.trim()) continue;
-
+        i += char.length;
+        if (!char.trim()) continue;
         try {
           range.setStart(node, start);
           range.setEnd(node, i);
-        } catch {
-          continue;
-        }
-        const rect = range.getBoundingClientRect();
-        if (!rectVisible(rect, vw, vh)) continue;
-
-        const metrics = maskCtx.measureText(char);
-        const ascent = metrics.actualBoundingBoxAscent || scaledFontSize * 0.78;
-        const descent = metrics.actualBoundingBoxDescent || scaledFontSize * 0.20;
-        const rectW = rect.width * sx;
-        const rectH = rect.height * sy;
-        const x = rect.left * sx + Math.max(0, (rectW - metrics.width) * 0.5);
-        const y = rect.top * sy + Math.max(0, (rectH - (ascent + descent)) * 0.5) + ascent;
-        maskCtx.fillText(char, x, y);
+          markRect(range.getBoundingClientRect());
+        } catch {}
       }
     }
-
     range.detach?.();
-    maskCtx.restore();
   };
 
-  const uploadObstacleMask = () => {
+  const uploadCollision = () => {
     gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, obstacleTexture);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, maskCanvas);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.bindTexture(gl.TEXTURE_2D, collisionTexture);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gridCols, gridRows, gl.RGBA, gl.UNSIGNED_BYTE, collisionData);
     gl.activeTexture(gl.TEXTURE0);
   };
 
-  const updateObstacleMask = () => {
-    if (!maskCtx || !obstacleTexture || !simW || !simH) return;
-    const vw = Math.max(1, window.innerWidth);
-    const vh = Math.max(1, window.innerHeight);
-    const sx = simW / vw;
-    const sy = simH / vh;
-
-    maskCtx.clearRect(0, 0, simW, simH);
-    drawMediaObstacles(sx, sy, vw, vh);
-    drawRealBorders(sx, sy, vw, vh);
-    drawTextObstacles(sx, sy, vw, vh);
-    uploadObstacleMask();
+  const updateCollision = () => {
+    if (!collisionTexture) return;
+    const needed = gridCols * gridRows * 4;
+    if (!collisionData || collisionData.length !== needed) collisionData = new Uint8Array(needed);
+    collisionData.fill(0);
+    markMedia();
+    markBorders();
+    markText();
+    uploadCollision();
   };
 
-  const scheduleObstacleUpdate = () => {
-    if (obstacleTimer || obstacleRaf) return;
-    obstacleTimer = window.setTimeout(() => {
-      obstacleTimer = 0;
-      obstacleRaf = requestAnimationFrame(() => {
-        obstacleRaf = 0;
-        updateObstacleMask();
+  const scheduleCollisionUpdate = () => {
+    if (collisionTimer || collisionRaf) return;
+    collisionTimer = window.setTimeout(() => {
+      collisionTimer = 0;
+      collisionRaf = requestAnimationFrame(() => {
+        collisionRaf = 0;
+        updateCollision();
       });
-    }, 46);
+    }, 36);
   };
 
   const resetState = () => {
@@ -524,28 +484,35 @@
     const height = Math.max(1, Math.round(window.innerHeight));
     canvas.width = width;
     canvas.height = height;
-    gridCols = 25;
-    gridRows = Math.max(1, Math.round(gridCols * height / width));
+
+    const nextCols = 25;
+    const nextRows = Math.max(1, Math.round(nextCols * height / width));
+    const collisionSizeChanged = nextCols !== gridCols || nextRows !== gridRows;
+    gridCols = nextCols;
+    gridRows = nextRows;
 
     const targetW = Math.max(320, Math.min(680, Math.round(width * 0.36)));
     const targetH = Math.max(180, Math.round(targetW * height / width));
-    if (targetW === simW && targetH === simH) { scheduleObstacleUpdate(); return; }
+    const simChanged = targetW !== simW || targetH !== simH;
 
-    textures.forEach(texture => gl.deleteTexture(texture));
-    framebuffers.forEach(fb => gl.deleteFramebuffer(fb));
-    if (obstacleTexture) gl.deleteTexture(obstacleTexture);
+    if (simChanged) {
+      textures.forEach(texture => gl.deleteTexture(texture));
+      framebuffers.forEach(fb => gl.deleteFramebuffer(fb));
+      simW = targetW;
+      simH = targetH;
+      const data = blankData();
+      textures = [makeTexture(simW, simH, data), makeTexture(simW, simH, data)];
+      framebuffers = textures.map(makeFramebuffer);
+      readIndex = 0;
+    }
 
-    simW = targetW;
-    simH = targetH;
-    maskCanvas.width = simW;
-    maskCanvas.height = simH;
+    if (collisionSizeChanged || !collisionTexture) {
+      if (collisionTexture) gl.deleteTexture(collisionTexture);
+      collisionTexture = makeCollisionTexture();
+      collisionData = new Uint8Array(gridCols * gridRows * 4);
+    }
 
-    const data = blankData();
-    textures = [makeTexture(simW, simH, data), makeTexture(simW, simH, data)];
-    framebuffers = textures.map(makeFramebuffer);
-    obstacleTexture = makeObstacleTexture(simW, simH);
-    readIndex = 0;
-    updateObstacleMask();
+    updateCollision();
   };
 
   const simulationPass = (now, injectScale) => {
@@ -557,8 +524,8 @@
     gl.bindTexture(gl.TEXTURE_2D, textures[readIndex]);
     gl.uniform1i(simUniforms.state, 0);
     gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, obstacleTexture);
-    gl.uniform1i(simUniforms.obstacle, 1);
+    gl.bindTexture(gl.TEXTURE_2D, collisionTexture);
+    gl.uniform1i(simUniforms.collision, 1);
     gl.uniform2f(simUniforms.texel, 1 / simW, 1 / simH);
     gl.uniform2f(simUniforms.mouse, pointer.x, pointer.y);
     gl.uniform2f(simUniforms.prevMouse, pointer.px, pointer.py);
@@ -581,8 +548,8 @@
     gl.bindTexture(gl.TEXTURE_2D, textures[readIndex]);
     gl.uniform1i(displayUniforms.state, 0);
     gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, obstacleTexture);
-    gl.uniform1i(displayUniforms.obstacle, 1);
+    gl.bindTexture(gl.TEXTURE_2D, collisionTexture);
+    gl.uniform1i(displayUniforms.collision, 1);
     gl.uniform2f(displayUniforms.resolution, canvas.width, canvas.height);
     gl.uniform2f(displayUniforms.grid, gridCols, gridRows);
     gl.uniform3fv(displayUniforms.cyan, palette.cyan);
@@ -638,14 +605,14 @@
 
   resize();
   window.addEventListener('resize', resize, { passive: true });
-  window.addEventListener('scroll', scheduleObstacleUpdate, { passive: true });
+  window.addEventListener('scroll', scheduleCollisionUpdate, { passive: true });
   window.addEventListener('pointermove', wake, { passive: true });
   document.addEventListener('data-c0re-languagechange', () => {
-    setTimeout(updateObstacleMask, 0);
-    setTimeout(updateObstacleMask, 120);
+    setTimeout(updateCollision, 0);
+    setTimeout(updateCollision, 120);
   });
-  document.fonts?.ready?.then(updateObstacleMask).catch?.(() => {});
-  if (main && 'ResizeObserver' in window) new ResizeObserver(scheduleObstacleUpdate).observe(main);
+  document.fonts?.ready?.then(updateCollision).catch?.(() => {});
+  if (main && 'ResizeObserver' in window) new ResizeObserver(scheduleCollisionUpdate).observe(main);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       running = false;
