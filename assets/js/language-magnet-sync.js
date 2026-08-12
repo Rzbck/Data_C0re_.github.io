@@ -3,12 +3,15 @@
   const langButtonSelector = '.lang-switcher button[data-lang]';
   const root = document.documentElement;
   const body = document.body;
+  const isAbout = /(^|\/)about\.html$/.test(location.pathname);
+
   let anchor = null;
-  let resizeObserver = null;
   let endTimer = null;
+  let safetyTimer = null;
   let timers = [];
   let previousScrollBehavior = '';
   let previousOverflowAnchor = '';
+  let primed = false;
 
   const style = document.createElement('style');
   style.dataset.languageMagnetStyle = 'true';
@@ -18,6 +21,9 @@
     body.language-reflowing .fullpage-panel {
       transition: none !important;
       animation: none !important;
+    }
+    body.language-reflowing .about-panel-inner {
+      transform: none !important;
     }
   `;
   document.head.appendChild(style);
@@ -88,59 +94,90 @@
     markActive(panel);
   };
 
-  const schedule = delay => {
-    const timer = setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(sync)), delay);
-    timers.push(timer);
+  const clearTimers = () => {
+    timers.forEach(clearTimeout);
+    timers = [];
+    clearTimeout(endTimer);
+    endTimer = null;
   };
 
   const finish = () => {
     if (!body.classList.contains('language-reflowing')) return;
     sync();
-    resizeObserver?.disconnect();
-    resizeObserver = null;
-    timers.forEach(clearTimeout);
-    timers = [];
-    clearTimeout(endTimer);
-    endTimer = null;
+    clearTimers();
+    clearTimeout(safetyTimer);
+    safetyTimer = null;
     body.classList.remove('language-reflowing');
     root.style.scrollBehavior = previousScrollBehavior;
     body.style.overflowAnchor = previousOverflowAnchor;
     anchor = null;
+    primed = false;
   };
 
-  const begin = () => {
+  const prime = () => {
     if (!anchor) capture();
     if (!anchor) return;
-
-    timers.forEach(clearTimeout);
-    timers = [];
-    clearTimeout(endTimer);
-
-    if (!body.classList.contains('language-reflowing')) {
+    if (!primed) {
       previousScrollBehavior = root.style.scrollBehavior;
       previousOverflowAnchor = body.style.overflowAnchor;
     }
-
+    primed = true;
     body.classList.add('language-reflowing');
     root.style.scrollBehavior = 'auto';
     body.style.overflowAnchor = 'none';
-
-    resizeObserver?.disconnect();
-    resizeObserver = new ResizeObserver(() => requestAnimationFrame(sync));
-    panels().forEach(panel => resizeObserver.observe(panel));
-
-    sync();
-    requestAnimationFrame(() => requestAnimationFrame(sync));
-    [35, 90, 170, 300, 480, 650].forEach(schedule);
-    document.fonts?.ready?.then(() => schedule(0)).catch?.(() => {});
-    endTimer = setTimeout(finish, 760);
+    clearTimeout(safetyTimer);
+    safetyTimer = setTimeout(finish, 900);
   };
 
+  const schedule = delay => {
+    const timer = setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(sync)), delay);
+    timers.push(timer);
+  };
+
+  const begin = () => {
+    prime();
+    if (!anchor) return;
+    clearTimers();
+    sync();
+    requestAnimationFrame(() => requestAnimationFrame(sync));
+    [90, 220, 420].forEach(schedule);
+    document.fonts?.ready?.then(() => schedule(0)).catch?.(() => {});
+    endTimer = setTimeout(finish, 500);
+  };
+
+  if (isAbout) {
+    const stripLocaleTight = () => {
+      document.querySelectorAll('.about-panel[data-locale-tight]').forEach(panel => panel.removeAttribute('data-locale-tight'));
+    };
+    stripLocaleTight();
+    const tightObserver = new MutationObserver(mutations => {
+      let dirty = false;
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-locale-tight') {
+          const target = mutation.target;
+          if (target instanceof Element && target.matches('.about-panel[data-locale-tight]')) {
+            target.removeAttribute('data-locale-tight');
+            dirty = true;
+          }
+        }
+      }
+      if (dirty && body.classList.contains('language-reflowing')) requestAnimationFrame(sync);
+    });
+    document.querySelectorAll('.about-panel').forEach(panel => tightObserver.observe(panel, { attributes: true, attributeFilter: ['data-locale-tight'] }));
+  }
+
   document.addEventListener('pointerdown', event => {
-    if (event.target instanceof Element && event.target.closest(langButtonSelector)) capture();
+    if (event.target instanceof Element && event.target.closest(langButtonSelector)) {
+      capture();
+      prime();
+    }
   }, true);
+
   document.addEventListener('click', event => {
-    if (event.target instanceof Element && event.target.closest(langButtonSelector) && !anchor) capture();
+    if (event.target instanceof Element && event.target.closest(langButtonSelector) && !anchor) {
+      capture();
+      prime();
+    }
   }, true);
 
   document.addEventListener('data-c0re-languagechange', begin);
@@ -156,10 +193,9 @@
     if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) event.preventDefault();
   }, true);
 
-  // Temporary test: larger desktop-only GLSL ASCII reaction-diffusion cursor.
   if (!document.querySelector('script[data-ascii-cursor-loader]')) {
     const script = document.createElement('script');
-    script.src = new URL('assets/js/ascii-cursor-glsl-v2.js', document.baseURI).href;
+    script.src = new URL('assets/js/ascii-cursor-glsl-v3.js', document.baseURI).href;
     script.defer = true;
     script.dataset.asciiCursorLoader = 'true';
     document.body.appendChild(script);
