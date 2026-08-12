@@ -1,6 +1,6 @@
 (() => {
-  if (window.__DATA_C0RE_ASCII_CURSOR_V10__) return;
-  window.__DATA_C0RE_ASCII_CURSOR_V10__ = true;
+  if (window.__DATA_C0RE_ASCII_CURSOR_V11__) return;
+  window.__DATA_C0RE_ASCII_CURSOR_V11__ = true;
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(pointer:fine) and (hover:hover)');
@@ -9,7 +9,7 @@
   document.body.classList.add('ascii-cursor-active');
 
   const layerStyle = document.createElement('style');
-  layerStyle.dataset.asciiCursorLayer = 'v10';
+  layerStyle.dataset.asciiCursorLayer = 'v11';
   layerStyle.textContent = `
     body.ascii-cursor-active main > *{position:relative;z-index:2}
     body.ascii-cursor-active main > .hero,
@@ -25,7 +25,7 @@
 
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-hidden', 'true');
-  canvas.dataset.asciiCursor = 'v10';
+  canvas.dataset.asciiCursor = 'v11';
   Object.assign(canvas.style, {
     position: 'fixed', inset: '0', width: '100vw', height: '100vh',
     pointerEvents: 'none', zIndex: '1', opacity: '0', mixBlendMode: 'screen',
@@ -183,26 +183,76 @@
       return mix(col, u_paper, smoothstep(0.82, 1.0, b) * 0.38);
     }
 
+    float fineCollision(vec2 fineCell){
+      vec2 fineGrid = u_grid * 4.0;
+      vec2 uv = (fineCell + 0.5) / fineGrid;
+      return step(0.5, texture(u_collision, clamp(uv, vec2(0.0), vec2(1.0))).r);
+    }
+
+    float baseBlocked(vec2 baseCell){
+      float blocked = 0.0;
+      vec2 origin = baseCell * 4.0;
+      for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+          blocked = max(blocked, fineCollision(origin + vec2(float(x), float(y))));
+        }
+      }
+      return blocked;
+    }
+
+    float halfBlocked(vec2 baseCell, vec2 halfCell){
+      float blocked = 0.0;
+      vec2 origin = baseCell * 4.0 + halfCell * 2.0;
+      for (int y = 0; y < 2; y++) {
+        for (int x = 0; x < 2; x++) {
+          blocked = max(blocked, fineCollision(origin + vec2(float(x), float(y))));
+        }
+      }
+      return blocked;
+    }
+
     void main(){
       vec2 fragCoord = gl_FragCoord.xy;
       vec2 screenUV = clamp(fragCoord / u_resolution, vec2(0.0), vec2(1.0));
-      vec2 gridPos = screenUV * u_grid;
-      vec2 cell = floor(gridPos);
-      vec2 localUV = fract(gridPos);
-      vec2 cellUV = (cell + 0.5) / u_grid;
+      vec2 baseGridPos = screenUV * u_grid;
+      vec2 baseCell = floor(baseGridPos);
+      vec2 baseLocal = fract(baseGridPos);
 
-      if (texture(u_collision, cellUV).r > 0.5) {
-        fragColor = vec4(0.0);
-        return;
+      vec2 renderGrid = u_grid;
+      vec2 renderCell = baseCell;
+      vec2 localUV = baseLocal;
+      float detailGain = 1.0;
+
+      if (baseBlocked(baseCell) > 0.5) {
+        vec2 halfCell = floor(baseLocal * 2.0);
+        if (halfBlocked(baseCell, halfCell) < 0.5) {
+          renderGrid = u_grid * 2.0;
+          vec2 renderPos = screenUV * renderGrid;
+          renderCell = floor(renderPos);
+          localUV = fract(renderPos);
+          detailGain = 0.94;
+        } else {
+          vec2 quarterCell = floor(baseLocal * 4.0);
+          if (fineCollision(baseCell * 4.0 + quarterCell) > 0.5) {
+            fragColor = vec4(0.0);
+            return;
+          }
+          renderGrid = u_grid * 4.0;
+          vec2 renderPos = screenUV * renderGrid;
+          renderCell = floor(renderPos);
+          localUV = fract(renderPos);
+          detailGain = 0.86;
+        }
       }
 
+      vec2 cellUV = (renderCell + 0.5) / renderGrid;
       float b = texture(u_state, clamp(cellUV, vec2(0.0), vec2(1.0))).y;
       float intensity = smoothstep(0.004, 0.30, b);
       float charMask = getCharMask(localUV, intensity);
       vec3 color = getColor(b);
       float glow = smoothstep(0.015, 0.50, b);
-      color *= 0.96 + glow * 0.66;
-      float alpha = charMask * smoothstep(0.003, 0.20, b) * 0.84;
+      color *= (0.96 + glow * 0.66) * detailGain;
+      float alpha = charMask * smoothstep(0.003, 0.20, b) * 0.84 * detailGain;
       fragColor = vec4(color * charMask, alpha);
     }
   `;
@@ -237,7 +287,7 @@
     simulationProgram = makeProgram(simulationSource);
     displayProgram = makeProgram(displaySource);
   } catch (error) {
-    console.warn('DATA C0RE ASCII cursor v10 disabled:', error);
+    console.warn('DATA C0RE ASCII cursor v11 disabled:', error);
     canvas.remove();
     return;
   }
@@ -294,7 +344,7 @@
   const main = document.querySelector('main');
   let simW = 0, simH = 0, textures = [], framebuffers = [], readIndex = 0;
   let collisionTexture = null, collisionData = null, collisionRaf = 0, collisionTimer = 0;
-  let gridCols = 25, gridRows = 14;
+  let gridCols = 25, gridRows = 14, collisionCols = 100, collisionRows = 56;
   let pointer = { x: 0.5, y: 0.5, px: 0.5, py: 0.5, lastMove: -Infinity };
   let running = false, activated = false, raf = 0, fadeTimer = 0, resetTimer = 0;
 
@@ -316,7 +366,7 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gridCols, gridRows, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, collisionCols, collisionRows, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     return texture;
   };
 
@@ -351,15 +401,15 @@
     const bottom = Math.min(vh, rect.bottom);
     if (right <= left || bottom <= top) return;
 
-    const x0 = Math.max(0, Math.floor(left / vw * gridCols));
-    const x1 = Math.min(gridCols - 1, Math.ceil(right / vw * gridCols) - 1);
-    const yTop0 = Math.max(0, Math.floor(top / vh * gridRows));
-    const yTop1 = Math.min(gridRows - 1, Math.ceil(bottom / vh * gridRows) - 1);
+    const x0 = Math.max(0, Math.floor(left / vw * collisionCols));
+    const x1 = Math.min(collisionCols - 1, Math.ceil(right / vw * collisionCols) - 1);
+    const yTop0 = Math.max(0, Math.floor(top / vh * collisionRows));
+    const yTop1 = Math.min(collisionRows - 1, Math.ceil(bottom / vh * collisionRows) - 1);
 
     for (let yTop = yTop0; yTop <= yTop1; yTop++) {
-      const y = gridRows - 1 - yTop;
+      const y = collisionRows - 1 - yTop;
       for (let x = x0; x <= x1; x++) {
-        const i = (y * gridCols + x) * 4;
+        const i = (y * collisionCols + x) * 4;
         collisionData[i] = 255;
         collisionData[i + 1] = 255;
         collisionData[i + 2] = 255;
@@ -440,13 +490,13 @@
   const uploadCollision = () => {
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, collisionTexture);
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gridCols, gridRows, gl.RGBA, gl.UNSIGNED_BYTE, collisionData);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, collisionCols, collisionRows, gl.RGBA, gl.UNSIGNED_BYTE, collisionData);
     gl.activeTexture(gl.TEXTURE0);
   };
 
   const updateCollision = () => {
     if (!collisionTexture) return;
-    const needed = gridCols * gridRows * 4;
+    const needed = collisionCols * collisionRows * 4;
     if (!collisionData || collisionData.length !== needed) collisionData = new Uint8Array(needed);
     collisionData.fill(0);
     markMedia();
@@ -487,9 +537,13 @@
 
     const nextCols = 25;
     const nextRows = Math.max(1, Math.round(nextCols * height / width));
-    const collisionSizeChanged = nextCols !== gridCols || nextRows !== gridRows;
+    const nextCollisionCols = nextCols * 4;
+    const nextCollisionRows = nextRows * 4;
+    const collisionSizeChanged = nextCollisionCols !== collisionCols || nextCollisionRows !== collisionRows;
     gridCols = nextCols;
     gridRows = nextRows;
+    collisionCols = nextCollisionCols;
+    collisionRows = nextCollisionRows;
 
     const targetW = Math.max(320, Math.min(680, Math.round(width * 0.36)));
     const targetH = Math.max(180, Math.round(targetW * height / width));
@@ -509,7 +563,7 @@
     if (collisionSizeChanged || !collisionTexture) {
       if (collisionTexture) gl.deleteTexture(collisionTexture);
       collisionTexture = makeCollisionTexture();
-      collisionData = new Uint8Array(gridCols * gridRows * 4);
+      collisionData = new Uint8Array(collisionCols * collisionRows * 4);
     }
 
     updateCollision();
