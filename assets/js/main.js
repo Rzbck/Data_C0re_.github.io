@@ -118,6 +118,11 @@
 })();
 
 (() => {
+  if(!document.querySelector('[data-about-panel]')||document.querySelector('script[data-about-touch-fix]'))return;
+  const script=document.createElement('script');script.src=new URL('assets/js/about-touch-fix.js',document.baseURI).href;script.defer=true;script.dataset.aboutTouchFix='true';document.body.appendChild(script);
+})();
+
+(() => {
   if(document.querySelector('script[data-fullpage-loader]'))return;
   const script=document.createElement('script');script.src=new URL('assets/js/fullpage.js',document.baseURI).href;script.defer=true;script.dataset.fullpageLoader='true';document.body.appendChild(script);
 })();
