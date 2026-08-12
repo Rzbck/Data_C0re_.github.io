@@ -6,14 +6,21 @@
   };
   addCss('assets/css/responsive.css','data-responsive-css');
   addCss('assets/css/mobile-hardening.css','data-mobile-hardening');
+  addCss('assets/css/i18n-layout.css','data-i18n-layout');
 
   if(document.querySelector('script[data-i18n-loader]'))return;
   const restore=()=>window.__DATA_C0RE_RESTORE_MUTATION_OBSERVER?.();
+  const loadPolish=()=>{
+    if(document.querySelector('script[data-i18n-polish]')){restore();return}
+    const polish=document.createElement('script');
+    polish.src=new URL('assets/js/i18n-polish.js',document.baseURI).href;
+    polish.async=false;polish.dataset.i18nPolish='true';polish.onload=restore;polish.onerror=restore;document.head.appendChild(polish);
+  };
   const loadExtra=()=>{
-    if(document.querySelector('script[data-i18n-extra]')){restore();return}
+    if(document.querySelector('script[data-i18n-extra]')){loadPolish();return}
     const extra=document.createElement('script');
     extra.src=new URL('assets/js/i18n-extra.js',document.baseURI).href;
-    extra.async=false;extra.dataset.i18nExtra='true';extra.onload=restore;extra.onerror=restore;document.head.appendChild(extra);
+    extra.async=false;extra.dataset.i18nExtra='true';extra.onload=loadPolish;extra.onerror=loadPolish;document.head.appendChild(extra);
   };
   const loadI18n=()=>{
     const script=document.createElement('script');
