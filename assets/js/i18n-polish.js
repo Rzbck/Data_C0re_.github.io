@@ -6,9 +6,10 @@
   };
   const currentLang=()=>normalizeLang(document.documentElement.lang||localStorage.getItem(STORAGE)||navigator.language||'en');
 
-  /* Editorial refinements, not machine-style literal translations.
-     AV / stage terms that are normally used as-is remain as-is: TouchDesigner,
-     GLSL, DMX, Art-Net, OSC, mapping, edge blending, show control, cues, routing. */
+  /* These are editorial refinements, not machine-style literal translations.
+     The goal is natural portfolio language while retaining AV / stage terms that
+     practitioners actually use (TouchDesigner, GLSL, DMX, Art-Net, OSC,
+     mapping, edge blending, show control, cues, routing, etc.). */
   const exact={
     fr:{
       'Je construis des systèmes audiovisuels temps réel où le son, les données et le code deviennent image, lumière et comportement spatial.':'Je crée des systèmes audiovisuels temps réel où son, données et code deviennent image, lumière et comportement spatial.',
@@ -25,9 +26,6 @@
       'Fusion 360 / modélisation 3D / travail du bois / charpenterie-menuiserie / prototypage / intégration électronique':'Fusion 360 / modélisation 3D / menuiserie-charpente / prototypage / intégration électronique'
     },
     es:{
-      'Artista digital y tecnólogo creativo':'Artista digital / creative technologist',
-      'DATA C0RE es un artista digital y tecnólogo creativo que trabaja con sistemas audiovisuales en tiempo real. La práctica conecta código, sonido, datos, imagen y luz para crear comportamientos que pueden existir en pantalla, en escena o en el espacio físico.':'DATA C0RE es un artista digital y creative technologist que trabaja con sistemas audiovisuales en tiempo real. La práctica conecta código, sonido, datos, imagen y luz para crear comportamientos que pueden existir en pantalla, en escena o en el espacio físico.',
-      'Artista digital y tecnólogo creativo que trabaja entre sistemas audiovisuales en tiempo real, medios escénicos, luz interactiva, proyección e integración física.':'Artista digital y creative technologist especializado en sistemas audiovisuales en tiempo real, media escénico, luz interactiva, proyección e integración física.',
       'Construyo sistemas audiovisuales en tiempo real donde el sonido, los datos y el código se convierten en imagen, luz y comportamiento espacial.':'Creo sistemas audiovisuales en tiempo real donde sonido, datos y código se transforman en imagen, luz y comportamiento espacial.',
       'La práctica se mueve entre creative coding, performance audiovisual en vivo, luz interactiva e integración de sistemas multimedia, desde software en un portátil hasta instalaciones arquitectónicas y entornos escénicos.':'La práctica cruza creative coding, AV en directo, luz interactiva e integración multimedia — del software a instalaciones arquitectónicas y entornos escénicos.',
       'Años de trabajo en espectáculo en vivo, gira, fabricación y sistemas multimedia han dado forma a una práctica donde experimentación y fiabilidad no son opuestas. Un mismo proyecto puede pasar de un prototipo de software a una instalación pública o un entorno escénico sin separar la lógica artística de la implementación técnica.':'Años de trabajo en directo, gira, fabricación y sistemas multimedia han formado una práctica donde experimentación y fiabilidad van juntas. Un proyecto puede pasar del prototipo de software a la instalación o al escenario sin separar lógica artística e integración técnica.',
@@ -37,7 +35,7 @@
       'Diseñar para condiciones técnicas cambiantes, desde estudios en portátil hasta instalaciones y entornos de gira.':'Diseñar para configuraciones cambiantes, del portátil a la instalación y la gira.',
       'Programación, cues de espectáculo, proyección multiplano, soft-edge monumental, superficies deformadas y calibración in situ para grandes entornos escénicos.':'Programación SMODE, cues, proyección multiplano, edge blending, superficies deformadas y calibración in situ para grandes sistemas escénicos.',
       'Programación SMODE, geometría de proyección, cues, soft-edge y calibración en entornos de producción de ópera y ballet.':'Programación SMODE, geometría de proyección, cues, edge blending y calibración en producción de ópera / ballet.',
-      'Preparación del sistema de vídeo en gira y adaptación a los espacios, coordinación con equipos técnicos locales, sobretítulos multilingües, pruebas, resolución de problemas y entrega de control.':'Preparación y adaptación del sistema de vídeo en gira, coordinación de equipos locales, sobretítulos multilingües, pruebas, resolución de incidencias y entrega de control.',
+      'Preparación del sistema de vídeo en gira y adaptación a los espacios, coordinación con equipos técnicos locales, sobretítulos multilingües, pruebas, resolución de problemas y entrega de control.':'Preparación y adaptación del sistema de vídeo en gira, coordinación de equipos locales, sobretítulos multilingües, pruebas, troubleshooting y entrega de control.',
       'Adaptación de sistemas de vídeo interactivos, cámaras, routing, proyección, sobretítulos, instalación en gira y continuidad operativa.':'Adaptación del sistema de vídeo interactivo, cámaras, routing, proyección, sobretítulos, instalación en gira y continuidad operativa.',
       'Carpintería y trabajo en madera — titulación profesional francesa CAP':'Carpintería / construcción en madera — titulación profesional francesa CAP'
     }
@@ -106,24 +104,41 @@
   };
 
   let timer=null;
-  const apply=()=>{
+  const run=()=>{
+    const lang=currentLang();
+    document.documentElement.lang=lang;
+    polishText(lang);
+    fitPanels();
+    document.documentElement.dataset.localePolished=lang;
+  };
+  const apply=delay=>{
     clearTimeout(timer);
-    timer=setTimeout(()=>{
-      const lang=currentLang();
-      document.documentElement.lang=lang;
-      polishText(lang);
-      fitPanels();
-      document.documentElement.dataset.localePolished=lang;
-    },36);
+    if(!delay){run();return}
+    timer=setTimeout(run,delay);
   };
 
+  // The main translation happens synchronously before this custom event is
+  // dispatched. Polish the final wording synchronously too, so the browser
+  // never paints an intermediate longer translation that can visibly reflow a
+  // magnetic section. Later passes only re-measure layout after fonts/CSS settle.
   document.addEventListener('data-c0re-languagechange',()=>{
-    apply();setTimeout(apply,120);setTimeout(apply,320);
+    apply(0);
+    setTimeout(fitPanels,120);
+    setTimeout(fitPanels,320);
+    setTimeout(fitPanels,620);
   });
-  window.addEventListener('resize',apply,{passive:true});
-  window.visualViewport?.addEventListener('resize',apply,{passive:true});
-  window.addEventListener('pageshow',apply,{passive:true});
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
-  setTimeout(apply,180);
-  setTimeout(apply,600);
+  window.addEventListener('resize',()=>apply(24),{passive:true});
+  window.visualViewport?.addEventListener('resize',()=>apply(24),{passive:true});
+  window.addEventListener('pageshow',()=>apply(0),{passive:true});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>apply(0),{once:true});else apply(0);
+  setTimeout(()=>apply(0),180);
+
+  // Keep magnetic position stable while translated text changes section height.
+  if(!document.querySelector('script[data-language-magnet-sync]')){
+    const script=document.createElement('script');
+    script.src=new URL('assets/js/language-magnet-sync.js',document.baseURI).href;
+    script.async=false;
+    script.dataset.languageMagnetSync='true';
+    document.head.appendChild(script);
+  }
 })();
