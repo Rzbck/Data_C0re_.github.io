@@ -2,6 +2,7 @@
   const panels=[...document.querySelectorAll('[data-about-panel]')];
   if(panels.length<2)return;
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const fine=window.matchMedia('(pointer:fine)');
   const touchMode=()=>window.matchMedia('(max-width:820px), (pointer:coarse)').matches&&!reduce.matches;
   let tracking=false,startY=0,startX=0,startPanel=-1,animating=false;
   const topOf=panel=>panel.getBoundingClientRect().top+window.scrollY;
@@ -37,8 +38,6 @@
   window.addEventListener('touchend',event=>{
     if(!tracking||!touchMode()){tracking=false;return}
     tracking=false;
-    // About has an older bubble-phase touch handler. This capture handler is
-    // the single source of truth on touch devices so the two cannot compete.
     event.stopImmediatePropagation();
     if(animating)return;
     const touch=event.changedTouches?.[0];if(!touch)return;
@@ -56,4 +55,30 @@
     const next=clamp(index+direction);
     if(next!==index)requestAnimationFrame(()=>animateTo(next));
   },{capture:true,passive:true});
+
+  // Desktop performance: keep the current panel moving, pause the other
+  // full-screen backgrounds. Neighbouring panels remain buffered so the
+  // visual transition is unchanged when navigation advances.
+  const videos=panels.map(panel=>panel.querySelector('[data-about-video]'));
+  const syncVideos=()=>{
+    if(document.hidden||reduce.matches){videos.forEach(video=>video?.pause());return}
+    panels.forEach((panel,index)=>{
+      const video=videos[index];if(!video)return;
+      const rect=panel.getBoundingClientRect();
+      const visible=rect.bottom>0&&rect.top<window.innerHeight;
+      video.preload=visible?'auto':'metadata';
+      if(visible&&video.dataset.ready==='true')video.play().catch(()=>{});else video.pause();
+    });
+  };
+  let syncRaf=0;
+  const queueSync=()=>{if(syncRaf)return;syncRaf=requestAnimationFrame(()=>{syncRaf=0;syncVideos()})};
+  const observer=new IntersectionObserver(queueSync,{rootMargin:'10% 0px',threshold:[0,.02]});
+  panels.forEach(panel=>observer.observe(panel));
+  window.addEventListener('scroll',queueSync,{passive:true});
+  window.addEventListener('resize',queueSync,{passive:true});
+  window.addEventListener('pageshow',queueSync,{passive:true});
+  document.addEventListener('visibilitychange',queueSync);
+  reduce.addEventListener?.('change',queueSync);
+  fine.addEventListener?.('change',queueSync);
+  requestAnimationFrame(()=>requestAnimationFrame(syncVideos));
 })();
