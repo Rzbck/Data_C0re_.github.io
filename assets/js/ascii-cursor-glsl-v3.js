@@ -1,16 +1,17 @@
 (() => {
-  if (window.__DATA_C0RE_ASCII_CURSOR_V16__) return;
-  window.__DATA_C0RE_ASCII_CURSOR_V16__ = true;
+  if (window.__DATA_C0RE_ASCII_CURSOR_V17__) return;
+  window.__DATA_C0RE_ASCII_CURSOR_V17__ = true;
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = matchMedia('(pointer:fine) and (hover:hover)');
-  const touchCapable = navigator.maxTouchPoints > 0 || matchMedia('(pointer:coarse)').matches || 'ontouchstart' in window;
-  const mobileTouch = touchCapable && (matchMedia('(pointer:coarse)').matches || innerWidth <= 820);
+  const coarsePointer = matchMedia('(pointer:coarse)');
+  const touchCapable = navigator.maxTouchPoints > 0 || coarsePointer.matches || 'ontouchstart' in window;
+  const mobileTouch = touchCapable && (coarsePointer.matches || innerWidth <= 820);
   if (reduce.matches || (!finePointer.matches && !touchCapable)) return;
 
   document.body.classList.add('ascii-cursor-active');
   const layerStyle = document.createElement('style');
-  layerStyle.dataset.asciiCursorLayer = 'v16';
+  layerStyle.dataset.asciiCursorLayer = 'v17';
   layerStyle.textContent = `
     body.ascii-cursor-active main > *{position:relative;z-index:2}
     body.ascii-cursor-active main > .hero,
@@ -26,11 +27,11 @@
 
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-hidden','true');
-  canvas.dataset.asciiCursor = 'v16';
+  canvas.dataset.asciiCursor = 'v17';
   Object.assign(canvas.style, {
     position:'fixed', inset:'0', width:'100vw', height:'100vh', pointerEvents:'none',
     zIndex:'1', opacity:'0', mixBlendMode:'screen',
-    transition:'opacity 850ms cubic-bezier(.2,.75,.25,1)', contain:'strict'
+    transition:'opacity 650ms cubic-bezier(.2,.75,.25,1)', contain:'strict'
   });
   document.body.appendChild(canvas);
 
@@ -47,10 +48,15 @@
   const simulationSource = `#version 300 es
   precision highp float;
   uniform sampler2D u_state; uniform sampler2D u_collision;
-  uniform vec2 u_texel,u_mouse,u_prevMouse; uniform float u_inject,u_time;
+  uniform vec2 u_texel,u_mouse,u_prevMouse,u_collisionShift; uniform float u_inject,u_time;
   in vec2 v_uv; out vec4 fragColor;
   const float feed=.0367,kill=.0649,Da=1.,Db=.90,dt=1.;
-  float wallAt(vec2 uv){return step(.5,texture(u_collision,clamp(uv,vec2(0),vec2(1))).r);}
+  float collisionAt(vec2 uv){
+    vec2 p=uv+u_collisionShift;
+    if(any(lessThan(p,vec2(0.)))||any(greaterThan(p,vec2(1.))))return 0.;
+    return texture(u_collision,p).r;
+  }
+  float wallAt(vec2 uv){return step(.5,collisionAt(uv));}
   vec2 stateAt(vec2 uv,vec2 fallbackState){uv=clamp(uv,vec2(0),vec2(1));return mix(texture(u_state,uv).xy,fallbackState,wallAt(uv));}
   float segmentDistance(vec2 p,vec2 a,vec2 b){vec2 pa=p-a,ba=b-a;float h=clamp(dot(pa,ba)/max(dot(ba,ba),.000001),0.,1.);return length(pa-ba*h);}
   void main(){
@@ -75,7 +81,7 @@
 
   const displaySource = `#version 300 es
   precision highp float;
-  uniform sampler2D u_state,u_collision; uniform vec2 u_resolution,u_grid;
+  uniform sampler2D u_state,u_collision; uniform vec2 u_resolution,u_grid,u_collisionShift;
   uniform vec3 u_cyan,u_magenta,u_acid,u_paper; in vec2 v_uv; out vec4 fragColor;
   float getCharMask(vec2 uv,float i){vec2 p=uv*2.-1.;float l=length(p),m=0.;
     if(i>.82)m=max(abs(p.x),abs(p.y))<.91?1.:0.; else if(i>.64){float b=max(abs(p.x),abs(p.y));m=(b<.91&&b>.40)?1.:0.;}
@@ -83,7 +89,11 @@
     else if(i>.17)m=(l<.79&&l>.32)?1.:0.; else if(i>.075)m=abs(p.y)<.31?1.:0.; else if(i>.018)m=l<.32?1.:0.;
     return m*(1.-smoothstep(.91,1.,max(abs(p.x),abs(p.y))));}
   vec3 getColor(float b){vec3 c=mix(u_cyan,u_magenta,smoothstep(.05,.46,b));c=mix(c,u_acid,smoothstep(.48,.82,b));return mix(c,u_paper,smoothstep(.82,1.,b)*.38);}
-  float hit(vec2 cell){vec2 g=u_grid*8.;return step(.5,texture(u_collision,clamp((cell+.5)/g,vec2(0),vec2(1))).r);}
+  float hit(vec2 cell){
+    vec2 g=u_grid*8.; vec2 p=(cell+.5)/g+u_collisionShift;
+    if(any(lessThan(p,vec2(0.)))||any(greaterThan(p,vec2(1.))))return 0.;
+    return step(.5,texture(u_collision,p).r);
+  }
   float baseBlocked(vec2 c){float h=0.;vec2 o=c*8.;for(int y=0;y<8;y++)for(int x=0;x<8;x++)h=max(h,hit(o+vec2(float(x),float(y))));return h;}
   float halfBlocked(vec2 c,vec2 hcell){float h=0.;vec2 o=c*8.+hcell*4.;for(int y=0;y<4;y++)for(int x=0;x<4;x++)h=max(h,hit(o+vec2(float(x),float(y))));return h;}
   float quarterBlocked(vec2 c,vec2 q){float h=0.;vec2 o=c*8.+q*2.;for(int y=0;y<2;y++)for(int x=0;x<2;x++)h=max(h,hit(o+vec2(float(x),float(y))));return h;}
@@ -108,12 +118,12 @@
   const compile=(type,src)=>{const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const e=gl.getShaderInfoLog(s)||'GLSL compile error';gl.deleteShader(s);throw Error(e);}return s;};
   const makeProgram=fs=>{const p=gl.createProgram();gl.attachShader(p,compile(gl.VERTEX_SHADER,vertexSource));gl.attachShader(p,compile(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS)){const e=gl.getProgramInfoLog(p)||'WebGL link error';gl.deleteProgram(p);throw Error(e);}return p;};
   let simulationProgram,displayProgram;
-  try{simulationProgram=makeProgram(simulationSource);displayProgram=makeProgram(displaySource);}catch(e){console.warn('DATA C0RE ASCII cursor v16 disabled:',e);canvas.remove();return;}
+  try{simulationProgram=makeProgram(simulationSource);displayProgram=makeProgram(displaySource);}catch(e){console.warn('DATA C0RE ASCII cursor v17 disabled:',e);canvas.remove();return;}
 
   const quad=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,quad);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
   const bindQuad=p=>{gl.useProgram(p);gl.bindBuffer(gl.ARRAY_BUFFER,quad);const l=gl.getAttribLocation(p,'a_position');gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0);};
-  const simU={state:gl.getUniformLocation(simulationProgram,'u_state'),collision:gl.getUniformLocation(simulationProgram,'u_collision'),texel:gl.getUniformLocation(simulationProgram,'u_texel'),mouse:gl.getUniformLocation(simulationProgram,'u_mouse'),prevMouse:gl.getUniformLocation(simulationProgram,'u_prevMouse'),inject:gl.getUniformLocation(simulationProgram,'u_inject'),time:gl.getUniformLocation(simulationProgram,'u_time')};
-  const dispU={state:gl.getUniformLocation(displayProgram,'u_state'),collision:gl.getUniformLocation(displayProgram,'u_collision'),resolution:gl.getUniformLocation(displayProgram,'u_resolution'),grid:gl.getUniformLocation(displayProgram,'u_grid'),cyan:gl.getUniformLocation(displayProgram,'u_cyan'),magenta:gl.getUniformLocation(displayProgram,'u_magenta'),acid:gl.getUniformLocation(displayProgram,'u_acid'),paper:gl.getUniformLocation(displayProgram,'u_paper')};
+  const simU={state:gl.getUniformLocation(simulationProgram,'u_state'),collision:gl.getUniformLocation(simulationProgram,'u_collision'),texel:gl.getUniformLocation(simulationProgram,'u_texel'),mouse:gl.getUniformLocation(simulationProgram,'u_mouse'),prevMouse:gl.getUniformLocation(simulationProgram,'u_prevMouse'),collisionShift:gl.getUniformLocation(simulationProgram,'u_collisionShift'),inject:gl.getUniformLocation(simulationProgram,'u_inject'),time:gl.getUniformLocation(simulationProgram,'u_time')};
+  const dispU={state:gl.getUniformLocation(displayProgram,'u_state'),collision:gl.getUniformLocation(displayProgram,'u_collision'),resolution:gl.getUniformLocation(displayProgram,'u_resolution'),grid:gl.getUniformLocation(displayProgram,'u_grid'),collisionShift:gl.getUniformLocation(displayProgram,'u_collisionShift'),cyan:gl.getUniformLocation(displayProgram,'u_cyan'),magenta:gl.getUniformLocation(displayProgram,'u_magenta'),acid:gl.getUniformLocation(displayProgram,'u_acid'),paper:gl.getUniformLocation(displayProgram,'u_paper')};
 
   const parseColor=(v,f)=>{const m=(v||'').trim().match(/^#([0-9a-f]{6})$/i);if(!m)return f;const n=parseInt(m[1],16);return[((n>>16)&255)/255,((n>>8)&255)/255,(n&255)/255];};
   const rootStyle=getComputedStyle(document.documentElement);
@@ -126,9 +136,12 @@
 
   let simW=0,simH=0,textures=[],framebuffers=[],readIndex=0;
   let collisionTexture=null,collisionData=null,collisionRaf=0,collisionTimer=0,burstRaf=0,burstUntil=0,burstLast=0;
+  let collisionAnchorX=scrollX,collisionAnchorY=scrollY,lastCollisionBuild=0,mobileScrollRefresh=0,mobileScrollSettle=0,mobileResizeTimer=0;
   let gridCols=25,gridRows=14,collisionCols=200,collisionRows=112;
-  let pointer={x:.5,y:.5,px:.5,py:.5,lastMove:-Infinity};
+  let viewportW=0,viewportH=0;
+  let pointer={x:.5,y:.5,px:.5,py:.5,lastMove:-Infinity,strength:1};
   let running=false,activated=false,raf=0,fadeTimer=0,resetTimer=0;
+  let touchTrack={x:0,y:0,t:0,active:false};
 
   const makeTexture=(w,h,data)=>{const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,data);return t;};
   const makeCollisionTexture=()=>{const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,collisionCols,collisionRows,0,gl.RGBA,gl.UNSIGNED_BYTE,null);return t;};
@@ -158,40 +171,61 @@
       if('direction'in glyphCtx)glyphCtx.direction=s.direction==='rtl'?'rtl':'ltr';
       const probe=glyphCtx.measureText('Hg');const fa=probe.fontBoundingBoxAscent||probe.actualBoundingBoxAscent||fs*.8,fd=probe.fontBoundingBoxDescent||probe.actualBoundingBoxDescent||fs*.2,fh=fa+fd;
       const text=node.nodeValue;
-      for(let i=0;i<text.length;){const cp=text.codePointAt(i),raw=String.fromCodePoint(cp),start=i;i+=raw.length;if(!raw.trim())continue;const ch=transformedChar(raw,s.textTransform);try{range.setStart(node,start);range.setEnd(node,i);}catch{continue;}const r=range.getBoundingClientRect();if(!visibleRect(r))continue;
-        const baseline=r.top+(r.height-fh)*.5+fa;glyphCtx.fillText(ch,r.left,baseline);
-      }
+      for(let i=0;i<text.length;){const cp=text.codePointAt(i),raw=String.fromCodePoint(cp),start=i;i+=raw.length;if(!raw.trim())continue;const ch=transformedChar(raw,s.textTransform);try{range.setStart(node,start);range.setEnd(node,i);}catch{continue;}const r=range.getBoundingClientRect();if(!visibleRect(r))continue;const baseline=r.top+(r.height-fh)*.5+fa;glyphCtx.fillText(ch,r.left,baseline);}
     }
     range.detach?.();glyphCtx.setTransform(1,0,0,1,0,0);
     const pixels=glyphCtx.getImageData(0,0,rw,rh).data,s=GLYPH_SUPERSAMPLE;
     for(let y=0;y<collisionRows;y++){const py0=y*s;for(let x=0;x<collisionCols;x++){const px0=x*s;let hit=false;for(let py=py0;py<py0+s&&!hit;py++){let p=(py*rw+px0)*4+3;for(let px=px0;px<px0+s;px++,p+=4){if(pixels[p]>=GLYPH_ALPHA_THRESHOLD){hit=true;break;}}}if(hit)markCell(x,y);}}
   };
 
+  const collisionShift=()=>[
+    (scrollX-collisionAnchorX)/Math.max(1,innerWidth),
+    -(scrollY-collisionAnchorY)/Math.max(1,innerHeight)
+  ];
   const uploadCollision=()=>{gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,collisionTexture);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,collisionCols,collisionRows,gl.RGBA,gl.UNSIGNED_BYTE,collisionData);gl.activeTexture(gl.TEXTURE0);};
-  const updateCollision=()=>{if(!collisionTexture)return;const n=collisionCols*collisionRows*4;if(!collisionData||collisionData.length!==n)collisionData=new Uint8Array(n);collisionData.fill(0);markMedia();markBorders();rasterizeGlyphs();uploadCollision();};
+  const updateCollision=()=>{if(!collisionTexture)return;const n=collisionCols*collisionRows*4;if(!collisionData||collisionData.length!==n)collisionData=new Uint8Array(n);collisionData.fill(0);markMedia();markBorders();rasterizeGlyphs();uploadCollision();collisionAnchorX=scrollX;collisionAnchorY=scrollY;lastCollisionBuild=performance.now();};
   const scheduleCollisionUpdate=()=>{if(collisionTimer||collisionRaf)return;collisionTimer=setTimeout(()=>{collisionTimer=0;collisionRaf=requestAnimationFrame(()=>{collisionRaf=0;updateCollision();});},36);};
-  const collisionBurst=(ms=520)=>{burstUntil=Math.max(burstUntil,performance.now()+ms);if(burstRaf)return;const tick=now=>{if(now-burstLast>48){burstLast=now;updateCollision();}if(now<burstUntil)burstRaf=requestAnimationFrame(tick);else burstRaf=0;};burstRaf=requestAnimationFrame(tick);};
+  const collisionBurst=(ms=520)=>{if(mobileTouch){clearTimeout(mobileScrollSettle);mobileScrollSettle=setTimeout(updateCollision,120);return;}burstUntil=Math.max(burstUntil,performance.now()+ms);if(burstRaf)return;const tick=now=>{if(now-burstLast>48){burstLast=now;updateCollision();}if(now<burstUntil)burstRaf=requestAnimationFrame(tick);else burstRaf=0;};burstRaf=requestAnimationFrame(tick);};
+  const mobileScrollUpdate=()=>{
+    if(!mobileTouch){scheduleCollisionUpdate();return;}
+    if(activated)start();
+    clearTimeout(mobileScrollSettle);
+    mobileScrollSettle=setTimeout(()=>{mobileScrollSettle=0;updateCollision();if(activated&&performance.now()-pointer.lastMove<700)canvas.style.opacity='.62';},150);
+    if(!mobileScrollRefresh&&performance.now()-lastCollisionBuild>180){mobileScrollRefresh=setTimeout(()=>{mobileScrollRefresh=0;updateCollision();},180);}
+  };
 
-  const resetState=()=>{if(!simW||!simH||!textures.length)return;const d=blankData();textures.forEach(t=>{gl.bindTexture(gl.TEXTURE_2D,t);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,simW,simH,gl.RGBA,gl.UNSIGNED_BYTE,d);});readIndex=0;activated=false;pointer.px=pointer.x;pointer.py=pointer.y;};
-  const resize=()=>{const w=Math.max(1,Math.round(innerWidth)),h=Math.max(1,Math.round(innerHeight));canvas.width=w;canvas.height=h;const nc=25,nr=Math.max(1,Math.round(nc*h/w)),cc=nc*8,cr=nr*8,collisionChanged=cc!==collisionCols||cr!==collisionRows;gridCols=nc;gridRows=nr;collisionCols=cc;collisionRows=cr;const tw=Math.max(320,Math.min(680,Math.round(w*.36))),th=Math.max(180,Math.round(tw*h/w)),simChanged=tw!==simW||th!==simH;if(simChanged){textures.forEach(t=>gl.deleteTexture(t));framebuffers.forEach(f=>gl.deleteFramebuffer(f));simW=tw;simH=th;const d=blankData();textures=[makeTexture(simW,simH,d),makeTexture(simW,simH,d)];framebuffers=textures.map(makeFramebuffer);readIndex=0;}if(collisionChanged||!collisionTexture){if(collisionTexture)gl.deleteTexture(collisionTexture);collisionTexture=makeCollisionTexture();collisionData=new Uint8Array(collisionCols*collisionRows*4);}updateCollision();};
-  const simulationPass=(now,scale)=>{const wi=1-readIndex;gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffers[wi]);gl.viewport(0,0,simW,simH);bindQuad(simulationProgram);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,textures[readIndex]);gl.uniform1i(simU.state,0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,collisionTexture);gl.uniform1i(simU.collision,1);gl.uniform2f(simU.texel,1/simW,1/simH);gl.uniform2f(simU.mouse,pointer.x,pointer.y);gl.uniform2f(simU.prevMouse,pointer.px,pointer.py);gl.uniform1f(simU.inject,now-pointer.lastMove<180?scale:0);gl.uniform1f(simU.time,now*.001);gl.drawArrays(gl.TRIANGLES,0,6);readIndex=wi;};
-  const displayPass=()=>{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);bindQuad(displayProgram);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,textures[readIndex]);gl.uniform1i(dispU.state,0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,collisionTexture);gl.uniform1i(dispU.collision,1);gl.uniform2f(dispU.resolution,canvas.width,canvas.height);gl.uniform2f(dispU.grid,gridCols,gridRows);gl.uniform3fv(dispU.cyan,palette.cyan);gl.uniform3fv(dispU.magenta,palette.magenta);gl.uniform3fv(dispU.acid,palette.acid);gl.uniform3fv(dispU.paper,palette.paper);gl.drawArrays(gl.TRIANGLES,0,6);gl.disable(gl.BLEND);};
-  const frame=now=>{if(!running||document.hidden)return;const moving=now-pointer.lastMove<210,passes=mobileTouch?(moving?5:3):(moving?8:5);for(let i=0;i<passes;i++)simulationPass(now,i===0?1:.58);displayPass();pointer.px+=(pointer.x-pointer.px)*.34;pointer.py+=(pointer.y-pointer.py)*.34;raf=requestAnimationFrame(frame);};
+  const resetState=()=>{if(!simW||!simH||!textures.length)return;const d=blankData();textures.forEach(t=>{gl.bindTexture(gl.TEXTURE_2D,t);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,simW,simH,gl.RGBA,gl.UNSIGNED_BYTE,d);});readIndex=0;activated=false;pointer.px=pointer.x;pointer.py=pointer.y;pointer.strength=1;};
+  const resize=(force=false)=>{
+    const w=Math.max(1,Math.round(innerWidth)),h=Math.max(1,Math.round(innerHeight));
+    if(mobileTouch&&!force&&viewportW&&Math.abs(w-viewportW)<3&&Math.abs(h-viewportH)<120)return;
+    viewportW=w;viewportH=h;canvas.width=w;canvas.height=h;
+    const nc=25,nr=Math.max(1,Math.round(nc*h/w)),cc=nc*8,cr=nr*8,collisionChanged=cc!==collisionCols||cr!==collisionRows;gridCols=nc;gridRows=nr;collisionCols=cc;collisionRows=cr;
+    const minW=mobileTouch?280:320,tw=Math.max(minW,Math.min(680,Math.round(w*(mobileTouch?.32:.36)))),th=Math.max(mobileTouch?160:180,Math.round(tw*h/w)),simChanged=tw!==simW||th!==simH;
+    if(simChanged){textures.forEach(t=>gl.deleteTexture(t));framebuffers.forEach(f=>gl.deleteFramebuffer(f));simW=tw;simH=th;const d=blankData();textures=[makeTexture(simW,simH,d),makeTexture(simW,simH,d)];framebuffers=textures.map(makeFramebuffer);readIndex=0;}
+    if(collisionChanged||!collisionTexture){if(collisionTexture)gl.deleteTexture(collisionTexture);collisionTexture=makeCollisionTexture();collisionData=new Uint8Array(collisionCols*collisionRows*4);}
+    updateCollision();
+  };
+  const simulationPass=(now,scale)=>{const wi=1-readIndex,shift=collisionShift();gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffers[wi]);gl.viewport(0,0,simW,simH);bindQuad(simulationProgram);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,textures[readIndex]);gl.uniform1i(simU.state,0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,collisionTexture);gl.uniform1i(simU.collision,1);gl.uniform2f(simU.texel,1/simW,1/simH);gl.uniform2f(simU.mouse,pointer.x,pointer.y);gl.uniform2f(simU.prevMouse,pointer.px,pointer.py);gl.uniform2f(simU.collisionShift,shift[0],shift[1]);gl.uniform1f(simU.inject,now-pointer.lastMove<180?scale*pointer.strength:0);gl.uniform1f(simU.time,now*.001);gl.drawArrays(gl.TRIANGLES,0,6);readIndex=wi;};
+  const displayPass=()=>{const shift=collisionShift();gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);bindQuad(displayProgram);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,textures[readIndex]);gl.uniform1i(dispU.state,0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,collisionTexture);gl.uniform1i(dispU.collision,1);gl.uniform2f(dispU.resolution,canvas.width,canvas.height);gl.uniform2f(dispU.grid,gridCols,gridRows);gl.uniform2f(dispU.collisionShift,shift[0],shift[1]);gl.uniform3fv(dispU.cyan,palette.cyan);gl.uniform3fv(dispU.magenta,palette.magenta);gl.uniform3fv(dispU.acid,palette.acid);gl.uniform3fv(dispU.paper,palette.paper);gl.drawArrays(gl.TRIANGLES,0,6);gl.disable(gl.BLEND);};
+  const frame=now=>{if(!running||document.hidden)return;const moving=now-pointer.lastMove<210,passes=mobileTouch?(moving?4:2):(moving?8:5);for(let i=0;i<passes;i++)simulationPass(now,i===0?1:.58);displayPass();pointer.px+=(pointer.x-pointer.px)*.34;pointer.py+=(pointer.y-pointer.py)*.34;raf=requestAnimationFrame(frame);};
   const start=()=>{if(running)return;running=true;raf=requestAnimationFrame(frame);};
   const stopAndReset=()=>{running=false;cancelAnimationFrame(raf);canvas.style.opacity='0';resetState();};
-  const wakeAt=(clientX,clientY)=>{if(reduce.matches)return;const cx=Number(clientX),cy=Number(clientY);if(!Number.isFinite(cx)||!Number.isFinite(cy))return;const nx=Math.max(0,Math.min(1,cx/Math.max(1,innerWidth))),ny=Math.max(0,Math.min(1,1-cy/Math.max(1,innerHeight)));if(!activated){pointer.px=nx;pointer.py=ny;}pointer.x=nx;pointer.y=ny;pointer.lastMove=performance.now();activated=true;canvas.style.opacity='.80';start();scheduleCollisionUpdate();clearTimeout(fadeTimer);clearTimeout(resetTimer);fadeTimer=setTimeout(()=>canvas.style.opacity='0',1150);resetTimer=setTimeout(stopAndReset,2050);};
-  const wakePointer=e=>{if(e.pointerType==='touch')return;wakeAt(e.clientX,e.clientY);};
-  const wakeTouch=e=>{if(e.touches&&e.touches.length>1)return;const list=e.touches&&e.touches.length?e.touches:e.changedTouches;if(!list||!list.length)return;const t=list[0];wakeAt(t.clientX,t.clientY);};
+  const wakeAt=(clientX,clientY,strength=1)=>{if(reduce.matches)return;const cx=Number(clientX),cy=Number(clientY);if(!Number.isFinite(cx)||!Number.isFinite(cy))return;const nx=Math.max(0,Math.min(1,cx/Math.max(1,innerWidth))),ny=Math.max(0,Math.min(1,1-cy/Math.max(1,innerHeight)));if(!activated){pointer.px=nx;pointer.py=ny;}pointer.x=nx;pointer.y=ny;pointer.strength=Math.max(.08,Math.min(1,strength));pointer.lastMove=performance.now();activated=true;canvas.style.opacity=mobileTouch?'.62':'.80';start();if(!mobileTouch)scheduleCollisionUpdate();clearTimeout(fadeTimer);clearTimeout(resetTimer);fadeTimer=setTimeout(()=>canvas.style.opacity='0',mobileTouch?820:1150);resetTimer=setTimeout(stopAndReset,mobileTouch?1500:2050);};
+  const wakePointer=e=>{if(e.pointerType==='touch')return;wakeAt(e.clientX,e.clientY,1);};
+  const wakeTouchStart=e=>{if(e.touches&&e.touches.length>1)return;const list=e.touches&&e.touches.length?e.touches:e.changedTouches;if(!list||!list.length)return;const t=list[0];touchTrack={x:t.clientX,y:t.clientY,t:performance.now(),active:true};updateCollision();wakeAt(t.clientX,t.clientY,.70);};
+  const wakeTouchMove=e=>{if(e.touches&&e.touches.length>1)return;const list=e.touches&&e.touches.length?e.touches:e.changedTouches;if(!list||!list.length)return;const t=list[0],now=performance.now();let strength=.58;if(touchTrack.active){const dx=t.clientX-touchTrack.x,dy=t.clientY-touchTrack.y,dt=Math.max(8,now-touchTrack.t),dist=Math.hypot(dx,dy),speed=dist/dt,vertical=Math.abs(dy)>Math.abs(dx)*1.12;if(vertical&&dist>4)strength=speed>.45?.14:.24;else if(speed>.9)strength=.32;}touchTrack={x:t.clientX,y:t.clientY,t:now,active:true};wakeAt(t.clientX,t.clientY,strength);};
+  const wakeTouchEnd=()=>{touchTrack.active=false;clearTimeout(mobileScrollSettle);mobileScrollSettle=setTimeout(()=>{mobileScrollSettle=0;updateCollision();},90);};
 
-  resize();
-  addEventListener('resize',resize,{passive:true});
-  addEventListener('scroll',scheduleCollisionUpdate,{passive:true});
+  resize(true);
+  addEventListener('resize',()=>{if(!mobileTouch){resize(true);return;}clearTimeout(mobileResizeTimer);mobileResizeTimer=setTimeout(()=>resize(false),180);},{passive:true});
+  addEventListener('orientationchange',()=>setTimeout(()=>resize(true),260),{passive:true});
+  addEventListener('scroll',mobileScrollUpdate,{passive:true});
   addEventListener('pointermove',wakePointer,{passive:true});
-  if(touchCapable){addEventListener('touchstart',wakeTouch,{passive:true});addEventListener('touchmove',wakeTouch,{passive:true});}
+  if(touchCapable){addEventListener('touchstart',wakeTouchStart,{passive:true});addEventListener('touchmove',wakeTouchMove,{passive:true});addEventListener('touchend',wakeTouchEnd,{passive:true});addEventListener('touchcancel',wakeTouchEnd,{passive:true});}
   addEventListener('pointerover',e=>{if(e.pointerType!=='touch')collisionBurst(650);},{passive:true});
   addEventListener('pointerout',e=>{if(e.pointerType!=='touch')collisionBurst(650);},{passive:true});
   document.addEventListener('data-c0re-languagechange',()=>collisionBurst(780));
   document.fonts?.ready?.then(()=>collisionBurst(250)).catch?.(()=>{});
-  if(main&&'ResizeObserver'in window)new ResizeObserver(()=>collisionBurst(320)).observe(main);
+  if(main&&'ResizeObserver'in window)new ResizeObserver(()=>{if(mobileTouch){clearTimeout(mobileScrollSettle);mobileScrollSettle=setTimeout(updateCollision,140);}else collisionBurst(320);}).observe(main);
   document.addEventListener('visibilitychange',()=>{if(document.hidden){running=false;cancelAnimationFrame(raf);}else if(activated)start();});
 })();
