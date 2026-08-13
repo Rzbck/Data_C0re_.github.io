@@ -184,8 +184,8 @@
   ];
   const uploadCollision=()=>{gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,collisionTexture);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,collisionCols,collisionRows,gl.RGBA,gl.UNSIGNED_BYTE,collisionData);gl.activeTexture(gl.TEXTURE0);};
   const updateCollision=()=>{if(!collisionTexture)return;const n=collisionCols*collisionRows*4;if(!collisionData||collisionData.length!==n)collisionData=new Uint8Array(n);collisionData.fill(0);markMedia();markBorders();rasterizeGlyphs();uploadCollision();collisionAnchorX=scrollX;collisionAnchorY=scrollY;lastCollisionBuild=performance.now();};
-  const scheduleCollisionUpdate=()=>{if(collisionTimer||collisionRaf)return;collisionTimer=setTimeout(()=>{collisionTimer=0;collisionRaf=requestAnimationFrame(()=>{collisionRaf=0;updateCollision();});},36);};
-  const collisionBurst=(ms=520)=>{if(mobileTouch){clearTimeout(mobileScrollSettle);mobileScrollSettle=setTimeout(updateCollision,120);return;}burstUntil=Math.max(burstUntil,performance.now()+ms);if(burstRaf)return;const tick=now=>{if(now-burstLast>48){burstLast=now;updateCollision();}if(now<burstUntil)burstRaf=requestAnimationFrame(tick);else burstRaf=0;};burstRaf=requestAnimationFrame(tick);};
+  const scheduleCollisionUpdate=()=>{if(collisionTimer||collisionRaf)return;collisionTimer=setTimeout(()=>{collisionTimer=0;collisionRaf=requestAnimationFrame(()=>{collisionRaf=0;updateCollision();});},72);};
+  const collisionBurst=(ms=420)=>{if(mobileTouch){clearTimeout(mobileScrollSettle);mobileScrollSettle=setTimeout(updateCollision,120);return;}burstUntil=Math.max(burstUntil,performance.now()+ms);if(burstRaf)return;const tick=now=>{if(now-burstLast>84){burstLast=now;updateCollision();}if(now<burstUntil)burstRaf=requestAnimationFrame(tick);else burstRaf=0;};burstRaf=requestAnimationFrame(tick);};
   const mobileScrollUpdate=()=>{
     if(!mobileTouch){scheduleCollisionUpdate();return;}
     if(activated)start();
@@ -210,7 +210,7 @@
   const frame=now=>{if(!running||document.hidden)return;const moving=now-pointer.lastMove<210,passes=mobileTouch?(moving?4:2):(moving?8:5);for(let i=0;i<passes;i++)simulationPass(now,i===0?1:.58);displayPass();pointer.px+=(pointer.x-pointer.px)*.34;pointer.py+=(pointer.y-pointer.py)*.34;raf=requestAnimationFrame(frame);};
   const start=()=>{if(running)return;running=true;raf=requestAnimationFrame(frame);};
   const stopAndReset=()=>{running=false;cancelAnimationFrame(raf);canvas.style.opacity='0';resetState();};
-  const wakeAt=(clientX,clientY,strength=1)=>{if(reduce.matches)return;const cx=Number(clientX),cy=Number(clientY);if(!Number.isFinite(cx)||!Number.isFinite(cy))return;const nx=Math.max(0,Math.min(1,cx/Math.max(1,innerWidth))),ny=Math.max(0,Math.min(1,1-cy/Math.max(1,innerHeight)));if(!activated){pointer.px=nx;pointer.py=ny;}pointer.x=nx;pointer.y=ny;pointer.strength=Math.max(.08,Math.min(1,strength));pointer.lastMove=performance.now();activated=true;canvas.style.opacity=mobileTouch?'.62':'.80';start();if(!mobileTouch)scheduleCollisionUpdate();clearTimeout(fadeTimer);clearTimeout(resetTimer);fadeTimer=setTimeout(()=>canvas.style.opacity='0',mobileTouch?820:1150);resetTimer=setTimeout(stopAndReset,mobileTouch?1500:2050);};
+  const wakeAt=(clientX,clientY,strength=1)=>{if(reduce.matches)return;const cx=Number(clientX),cy=Number(clientY);if(!Number.isFinite(cx)||!Number.isFinite(cy))return;const nx=Math.max(0,Math.min(1,cx/Math.max(1,innerWidth))),ny=Math.max(0,Math.min(1,1-cy/Math.max(1,innerHeight)));if(!activated){pointer.px=nx;pointer.py=ny;}pointer.x=nx;pointer.y=ny;pointer.strength=Math.max(.08,Math.min(1,strength));pointer.lastMove=performance.now();activated=true;canvas.style.opacity=mobileTouch?'.62':'.80';start();clearTimeout(fadeTimer);clearTimeout(resetTimer);fadeTimer=setTimeout(()=>canvas.style.opacity='0',mobileTouch?820:1150);resetTimer=setTimeout(stopAndReset,mobileTouch?1500:2050);};
   const wakePointer=e=>{if(e.pointerType==='touch')return;wakeAt(e.clientX,e.clientY,1);};
   const wakeTouchStart=e=>{if(e.touches&&e.touches.length>1)return;const list=e.touches&&e.touches.length?e.touches:e.changedTouches;if(!list||!list.length)return;const t=list[0];touchTrack={x:t.clientX,y:t.clientY,t:performance.now(),active:true};updateCollision();wakeAt(t.clientX,t.clientY,.70);};
   const wakeTouchMove=e=>{if(e.touches&&e.touches.length>1)return;const list=e.touches&&e.touches.length?e.touches:e.changedTouches;if(!list||!list.length)return;const t=list[0],now=performance.now();let strength=.58;if(touchTrack.active){const dx=t.clientX-touchTrack.x,dy=t.clientY-touchTrack.y,dt=Math.max(8,now-touchTrack.t),dist=Math.hypot(dx,dy),speed=dist/dt,vertical=Math.abs(dy)>Math.abs(dx)*1.12;if(vertical&&dist>4)strength=speed>.45?.14:.24;else if(speed>.9)strength=.32;}touchTrack={x:t.clientX,y:t.clientY,t:now,active:true};wakeAt(t.clientX,t.clientY,strength);};
@@ -222,8 +222,8 @@
   addEventListener('scroll',mobileScrollUpdate,{passive:true});
   addEventListener('pointermove',wakePointer,{passive:true});
   if(touchCapable){addEventListener('touchstart',wakeTouchStart,{passive:true});addEventListener('touchmove',wakeTouchMove,{passive:true});addEventListener('touchend',wakeTouchEnd,{passive:true});addEventListener('touchcancel',wakeTouchEnd,{passive:true});}
-  addEventListener('pointerover',e=>{if(e.pointerType!=='touch')collisionBurst(650);},{passive:true});
-  addEventListener('pointerout',e=>{if(e.pointerType!=='touch')collisionBurst(650);},{passive:true});
+  addEventListener('pointerover',e=>{if(e.pointerType!=='touch'&&main&&e.target instanceof Node&&main.contains(e.target))collisionBurst(420);},{passive:true});
+  addEventListener('pointerout',e=>{if(e.pointerType!=='touch'&&main&&e.target instanceof Node&&main.contains(e.target))collisionBurst(420);},{passive:true});
   document.addEventListener('data-c0re-languagechange',()=>collisionBurst(780));
   document.fonts?.ready?.then(()=>collisionBurst(250)).catch?.(()=>{});
   if(main&&'ResizeObserver'in window)new ResizeObserver(()=>{if(mobileTouch){clearTimeout(mobileScrollSettle);mobileScrollSettle=setTimeout(updateCollision,140);}else collisionBurst(320);}).observe(main);
