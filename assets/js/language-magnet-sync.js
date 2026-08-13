@@ -57,11 +57,7 @@
       anchor = null;
       return;
     }
-    anchor = {
-      panel,
-      id: panel.id || '',
-      index: list.indexOf(panel)
-    };
+    anchor = { panel, id: panel.id || '', index: list.indexOf(panel) };
   };
 
   const resolve = () => {
@@ -193,11 +189,22 @@
     if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) event.preventDefault();
   }, true);
 
-  if (!document.querySelector('script[data-ascii-cursor-loader]')) {
+  const loadAscii = () => {
+    if (document.querySelector('script[data-ascii-cursor-loader]')) return;
     const script = document.createElement('script');
     script.src = new URL('assets/js/ascii-cursor-glsl-v3.js', document.baseURI).href;
     script.defer = true;
     script.dataset.asciiCursorLoader = 'true';
     document.body.appendChild(script);
-  }
+  };
+  let asciiQueued = false;
+  const queueAscii = () => {
+    if (asciiQueued) return;
+    asciiQueued = true;
+    loadAscii();
+  };
+  window.addEventListener('pointermove', queueAscii, { once:true, passive:true });
+  window.addEventListener('touchstart', queueAscii, { once:true, passive:true });
+  if ('requestIdleCallback' in window) requestIdleCallback(queueAscii, { timeout:650 });
+  else setTimeout(queueAscii, 180);
 })();
