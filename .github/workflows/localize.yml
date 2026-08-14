@@ -30,6 +30,9 @@ jobs:
       - name: Install generator dependency
         run: npm install --no-save --package-lock=false cheerio@1.0.0
 
+      - name: Apply international service-area SEO source
+        run: node scripts/international-service-seo.mjs
+
       - name: Generate EN / FR / ES static pages
         run: node scripts/build-localized.mjs
 
@@ -38,6 +41,9 @@ jobs:
 
       - name: Polish localized structured data + copy
         run: node scripts/postprocess-localized.mjs
+
+      - name: Reapply international service-area localized copy
+        run: node scripts/international-service-seo.mjs
 
       - name: Synchronize canonical origin
         run: node scripts/sync-origin.mjs
