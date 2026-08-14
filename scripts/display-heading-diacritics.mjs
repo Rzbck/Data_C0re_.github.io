@@ -38,6 +38,11 @@ for (const root of roots) {
     const input = fs.readFileSync(file, 'utf8');
     const $ = cheerio.load(input, { decodeEntities: false });
     $(selector).each((_, el) => cleanTextNodes($, el));
+
+    if (!$('link[data-localized-display-spacing]').length) {
+      $('head').append('<link rel="stylesheet" href="assets/css/localized-display-spacing.css" data-localized-display-spacing>');
+    }
+
     const output = $.html();
     if (output !== input) {
       fs.writeFileSync(file, output);
@@ -46,4 +51,4 @@ for (const root of roots) {
   }
 }
 
-console.log(`Display heading diacritics removed in ${changed} localized HTML file(s).`);
+console.log(`Display heading diacritics/spacing applied in ${changed} localized HTML file(s).`);
