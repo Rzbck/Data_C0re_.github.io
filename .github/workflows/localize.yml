@@ -60,6 +60,9 @@ jobs:
       - name: Apply FR / ES display spacing while preserving accents
         run: node scripts/display-heading-diacritics.mjs
 
+      - name: Balance display and supporting copy layouts
+        run: node scripts/layout-balance-integration.mjs
+
       - name: Synchronize canonical origin
         run: node scripts/sync-origin.mjs
 
