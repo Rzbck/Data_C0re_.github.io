@@ -189,7 +189,7 @@
     if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) event.preventDefault();
   }, true);
 
-  /* GLSL is now an intentional desktop interaction, not a permanent cursor effect. */
+  /* GLSL stays quiet at rest. On desktop it wakes on click, middle click and wheel/trackpad scroll. */
   const isContact = /(^|\/)contact\.html$/.test(location.pathname);
   const asciiDesktopEligible = () => !isContact && window.matchMedia('(min-width:901px) and (pointer:fine) and (hover:hover)').matches;
   let asciiQueued = false;
@@ -245,13 +245,22 @@
     loadAscii();
   };
 
-  const engageAscii = event => {
-    if (!asciiDesktopEligible() || event.pointerType === 'touch' || (event.button !== 0 && event.button !== 1)) return;
-    lastPointer = { x: event.clientX, y: event.clientY, button: event.button };
+  const engageAt = (x, y, button = 0, duration = 1250) => {
+    if (!asciiDesktopEligible() || body.classList.contains('menu-open')) return;
+    const nx = Number(x), ny = Number(y);
+    if (Number.isFinite(nx)) lastPointer.x = nx;
+    if (Number.isFinite(ny)) lastPointer.y = ny;
+    lastPointer.button = button;
     clearTimeout(releaseTimer);
     body.classList.add('ascii-cursor-engaged');
     queueAscii();
     requestAnimationFrame(wakeAscii);
+    releaseTimer = setTimeout(() => body.classList.remove('ascii-cursor-engaged'), duration);
+  };
+
+  const engageAscii = event => {
+    if (!asciiDesktopEligible() || event.pointerType === 'touch' || (event.button !== 0 && event.button !== 1)) return;
+    engageAt(event.clientX, event.clientY, event.button, 1250);
   };
 
   const trackAscii = event => {
@@ -265,10 +274,16 @@
     releaseTimer = setTimeout(() => body.classList.remove('ascii-cursor-engaged'), 1250);
   };
 
+  const scrollAscii = event => {
+    if (!asciiDesktopEligible() || body.classList.contains('language-reflowing')) return;
+    engageAt(event.clientX, event.clientY, 0, 900);
+  };
+
   window.addEventListener('pointerdown', engageAscii, { passive: true });
   window.addEventListener('pointermove', trackAscii, { passive: true });
   window.addEventListener('pointerup', releaseAscii, { passive: true });
   window.addEventListener('pointercancel', releaseAscii, { passive: true });
+  window.addEventListener('wheel', scrollAscii, { passive: true });
   window.addEventListener('blur', releaseAscii, { passive: true });
   window.addEventListener('resize', () => {
     if (!asciiDesktopEligible()) body.classList.remove('ascii-cursor-engaged');
