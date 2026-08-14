@@ -2,45 +2,49 @@
 
 Canonical production domain: **https://datac0re.is-a.dev/**
 
+Status: **ownership verified on 2026-08-14 via HTML file** (`googlea17a6d7e73755190.html`). Keep this file permanently at the repository root.
+
 This file is the operational checklist for Search Console. The site structure can keep evolving: as long as the canonical domain stays `https://datac0re.is-a.dev`, the Search Console property remains the same. The repository workflow regenerates multilingual SEO URLs and the sitemap after future pushes to `main`.
 
-## 1. Create the property
+## 1. Property — COMPLETE
 
-Use a **URL-prefix property** and enter exactly:
+Verified URL-prefix property:
 
 `https://datac0re.is-a.dev/`
 
-A URL-prefix property is appropriate here because it targets the exact HTTPS host and supports verification methods that do not require changing DNS.
+The exact HTTPS host is now the Search Console property used for the production portfolio.
 
-## 2. Verify ownership
+## 2. Ownership verification — COMPLETE
 
-Recommended method for this GitHub Pages setup: **HTML file upload**.
+Verification method: **HTML file upload**.
 
-1. In Search Console, choose the HTML file verification method.
-2. Google gives you a file named approximately `googleXXXXXXXXXXXX.html`.
-3. Add that exact file, unchanged, at the root of this repository.
-4. Wait for GitHub Pages to deploy it.
-5. Confirm that `https://datac0re.is-a.dev/googleXXXXXXXXXXXX.html` loads publicly.
-6. Return to Search Console and click **Verify**.
-7. Keep the verification file in the repository permanently. Google periodically checks that the token is still present.
+Verification file:
 
-Alternative: the HTML `<meta name="google-site-verification" ...>` method also works for a URL-prefix property, but the verification file is preferable here because future homepage redesigns cannot accidentally remove it.
+`googlea17a6d7e73755190.html`
 
-When Google gives you the verification filename/content, commit it exactly as supplied. Do not rename or edit the token.
+Expected public URL:
 
-## 3. Submit the sitemap
+`https://datac0re.is-a.dev/googlea17a6d7e73755190.html`
+
+Do not delete or rename this file. Google can periodically re-check ownership.
+
+## 3. Submit the sitemap — NEXT
 
 Open **Search Console → Sitemaps** and submit:
 
 `https://datac0re.is-a.dev/sitemap.xml`
 
+If Search Console already shows the property prefix and asks only for the sitemap path, enter:
+
+`sitemap.xml`
+
 The sitemap is generated from `site.config.json` and the localized route generator. It contains the canonical domain plus EN / FR / ES alternates.
 
-You normally submit this sitemap **once**. Google will recrawl the same sitemap URL later. When pages are added or removed, keep the sitemap file current rather than repeatedly creating new Search Console properties.
+Submit this sitemap once and keep the same URL over time. When pages are added, removed or reorganized, update/regenerate the same sitemap rather than creating a new Search Console property.
 
-## 4. Initial URL inspection
+## 4. Initial URL inspection — NEXT
 
-After verification, inspect these representative URLs:
+After the sitemap is accepted, inspect these representative URLs:
 
 - `https://datac0re.is-a.dev/`
 - `https://datac0re.is-a.dev/work.html`
@@ -48,7 +52,15 @@ After verification, inspect these representative URLs:
 - `https://datac0re.is-a.dev/fr/`
 - `https://datac0re.is-a.dev/es/`
 
-For the homepage, use **Test live URL**, confirm that Google can fetch it, then use **Request indexing**. Do the same for a few important representative pages; the sitemap is the scalable method for the rest of the site.
+For the homepage:
+
+1. Open URL Inspection.
+2. Enter `https://datac0re.is-a.dev/`.
+3. Run **Test live URL** if the indexed-data report is not yet available or is stale.
+4. Confirm the page is fetchable/indexable.
+5. Use **Request indexing**.
+
+Repeat this manually only for a few important representative pages. The sitemap is the scalable discovery mechanism for the rest of the site.
 
 ## 5. What to check in URL Inspection
 
@@ -60,6 +72,8 @@ For a representative page, verify:
 - Google-selected canonical eventually matches the custom domain.
 - No important CSS / JS / image resources are blocked.
 - Multilingual pages remain self-canonical and expose the EN / FR / ES / x-default hreflang cluster.
+
+For a very new property, Google-selected canonical/indexed status can initially be unavailable. Re-check later rather than treating the first empty report as a defect.
 
 ## 6. Because the site will keep evolving
 
@@ -113,6 +127,7 @@ Do not optimize around one or two days of Search Console data. New properties an
 
 - Search Console property types: https://support.google.com/webmasters/answer/34592
 - Ownership verification: https://support.google.com/webmasters/answer/9008080
-- Search Console top tasks / request indexing: https://support.google.com/webmasters/answer/10351509
+- URL Inspection / request indexing: https://support.google.com/webmasters/answer/9012289
+- Search Console top tasks: https://support.google.com/webmasters/answer/10351509
 - Sitemaps report: https://support.google.com/webmasters/answer/7451001
 - GitHub Pages custom domains: https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site
