@@ -29,6 +29,34 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/about.html"/>
   </url>
   <url>
+    <loc>https://datac0re.is-a.dev/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/en/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/fr/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/es/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
+  </url>
+  <url>
     <loc>https://datac0re.is-a.dev/cv.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/cv.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/cv.html"/>
