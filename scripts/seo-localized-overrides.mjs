@@ -5,6 +5,26 @@ const ROOT = process.cwd();
 
 const overrides = {
   fr: {
+    'index.html': {
+      title: 'DATA C0RE — TouchDesigner & systèmes audiovisuels — Annecy / Genève',
+      description: 'Artiste numérique, creative technologist et spécialiste TouchDesigner basé à Annecy, actif à Genève et mobile à Lyon, Grenoble, Paris, en France, Suisse et Europe : vidéo temps réel, projection, installations, théâtre, opéra et live AV.'
+    },
+    'work.html': {
+      title: 'Travaux — TouchDesigner, projection, live AV & vidéo scénique — DATA C0RE',
+      description: 'Portfolio de systèmes audiovisuels temps réel : TouchDesigner, projection, SMODE, vidéo interactive, LED/DMX, théâtre, opéra, installations et live AV, avec des projets à Genève, Grenoble et en tournée européenne.'
+    },
+    'about.html': {
+      title: 'À propos — Creative Technologist / TouchDesigner — Annecy · Genève — DATA C0RE',
+      description: 'DATA C0RE développe des systèmes audiovisuels temps réel reliant code, son, données, projection, lumière et espace. Basé à Annecy, actif à Genève, mobile en France, Suisse et Europe.'
+    },
+    'cv.html': {
+      title: 'CV — Technicien vidéo, TouchDesigner, SMODE & projection — Annecy / Genève — DATA C0RE',
+      description: 'Technicien vidéo et creative technologist : TouchDesigner, SMODE, régie vidéo théâtre et opéra, projection, mapping, LED/DMX, Art-Net, OSC et systèmes interactifs. Annecy / Genève / Lyon / France / Suisse / Europe.'
+    },
+    'services.html': {
+      title: 'TouchDesigner & technicien vidéo — Annecy / Genève / Lyon — DATA C0RE',
+      description: 'Programmation TouchDesigner, régie et systèmes vidéo, SMODE, projection, mapping, LED/DMX et média interactif pour théâtre, opéra, festivals et installations. Basé à Annecy, actif à Genève, mobile Lyon, Grenoble, Paris, France, Suisse et Europe.'
+    },
     'projects/snake.html': {
       title: 'Snake / Networked Retro System — Projet interactif TouchDesigner — DATA C0RE',
       description: 'Projet solo TouchDesigner combinant logique de jeu, synchronisation musicale, interface sur mesure, classement en ligne, base de données et comportement audiovisuel temps réel.'
@@ -23,6 +43,26 @@ const overrides = {
     }
   },
   es: {
+    'index.html': {
+      title: 'DATA C0RE — TouchDesigner y sistemas audiovisuales — Annecy / Ginebra',
+      description: 'Artista digital y creative technologist especializado en TouchDesigner, con base en Annecy y actividad en Ginebra; disponible para Lyon, Grenoble, París, Francia, Suiza y Europa: vídeo en tiempo real, proyección, instalaciones y live AV.'
+    },
+    'work.html': {
+      title: 'Trabajos — TouchDesigner, proyección, live AV y vídeo escénico — DATA C0RE',
+      description: 'Portfolio de sistemas audiovisuales en tiempo real: TouchDesigner, proyección, SMODE, vídeo interactivo, LED/DMX, teatro, ópera, instalaciones y live AV.'
+    },
+    'about.html': {
+      title: 'Acerca de — Creative Technologist / TouchDesigner — Annecy · Ginebra — DATA C0RE',
+      description: 'DATA C0RE desarrolla sistemas audiovisuales en tiempo real que conectan código, sonido, datos, proyección, luz y espacio. Base en Annecy, actividad en Ginebra y movilidad europea.'
+    },
+    'cv.html': {
+      title: 'CV — Técnico de vídeo, TouchDesigner, SMODE y proyección — DATA C0RE',
+      description: 'Técnico de vídeo y creative technologist: TouchDesigner, SMODE, vídeo teatral, proyección, mapping, LED/DMX, Art-Net, OSC y sistemas interactivos. Annecy / Ginebra / Lyon / Francia / Suiza / Europa.'
+    },
+    'services.html': {
+      title: 'TouchDesigner y técnico de vídeo — Annecy / Ginebra / Lyon — DATA C0RE',
+      description: 'Programación TouchDesigner, sistemas de vídeo, SMODE, proyección, mapping, LED/DMX y medios interactivos para teatro, ópera, festivales e instalaciones. Base en Annecy, actividad en Ginebra y movilidad europea.'
+    },
     'projects/snake.html': {
       title: 'Snake / Networked Retro System — Proyecto interactivo TouchDesigner — DATA C0RE',
       description: 'Proyecto solo en TouchDesigner que combina lógica de juego, sincronización musical, interfaz propia, clasificación online, base de datos y comportamiento audiovisual en tiempo real.'
@@ -62,6 +102,56 @@ const overrides = {
   }
 };
 
+const bodyReplacements = {
+  fr: {
+    'Services / mobility':'Services / mobilité',
+    'VIDEO SYSTEMS':'SYSTÈMES VIDÉO',
+    'Services / mobility':'Services / mobilité',
+    'DATA C0RE works as a creative technologist and video systems technician across TouchDesigner programming, realtime video, projection, interactive media, LED / DMX and stage-media integration for theatre, opera, festivals, installations and live performance.':'DATA C0RE travaille comme creative technologist et technicien vidéo sur la programmation TouchDesigner, la vidéo temps réel, la projection, les médias interactifs, les LED / DMX et l’intégration média scénique pour le théâtre, l’opéra, les festivals, les installations et le spectacle vivant.',
+    'Annecy base':'Basé à Annecy',
+    'Geneva activity':'Activité à Genève',
+    'France / Switzerland / Europe':'France / Suisse / Europe',
+    '01 / Realtime systems':'01 / Systèmes temps réel',
+    'Programming':'Programmation',
+    'Video systems':'Systèmes vidéo',
+    'Live production':'Production live',
+    'Physical integration':'Intégration physique',
+    'Custom TouchDesigner systems, GLSL and Python integration, audio- or data-reactive behaviours, OSC / Art-Net / DMX, interactive media and show-control logic.':'Systèmes TouchDesigner sur mesure, intégration GLSL et Python, comportements réactifs au son ou aux données, OSC / Art-Net / DMX, médias interactifs et logique de show control.',
+    'SMODE, projection geometry, mapping, edge blending, cameras, routing, media servers, output design and on-site calibration for stage and installation environments.':'SMODE, géométrie de projection, mapping, edge blending, caméras, routing, media servers, conception des sorties et calibration sur site pour la scène et l’installation.',
+    'Video-system preparation, venue adaptation, cues, surtitles, testing, troubleshooting, local-team coordination and control-room handover for touring and institutional productions.':'Préparation des systèmes vidéo, adaptation aux lieux, cues, surtitrage, tests, dépannage, coordination des équipes locales et passation de régie pour les tournées et productions institutionnelles.',
+    'Addressable LED, DMX / Art-Net, network planning, Fusion 360, fabrication coordination and integration of realtime software with physical light and architectural systems.':'LED adressables, DMX / Art-Net, planification réseau, Fusion 360, coordination de fabrication et intégration du logiciel temps réel avec la lumière et les systèmes architecturaux.',
+    '02 / Mobility + service area':'02 / Mobilité + zone d’intervention',
+    'Based in Annecy, with substantial production experience in Geneva. Available for on-site work in Lyon, Grenoble and Paris, across France and Switzerland, and for touring, festival and institutional projects throughout Europe.':'Basé à Annecy, avec une expérience de production importante à Genève. Disponible sur site à Lyon, Grenoble et Paris, partout en France et en Suisse, ainsi que pour des tournées, festivals et projets institutionnels en Europe.',
+    'The location list describes real mobility and production availability. Project pages remain the evidence layer: Geneva work is documented through Geneva Lux, Grand Théâtre de Genève and Comédie de Genève; Grenoble through Hardwinner / La Belle Électrique.':'La liste géographique décrit une mobilité et une disponibilité réelles. Les pages projets servent de preuves : le travail à Genève est documenté par Geneva Lux, le Grand Théâtre de Genève et la Comédie de Genève ; Grenoble par Hardwinner / La Belle Électrique.',
+    '03 / Selected proof':'03 / Références sélectionnées',
+    'Production contexts.':'Contextes de production.',
+    'video systems / touring / handover ↗':'systèmes vidéo / tournée / passation ↗'
+  },
+  es: {
+    'Services / mobility':'Servicios / movilidad',
+    'VIDEO SYSTEMS':'SISTEMAS DE VÍDEO',
+    'DATA C0RE works as a creative technologist and video systems technician across TouchDesigner programming, realtime video, projection, interactive media, LED / DMX and stage-media integration for theatre, opera, festivals, installations and live performance.':'DATA C0RE trabaja como creative technologist y técnico de vídeo en programación TouchDesigner, vídeo en tiempo real, proyección, medios interactivos, LED / DMX e integración escénica para teatro, ópera, festivales, instalaciones y espectáculos en directo.',
+    'Annecy base':'Base en Annecy',
+    'Geneva activity':'Actividad en Ginebra',
+    'France / Switzerland / Europe':'Francia / Suiza / Europa',
+    '01 / Realtime systems':'01 / Sistemas en tiempo real',
+    'Programming':'Programación',
+    'Video systems':'Sistemas de vídeo',
+    'Live production':'Producción en directo',
+    'Physical integration':'Integración física',
+    'Custom TouchDesigner systems, GLSL and Python integration, audio- or data-reactive behaviours, OSC / Art-Net / DMX, interactive media and show-control logic.':'Sistemas TouchDesigner a medida, integración GLSL y Python, comportamientos reactivos al sonido o a datos, OSC / Art-Net / DMX, medios interactivos y lógica de show control.',
+    'SMODE, projection geometry, mapping, edge blending, cameras, routing, media servers, output design and on-site calibration for stage and installation environments.':'SMODE, geometría de proyección, mapping, edge blending, cámaras, routing, media servers, diseño de salidas y calibración in situ para escenarios e instalaciones.',
+    'Video-system preparation, venue adaptation, cues, surtitles, testing, troubleshooting, local-team coordination and control-room handover for touring and institutional productions.':'Preparación de sistemas de vídeo, adaptación a espacios, cues, subtítulos, pruebas, resolución de incidencias, coordinación de equipos locales y transferencia de régie para giras y producciones institucionales.',
+    'Addressable LED, DMX / Art-Net, network planning, Fusion 360, fabrication coordination and integration of realtime software with physical light and architectural systems.':'LED direccionables, DMX / Art-Net, planificación de red, Fusion 360, coordinación de fabricación e integración del software en tiempo real con luz y sistemas arquitectónicos.',
+    '02 / Mobility + service area':'02 / Movilidad + zona de servicio',
+    'Based in Annecy, with substantial production experience in Geneva. Available for on-site work in Lyon, Grenoble and Paris, across France and Switzerland, and for touring, festival and institutional projects throughout Europe.':'Con base en Annecy y amplia experiencia de producción en Ginebra. Disponible para trabajo in situ en Lyon, Grenoble y París, en Francia y Suiza, y para giras, festivales y proyectos institucionales en toda Europa.',
+    'The location list describes real mobility and production availability. Project pages remain the evidence layer: Geneva work is documented through Geneva Lux, Grand Théâtre de Genève and Comédie de Genève; Grenoble through Hardwinner / La Belle Électrique.':'La lista geográfica describe movilidad y disponibilidad reales. Las páginas de proyectos aportan las pruebas: el trabajo en Ginebra está documentado por Geneva Lux, Grand Théâtre de Genève y Comédie de Genève; Grenoble por Hardwinner / La Belle Électrique.',
+    '03 / Selected proof':'03 / Referencias seleccionadas',
+    'Production contexts.':'Contextos de producción.',
+    'video systems / touring / handover ↗':'sistemas de vídeo / gira / transferencia ↗'
+  }
+};
+
 function replaceTitle(html, value) {
   return html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${value}</title>`);
 }
@@ -87,8 +177,11 @@ for (const [lang, pages] of Object.entries(overrides)) {
     html = replaceMetaByProperty(html, 'og:description', seo.description);
     html = replaceMetaByName(html, 'twitter:title', seo.title);
     html = replaceMetaByName(html, 'twitter:description', seo.description);
+    if (rel === 'services.html') {
+      for (const [from, to] of Object.entries(bodyReplacements[lang] || {})) html = html.split(from).join(to);
+    }
     fs.writeFileSync(file, html);
   }
 }
 
-console.log('Applied localized project SEO overrides.');
+console.log('Applied localized SEO and service-area overrides.');
