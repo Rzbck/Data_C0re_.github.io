@@ -12,6 +12,12 @@ function patchSource() {
   if (!fs.existsSync(sourceFile)) return;
   let html = fs.readFileSync(sourceFile, 'utf8');
 
+  html = replaceAllLiteral(
+    html,
+    '<span>Europe</span><span>Brazil</span><span>International</span><span>Brazil</span><span>International</span>',
+    '<span>Europe</span><span>Brazil</span><span>International</span>'
+  );
+
   const replacements = [
     ['TouchDesigner & Video Systems — Annecy / Geneva / Lyon — DATA C0RE', 'TouchDesigner & Video Systems — Annecy / Geneva / International — DATA C0RE'],
     ['TouchDesigner programming, video systems, projection, SMODE, LED/DMX and interactive media for theatre, opera, festivals and installations. Based in Annecy, active in Geneva, mobile across Lyon, Grenoble, Paris, France, Switzerland and Europe.', 'TouchDesigner programming, video systems, projection, SMODE, LED/DMX and interactive media for theatre, opera, festivals and installations. Based in Annecy, active in Geneva, mobile across Lyon, Grenoble, Paris, France, Switzerland, Europe and international touring including Brazil.'],
@@ -22,12 +28,18 @@ function patchSource() {
     ['{"@type":"AdministrativeArea","name":"Europe"}]}', '{"@type":"AdministrativeArea","name":"Europe"},{"@type":"Country","name":"Brazil"},{"@type":"Place","name":"International"}]}'],
     ['<span>France / Switzerland / Europe</span>', '<span>France / Switzerland / Europe / international</span>'],
     ['Based in Annecy, with substantial production experience in Geneva. Available for on-site work in Lyon, Grenoble and Paris, across France and Switzerland, and for touring, festival and institutional projects throughout Europe.', 'Based in Annecy, with substantial production experience in Geneva. Available for on-site work in Lyon, Grenoble and Paris, across France and Switzerland, throughout Europe and internationally. International touring includes Comédie de Genève / Christiane Jatahy’s Entre chien et loup, including São Paulo, Brazil.'],
-    ['<span>France</span><span>Switzerland</span><span>Europe</span>', '<span>France</span><span>Switzerland</span><span>Europe</span><span>Brazil</span><span>International</span>'],
     ['The location list describes real mobility and production availability. Project pages remain the evidence layer: Geneva work is documented through Geneva Lux, Grand Théâtre de Genève and Comédie de Genève; Grenoble through Hardwinner / La Belle Électrique.', 'The location list describes real mobility and production availability rather than fictional local offices. Project pages remain the evidence layer: Geneva work is documented through Geneva Lux, Grand Théâtre de Genève and Comédie de Genève; Grenoble through Hardwinner / La Belle Électrique; international touring through Entre chien et loup, including São Paulo, Brazil.'],
     ['<a href="./projects/comedie.html"><span>Geneva / touring</span><strong>Comédie de Genève</strong><small>video systems / touring / handover ↗</small></a>', '<a href="./projects/comedie.html"><span>Geneva / international</span><strong>Comédie de Genève / Entre chien et loup</strong><small>video systems / touring / São Paulo, Brazil ↗</small></a>']
   ];
 
   for (const [from, to] of replacements) html = replaceAllLiteral(html, from, to);
+  if (!html.includes('<span>Brazil</span><span>International</span>')) {
+    html = replaceAllLiteral(
+      html,
+      '<span>France</span><span>Switzerland</span><span>Europe</span>',
+      '<span>France</span><span>Switzerland</span><span>Europe</span><span>Brazil</span><span>International</span>'
+    );
+  }
   fs.writeFileSync(sourceFile, html);
 }
 
@@ -49,6 +61,8 @@ function patchLocalized(lang, seo, replacements) {
   html = setMeta(html, 'name', 'twitter:title', seo.title);
   html = setMeta(html, 'name', 'twitter:description', seo.description);
   for (const [from, to] of replacements) html = replaceAllLiteral(html, from, to);
+  html = html.replace(/(<span>Brésil<\/span><span>International<\/span>)(?:<span>Brésil<\/span><span>International<\/span>)+/g, '$1');
+  html = html.replace(/(<span>Brasil<\/span><span>Internacional<\/span>)(?:<span>Brasil<\/span><span>Internacional<\/span>)+/g, '$1');
   fs.writeFileSync(file, html);
 }
 
@@ -62,7 +76,6 @@ patchLocalized('fr', {
   ['Based in Annecy, with substantial production experience in Geneva. Available for on-site work in Lyon, Grenoble and Paris, across France and Switzerland, throughout Europe and internationally. International touring includes Comédie de Genève / Christiane Jatahy’s Entre chien et loup, including São Paulo, Brazil.', 'Basé à Annecy, avec une expérience de production importante à Genève. Disponible sur site à Lyon, Grenoble et Paris, partout en France et en Suisse, en Europe et à l’international. La tournée internationale comprend Entre chien et loup de la Comédie de Genève / Christiane Jatahy, notamment à São Paulo, au Brésil.'],
   ['<span>Switzerland</span>', '<span>Suisse</span>'],
   ['<span>Brazil</span>', '<span>Brésil</span>'],
-  ['<span>International</span>', '<span>International</span>'],
   ['The location list describes real mobility and production availability rather than fictional local offices. Project pages remain the evidence layer: Geneva work is documented through Geneva Lux, Grand Théâtre de Genève and Comédie de Genève; Grenoble through Hardwinner / La Belle Électrique; international touring through Entre chien et loup, including São Paulo, Brazil.', 'La liste géographique décrit une mobilité et une disponibilité réelles, pas des bureaux locaux fictifs. Les pages projets servent de preuves : Genève est documentée par Geneva Lux, le Grand Théâtre de Genève et la Comédie de Genève ; Grenoble par Hardwinner / La Belle Électrique ; la tournée internationale par Entre chien et loup, notamment à São Paulo, au Brésil.'],
   ['<span>Geneva / international</span><strong>Comédie de Genève / Entre chien et loup</strong><small>video systems / touring / São Paulo, Brazil ↗</small>', '<span>Genève / international</span><strong>Comédie de Genève / Entre chien et loup</strong><small>systèmes vidéo / tournée / São Paulo, Brésil ↗</small>']
 ]);
