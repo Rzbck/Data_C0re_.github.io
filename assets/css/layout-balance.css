@@ -2,6 +2,18 @@
    Keeps the strong display typography while preventing long headings from
    overpowering supporting copy in split layouts. */
 
+/* Improve line grouping everywhere a display title can wrap dynamically. */
+.page-intro h1,
+.section-head h2,
+.prose-large h2,
+.home-direction h2,
+.about-display,
+.services-head h2,
+.cv-head h2,
+.references-list{
+  text-wrap:balance;
+}
+
 /* Home / practice statement */
 .home-statement-grid{
   grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);
@@ -51,7 +63,6 @@
   gap:clamp(42px,6vw,96px);
   align-items:start;
 }
-.about-display{text-wrap:balance}
 .direction-copy{
   grid-template-columns:minmax(0,1.08fr) minmax(300px,.72fr);
   gap:clamp(34px,6vw,90px);
