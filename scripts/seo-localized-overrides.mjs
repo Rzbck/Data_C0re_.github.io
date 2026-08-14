@@ -62,14 +62,18 @@ const overrides = {
   }
 };
 
-function replaceMeta(html, selector, value) {
-  if (selector === 'title') {
-    return html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${value}</title>`);
-  }
-  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const re = new RegExp(`(<meta\\s+[^>]*${escaped}=["'][^"']+["'][^>]*content=["'])[^"']*(["'][^>]*>)`, 'i');
-  if (re.test(html)) return html.replace(re, `$1${value}$2`);
-  return html;
+function replaceTitle(html, value) {
+  return html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${value}</title>`);
+}
+
+function replaceMetaByName(html, name, value) {
+  const re = new RegExp(`(<meta\\s+name=["']${name}["']\\s+content=["'])[^"']*(["'][^>]*>)`, 'i');
+  return re.test(html) ? html.replace(re, `$1${value}$2`) : html;
+}
+
+function replaceMetaByProperty(html, property, value) {
+  const re = new RegExp(`(<meta\\s+property=["']${property}["']\\s+content=["'])[^"']*(["'][^>]*>)`, 'i');
+  return re.test(html) ? html.replace(re, `$1${value}$2`) : html;
 }
 
 for (const [lang, pages] of Object.entries(overrides)) {
@@ -77,13 +81,12 @@ for (const [lang, pages] of Object.entries(overrides)) {
     const file = path.join(ROOT, lang, rel);
     if (!fs.existsSync(file)) continue;
     let html = fs.readFileSync(file, 'utf8');
-    html = replaceMeta(html, 'title', seo.title);
-    html = replaceMeta(html, 'name', seo.description); // no-op safeguard; explicit replacements below
-    html = html.replace(/(<meta\s+name=["']description["']\s+content=["'])[^"']*(["'][^>]*>)/i, `$1${seo.description}$2`);
-    html = html.replace(/(<meta\s+property=["']og:title["']\s+content=["'])[^"']*(["'][^>]*>)/i, `$1${seo.title}$2`);
-    html = html.replace(/(<meta\s+property=["']og:description["']\s+content=["'])[^"']*(["'][^>]*>)/i, `$1${seo.description}$2`);
-    html = html.replace(/(<meta\s+name=["']twitter:title["']\s+content=["'])[^"']*(["'][^>]*>)/i, `$1${seo.title}$2`);
-    html = html.replace(/(<meta\s+name=["']twitter:description["']\s+content=["'])[^"']*(["'][^>]*>)/i, `$1${seo.description}$2`);
+    html = replaceTitle(html, seo.title);
+    html = replaceMetaByName(html, 'description', seo.description);
+    html = replaceMetaByProperty(html, 'og:title', seo.title);
+    html = replaceMetaByProperty(html, 'og:description', seo.description);
+    html = replaceMetaByName(html, 'twitter:title', seo.title);
+    html = replaceMetaByName(html, 'twitter:description', seo.description);
     fs.writeFileSync(file, html);
   }
 }
