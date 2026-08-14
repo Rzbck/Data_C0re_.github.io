@@ -48,6 +48,9 @@ jobs:
       - name: Clean recruiter-facing copy
         run: node scripts/professional-copy-cleanup.mjs
 
+      - name: Integrate secure contact route
+        run: node scripts/contact-site-integration.mjs
+
       - name: Synchronize canonical origin
         run: node scripts/sync-origin.mjs
 
