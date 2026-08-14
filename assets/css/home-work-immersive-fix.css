@@ -1,0 +1,266 @@
+/* DATA C0RE — homepage selected work / immersive rows stability
+   This layer intentionally overrides the runtime enhancement in language-magnet-sync.js.
+   It keeps the media layer out of the grid flow, restores readable row geometry and
+   provides explicit desktop / tablet / mobile behaviour. */
+
+.home-work.home-work-immersive .index-browser{
+  display:block!important;
+  grid-template-columns:none!important;
+  gap:0!important;
+  min-height:0!important;
+}
+.home-work.home-work-immersive .index-preview{display:none!important}
+.home-work.home-work-immersive .index-list{
+  width:100%!important;
+  min-width:0!important;
+  border-top:1px solid var(--line)!important;
+}
+
+/* The injected media span must never become a grid cell. */
+.home-work.home-work-immersive .index-list .index-row > .home-work-card-media{
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  z-index:0!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+  background:#070707!important;
+  color:inherit!important;
+  font-size:0!important;
+  letter-spacing:0!important;
+}
+.home-work.home-work-immersive .index-list .index-row > .home-work-card-media img,
+.home-work.home-work-immersive .index-list .index-row > .home-work-card-media video{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:100%!important;
+  min-height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  pointer-events:none!important;
+}
+
+.home-work.home-work-immersive .index-list .index-row{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  width:100%!important;
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:48px minmax(0,1fr) 82px!important;
+  column-gap:clamp(16px,2vw,30px)!important;
+  align-items:center!important;
+  padding:0 clamp(10px,1.15vw,18px)!important;
+  background:#070707!important;
+  border-bottom:1px solid var(--line)!important;
+}
+.home-work.home-work-immersive .index-list .index-row:hover,
+.home-work.home-work-immersive .index-list .index-row:focus{
+  padding-left:clamp(10px,1.15vw,18px)!important;
+}
+
+.home-work.home-work-immersive .index-list .index-row > span:not(.home-work-card-media),
+.home-work.home-work-immersive .index-list .index-row > div,
+.home-work.home-work-immersive .index-list .index-row > time{
+  position:relative!important;
+  z-index:4!important;
+  min-width:0!important;
+}
+.home-work.home-work-immersive .index-list .index-row > span:not(.home-work-card-media){
+  grid-column:1!important;
+  justify-self:start!important;
+}
+.home-work.home-work-immersive .index-list .index-row > div{
+  grid-column:2!important;
+  width:100%!important;
+  justify-self:stretch!important;
+}
+.home-work.home-work-immersive .index-list .index-row > time{
+  grid-column:3!important;
+  justify-self:end!important;
+  text-align:right!important;
+}
+
+.home-work.home-work-immersive .index-list .index-row strong{
+  display:block!important;
+  width:auto!important;
+  max-width:1050px!important;
+  margin:0!important;
+  font-size:clamp(27px,3vw,50px)!important;
+  line-height:.94!important;
+  letter-spacing:-.045em!important;
+  text-wrap:balance;
+}
+.home-work.home-work-immersive .index-list .index-row small{
+  display:block!important;
+  max-width:980px!important;
+  margin-top:6px!important;
+  font-size:9.5px!important;
+  line-height:1.28!important;
+  letter-spacing:.07em!important;
+}
+
+/* At rest the background is almost black. Hover reveals the actual moving layer. */
+.home-work.home-work-immersive .index-list .home-work-card-media img{
+  opacity:.055!important;
+  filter:saturate(.72) contrast(1.08) brightness(.62)!important;
+}
+.home-work.home-work-immersive .index-list .home-work-card-media video{
+  opacity:0!important;
+  filter:saturate(.88) contrast(1.06) brightness(.82)!important;
+}
+.home-work.home-work-immersive .index-list .home-work-card-media::after{
+  background:linear-gradient(90deg,rgba(7,7,7,.78) 0%,rgba(7,7,7,.56) 48%,rgba(7,7,7,.69) 100%),linear-gradient(0deg,rgba(7,7,7,.22),rgba(7,7,7,.12))!important;
+}
+.home-work.home-work-immersive .index-list .index-row.is-media-active .home-work-card-media video.is-ready{
+  opacity:.58!important;
+}
+.home-work.home-work-immersive .index-list .index-row.is-media-active .home-work-card-media img{
+  opacity:.015!important;
+}
+.home-work.home-work-immersive .index-list .index-row.is-media-active strong{
+  transform:translateX(6px)!important;
+}
+
+/* DESKTOP / magnetic one-screen panel */
+@media(min-width:901px) and (pointer:fine){
+  body.fullpage-index .home-work.home-work-immersive.fullpage-panel{
+    display:grid!important;
+    grid-template-rows:auto minmax(0,1fr)!important;
+    align-content:stretch!important;
+    padding-top:calc(var(--header) + 18px)!important;
+    padding-bottom:16px!important;
+  }
+  body.fullpage-index .home-work.home-work-immersive.fullpage-panel .section-head{
+    min-height:0!important;
+    margin-bottom:12px!important;
+    gap:26px!important;
+    align-items:end!important;
+  }
+  body.fullpage-index .home-work.home-work-immersive.fullpage-panel .section-head h2{
+    max-width:920px!important;
+    font-size:clamp(38px,min(4.6vw,7.2vh),70px)!important;
+    line-height:.92!important;
+    letter-spacing:-.055em!important;
+  }
+  /* Keep the authored break. Hiding it glued words together in FR/ES. */
+  body.fullpage-index .home-work.home-work-immersive.fullpage-panel .section-head h2 br{
+    display:block!important;
+  }
+  body.fullpage-index .home-work.home-work-immersive.fullpage-panel .index-browser,
+  body.fullpage-index .home-work.home-work-immersive.fullpage-panel .index-list{
+    height:100%!important;
+    min-height:0!important;
+  }
+  body.fullpage-index .home-work.home-work-immersive.fullpage-panel .index-list{
+    display:grid!important;
+    grid-template-rows:repeat(5,minmax(0,1fr))!important;
+  }
+  body.fullpage-index .home-work.home-work-immersive.fullpage-panel .index-row{
+    min-height:0!important;
+    height:auto!important;
+  }
+}
+
+@media(min-width:901px) and (pointer:fine) and (max-height:780px){
+  body.fullpage-index .home-work.home-work-immersive.fullpage-panel{
+    padding-top:calc(var(--header) + 10px)!important;
+    padding-bottom:10px!important;
+  }
+  body.fullpage-index .home-work.home-work-immersive.fullpage-panel .section-head{
+    margin-bottom:8px!important;
+  }
+  body.fullpage-index .home-work.home-work-immersive.fullpage-panel .section-head h2{
+    font-size:clamp(32px,min(4vw,6vh),50px)!important;
+    line-height:.94!important;
+  }
+  .home-work.home-work-immersive .index-list .index-row strong{
+    font-size:clamp(23px,2.55vw,39px)!important;
+  }
+  .home-work.home-work-immersive .index-list .index-row small{
+    margin-top:4px!important;
+    font-size:8.5px!important;
+  }
+}
+
+/* TABLET: no hover video. Posters become a restrained static texture. */
+@media(max-width:900px){
+  .home-work.home-work-immersive{
+    overflow:hidden;
+  }
+  .home-work.home-work-immersive .section-head{
+    gap:22px!important;
+  }
+  .home-work.home-work-immersive .index-list .index-row{
+    grid-template-columns:36px minmax(0,1fr) 60px!important;
+    min-height:clamp(104px,15vw,132px)!important;
+    column-gap:12px!important;
+    padding:0 8px!important;
+  }
+  .home-work.home-work-immersive .index-list .index-row:hover,
+  .home-work.home-work-immersive .index-list .index-row:focus{
+    padding-left:8px!important;
+  }
+  .home-work.home-work-immersive .index-list .index-row strong{
+    font-size:clamp(25px,5.7vw,44px)!important;
+    line-height:.98!important;
+  }
+  .home-work.home-work-immersive .index-list .index-row small{
+    font-size:8.5px!important;
+  }
+  .home-work.home-work-immersive .index-list .home-work-card-media img{
+    opacity:.13!important;
+    filter:saturate(.72) contrast(1.08) brightness(.58)!important;
+  }
+  .home-work.home-work-immersive .index-list .home-work-card-media video{
+    display:none!important;
+  }
+}
+
+/* PHONE: simplified hierarchy, fixed poster only, comfortable tap targets. */
+@media(max-width:600px){
+  .home-work.home-work-immersive .section-head{
+    display:grid!important;
+    grid-template-columns:1fr auto!important;
+    align-items:end!important;
+    margin-bottom:18px!important;
+  }
+  .home-work.home-work-immersive .section-head h2{
+    font-size:clamp(38px,11.2vw,56px)!important;
+    line-height:.96!important;
+  }
+  .home-work.home-work-immersive .index-list .index-row{
+    grid-template-columns:26px minmax(0,1fr) 44px!important;
+    min-height:106px!important;
+    column-gap:9px!important;
+    padding:0 4px!important;
+  }
+  .home-work.home-work-immersive .index-list .index-row:hover,
+  .home-work.home-work-immersive .index-list .index-row:focus{
+    padding-left:4px!important;
+  }
+  .home-work.home-work-immersive .index-list .index-row strong{
+    font-size:clamp(22px,6.8vw,34px)!important;
+    line-height:1!important;
+    letter-spacing:-.04em!important;
+  }
+  .home-work.home-work-immersive .index-list .index-row small{
+    margin-top:5px!important;
+    font-size:8px!important;
+    line-height:1.28!important;
+  }
+  .home-work.home-work-immersive .index-list .index-row > span:not(.home-work-card-media),
+  .home-work.home-work-immersive .index-list .index-row > time{
+    font-size:8px!important;
+  }
+  .home-work.home-work-immersive .index-list .home-work-card-media img{
+    opacity:.11!important;
+  }
+}
