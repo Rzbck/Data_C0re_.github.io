@@ -189,22 +189,88 @@
     if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) event.preventDefault();
   }, true);
 
+  /* GLSL is now an intentional desktop interaction, not a permanent cursor effect. */
+  const isContact = /(^|\/)contact\.html$/.test(location.pathname);
+  const asciiDesktopEligible = () => !isContact && window.matchMedia('(min-width:901px) and (pointer:fine) and (hover:hover)').matches;
+  let asciiQueued = false;
+  let asciiLoaded = false;
+  let releaseTimer = 0;
+  let lastPointer = { x: innerWidth * 0.5, y: innerHeight * 0.5, button: 0 };
+
+  const asciiGateStyle = document.createElement('style');
+  asciiGateStyle.dataset.asciiClickGate = 'true';
+  asciiGateStyle.textContent = `
+    body:not(.ascii-cursor-engaged) canvas[data-ascii-cursor] {
+      opacity: 0 !important;
+    }
+  `;
+  document.head.appendChild(asciiGateStyle);
+
+  const wakeAscii = () => {
+    if (!asciiLoaded || !body.classList.contains('ascii-cursor-engaged')) return;
+    try {
+      window.dispatchEvent(new PointerEvent('pointermove', {
+        bubbles: false,
+        clientX: lastPointer.x,
+        clientY: lastPointer.y,
+        pointerType: 'mouse',
+        button: lastPointer.button,
+        buttons: lastPointer.button === 1 ? 4 : 1
+      }));
+    } catch {}
+  };
+
   const loadAscii = () => {
-    if (document.querySelector('script[data-ascii-cursor-loader]')) return;
+    if (!asciiDesktopEligible()) return;
+    const existing = document.querySelector('script[data-ascii-cursor-loader]');
+    if (existing) {
+      asciiLoaded = true;
+      wakeAscii();
+      return;
+    }
     const script = document.createElement('script');
     script.src = new URL('assets/js/ascii-cursor-glsl-v3.js', document.baseURI).href;
     script.defer = true;
     script.dataset.asciiCursorLoader = 'true';
+    script.addEventListener('load', () => {
+      asciiLoaded = true;
+      wakeAscii();
+    }, { once: true });
     document.body.appendChild(script);
   };
-  let asciiQueued = false;
+
   const queueAscii = () => {
-    if (asciiQueued) return;
+    if (asciiQueued || !asciiDesktopEligible()) return;
     asciiQueued = true;
     loadAscii();
   };
-  window.addEventListener('pointermove', queueAscii, { once:true, passive:true });
-  window.addEventListener('touchstart', queueAscii, { once:true, passive:true });
-  if ('requestIdleCallback' in window) requestIdleCallback(queueAscii, { timeout:650 });
-  else setTimeout(queueAscii, 180);
+
+  const engageAscii = event => {
+    if (!asciiDesktopEligible() || event.pointerType === 'touch' || (event.button !== 0 && event.button !== 1)) return;
+    lastPointer = { x: event.clientX, y: event.clientY, button: event.button };
+    clearTimeout(releaseTimer);
+    body.classList.add('ascii-cursor-engaged');
+    queueAscii();
+    requestAnimationFrame(wakeAscii);
+  };
+
+  const trackAscii = event => {
+    if (!body.classList.contains('ascii-cursor-engaged') || event.pointerType === 'touch') return;
+    lastPointer.x = event.clientX;
+    lastPointer.y = event.clientY;
+  };
+
+  const releaseAscii = () => {
+    clearTimeout(releaseTimer);
+    releaseTimer = setTimeout(() => body.classList.remove('ascii-cursor-engaged'), 1250);
+  };
+
+  window.addEventListener('pointerdown', engageAscii, { passive: true });
+  window.addEventListener('pointermove', trackAscii, { passive: true });
+  window.addEventListener('pointerup', releaseAscii, { passive: true });
+  window.addEventListener('pointercancel', releaseAscii, { passive: true });
+  window.addEventListener('blur', releaseAscii, { passive: true });
+  window.addEventListener('resize', () => {
+    if (!asciiDesktopEligible()) body.classList.remove('ascii-cursor-engaged');
+  }, { passive: true });
 })();
