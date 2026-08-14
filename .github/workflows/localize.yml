@@ -51,7 +51,10 @@ jobs:
       - name: Integrate secure contact route
         run: node scripts/contact-site-integration.mjs
 
-      - name: Apply compact index and clean contact interaction
+      - name: Apply editorial FR / ES localization
+        run: node scripts/editorial-localization.mjs
+
+      - name: Apply structured index and clean contact interaction
         run: node scripts/menu-layout-integration.mjs
 
       - name: Apply FR / ES display spacing while preserving accents
