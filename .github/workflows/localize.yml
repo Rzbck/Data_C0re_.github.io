@@ -45,6 +45,9 @@ jobs:
       - name: Reapply international service-area localized copy
         run: node scripts/international-service-seo.mjs
 
+      - name: Clean recruiter-facing copy
+        run: node scripts/professional-copy-cleanup.mjs
+
       - name: Synchronize canonical origin
         run: node scripts/sync-origin.mjs
 
