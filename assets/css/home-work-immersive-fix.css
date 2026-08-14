@@ -21,8 +21,8 @@
   position:absolute!important;
   inset:0!important;
   display:block!important;
-  width:auto!important;
-  height:auto!important;
+  width:100%!important;
+  height:100%!important;
   min-width:0!important;
   z-index:0!important;
   overflow:hidden!important;
@@ -32,10 +32,17 @@
   font-size:0!important;
   letter-spacing:0!important;
 }
+
+/* Media is always geometrically centred inside the complete row. The source keeps
+   its aspect ratio: cover fills the row without stretching and crops equally from
+   the centre when the source ratio differs from the row ratio. */
 .home-work.home-work-immersive .index-list .index-row > .home-work-card-media img,
 .home-work.home-work-immersive .index-list .index-row > .home-work-card-media video{
   position:absolute!important;
-  inset:0!important;
+  top:50%!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:auto!important;
   width:100%!important;
   height:100%!important;
   min-width:100%!important;
@@ -43,7 +50,9 @@
   max-width:none!important;
   max-height:none!important;
   object-fit:cover!important;
-  object-position:center!important;
+  object-position:50% 50%!important;
+  transform:translate(-50%,-50%) scale(1.018)!important;
+  transform-origin:50% 50%!important;
   pointer-events:none!important;
 }
 
@@ -107,23 +116,26 @@
   letter-spacing:.07em!important;
 }
 
-/* At rest the background is almost black. Hover reveals the actual moving layer. */
+/* At rest the background remains restrained. Hover makes the moving image clearly
+   legible while the dark veil preserves title contrast. */
 .home-work.home-work-immersive .index-list .home-work-card-media img{
-  opacity:.055!important;
-  filter:saturate(.72) contrast(1.08) brightness(.62)!important;
+  opacity:.075!important;
+  filter:saturate(.8) contrast(1.06) brightness(.72)!important;
 }
 .home-work.home-work-immersive .index-list .home-work-card-media video{
   opacity:0!important;
-  filter:saturate(.88) contrast(1.06) brightness(.82)!important;
+  filter:saturate(.96) contrast(1.04) brightness(.94)!important;
 }
 .home-work.home-work-immersive .index-list .home-work-card-media::after{
-  background:linear-gradient(90deg,rgba(7,7,7,.78) 0%,rgba(7,7,7,.56) 48%,rgba(7,7,7,.69) 100%),linear-gradient(0deg,rgba(7,7,7,.22),rgba(7,7,7,.12))!important;
+  background:linear-gradient(90deg,rgba(7,7,7,.65) 0%,rgba(7,7,7,.43) 50%,rgba(7,7,7,.61) 100%),linear-gradient(0deg,rgba(7,7,7,.14),rgba(7,7,7,.07))!important;
 }
 .home-work.home-work-immersive .index-list .index-row.is-media-active .home-work-card-media video.is-ready{
-  opacity:.58!important;
+  opacity:.76!important;
+  transform:translate(-50%,-50%) scale(1)!important;
 }
 .home-work.home-work-immersive .index-list .index-row.is-media-active .home-work-card-media img{
-  opacity:.015!important;
+  opacity:.02!important;
+  transform:translate(-50%,-50%) scale(1)!important;
 }
 .home-work.home-work-immersive .index-list .index-row.is-media-active strong{
   transform:translateX(6px)!important;
@@ -190,7 +202,7 @@
   }
 }
 
-/* TABLET: no hover video. Posters become a restrained static texture. */
+/* TABLET: no hover video. Posters become a centred static texture. */
 @media(max-width:900px){
   .home-work.home-work-immersive{
     overflow:hidden;
@@ -216,15 +228,19 @@
     font-size:8.5px!important;
   }
   .home-work.home-work-immersive .index-list .home-work-card-media img{
-    opacity:.13!important;
-    filter:saturate(.72) contrast(1.08) brightness(.58)!important;
+    opacity:.16!important;
+    filter:saturate(.8) contrast(1.06) brightness(.66)!important;
+    object-position:50% 50%!important;
   }
   .home-work.home-work-immersive .index-list .home-work-card-media video{
     display:none!important;
   }
+  .home-work.home-work-immersive .index-list .home-work-card-media::after{
+    background:linear-gradient(90deg,rgba(7,7,7,.66),rgba(7,7,7,.49),rgba(7,7,7,.64))!important;
+  }
 }
 
-/* PHONE: simplified hierarchy, fixed poster only, comfortable tap targets. */
+/* PHONE: simplified hierarchy, fixed centred poster only, comfortable tap targets. */
 @media(max-width:600px){
   .home-work.home-work-immersive .section-head{
     display:grid!important;
@@ -261,6 +277,7 @@
     font-size:8px!important;
   }
   .home-work.home-work-immersive .index-list .home-work-card-media img{
-    opacity:.11!important;
+    opacity:.14!important;
+    object-position:50% 50%!important;
   }
 }
