@@ -1,0 +1,152 @@
+/* DATA C0RE — homepage selected work: final touch/mobile guard
+   This file is linked directly from the homepage so Safari/iOS does not depend on
+   a cached runtime loader. It only hardens the selected-work rows. */
+
+/* Keep the injected media layer completely outside the row grid, regardless of
+   any later runtime <style> block. */
+html body .home-work.home-work-immersive .index-list a.index-row > span.home-work-card-media{
+  position:absolute!important;
+  inset:0!important;
+  grid-column:1 / -1!important;
+  grid-row:1 / -1!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  overflow:hidden!important;
+}
+html body .home-work.home-work-immersive .index-list a.index-row > span.home-work-card-media img,
+html body .home-work.home-work-immersive .index-list a.index-row > span.home-work-card-media video{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:100%!important;
+  min-height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  transform:translate(-50%,-50%)!important;
+  object-fit:cover!important;
+  object-position:50% 50%!important;
+}
+
+/* Tablet + phone: use a simple two-column editorial row. The year moves below
+   the copy instead of consuming a narrow third column. */
+@media (max-width:900px){
+  html body .home-work.home-work-immersive .index-list a.index-row{
+    display:grid!important;
+    grid-template-columns:30px minmax(0,1fr)!important;
+    grid-template-rows:auto auto!important;
+    column-gap:14px!important;
+    row-gap:6px!important;
+    align-items:center!important;
+    align-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:124px!important;
+    padding:14px 8px!important;
+    overflow:hidden!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row:hover,
+  html body .home-work.home-work-immersive .index-list a.index-row:focus{
+    padding-left:8px!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row > span:not(.home-work-card-media){
+    position:relative!important;
+    grid-column:1!important;
+    grid-row:1 / span 2!important;
+    align-self:center!important;
+    justify-self:start!important;
+    z-index:4!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row > div{
+    position:relative!important;
+    grid-column:2!important;
+    grid-row:1!important;
+    width:100%!important;
+    min-width:0!important;
+    justify-self:stretch!important;
+    z-index:4!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row > time{
+    position:relative!important;
+    grid-column:2!important;
+    grid-row:2!important;
+    justify-self:start!important;
+    text-align:left!important;
+    margin:0!important;
+    z-index:4!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row strong{
+    max-width:none!important;
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+    hyphens:none!important;
+    text-wrap:balance!important;
+    font-size:clamp(28px,5.8vw,46px)!important;
+    line-height:.98!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row small{
+    max-width:42rem!important;
+    font-size:9px!important;
+    line-height:1.35!important;
+  }
+  html body .home-work.home-work-immersive .index-list .home-work-card-media video{
+    display:none!important;
+  }
+  html body .home-work.home-work-immersive .index-list .home-work-card-media img{
+    display:block!important;
+    opacity:.14!important;
+    filter:saturate(.72) contrast(1.08) brightness(.62)!important;
+  }
+}
+
+@media (max-width:600px){
+  html body .home-work.home-work-immersive .section-head{
+    display:block!important;
+    margin-bottom:20px!important;
+  }
+  html body .home-work.home-work-immersive .section-head a{
+    margin-top:16px!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row{
+    grid-template-columns:24px minmax(0,1fr)!important;
+    column-gap:10px!important;
+    min-height:116px!important;
+    padding:13px 4px!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row:hover,
+  html body .home-work.home-work-immersive .index-list a.index-row:focus{
+    padding-left:4px!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row strong{
+    font-size:clamp(25px,7vw,36px)!important;
+    line-height:1!important;
+    letter-spacing:-.04em!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row small{
+    margin-top:5px!important;
+    font-size:8px!important;
+    line-height:1.32!important;
+    letter-spacing:.055em!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row > span:not(.home-work-card-media),
+  html body .home-work.home-work-immersive .index-list a.index-row > time{
+    font-size:8px!important;
+  }
+}
+
+@media (max-width:380px){
+  html body .home-work.home-work-immersive .index-list a.index-row{
+    grid-template-columns:22px minmax(0,1fr)!important;
+    column-gap:8px!important;
+  }
+  html body .home-work.home-work-immersive .index-list a.index-row strong{
+    font-size:clamp(23px,7.2vw,31px)!important;
+  }
+}
