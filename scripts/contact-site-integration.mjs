@@ -31,7 +31,9 @@ function writeIfChanged(file, before, after) {
 function updateNavigation(rel) {
   const file = path.join(ROOT, rel);
   const before = fs.readFileSync(file, 'utf8');
-  let html = before.replace(/<a\b[^>]*data-contact-nav(?:="[^"]*")?[^>]*>[^<]*<\/a>/gi, '');
+  let html = before
+    .replace(/<a\b[^>]*data-contact-nav(?:="[^"]*")?[^>]*>[^<]*<\/a>/gi, '')
+    .replace(/<a\b[^>]*data-contact-direct(?:="[^"]*")?[^>]*>[^<]*<\/a>/gi, '');
 
   if (enabled && !rel.endsWith('404.html')) {
     const href = contactHrefFor(rel);
@@ -40,6 +42,7 @@ function updateNavigation(rel) {
       if (/data-contact-nav/i.test(links)) return match;
       return `${open}${links}<a href="${href}" data-contact-nav="1">${label}</a>${close}`;
     });
+    html = html.replace(/(<button class="menu-toggle"[^>]*data-menu-toggle[^>]*>)/i, `<a class="nav-text contact-direct" style="display:inline-flex" href="${href}" data-contact-direct="1">${label}</a>$1`);
   }
 
   writeIfChanged(file, before, html);
