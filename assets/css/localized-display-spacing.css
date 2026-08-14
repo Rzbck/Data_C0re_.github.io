@@ -1,20 +1,53 @@
-/* Extra breathing room for large French/Spanish display typography.
-   Accents stay intact; line boxes are tall enough for accents, ascenders and descenders
-   without changing the underlying type scale or desktop/tablet/mobile hierarchy. */
-html[lang="fr"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong),
-html[lang="es"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong){line-height:1!important}
+/* DATA C0RE — localized display spacing
+   Keep French/Spanish accents readable without globally inflating every display line box.
+   Only the editorial blocks that actually need extra vertical room are opened up. */
+
+html[lang="fr"] :is(.home-statement h2,.home-direction h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1),
+html[lang="es"] :is(.home-statement h2,.home-direction h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1){
+  line-height:1!important;
+}
+
+html[lang="fr"] :is(.section-head h2,.prose-large h2,.page-section h2,.services-head h2,.cv-head h2),
+html[lang="es"] :is(.section-head h2,.prose-large h2,.page-section h2,.services-head h2,.cv-head h2){
+  line-height:.96!important;
+}
+
+/* Page and project titles keep a compact display rhythm. The previous global 1.0
+   override made Services and every project hero much too tall. */
+html[lang="fr"] .page-intro h1,
+html[lang="es"] .page-intro h1{
+  line-height:.9!important;
+}
+html[lang="fr"] .project-hero h1,
+html[lang="es"] .project-hero h1{
+  line-height:.88!important;
+}
 
 html[lang="fr"] :is(.menu-links a,.service-grid h3,.method-grid h3),
-html[lang="es"] :is(.menu-links a,.service-grid h3,.method-grid h3){line-height:1.02!important}
+html[lang="es"] :is(.menu-links a,.service-grid h3,.method-grid h3){
+  line-height:1.02!important;
+}
 
 @media(max-width:900px){
-  html[lang="fr"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong),
-  html[lang="es"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong){line-height:1.02!important}
+  html[lang="fr"] :is(.home-statement h2,.home-direction h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1),
+  html[lang="es"] :is(.home-statement h2,.home-direction h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1){
+    line-height:1.02!important;
+  }
+  html[lang="fr"] .page-intro h1,
+  html[lang="es"] .page-intro h1,
+  html[lang="fr"] .project-hero h1,
+  html[lang="es"] .project-hero h1{
+    line-height:.94!important;
+  }
 }
 
 @media(max-width:600px){
-  html[lang="fr"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong),
-  html[lang="es"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong){line-height:1.06!important}
-  html[lang="fr"] :is(.menu-links a,.service-grid h3,.method-grid h3),
-  html[lang="es"] :is(.menu-links a,.service-grid h3,.method-grid h3){line-height:1.06!important}
+  html[lang="fr"] :is(.home-statement h2,.home-direction h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1),
+  html[lang="es"] :is(.home-statement h2,.home-direction h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1){
+    line-height:1.06!important;
+  }
+  html[lang="fr"] :is(.page-intro h1,.project-hero h1,.section-head h2,.prose-large h2,.page-section h2,.services-head h2,.cv-head h2,.menu-links a,.service-grid h3,.method-grid h3),
+  html[lang="es"] :is(.page-intro h1,.project-hero h1,.section-head h2,.prose-large h2,.page-section h2,.services-head h2,.cv-head h2,.menu-links a,.service-grid h3,.method-grid h3){
+    line-height:1!important;
+  }
 }
