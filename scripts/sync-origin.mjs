@@ -1,0 +1,111 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+const ROOT = process.cwd();
+const config = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf8'));
+const origin = String(config.origin || '').replace(/\/$/, '');
+const previousOrigins = [...new Set((config.previousOrigins || []).map(value => String(value || '').replace(/\/$/, '')).filter(Boolean))];
+const languages = config.languages || ['en', 'fr', 'es'];
+
+if (!origin.startsWith('https://')) throw new Error('site.config.json origin must be an https:// URL');
+
+const htmlFiles = [];
+const addHtmlDir = dir => {
+  if (!fs.existsSync(dir)) return;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) addHtmlDir(full);
+    else if (entry.isFile() && entry.name.endsWith('.html')) htmlFiles.push(full);
+  }
+};
+
+for (const entry of fs.readdirSync(ROOT, { withFileTypes: true })) {
+  if (entry.isFile() && entry.name.endsWith('.html')) htmlFiles.push(path.join(ROOT, entry.name));
+}
+addHtmlDir(path.join(ROOT, 'projects'));
+for (const lang of languages) addHtmlDir(path.join(ROOT, lang));
+
+const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const replaceOrigins = text => {
+  let next = text;
+  for (const oldOrigin of previousOrigins) {
+    if (!oldOrigin || oldOrigin === origin) continue;
+    next = next.replace(new RegExp(escapeRegExp(oldOrigin), 'g'), origin);
+  }
+  return next;
+};
+
+const canonicalFor = file => {
+  const rel = path.relative(ROOT, file).split(path.sep).join('/');
+  if (rel === 'index.html') return `${origin}/`;
+  if (rel.endsWith('/index.html')) return `${origin}/${rel.slice(0, -'index.html'.length)}`;
+  return `${origin}/${rel}`;
+};
+
+const setCanonical = (html, canonical) => {
+  const canonicalRe = /<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/i;
+  if (canonicalRe.test(html)) {
+    return html.replace(canonicalRe, tag => {
+      if (/\bhref=["'][^"']*["']/i.test(tag)) return tag.replace(/\bhref=["'][^"']*["']/i, `href="${canonical}"`);
+      return tag.replace(/\s*\/?>$/, ` href="${canonical}">`);
+    });
+  }
+  return html.replace(/<\/head>/i, `  <link rel="canonical" href="${canonical}">\n</head>`);
+};
+
+const setOgUrl = (html, canonical) => {
+  const ogRe = /<meta\b(?=[^>]*\bproperty=["']og:url["'])[^>]*>/i;
+  if (ogRe.test(html)) {
+    return html.replace(ogRe, tag => {
+      if (/\bcontent=["'][^"']*["']/i.test(tag)) return tag.replace(/\bcontent=["'][^"']*["']/i, `content="${canonical}"`);
+      return tag.replace(/\s*\/?>$/, ` content="${canonical}">`);
+    });
+  }
+  return html.replace(/<\/head>/i, `  <meta property="og:url" content="${canonical}">\n</head>`);
+};
+
+let htmlChanged = 0;
+for (const file of htmlFiles) {
+  let html = fs.readFileSync(file, 'utf8');
+  const before = html;
+  html = replaceOrigins(html);
+  if (path.basename(file) !== '404.html') {
+    const canonical = canonicalFor(file);
+    html = setCanonical(html, canonical);
+    html = setOgUrl(html, canonical);
+  }
+  if (html !== before) {
+    fs.writeFileSync(file, html, 'utf8');
+    htmlChanged += 1;
+  }
+}
+
+const sitemapPath = path.join(ROOT, 'sitemap.xml');
+if (fs.existsSync(sitemapPath)) {
+  const before = fs.readFileSync(sitemapPath, 'utf8');
+  const after = replaceOrigins(before);
+  if (after !== before) fs.writeFileSync(sitemapPath, after, 'utf8');
+}
+
+const robotsPath = path.join(ROOT, 'robots.txt');
+if (fs.existsSync(robotsPath)) {
+  const before = fs.readFileSync(robotsPath, 'utf8');
+  let after = replaceOrigins(before);
+  const sitemapLine = `Sitemap: ${origin}/sitemap.xml`;
+  if (/^Sitemap:\s*.*$/mi.test(after)) after = after.replace(/^Sitemap:\s*.*$/mi, sitemapLine);
+  else after = `${after.trimEnd()}\n\n${sitemapLine}\n`;
+  if (after !== before) fs.writeFileSync(robotsPath, after, 'utf8');
+}
+
+const verificationFiles = [sitemapPath, robotsPath, ...htmlFiles];
+for (const file of verificationFiles) {
+  if (!fs.existsSync(file)) continue;
+  const text = fs.readFileSync(file, 'utf8');
+  for (const oldOrigin of previousOrigins) {
+    if (oldOrigin && oldOrigin !== origin && text.includes(oldOrigin)) {
+      throw new Error(`Old origin still present in ${path.relative(ROOT, file)}: ${oldOrigin}`);
+    }
+  }
+}
+
+console.log(`SEO origin synchronized to ${origin}; ${htmlChanged} HTML file(s) updated.`);

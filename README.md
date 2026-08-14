@@ -2,7 +2,7 @@
 
 Portfolio for **DATA C0RE** — digital artist and creative technologist working with realtime audiovisual systems, creative coding, interactive video, projection, light, live AV and stage/media-system integration.
 
-**Portfolio:** https://rzbck.github.io/Data_C0re_.github.io/
+**Portfolio:** https://datac0re.is-a.dev/
 
 ## Practice
 

@@ -2,14 +2,14 @@
 
 Digital artist and creative technologist based in Annecy, France, working internationally with realtime audiovisual systems, creative coding, interactive video, projection, light, live AV, theatre video and media-system integration.
 
-Canonical site: https://rzbck.github.io/Data_C0re_.github.io/
+Canonical site: https://datac0re.is-a.dev/
 
 ## Main pages
-- Home: https://rzbck.github.io/Data_C0re_.github.io/
-- Work index: https://rzbck.github.io/Data_C0re_.github.io/work.html
-- About / practice: https://rzbck.github.io/Data_C0re_.github.io/about.html
-- Professional CV / skills: https://rzbck.github.io/Data_C0re_.github.io/cv.html
-- Lab / R&D: https://rzbck.github.io/Data_C0re_.github.io/lab.html
+- Home: https://datac0re.is-a.dev/
+- Work index: https://datac0re.is-a.dev/work.html
+- About / practice: https://datac0re.is-a.dev/about.html
+- Professional CV / skills: https://datac0re.is-a.dev/cv.html
+- Lab / R&D: https://datac0re.is-a.dev/lab.html
 
 ## Core skills and search concepts
 TouchDesigner; realtime audiovisual systems; interactive video; projection mapping; projection integration; creative coding; live AV; GLSL; SMODE; Resolume; Millumin; LED; DMX; Art-Net; OSC; show control; media servers; theatre video; touring video systems; interactive installations; Fusion 360; realtime rendering; audio-reactive systems.
@@ -17,15 +17,15 @@ TouchDesigner; realtime audiovisual systems; interactive video; projection mappi
 French search vocabulary: technicien vidéo; régie vidéo; régisseur vidéo; vidéo interactive; TouchDesigner; intégration projection; mapping vidéo; projection scénique; systèmes audiovisuels temps réel; installation interactive; lumière interactive; média serveur; spectacle vivant; théâtre; danse; opéra; tournée; LED; DMX; Art-Net; show control.
 
 ## Selected projects
-- Snake / Networked Retro System — solo TouchDesigner project, 2026: https://rzbck.github.io/Data_C0re_.github.io/projects/snake.html
-- ASCII / Pixel Realtime Study — solo realtime study, 2026: https://rzbck.github.io/Data_C0re_.github.io/projects/ascii.html
-- LUMINA / Geneva Lux — collaborative interactive LED installation, 2025–2027: https://rzbck.github.io/Data_C0re_.github.io/projects/lumina.html
-- Realtime Studies — audio-reactive research, 2025: https://rzbck.github.io/Data_C0re_.github.io/projects/realtime.html
-- Hardwinner — realtime AV systems / LED / DMX / GLSL / live performance, 2016–2018: https://rzbck.github.io/Data_C0re_.github.io/projects/hardwinner.html
-- Cloud Processing / Anisotropic GLSL — solo visual study, 2018: https://rzbck.github.io/Data_C0re_.github.io/projects/cloud.html
-- Grand Théâtre de Genève — SMODE / projection integration / video systems, 2023–2024: https://rzbck.github.io/Data_C0re_.github.io/projects/grand-theatre.html
-- Comédie de Genève — touring interactive video system, 2021–2023: https://rzbck.github.io/Data_C0re_.github.io/projects/comedie.html
-- Stage Systems — TouchDesigner / Resolume / LED / lighting integration, 2016–2017: https://rzbck.github.io/Data_C0re_.github.io/projects/stage-systems.html
+- Snake / Networked Retro System — solo TouchDesigner project, 2026: https://datac0re.is-a.dev/projects/snake.html
+- ASCII / Pixel Realtime Study — solo realtime study, 2026: https://datac0re.is-a.dev/projects/ascii.html
+- LUMINA / Geneva Lux — collaborative interactive LED installation, 2025–2027: https://datac0re.is-a.dev/projects/lumina.html
+- Realtime Studies — audio-reactive research, 2025: https://datac0re.is-a.dev/projects/realtime.html
+- Hardwinner — realtime AV systems / LED / DMX / GLSL / live performance, 2016–2018: https://datac0re.is-a.dev/projects/hardwinner.html
+- Cloud Processing / Anisotropic GLSL — solo visual study, 2018: https://datac0re.is-a.dev/projects/cloud.html
+- Grand Théâtre de Genève — SMODE / projection integration / video systems, 2023–2024: https://datac0re.is-a.dev/projects/grand-theatre.html
+- Comédie de Genève — touring interactive video system, 2021–2023: https://datac0re.is-a.dev/projects/comedie.html
+- Stage Systems — TouchDesigner / Resolume / LED / lighting integration, 2016–2017: https://datac0re.is-a.dev/projects/stage-systems.html
 
 ## Professional contexts
 Geneva Lux; Comédie de Genève; Grand Théâtre de Genève; Festival d’Avignon; Odéon–Théâtre de l’Europe; La Belle Électrique; theatre, dance, opera, live electronic music and public-space installations.

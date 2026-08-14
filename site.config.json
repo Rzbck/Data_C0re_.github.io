@@ -1,6 +1,6 @@
 {
-  "origin": "https://rzbck.github.io/Data_C0re_.github.io",
-  "futureOrigin": "https://datac0re.is-a.dev",
+  "origin": "https://datac0re.is-a.dev",
+  "previousOrigins": ["https://rzbck.github.io/Data_C0re_.github.io"],
   "languages": ["en", "fr", "es"],
   "defaultLanguage": "en"
 }

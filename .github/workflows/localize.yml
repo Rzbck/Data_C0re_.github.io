@@ -36,6 +36,9 @@ jobs:
       - name: Polish localized structured data + copy
         run: node scripts/postprocess-localized.mjs
 
+      - name: Synchronize canonical origin
+        run: node scripts/sync-origin.mjs
+
       - name: Commit generated localization layer
         shell: bash
         run: |
