@@ -106,7 +106,6 @@ const bodyReplacements = {
   fr: {
     'Services / mobility':'Services / mobilité',
     'VIDEO SYSTEMS':'SYSTÈMES VIDÉO',
-    'Services / mobility':'Services / mobilité',
     'DATA C0RE works as a creative technologist and video systems technician across TouchDesigner programming, realtime video, projection, interactive media, LED / DMX and stage-media integration for theatre, opera, festivals, installations and live performance.':'DATA C0RE travaille comme creative technologist et technicien vidéo sur la programmation TouchDesigner, la vidéo temps réel, la projection, les médias interactifs, les LED / DMX et l’intégration média scénique pour le théâtre, l’opéra, les festivals, les installations et le spectacle vivant.',
     'Annecy base':'Basé à Annecy',
     'Geneva activity':'Activité à Genève',
@@ -124,8 +123,16 @@ const bodyReplacements = {
     'Based in Annecy, with substantial production experience in Geneva. Available for on-site work in Lyon, Grenoble and Paris, across France and Switzerland, and for touring, festival and institutional projects throughout Europe.':'Basé à Annecy, avec une expérience de production importante à Genève. Disponible sur site à Lyon, Grenoble et Paris, partout en France et en Suisse, ainsi que pour des tournées, festivals et projets institutionnels en Europe.',
     'The location list describes real mobility and production availability. Project pages remain the evidence layer: Geneva work is documented through Geneva Lux, Grand Théâtre de Genève and Comédie de Genève; Grenoble through Hardwinner / La Belle Électrique.':'La liste géographique décrit une mobilité et une disponibilité réelles. Les pages projets servent de preuves : le travail à Genève est documenté par Geneva Lux, le Grand Théâtre de Genève et la Comédie de Genève ; Grenoble par Hardwinner / La Belle Électrique.',
     '03 / Selected proof':'03 / Références sélectionnées',
-    'Production contexts.':'Contextes de production.',
-    'video systems / touring / handover ↗':'systèmes vidéo / tournée / passation ↗'
+    'video systems / touring / handover ↗':'systèmes vidéo / tournée / passation ↗',
+    '<h2>TouchDesigner<br>+ control.</h2>':'<h2>TouchDesigner<br>+ contrôle.</h2>',
+    '<h3>Theatre / opera / touring</h3>':'<h3>Théâtre / opéra / tournée</h3>',
+    '<h3>LED / light / installation</h3>':'<h3>LED / lumière / installation</h3>',
+    '<h2>Production<br>contexts.</h2>':'<h2>Contextes<br>de production.</h2>',
+    '<span>Geneva</span>':'<span>Genève</span>',
+    '<span>Geneva / touring</span>':'<span>Genève / tournée</span>',
+    '<span>Switzerland</span>':'<span>Suisse</span>',
+    'TouchDesigner / LED / Art-Net / integration ↗':'TouchDesigner / LED / Art-Net / intégration ↗',
+    '"Systèmes vidéo technician"':'"Technicien vidéo"'
   },
   es: {
     'Services / mobility':'Servicios / movilidad',
@@ -147,8 +154,14 @@ const bodyReplacements = {
     'Based in Annecy, with substantial production experience in Geneva. Available for on-site work in Lyon, Grenoble and Paris, across France and Switzerland, and for touring, festival and institutional projects throughout Europe.':'Con base en Annecy y amplia experiencia de producción en Ginebra. Disponible para trabajo in situ en Lyon, Grenoble y París, en Francia y Suiza, y para giras, festivales y proyectos institucionales en toda Europa.',
     'The location list describes real mobility and production availability. Project pages remain the evidence layer: Geneva work is documented through Geneva Lux, Grand Théâtre de Genève and Comédie de Genève; Grenoble through Hardwinner / La Belle Électrique.':'La lista geográfica describe movilidad y disponibilidad reales. Las páginas de proyectos aportan las pruebas: el trabajo en Ginebra está documentado por Geneva Lux, Grand Théâtre de Genève y Comédie de Genève; Grenoble por Hardwinner / La Belle Électrique.',
     '03 / Selected proof':'03 / Referencias seleccionadas',
-    'Production contexts.':'Contextos de producción.',
-    'video systems / touring / handover ↗':'sistemas de vídeo / gira / transferencia ↗'
+    'video systems / touring / handover ↗':'sistemas de vídeo / gira / transferencia ↗',
+    '<h3>Theatre / opera / touring</h3>':'<h3>Teatro / ópera / gira</h3>',
+    '<h3>LED / light / installation</h3>':'<h3>LED / luz / instalación</h3>',
+    '<h2>Production<br>contexts.</h2>':'<h2>Contextos<br>de producción.</h2>',
+    '<span>Geneva</span>':'<span>Ginebra</span>',
+    '<span>Geneva / touring</span>':'<span>Ginebra / gira</span>',
+    '<span>Switzerland</span>':'<span>Suiza</span>',
+    'TouchDesigner / LED / Art-Net / integration ↗':'TouchDesigner / LED / Art-Net / integración ↗'
   }
 };
 
