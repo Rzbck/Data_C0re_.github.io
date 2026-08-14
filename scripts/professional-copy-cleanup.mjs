@@ -19,6 +19,7 @@ const copy = {
     stageHero: 'Stage Systems /<br>Fun Radio + Studies',
     stageStudyTitle: 'Realtime Stage Studies',
     stageStudy: 'A parallel series of stage-design studies explored P3 LED screens, DMX control, video-colour synchronisation, realtime simulation and routing. The 2017 development extended the approach with PBR simulation and a new LED-screen stage configuration in Annecy.',
+    stageCaption: 'Realtime stage simulation / LED + video-light development',
     luminaFabLabel: 'Fabrication / integration',
     luminaFabNote: 'Workshop footage from the Geneva Lux production: profile preparation, LED-strip work and cabling.',
     luminaTechLabel: 'Design / fabrication',
@@ -39,6 +40,7 @@ const copy = {
     stageHero: 'Stage Systems /<br>Fun Radio + Études',
     stageStudyTitle: 'Études scéniques temps réel',
     stageStudy: 'Une série parallèle d’études de scénographie explorait les écrans LED P3, le contrôle DMX, la synchronisation vidéo-couleur, la simulation temps réel et le routing. Le développement 2017 prolongeait cette approche avec une simulation PBR et une nouvelle configuration d’écrans LED à Annecy.',
+    stageCaption: 'Simulation scénique temps réel / LED + développement vidéo-lumière',
     luminaFabLabel: 'Fabrication / intégration',
     luminaFabNote: 'Images d’atelier de la production Geneva Lux : préparation des profils, travail sur les rubans LED et câblage.',
     luminaTechLabel: 'Conception / fabrication',
@@ -58,6 +60,7 @@ const copy = {
     stageHero: 'Stage Systems /<br>Fun Radio + Estudios',
     stageStudyTitle: 'Estudios escénicos en tiempo real',
     stageStudy: 'Una serie paralela de estudios de diseño escénico exploró pantallas LED P3, control DMX, sincronización vídeo-color, simulación en tiempo real y routing. El desarrollo de 2017 amplió el enfoque con simulación PBR y una nueva configuración de pantallas LED en Annecy.',
+    stageCaption: 'Simulación escénica en tiempo real / LED + desarrollo vídeo-luz',
     luminaFabLabel: 'Fabricación / integración',
     luminaFabNote: 'Imágenes de taller de la producción Geneva Lux: preparación de perfiles, trabajo con tiras LED y cableado.',
     luminaTechLabel: 'Diseño / fabricación',
@@ -110,6 +113,7 @@ for (const locale of locales) {
     html = html.replace(/(<h2>Fun Radio Party<\/h2><\/div><p>)[\s\S]*?(<\/p><\/div>)/i, `$1${c.funRadio}$2`);
     html = html.replace(/<h2>[“\"]?National Radio[”\"]?<\/h2>/i, `<h2>${c.stageStudyTitle}</h2>`);
     html = html.replace(/(<span class="stage-role">02 \/ [^<]*<\/span><h2>[^<]*<\/h2><\/div><p>)[\s\S]*?(<\/p><\/div>)/i, `$1${c.stageStudy}$2`);
+    html = html.replace(/<figcaption>[“\"]?National Radio[”\"]? \/ realtime stage simulation \/ LED \+ video-light development<\/figcaption>/i, `<figcaption>${c.stageCaption}</figcaption>`);
     html = html.replace(/\s*<p class="archive-note">[\s\S]*?<\/p>/i, '');
     return html;
   });
