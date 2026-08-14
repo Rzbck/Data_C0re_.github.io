@@ -12,21 +12,23 @@
   <meta property="og:type" content="website"><meta property="og:site_name" content="DATA C0RE"><meta property="og:title" content="Contact — DATA C0RE"><meta property="og:description" content="Project, production, collaboration and technical enquiries for DATA C0RE."><meta property="og:url" content="https://datac0re.is-a.dev/contact.html"><meta property="og:image" content="https://datac0re.is-a.dev/assets/img/og-cover.jpg"><meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" href="./assets/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="./assets/css/styles.css">
   <style>
-    .contact-shell{width:min(var(--max),100%);margin:0 auto;padding:clamp(130px,15vw,210px) var(--gutter) clamp(72px,9vw,130px)}
-    .contact-intro{display:grid;grid-template-columns:minmax(0,.68fr) minmax(360px,1.32fr);gap:clamp(34px,7vw,120px);align-items:end;padding-bottom:clamp(52px,7vw,96px)}
-    .contact-intro h1{margin:10px 0 0;font-size:clamp(58px,10vw,154px);line-height:.82;letter-spacing:-.075em;text-transform:uppercase}
-    .contact-intro-copy{max-width:760px}.contact-intro-copy p{margin:0;color:#b8b6b0;font-size:clamp(15px,1.35vw,20px);line-height:1.55}.contact-intro-copy p+p{margin-top:16px}.contact-intro-copy .contact-meta{margin-top:26px;color:var(--grey);font-size:10px;letter-spacing:.11em;text-transform:uppercase}
-    .contact-panel{border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(180px,.36fr) minmax(0,1.64fr);gap:clamp(28px,6vw,96px);padding-top:clamp(42px,5vw,72px)}
-    .contact-panel-label{margin:0;color:var(--grey);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
-    .contact-form{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-left:1px solid var(--line)}
-    .contact-field{display:flex;flex-direction:column;gap:10px;padding:20px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}.contact-field--wide{grid-column:1/-1}.contact-field label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
-    .contact-field input,.contact-field textarea{width:100%;border:0;border-bottom:1px solid transparent;background:transparent;color:var(--paper);font:inherit;font-size:15px;line-height:1.45;padding:4px 0 8px;outline:none;border-radius:0}.contact-field textarea{min-height:190px;resize:vertical}.contact-field input:focus,.contact-field textarea:focus{border-bottom-color:var(--acid)}.contact-field input::placeholder,.contact-field textarea::placeholder{color:#55534f}
-    .contact-actions{grid-column:1/-1;display:grid;grid-template-columns:minmax(300px,1fr) auto;gap:24px;align-items:end;padding:22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
-    .contact-security{min-height:68px;display:flex;align-items:center}.contact-submit{appearance:none;border:1px solid var(--paper);background:var(--paper);color:#070707;padding:15px 20px;min-width:180px;font:inherit;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:opacity .2s ease,background .2s ease,color .2s ease}.contact-submit:hover:not(:disabled){background:transparent;color:var(--paper)}.contact-submit:disabled{cursor:not-allowed;opacity:.35}
-    .contact-status{grid-column:1/-1;margin:0;padding:15px 20px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font-size:11px;line-height:1.5;color:#aaa8a2;min-height:48px}.contact-status[data-state="success"]{color:var(--acid)}.contact-status[data-state="error"]{color:#ff7b7b}
-    .contact-privacy{max-width:760px;margin:20px 0 0;color:#77756f;font-size:10px;line-height:1.6}.contact-hp{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
-    .contact-response-frame{position:absolute;width:1px;height:1px;border:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap}
-    @media(max-width:860px){.contact-intro,.contact-panel{grid-template-columns:1fr}.contact-form{grid-template-columns:1fr}.contact-field--wide,.contact-actions,.contact-status{grid-column:1}.contact-actions{grid-template-columns:1fr}.contact-submit{width:100%}}
+    body.contact-route{background:#070707}
+    .contact-shell{width:min(var(--max),100%);min-height:100svh;margin:0 auto;padding:calc(var(--header) + 28px) var(--gutter) 24px;display:grid;align-items:center;background:#070707}
+    .contact-layout{width:100%;display:grid;grid-template-columns:minmax(280px,.76fr) minmax(520px,1.24fr);gap:clamp(28px,5vw,84px);align-items:center}
+    .contact-copy{max-width:620px}.contact-copy h1{margin:10px 0 20px;font-size:clamp(56px,7.4vw,122px);line-height:.84;letter-spacing:-.072em;text-transform:uppercase}.contact-copy p{margin:0}.contact-lead{color:#b8b6b0;font-size:clamp(14px,1.2vw,18px);line-height:1.5;max-width:560px}.contact-meta{margin-top:20px!important;color:var(--grey);font-size:10px;line-height:1.35;letter-spacing:.11em;text-transform:uppercase}
+    .contact-form-wrap{position:relative;z-index:2;isolation:isolate;background:#070707;border:1px solid var(--line);overflow:hidden}
+    .contact-form{display:grid;grid-template-columns:1fr 1fr;background:#070707}
+    .contact-field{display:flex;flex-direction:column;gap:7px;padding:14px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0;background:#070707}.contact-field:nth-child(2n){border-right:0}.contact-field--wide{grid-column:1/-1;border-right:0}.contact-field label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
+    .contact-field input,.contact-field textarea{width:100%;min-width:0;border:0;background:#070707;color:var(--paper);font:inherit;font-size:14px;line-height:1.4;padding:2px 0 4px;outline:none;border-radius:0;caret-color:var(--paper)}.contact-field textarea{height:112px;min-height:112px;max-height:112px;resize:none}.contact-field input:focus,.contact-field textarea:focus{box-shadow:inset 0 -1px 0 var(--acid)}.contact-field input::placeholder,.contact-field textarea::placeholder{color:#55534f}
+    .contact-field input:-webkit-autofill,.contact-field input:-webkit-autofill:hover,.contact-field input:-webkit-autofill:focus,.contact-field textarea:-webkit-autofill,.contact-field textarea:-webkit-autofill:hover,.contact-field textarea:-webkit-autofill:focus{-webkit-text-fill-color:var(--paper);-webkit-box-shadow:0 0 0 1000px #070707 inset;box-shadow:0 0 0 1000px #070707 inset;caret-color:var(--paper);transition:background-color 9999s ease-out 0s}
+    .contact-actions{grid-column:1/-1;display:grid;grid-template-columns:minmax(280px,1fr) auto;gap:16px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:#070707}.contact-security{min-height:64px;display:flex;align-items:center;min-width:0}.contact-submit{appearance:none;border:1px solid var(--paper);background:var(--paper);color:#070707;padding:13px 17px;min-width:156px;font:inherit;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:opacity .2s ease,background .2s ease,color .2s ease}.contact-submit:hover:not(:disabled){background:#070707;color:var(--paper)}.contact-submit:disabled{cursor:not-allowed;opacity:.35}
+    .contact-status{grid-column:1/-1;margin:0;padding:9px 16px;font-size:10.5px;line-height:1.45;color:#aaa8a2;min-height:34px;background:#070707}.contact-status[data-state="success"]{color:var(--acid)}.contact-status[data-state="error"]{color:#ff7b7b}.contact-privacy{margin:10px 2px 0;color:#77756f;font-size:9.5px;line-height:1.45;max-width:720px}
+    .contact-hp{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}.contact-response-frame{position:absolute;width:1px;height:1px;border:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap}
+    @media(max-width:980px){.contact-layout{grid-template-columns:minmax(240px,.66fr) minmax(480px,1.34fr);gap:28px}.contact-copy h1{font-size:clamp(52px,7.8vw,84px)}.contact-lead{font-size:14px}}
+    @media(max-width:760px){.contact-shell{align-items:start;padding-top:calc(var(--header) + 24px);padding-bottom:18px}.contact-layout{grid-template-columns:1fr;gap:18px}.contact-copy{max-width:none;display:grid;grid-template-columns:minmax(180px,.8fr) minmax(0,1.2fr);gap:24px;align-items:end}.contact-copy .eyebrow{grid-column:1/-1;margin-bottom:-10px}.contact-copy h1{margin:0;font-size:clamp(48px,11vw,78px)}.contact-copy-text{align-self:end}.contact-meta{margin-top:12px!important}.contact-field{padding:12px 14px}.contact-field textarea{height:100px;min-height:100px;max-height:100px}.contact-actions{padding:10px 14px}.contact-status{padding:8px 14px}}
+    @media(max-width:520px){.contact-shell{padding-top:calc(var(--header) + 14px);padding-left:14px;padding-right:14px;padding-bottom:12px}.contact-layout{gap:12px}.contact-copy{grid-template-columns:1fr;gap:8px}.contact-copy .eyebrow{grid-column:auto;margin-bottom:0}.contact-copy h1{font-size:clamp(44px,15vw,66px);line-height:.86}.contact-lead{font-size:12.5px;line-height:1.4}.contact-meta{margin-top:8px!important;font-size:8.5px}.contact-field{padding:10px 11px;gap:5px}.contact-field label{font-size:8px}.contact-field input,.contact-field textarea{font-size:13px}.contact-field textarea{height:86px;min-height:86px;max-height:86px}.contact-actions{grid-template-columns:1fr;padding:10px 11px;gap:8px}.contact-security{min-height:58px}.contact-submit{width:100%;min-width:0;padding:11px 14px}.contact-status{padding:7px 11px;font-size:9.5px;min-height:30px}.contact-privacy{margin-top:7px;font-size:8.5px;line-height:1.35}}
+    @media(max-width:360px){.contact-shell{padding-left:10px;padding-right:10px}.contact-field{padding-left:9px;padding-right:9px}.contact-copy h1{font-size:42px}.contact-lead{font-size:12px}}
+    @media(max-height:760px) and (min-width:761px){.contact-shell{padding-top:calc(var(--header) + 14px);padding-bottom:14px}.contact-copy h1{font-size:clamp(50px,6.4vw,94px);margin-bottom:14px}.contact-meta{margin-top:14px!important}.contact-field{padding-top:11px;padding-bottom:11px}.contact-field textarea{height:92px;min-height:92px;max-height:92px}.contact-actions{padding-top:8px;padding-bottom:8px}.contact-security{min-height:58px}.contact-privacy{margin-top:7px}}
   </style>
 <!-- DATA C0RE LANGUAGE ROUTES START -->
 <link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html" data-i18n-alt>
@@ -36,37 +38,37 @@
 <script src="assets/js/language-routes.js" defer data-language-routes></script>
 <!-- DATA C0RE LANGUAGE ROUTES END -->
 </head>
-<body>
+<body class="contact-route">
 <a class="skip-link" href="#main">Skip to contact form</a>
-<header class="site-header" data-header><a class="brand" href="./index.html">DATA C0RE</a><div class="header-actions"><a class="nav-text" href="./work.html">work</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>index ↗</button></div></header>
+<header class="site-header" data-header><a class="brand" href="./index.html">DATA C0RE</a><div class="header-actions"><a class="nav-text" href="./work.html">work</a><a class="nav-text contact-direct" href="contact.html" data-contact-direct="1">contact</a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>index ↗</button></div></header>
 <nav class="site-menu" id="site-menu" aria-hidden="true" data-menu><div class="menu-shell"><p class="menu-label">DATA C0RE / site index</p><div class="menu-links"><a href="./index.html">Home</a><a href="./work.html">Work</a><a href="./services.html">Services</a><a href="./lab.html">Lab</a><a href="./about.html">About</a><a href="./cv.html">CV</a><a href="contact.html" data-contact-nav="1">Contact</a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav>
 <main id="main" class="contact-shell">
-  <header class="contact-intro reveal">
-    <div><p class="eyebrow">Contact / projects / production</p><h1>LET'S<br>TALK.</h1></div>
-    <div class="contact-intro-copy"><p>For artistic projects, TouchDesigner development, realtime video systems, projection, theatre / opera, live AV, installations and technical collaborations.</p><p class="contact-meta">Annecy / Geneva / France / Switzerland / Europe / international</p></div>
-  </header>
-
-  <section class="contact-panel reveal" aria-labelledby="contact-form-title">
-    <div><p class="contact-panel-label" id="contact-form-title">Message / 01</p></div>
+  <section class="contact-layout" aria-labelledby="contact-title">
+    <div class="contact-copy">
+      <p class="eyebrow">Contact / projects / production</p>
+      <h1 id="contact-title">LET'S<br>TALK.</h1>
+      <div class="contact-copy-text"><p class="contact-lead">For artistic projects, TouchDesigner development, realtime video systems, projection, theatre / opera, live AV, installations and technical collaborations.</p><p class="contact-meta">Annecy / Geneva / France / Switzerland / Europe / international</p></div>
+    </div>
     <div>
-      <form class="contact-form" data-contact-form method="post" target="contact-response-frame" novalidate>
-        <div class="contact-field"><label for="contact-name">Name *</label><input id="contact-name" name="name" type="text" autocomplete="name" maxlength="120" required placeholder="Name"></div>
-        <div class="contact-field"><label for="contact-organisation">Organisation</label><input id="contact-organisation" name="organisation" type="text" autocomplete="organization" maxlength="160" placeholder="Studio / theatre / festival / company"></div>
-        <div class="contact-field"><label for="contact-email">Email *</label><input id="contact-email" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"></div>
-        <div class="contact-field"><label for="contact-subject">Subject *</label><input id="contact-subject" name="subject" type="text" maxlength="140" required placeholder="Project / role / collaboration"></div>
-        <div class="contact-field contact-field--wide"><label for="contact-message">Message *</label><textarea id="contact-message" name="message" maxlength="8000" required placeholder="Context, location, dates and what you would like to discuss."></textarea></div>
-        <div class="contact-hp" aria-hidden="true"><label for="contact-website">Website</label><input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
-        <input type="hidden" name="language" value="en" data-contact-language>
-        <input type="hidden" name="source" value="datac0re.is-a.dev/contact">
-        <div class="contact-actions"><div class="contact-security" data-turnstile-slot></div><button class="contact-submit" type="submit" data-contact-submit disabled>Send message</button></div>
-        <p class="contact-status" role="status" aria-live="polite" data-contact-status>Secure contact is being configured.</p>
-      </form>
+      <div class="contact-form-wrap">
+        <form class="contact-form" data-contact-form method="post" target="contact-response-frame" novalidate>
+          <div class="contact-field"><label for="contact-name">Name *</label><input id="contact-name" name="name" type="text" autocomplete="name" maxlength="120" required placeholder="Name"></div>
+          <div class="contact-field"><label for="contact-organisation">Organisation</label><input id="contact-organisation" name="organisation" type="text" autocomplete="organization" maxlength="160" placeholder="Studio / theatre / festival / company"></div>
+          <div class="contact-field"><label for="contact-email">Email *</label><input id="contact-email" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"></div>
+          <div class="contact-field"><label for="contact-subject">Subject *</label><input id="contact-subject" name="subject" type="text" maxlength="140" required placeholder="Project / role / collaboration"></div>
+          <div class="contact-field contact-field--wide"><label for="contact-message">Message *</label><textarea id="contact-message" name="message" maxlength="8000" required placeholder="Context, location, dates and what you would like to discuss."></textarea></div>
+          <div class="contact-hp" aria-hidden="true"><label for="contact-website">Website</label><input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+          <input type="hidden" name="language" value="en" data-contact-language>
+          <input type="hidden" name="source" value="datac0re.is-a.dev/contact">
+          <div class="contact-actions"><div class="contact-security" data-turnstile-slot></div><button class="contact-submit" type="submit" data-contact-submit disabled>Send message</button></div>
+          <p class="contact-status" role="status" aria-live="polite" data-contact-status>Secure contact is being configured.</p>
+        </form>
+      </div>
       <p class="contact-privacy">Your details are used only to answer your enquiry. No mailing list and no public email address. Automated abuse protection is provided by Cloudflare Turnstile.</p>
       <iframe class="contact-response-frame" title="Contact response" name="contact-response-frame" data-contact-frame></iframe>
     </div>
   </section>
 </main>
-<footer class="global-footer"><span>DATA C0RE / CONTACT</span><div><a href="./work.html">Work</a><a href="./services.html">Services</a><a href="./about.html">About</a></div></footer>
 <script src="./assets/js/main.js" defer></script>
 <script src="./assets/js/contact-config.js"></script>
 <script src="./assets/js/contact.js" defer></script>
