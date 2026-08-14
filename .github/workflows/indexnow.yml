@@ -1,8 +1,9 @@
 name: Notify IndexNow
 
 on:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: ["Build localized static pages"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -10,12 +11,15 @@ permissions:
 
 jobs:
   indexnow:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.actor.login != 'github-actions[bot]')
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout current main
         uses: actions/checkout@v4
+        with:
+          ref: main
 
-      - name: Build IndexNow payload from current site config + sitemap
+      - name: Build and validate IndexNow payload
         shell: bash
         run: |
           python - <<'PY'
@@ -27,9 +31,17 @@ jobs:
           origin = config['origin'].rstrip('/')
           host = urlparse(origin).hostname
           key = 'de2a1c7c9c8cc2396de53eec921730dc'
+
           with open('sitemap.xml', encoding='utf-8') as f:
               xml = f.read()
           urls = re.findall(r'<loc>(.*?)</loc>', xml)
+          if not urls:
+              raise SystemExit('No URLs found in sitemap.xml')
+
+          invalid = [url for url in urls if not (url == origin or url.startswith(origin + '/'))]
+          if invalid:
+              raise SystemExit('Sitemap contains URLs outside current origin: ' + ', '.join(invalid[:5]))
+
           payload = {
               'host': host,
               'key': key,
