@@ -1,18 +1,20 @@
-/* Extra breathing room for large French/Spanish display typography. Keeps accents and tall glyphs from colliding without changing the base type system. */
+/* Extra breathing room for large French/Spanish display typography.
+   Accents stay intact; line boxes are tall enough for accents, ascenders and descenders
+   without changing the underlying type scale or desktop/tablet/mobile hierarchy. */
 html[lang="fr"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong),
-html[lang="es"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong){line-height:.96!important}
+html[lang="es"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong){line-height:1!important}
 
 html[lang="fr"] :is(.menu-links a,.service-grid h3,.method-grid h3),
-html[lang="es"] :is(.menu-links a,.service-grid h3,.method-grid h3){line-height:1!important}
+html[lang="es"] :is(.menu-links a,.service-grid h3,.method-grid h3){line-height:1.02!important}
 
 @media(max-width:900px){
   html[lang="fr"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong),
-  html[lang="es"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong){line-height:1!important}
+  html[lang="es"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong){line-height:1.02!important}
 }
 
 @media(max-width:600px){
   html[lang="fr"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong),
-  html[lang="es"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong){line-height:1.04!important}
+  html[lang="es"] :is(.home-statement h2,.section-head h2,.home-direction h2,.page-intro h1,.project-hero h1,.prose-large h2,.page-section h2,.services-head h2,.about-hero h1,.about-display,.direction .about-display,.contact-copy h1,.cv-title strong){line-height:1.06!important}
   html[lang="fr"] :is(.menu-links a,.service-grid h3,.method-grid h3),
-  html[lang="es"] :is(.menu-links a,.service-grid h3,.method-grid h3){line-height:1.04!important}
+  html[lang="es"] :is(.menu-links a,.service-grid h3,.method-grid h3){line-height:1.06!important}
 }
