@@ -16,4 +16,4 @@ Allow: /
 User-agent: Claude-User
 Allow: /
 
-Sitemap: https://rzbck.github.io/Data_C0re_.github.io/sitemap.xml
+Sitemap: https://datac0re.is-a.dev/sitemap.xml
