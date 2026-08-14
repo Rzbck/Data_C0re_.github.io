@@ -51,6 +51,9 @@ jobs:
       - name: Integrate secure contact route
         run: node scripts/contact-site-integration.mjs
 
+      - name: Apply compact index and clean contact interaction
+        run: node scripts/menu-layout-integration.mjs
+
       - name: Synchronize canonical origin
         run: node scripts/sync-origin.mjs
 
