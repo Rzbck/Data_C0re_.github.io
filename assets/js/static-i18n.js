@@ -51,6 +51,14 @@
   window.DATA_C0RE_I18N={get lang(){return lang},set:target=>{if(supported.includes(target)&&target!==lang)location.assign(destination(target))},t};
   document.dispatchEvent(new CustomEvent('data-c0re-languagechange',{detail:{lang,static:true}}));
 
+  if(!document.querySelector('link[data-home-work-immersive-fix]')){
+    const css=document.createElement('link');
+    css.rel='stylesheet';
+    css.href=new URL('assets/css/home-work-immersive-fix.css',document.baseURI).href;
+    css.dataset.homeWorkImmersiveFix='true';
+    document.head.appendChild(css);
+  }
+
   if(!document.querySelector('script[data-language-magnet-sync]')){
     const script=document.createElement('script');
     script.src=new URL('assets/js/language-magnet-sync.js',document.baseURI).href;
