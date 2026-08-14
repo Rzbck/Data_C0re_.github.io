@@ -54,7 +54,7 @@ jobs:
       - name: Apply compact index and clean contact interaction
         run: node scripts/menu-layout-integration.mjs
 
-      - name: Remove diacritics from large FR / ES display headings
+      - name: Apply FR / ES display spacing while preserving accents
         run: node scripts/display-heading-diacritics.mjs
 
       - name: Synchronize canonical origin
