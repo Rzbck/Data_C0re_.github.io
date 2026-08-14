@@ -4,6 +4,20 @@
   const storage='data-c0re-lang-v1';
   const repoSegment=location.hostname.endsWith('github.io')&&location.pathname.startsWith('/Data_C0re_.github.io')?'/Data_C0re_.github.io':'';
 
+  /* Load the homepage selected-work guards on every route, including the legacy
+     root-language runtime. A versioned URL avoids Safari/iOS keeping the broken
+     pre-fix stylesheet after a deployment. */
+  const ensureCss=(path,attr)=>{
+    if(document.querySelector(`link[${attr}]`))return;
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href=new URL(path,document.baseURI).href;
+    link.setAttribute(attr,'true');
+    document.head.appendChild(link);
+  };
+  ensureCss('assets/css/home-work-immersive-fix.css?v=20260814-7','data-home-work-immersive-fix');
+  ensureCss('assets/css/home-work-mobile-final.css?v=20260814-7','data-home-work-mobile-final');
+
   const routeState=()=>{
     let rel=location.pathname.slice(repoSegment.length).replace(/^\/+|\/+$/g,'');
     const parts=rel?rel.split('/'):[];
