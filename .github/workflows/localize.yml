@@ -33,6 +33,9 @@ jobs:
       - name: Generate EN / FR / ES static pages
         run: node scripts/build-localized.mjs
 
+      - name: Apply localized project SEO metadata
+        run: node scripts/seo-localized-overrides.mjs
+
       - name: Polish localized structured data + copy
         run: node scripts/postprocess-localized.mjs
 
