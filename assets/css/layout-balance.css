@@ -1,0 +1,130 @@
+/* DATA C0RE — visual balance pass
+   Keeps the strong display typography while preventing long headings from
+   overpowering supporting copy in split layouts. */
+
+/* Home / practice statement */
+.home-statement-grid{
+  grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);
+  gap:clamp(38px,5vw,78px);
+  align-items:center;
+}
+.home-statement-grid>*{min-width:0}
+.home-statement h2{
+  max-width:1120px;
+  font-size:clamp(48px,6.15vw,104px);
+  line-height:.96;
+  letter-spacing:-.055em;
+  text-wrap:balance;
+}
+.home-statement-copy{
+  max-width:590px;
+  font-size:clamp(17px,1.35vw,22px);
+  line-height:1.48;
+}
+.home-statement .field-line{margin-top:22px}
+
+/* Project heroes: title and intent should read as one composition, not
+   as a giant left block with a caption stranded at the bottom right. */
+.project-hero-copy{
+  grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr);
+  gap:clamp(36px,5vw,78px);
+  align-items:center;
+}
+.project-hero-copy>*{min-width:0}
+.project-hero h1{
+  max-width:1120px;
+  font-size:clamp(60px,8vw,130px);
+  line-height:.88;
+  letter-spacing:-.065em;
+  text-wrap:balance;
+}
+.project-intent{
+  max-width:620px;
+  margin:0;
+  font-size:clamp(18px,1.5vw,24px);
+  line-height:1.42;
+}
+
+/* About: keep explanatory copy vertically related to the display statement. */
+.about-section-grid{
+  grid-template-columns:minmax(300px,.9fr) minmax(0,1.1fr);
+  gap:clamp(42px,6vw,96px);
+  align-items:start;
+}
+.about-display{text-wrap:balance}
+.direction-copy{
+  grid-template-columns:minmax(0,1.08fr) minmax(300px,.72fr);
+  gap:clamp(34px,6vw,90px);
+  align-items:start;
+}
+.direction-tag{margin-top:2px!important}
+
+/* Long localized display copy gets a little more measure before wrapping. */
+html[lang="fr"] .home-statement h2,
+html[lang="es"] .home-statement h2{font-size:clamp(46px,5.9vw,100px)}
+html[lang="fr"] .project-hero h1,
+html[lang="es"] .project-hero h1{font-size:clamp(58px,7.7vw,126px)}
+
+/* Desktop screens with little vertical room. */
+@media(max-height:760px) and (min-width:901px){
+  .home-statement{padding-top:clamp(72px,8vw,118px);padding-bottom:clamp(72px,8vw,118px)}
+  .home-statement h2{font-size:clamp(45px,5.55vw,90px)}
+  .project-hero h1{font-size:clamp(54px,7vw,112px)}
+  .project-intent{font-size:clamp(17px,1.35vw,21px)}
+}
+
+/* Tablet: stop forcing a narrow secondary column. */
+@media(max-width:900px){
+  .home-statement-grid,
+  .project-hero-copy,
+  .about-section-grid,
+  .direction-copy{
+    grid-template-columns:1fr;
+    align-items:start;
+  }
+  .home-statement-grid{gap:30px}
+  .home-statement h2,
+  html[lang="fr"] .home-statement h2,
+  html[lang="es"] .home-statement h2{
+    max-width:900px;
+    font-size:clamp(44px,8.7vw,78px);
+    line-height:.98;
+  }
+  .home-statement-copy{max-width:720px;font-size:clamp(16px,2.25vw,20px)}
+  .project-hero-copy{gap:26px}
+  .project-hero h1,
+  html[lang="fr"] .project-hero h1,
+  html[lang="es"] .project-hero h1{
+    max-width:900px;
+    font-size:clamp(52px,10.5vw,96px);
+    line-height:.92;
+  }
+  .project-intent{max-width:760px;font-size:clamp(17px,2.3vw,21px)}
+  .about-section-grid{gap:26px}
+  .direction-copy{gap:22px}
+  .direction-tag{max-width:620px}
+}
+
+/* Mobile: readable hierarchy, no oversized multi-line wall of text. */
+@media(max-width:600px){
+  .home-statement{padding-top:76px;padding-bottom:76px}
+  .home-statement-grid{gap:24px}
+  .home-statement h2,
+  html[lang="fr"] .home-statement h2,
+  html[lang="es"] .home-statement h2{
+    font-size:clamp(38px,11.4vw,58px);
+    line-height:1.01;
+    letter-spacing:-.048em;
+  }
+  .home-statement-copy{font-size:15.5px;line-height:1.5}
+  .home-statement .field-line{margin-top:18px}
+  .project-hero h1,
+  html[lang="fr"] .project-hero h1,
+  html[lang="es"] .project-hero h1{
+    font-size:clamp(46px,13vw,68px);
+    line-height:.96;
+    letter-spacing:-.055em;
+  }
+  .project-intent{font-size:16px;line-height:1.48}
+  .about-section-grid,.direction-copy{gap:20px}
+}
