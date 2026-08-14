@@ -39,6 +39,16 @@
   if(state.pathLang){
     try{localStorage.setItem(storage,state.pathLang)}catch{}
     document.documentElement.lang=state.pathLang;
+  }else{
+    /* FR/ES now use the generated static routes as the single source of truth.
+       This prevents the old root-page runtime dictionary from resurfacing stale
+       wording such as “travaux spatiaux” and keeps mobile CSS identical. */
+    let preferred='';
+    try{preferred=localStorage.getItem(storage)||''}catch{}
+    if(preferred==='fr'||preferred==='es'){
+      location.replace(destination(preferred,state.route));
+      return;
+    }
   }
 
   document.addEventListener('click',event=>{
