@@ -1,0 +1,84 @@
+name: Build dev portfolio pages
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: portfolio-dev-pages
+  cancel-in-progress: true
+
+jobs:
+  dev-build:
+    if: github.actor != 'github-actions[bot]' && github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout development branch
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install generator dependency
+        run: npm install --no-save --package-lock=false cheerio@1.0.0
+
+      - name: Apply portfolio architecture
+        run: node scripts/portfolio-architecture.mjs
+
+      - name: Apply international service-area SEO source
+        run: node scripts/international-service-seo.mjs
+
+      - name: Generate EN / FR / ES static pages
+        run: node scripts/build-localized.mjs
+
+      - name: Apply localized project SEO metadata
+        run: node scripts/seo-localized-overrides.mjs
+
+      - name: Polish localized structured data + copy
+        run: node scripts/postprocess-localized.mjs
+
+      - name: Reapply international service-area localized copy
+        run: node scripts/international-service-seo.mjs
+
+      - name: Clean recruiter-facing copy
+        run: node scripts/professional-copy-cleanup.mjs
+
+      - name: Integrate secure contact route
+        run: node scripts/contact-site-integration.mjs
+
+      - name: Apply editorial FR / ES localization
+        run: node scripts/editorial-localization.mjs
+
+      - name: Apply structured index and clean contact interaction
+        run: node scripts/menu-layout-integration.mjs
+
+      - name: Apply FR / ES display spacing while preserving accents
+        run: node scripts/display-heading-diacritics.mjs
+
+      - name: Balance display and supporting copy layouts
+        run: node scripts/layout-balance-integration.mjs
+
+      - name: Synchronize canonical origin
+        run: node scripts/sync-origin.mjs
+
+      - name: Commit generated development layer
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A index.html work.html lab.html archive.html projects/signal.html en fr es sitemap.xml robots.txt assets/js/seo.js '*.html' 'projects/*.html'
+          if git diff --cached --quiet; then
+            echo "No development generation changes to commit."
+          else
+            git commit -m "Generate dev portfolio architecture"
+            git push origin HEAD:dev
+          fi
