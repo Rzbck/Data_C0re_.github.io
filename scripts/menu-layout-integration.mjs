@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const roots = ['', 'projects', 'en', 'en/projects', 'fr', 'fr/projects', 'es', 'es/projects'];
-const menuLink = '<link rel="stylesheet" href="assets/css/menu-two-column.css" data-menu-layout>';
+const menuLink = '<link rel="stylesheet" href="assets/css/menu-two-column.css" data-menu-layout>\n<link rel="stylesheet" href="assets/css/menu-eight-card.css" data-menu-eight-card>';
 const contactGuard = '<script data-contact-no-ascii>window.__DATA_C0RE_ASCII_CURSOR__=true;window.__DATA_C0RE_ASCII_CURSOR_V2__=true;window.__DATA_C0RE_ASCII_CURSOR_V17__=true;<\/script>';
 
 const menuCopy = {
@@ -11,36 +11,39 @@ const menuCopy = {
     label: 'DATA C0RE / site index',
     items: [
       ['home', 'Home', '00 / Overview', 'Identity / selected work', 'index.html'],
-      ['work', 'Work', '01 / Portfolio', 'Projects / systems', 'work.html'],
-      ['services', 'Services', '02 / Services', 'TouchDesigner / video', 'services.html'],
-      ['lab', 'Lab', '03 / R&D', 'Research / prototypes', 'lab.html'],
-      ['about', 'About', '04 / Practice', 'Approach / direction', 'about.html'],
-      ['cv', 'CV', '05 / Experience', 'Roles / tools', 'cv.html'],
-      ['contact', 'Contact', '06 / Contact', 'Projects / production', 'contact.html']
+      ['work', 'Work', '01 / Realized', 'Built / installed / operated', 'work.html'],
+      ['archive', 'Archive', '02 / Chronology', 'Projects / systems / studies', 'archive.html'],
+      ['lab', 'Lab', '03 / R&D', 'Simulation / research', 'lab.html'],
+      ['services', 'Services', '04 / Services', 'TouchDesigner / video', 'services.html'],
+      ['about', 'About', '05 / Practice', 'Approach / direction', 'about.html'],
+      ['cv', 'CV', '06 / Experience', 'Roles / tools', 'cv.html'],
+      ['contact', 'Contact', '07 / Contact', 'Projects / production', 'contact.html']
     ]
   },
   fr: {
     label: 'DATA C0RE / index du site',
     items: [
       ['home', 'Accueil', '00 / Vue d’ensemble', 'Identité / sélection', 'index.html'],
-      ['work', 'Travail', '01 / Portfolio', 'Projets / systèmes', 'work.html'],
-      ['services', 'Services', '02 / Services', 'TouchDesigner / vidéo', 'services.html'],
-      ['lab', 'Lab', '03 / R&D', 'Recherche / prototypes', 'lab.html'],
-      ['about', 'À propos', '04 / Pratique', 'Approche / direction', 'about.html'],
-      ['cv', 'CV', '05 / Expérience', 'Parcours / outils', 'cv.html'],
-      ['contact', 'Contact', '06 / Contact', 'Projets / production', 'contact.html']
+      ['work', 'Travaux', '01 / Réalisé', 'Construit / installé / exploité', 'work.html'],
+      ['archive', 'Archives', '02 / Chronologie', 'Projets / systèmes / études', 'archive.html'],
+      ['lab', 'Lab', '03 / R&D', 'Simulation / recherche', 'lab.html'],
+      ['services', 'Services', '04 / Services', 'TouchDesigner / vidéo', 'services.html'],
+      ['about', 'À propos', '05 / Pratique', 'Approche / direction', 'about.html'],
+      ['cv', 'CV', '06 / Expérience', 'Parcours / outils', 'cv.html'],
+      ['contact', 'Contact', '07 / Contact', 'Projets / production', 'contact.html']
     ]
   },
   es: {
     label: 'DATA C0RE / índice del sitio',
     items: [
       ['home', 'Inicio', '00 / Vista general', 'Identidad / selección', 'index.html'],
-      ['work', 'Trabajo', '01 / Portfolio', 'Proyectos / sistemas', 'work.html'],
-      ['services', 'Servicios', '02 / Servicios', 'TouchDesigner / vídeo', 'services.html'],
-      ['lab', 'Lab', '03 / I+D', 'Investigación / prototipos', 'lab.html'],
-      ['about', 'Acerca de', '04 / Práctica', 'Enfoque / dirección', 'about.html'],
-      ['cv', 'CV', '05 / Experiencia', 'Trayectoria / herramientas', 'cv.html'],
-      ['contact', 'Contacto', '06 / Contacto', 'Proyectos / producción', 'contact.html']
+      ['work', 'Trabajo', '01 / Realizado', 'Construido / instalado / operado', 'work.html'],
+      ['archive', 'Archivo', '02 / Cronología', 'Proyectos / sistemas / estudios', 'archive.html'],
+      ['lab', 'Lab', '03 / I+D', 'Simulación / investigación', 'lab.html'],
+      ['services', 'Servicios', '04 / Servicios', 'TouchDesigner / vídeo', 'services.html'],
+      ['about', 'Acerca de', '05 / Práctica', 'Enfoque / dirección', 'about.html'],
+      ['cv', 'CV', '06 / Experiencia', 'Trayectoria / herramientas', 'cv.html'],
+      ['contact', 'Contacto', '07 / Contacto', 'Proyectos / producción', 'contact.html']
     ]
   }
 };
@@ -72,7 +75,11 @@ function routeInfo(rel) {
 
 function currentKey(route) {
   if (route === 'index.html') return 'home';
-  if (route.startsWith('projects/')) return 'work';
+  if (route.startsWith('projects/')) {
+    const project = path.posix.basename(route, '.html');
+    if (['ascii', 'cloud', 'realtime', 'signal'].includes(project)) return 'lab';
+    return 'work';
+  }
   return path.posix.basename(route, '.html');
 }
 
@@ -100,6 +107,7 @@ for (const rel of htmlFiles()) {
   const before = fs.readFileSync(file, 'utf8');
   let html = before
     .replace(/<link\b[^>]*data-menu-layout[^>]*>\s*/gi, '')
+    .replace(/<link\b[^>]*data-menu-eight-card[^>]*>\s*/gi, '')
     .replace(/<script\b[^>]*data-contact-no-ascii[^>]*>[\s\S]*?<\/script>\s*/gi, '');
 
   const menu = renderMenu(rel);
@@ -115,4 +123,4 @@ for (const rel of htmlFiles()) {
   writeIfChanged(file, before, html);
 }
 
-console.log('Structured full-viewport index applied; ASCII/GLSL cursor disabled on contact routes.');
+console.log('Structured 8-card index applied; research projects route to Lab and ASCII/GLSL cursor stays disabled on contact routes.');
