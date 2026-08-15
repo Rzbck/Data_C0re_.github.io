@@ -37,6 +37,14 @@
   let projectFilter=params.get('project')||'';
   if(projectFilter&&!entries.some(entry=>entry.dataset.archiveProject===projectFilter))projectFilter='';
 
+  if(typeSelect&&![...typeSelect.options].some(option=>option.value==='film')){
+    const option=document.createElement('option');
+    option.value='film';
+    option.textContent=lang==='es'?'Película':'Film';
+    const software=[...typeSelect.options].find(item=>item.value==='software');
+    if(software)software.before(option);else typeSelect.appendChild(option);
+  }
+
   const requestedTag=params.get('tag')||'';
   const countLabel=n=>lang==='fr'?`${n} projet${n>1?'s':''}`:lang==='es'?`${n} proyecto${n>1?'s':''}`:`${n} project${n>1?'s':''}`;
   const projectPrefix=lang==='fr'?'Projet':lang==='es'?'Proyecto':'Project';
