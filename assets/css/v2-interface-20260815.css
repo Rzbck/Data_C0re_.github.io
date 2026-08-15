@@ -52,6 +52,28 @@ html[lang="es"] body.contact-route .contact-copy h1{font-size:clamp(48px,5.8vw,9
   .site-header .lang-switcher button,.site-header .lang-switcher a{font-size:7px!important;padding-left:2px!important;padding-right:2px!important}
 }
 
+/* Project tablet gap: keep intrinsic video dimensions from expanding the hero
+   between the phone/tablet and desktop layouts. SIGNAL has its own fluid pipeline. */
+@media(min-width:821px) and (max-width:900px){
+  figure.project-hero-media:not(.signal-hero-system){
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    max-height:72vh!important;
+    aspect-ratio:16/10;
+    overflow:hidden;
+  }
+  figure.project-hero-media:not(.signal-hero-system)>img,
+  figure.project-hero-media:not(.signal-hero-system)>video{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    height:100%!important;
+    object-fit:contain;
+  }
+}
+
 /* Archive controls */
 .archive-controls{width:min(var(--max),100%);margin:0 auto;padding:0 var(--gutter) clamp(28px,4vw,54px);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px 34px;align-items:end}
 .archive-control-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
