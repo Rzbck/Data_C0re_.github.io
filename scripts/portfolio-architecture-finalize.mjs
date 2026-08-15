@@ -119,6 +119,7 @@ for (const [lang, c] of Object.entries(configs)) {
   let ctx = loadFile(`${lang}/index.html`);
   if (ctx) {
     const { $ } = ctx;
+    $('.hero h1').first().html('DATA<br>C0RE');
     $('.home-work .section-head .eyebrow').first().text(c.home.eyebrow);
     $('.home-work .section-head h2').first().html(c.home.heading);
     $('.home-work .section-head a').first().text(c.home.link);
@@ -178,4 +179,4 @@ for (const rel of ['projects/signal.html', 'en/projects/signal.html']) {
   save(ctx);
 }
 
-console.log('Localized Home / Work / Lab architecture and SIGNAL metadata locked by project selectors.');
+console.log('Localized Home / Work / Lab architecture, DATA C0RE identity and SIGNAL metadata locked by project selectors.');
