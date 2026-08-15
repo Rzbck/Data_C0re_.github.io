@@ -4,6 +4,7 @@ import { load } from 'cheerio';
 
 const ROOT = process.cwd();
 const legacy = /(^|\/)(work|about|services|lab)\.html$/;
+const V2_STYLE = 'assets/css/v2-interface-20260815.css';
 
 const projectMeta = {
   lumina: {
@@ -75,7 +76,9 @@ function prefixFor(rel){
 function routeFor(rel){return rel.replace(/^(en|fr|es)\//,'')}
 
 function ensureV2Styles($){
-  if(!$('link[data-v2-interface]').length)$('head').append('<link rel="stylesheet" href="assets/css/v2-interface.css" data-v2-interface>');
+  const link=$('link[data-v2-interface]').first();
+  if(link.length)link.attr('href',V2_STYLE);
+  else $('head').append(`<link rel="stylesheet" href="${V2_STYLE}" data-v2-interface>`);
 }
 
 function rebuildHeader($,rel){
