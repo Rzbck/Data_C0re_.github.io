@@ -22,7 +22,7 @@ for(const rel of homes){
   const lang=langFor(rel),t=copy[lang],prefix=prefixFor(rel);
   const $=load(fs.readFileSync(file,'utf8'),{decodeEntities:false});
   $('link[data-home-compact-v3]').remove();
-  $('head').append('<link rel="stylesheet" href="assets/css/home-compact-v3.css?v=20260815-1" data-home-compact-v3>');
+  $('head').append('<link rel="stylesheet" href="assets/css/home-compact-v3.css?v=20260815-2" data-home-compact-v3>');
   $('.skip-link').text(t.skip).attr('href','#practice');
   const hero=$('main .hero').first();if(!hero.length)continue;
   hero.find('.hero-foot span').text(lang==='fr'?'Systèmes audiovisuels / 2016—2027':lang==='es'?'Sistemas audiovisuales / 2016—2027':'Audiovisual systems / 2016—2027');
@@ -30,11 +30,21 @@ for(const rel of homes){
   $('main').children().not(hero).remove();
   const geo=t.geo.map(x=>`<span>${esc(x)}</span>`).join('');
   const contexts=refs.map(([slug,label])=>`<a class="home-context-link" href="${prefix}archive.html?project=${slug}" data-home-context-magnet>${esc(label)} ↗</a>`).join('');
-  const section=`<section class="home-compact-v3" id="practice"><div class="home-compact-v3__intro"><div class="reveal"><p class="eyebrow">${esc(t.label)}</p><h2>${esc(t.statement)}</h2></div><p class="home-compact-v3__intro-copy reveal">${esc(t.detail)}</p></div><div class="home-proof-line reveal">${geo}</div><div class="home-context-links reveal">${contexts}</div><div class="home-capability-lines reveal"><p>${esc(t.capabilities[0])}</p><p>${esc(t.capabilities[1])}</p></div><div class="home-gates reveal"><a class="home-gate" href="${prefix}archive.html"><span>01</span><div><strong>${esc(t.archive)}</strong><small>${esc(t.archiveSmall)}</small></div></a><a class="home-gate" href="${prefix}contact.html"><span>02</span><div><strong>${esc(t.contact)}</strong><small>${esc(t.contactSmall)}</small></div></a></div></section>`;
+  const section=`<section class="home-compact-v3">
+    <section class="home-compact-v3__panel home-compact-v3__panel--practice" id="practice" data-home-panel="practice">
+      <div class="home-compact-v3__intro"><div class="reveal"><p class="eyebrow">${esc(t.label)}</p><h2>${esc(t.statement)}</h2></div><p class="home-compact-v3__intro-copy reveal">${esc(t.detail)}</p></div>
+      <div class="home-proof-line reveal">${geo}</div>
+      <div class="home-context-links reveal">${contexts}</div>
+    </section>
+    <section class="home-compact-v3__panel home-compact-v3__panel--actions" id="capabilities" data-home-panel="actions">
+      <div class="home-capability-lines reveal"><p>${esc(t.capabilities[0])}</p><p>${esc(t.capabilities[1])}</p></div>
+      <div class="home-gates reveal"><a class="home-gate" href="${prefix}archive.html" data-home-gate-magnet><span>01</span><div><strong>${esc(t.archive)}</strong><small>${esc(t.archiveSmall)}</small></div></a><a class="home-gate" href="${prefix}contact.html" data-home-gate-magnet><span>02</span><div><strong>${esc(t.contact)}</strong><small>${esc(t.contactSmall)}</small></div></a></div>
+    </section>
+  </section>`;
   hero.after(section);
   $('footer.global-footer').remove();
   $('body script[data-home-compact-v3-js]').remove();
-  $('body').append('<script src="assets/js/home-compact-v3.js?v=20260815-1" defer data-home-compact-v3-js></script>');
+  $('body').append('<script src="assets/js/home-compact-v3.js?v=20260815-2" defer data-home-compact-v3-js></script>');
   fs.writeFileSync(file,$.html(),'utf8');
 }
 
@@ -42,7 +52,6 @@ for(const rel of archives){
   const file=path.join(ROOT,rel);if(!fs.existsSync(file))continue;
   const $=load(fs.readFileSync(file,'utf8'),{decodeEntities:false});
   $('.archive-entry').each((_,el)=>{const href=$(el).attr('href')||'';const m=href.match(/projects\/([^/.]+)\.html/);if(m)$(el).attr('data-archive-project',m[1]);});
-  if(!$('link[data-home-compact-v3]').length)$('head').append('<link rel="stylesheet" href="assets/css/home-compact-v3.css?v=20260815-1" data-home-compact-v3>');
   fs.writeFileSync(file,$.html(),'utf8');
 }
-console.log('Compact Home V3 applied: proof, references, capabilities and Archive/Contact gates.');
+console.log('Compact Home V3 applied: fullpage practice/actions, magnetic references and Archive/Contact gates.');
