@@ -23,7 +23,6 @@ const evidenceRules={
   'audio-reactive':/audio[-‑– ]r[ée]actif|audio[-‑– ]reactive/i,
   'show-control':/\bshow control\b/i,
   'realtime-video':/vid[ée]o temps r[ée]el|realtime video/i,
-  festival:/\bfestival\b/i,
   'small-file':/small[-‑– ]file/i,
   'low-bandwidth':/low[-‑– ]bandwidth|faible bande passante|bajo ancho de banda/i
 };
