@@ -22,11 +22,13 @@ The interface itself must make the hierarchy obvious through naming, ordering, v
 Do not create multiple editorial pages that restate the same identity, capabilities or project information.
 
 Preferred model:
-- Home = immediate identity + proof + selected contexts + capabilities + next actions.
+- Home = immediate identity + concise proof + capabilities + clear Archive / Contact exits.
 - Archive = complete project index, including realized work and clearly labelled R&D / studies / simulations.
 - One canonical detail page per project/case study.
 - CV = professional chronology, roles, institutions, skills and experience.
 - Contact = secure contact form.
+
+Home must NOT reproduce an Archive-style selected-project list with project numbers, dates, descriptions and media rows. Context / institution names may appear as short proof links and can deep-link to a filtered Archive view. The current compact Home proof geography includes Geneva / Switzerland, Lyon, Grenoble, Paris, Brazil, Europe and international scope; do not turn this into SEO city-page spam.
 
 Home and Archive may contain short navigation teasers for a project, but the substantive project narrative must live on one canonical project page only.
 
