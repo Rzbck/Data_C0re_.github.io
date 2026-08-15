@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "categories": {
     "location": {"en": "Location", "fr": "Lieu", "es": "Lugar"},
     "context": {"en": "Context", "fr": "Contexte", "es": "Contexto"},
@@ -45,16 +45,16 @@
     "software": {"category": "system", "en": "Software", "fr": "Logiciel", "es": "Software"}
   },
   "projects": {
-    "lumina": ["geneva", "switzerland", "installation", "realtime-video", "touchdesigner", "show-control"],
-    "grand-theatre": ["geneva", "switzerland", "stage", "theatre", "projection", "smode", "show-control", "calibration"],
-    "comedie": ["geneva", "switzerland", "stage", "theatre", "theatre-video", "touring"],
-    "hardwinner": ["grenoble", "live-av", "realtime-video", "lighting", "led", "touchdesigner", "glsl", "dmx"],
-    "stage-systems": ["chambery", "live-av", "realtime-video", "lighting", "touchdesigner", "resolume"],
+    "lumina": ["geneva", "switzerland", "installation", "lighting", "led", "interactive", "touchdesigner", "dmx", "art-net", "show-control", "networked-media"],
+    "grand-theatre": ["geneva", "switzerland", "stage", "theatre", "theatre-video", "projection", "smode", "show-control", "calibration"],
+    "comedie": ["geneva", "switzerland", "stage", "theatre", "touring", "theatre-video", "projection", "realtime-video", "show-control", "networked-media"],
+    "hardwinner": ["grenoble", "stage", "live-av", "realtime-video", "lighting", "led", "audio-reactive", "touchdesigner", "resolume", "glsl", "dmx", "show-control"],
+    "stage-systems": ["chambery", "stage", "live-av", "realtime-video", "lighting", "led", "touchdesigner", "resolume", "dmx"],
     "snake": ["research", "software", "interactive", "touchdesigner", "networked-media"],
-    "signal": ["simulation", "interactive", "touchdesigner", "mmwave-tracking", "esp32", "websocket", "json", "art-net", "networked-media"],
-    "ascii": ["study", "touchdesigner", "image-processing"],
-    "realtime": ["research", "touchdesigner", "audio-reactive", "realtime-video", "image-processing"],
-    "cloud": ["study", "touchdesigner", "glsl", "image-processing"]
+    "signal": ["simulation", "interactive", "led", "touchdesigner", "mmwave-tracking", "esp32", "websocket", "json", "art-net", "networked-media", "software"],
+    "ascii": ["study", "realtime-video", "touchdesigner", "image-processing"],
+    "realtime": ["research", "touchdesigner", "glsl", "audio-reactive", "realtime-video", "image-processing"],
+    "cloud": ["study", "realtime-video", "touchdesigner", "glsl", "image-processing"]
   },
   "home_tags": ["theatre-video", "projection", "touchdesigner", "live-av", "realtime-video", "lighting", "led", "dmx", "art-net", "show-control", "touring", "geneva"]
 }
