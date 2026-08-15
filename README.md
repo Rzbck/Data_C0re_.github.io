@@ -6,7 +6,7 @@ Portfolio for **DATA C0RE** — digital artist and creative technologist working
 
 **DEV preview:** https://datac0re-dev-preview.vercel.app/
 
-> AI / development handoff: before any write, read [`PROJECT_AI_CONTEXT.md`](./PROJECT_AI_CONTEXT.md) on the `dev` branch. All active portfolio work goes to `dev`; `main` is production only unless the user explicitly asks to publish.
+> AI / development handoff: before any write, read [`PROJECT_AI_CONTEXT.md`](./PROJECT_AI_CONTEXT.md) and [`EDITORIAL_RULES.md`](./EDITORIAL_RULES.md) on the `dev` branch. All active portfolio work goes to `dev`; `main` is production only unless the user explicitly asks to publish.
 
 ## Practice
 
@@ -29,14 +29,17 @@ Based in Annecy, France; active across Geneva and other European production cont
 - **Hardwinner / La Belle Électrique** — Grenoble — collaborative live AV systems, TouchDesigner, GLSL, LED / DMX
 - **Fun Radio Party** — Chambéry — realtime video and lighting system, TouchDesigner / Resolume / video-light synchronization
 
-## Information architecture
+## Active information architecture
 
-- **Home** — what DATA C0RE does + strongest realized contexts + concrete capabilities
-- **Work** — selected realized / delivered / operated case studies
-- **Archive** — complete project index, including R&D, studies, prototypes and simulations
-- **About / CV / Contact** — practice, experience and contact
+- **Home** — identity, strongest realized contexts, capabilities and availability. Reached through the DATA C0RE brand/logo.
+- **Archive** — single complete project catalogue, including clearly labelled R&D, studies and simulations.
+- **CV** — professional chronology, institutions, roles, tools and experience.
+- **Contact** — secure contact form.
+- **Project pages** — exactly one detailed editorial page per project/case study.
 
-`Lab` is no longer a separate primary section. Research material belongs in Archive.
+Primary site index: **Archive / CV / Contact**.
+
+Legacy `work.html`, `about.html` and `services.html` redirect to Home. Legacy `lab.html` redirects to Archive. These routes are `noindex` and excluded from the sitemap.
 
 Archive-only / R&D material currently includes Snake, ASCII studies, Realtime Studies, SIGNAL simulation and other technical studies.
 
