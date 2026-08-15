@@ -8,18 +8,21 @@ Persistent implementation rules for the compact V2/V3 portfolio. Read together w
 - Browser QA uses `https://datac0re-dev-preview.vercel.app/`.
 
 ## Primary header
-The three surviving primary destinations must remain directly accessible in the fixed header on every real page:
-- Archive
+The four primary destinations must remain directly accessible in the fixed header on every real page, in this order:
+- Home / Accueil / Inicio
+- Archive / Archives / Archivo
 - CV
-- Contact
+- Contact / Contacto
 
-Do not hide these three links on tablet or phone. The current destination is highlighted with the acid/yellow accent. The DATA C0RE brand returns Home.
+Do not hide these four links on tablet or phone. The current destination is highlighted with the acid/yellow accent. The DATA C0RE brand also returns Home.
 
-The EN / FR / ES language switcher is structural header content and must be rendered statically in the generated HTML. Do not create it only after page load with JavaScript. Runtime scripts may synchronize `aria-pressed`, routing and stored preference, but the controls must already occupy their final width on first paint so Archive / CV / Contact / Index never jump horizontally during reload or navigation.
+Header geometry must remain stable across navigation. Pages with short content such as Contact must reserve the same vertical-scrollbar gutter as long pages such as Archive and CV. Do not allow the entire header to move horizontally because one route has no vertical scrollbar.
+
+The EN / FR / ES language switcher is structural header content and must be rendered statically in the generated HTML as real anchors with their final href. Do not create it only after page load with JavaScript and do not use unstyled native buttons during first paint. Runtime scripts may synchronize routing and stored preference, but the controls must already occupy their final width and style on first paint so Home / Archive / CV / Contact / Index never jump horizontally during reload or navigation.
 
 When switching languages, preserve meaningful query parameters such as Archive `?tag=<slug>` filters.
 
-The INDEX overlay is secondary. On very small phones it may be hidden if needed to preserve the three primary links and language switcher without overflow.
+The INDEX overlay is secondary. On very small phones it may be hidden if needed to preserve the four primary links and language switcher without overflow.
 
 ## Home fullpage / magnets
 The compact Home must retain the site's fluid fullpage/magnetic navigation language instead of becoming a conventional long static landing page.
