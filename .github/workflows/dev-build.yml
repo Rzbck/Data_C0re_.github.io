@@ -88,6 +88,9 @@ jobs:
       - name: Apply compact Home V3
         run: node scripts/home-compact-v3.mjs
 
+      - name: Stabilize language switcher before first paint
+        run: node scripts/static-language-links.mjs
+
       - name: Commit generated development layer
         shell: bash
         run: |
