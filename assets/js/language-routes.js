@@ -32,7 +32,7 @@
     const tail=route==='index.html'?'':route;
     const path=[repoSegment,lang,tail].filter(Boolean).join('/').replace(/\/+/g,'/');
     const normalized=path.startsWith('/')?path:`/${path}`;
-    return `${location.origin}${normalized}${tail?'':'/'}${location.hash||''}`;
+    return `${location.origin}${normalized}${tail?'':'/'}${location.search||''}${location.hash||''}`;
   };
 
   const state=routeState();
