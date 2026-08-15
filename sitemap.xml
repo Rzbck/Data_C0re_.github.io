@@ -141,34 +141,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
   </url>
   <url>
-    <loc>https://datac0re.is-a.dev/lab.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/lab.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/lab.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/lab.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/fr/lab.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/lab.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/es/lab.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/lab.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/lab.html"/>
-  </url>
-  <url>
     <loc>https://datac0re.is-a.dev/services.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/services.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/services.html"/>
