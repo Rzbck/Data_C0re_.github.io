@@ -85,6 +85,9 @@ jobs:
       - name: Apply final V2 cleanup
         run: node scripts/portfolio-v2-finalize.mjs
 
+      - name: Apply compact Home V3
+        run: node scripts/home-compact-v3.mjs
+
       - name: Commit generated development layer
         shell: bash
         run: |
@@ -94,6 +97,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No development generation changes to commit."
           else
-            git commit -m "Generate compact portfolio V2"
+            git commit -m "Generate compact portfolio V3"
             git push origin HEAD:dev
           fi
