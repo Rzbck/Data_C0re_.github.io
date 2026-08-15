@@ -31,6 +31,9 @@ jobs:
       - name: Install generator dependency
         run: npm install --no-save --package-lock=false cheerio@1.0.0
 
+      - name: Apply portfolio architecture
+        run: node scripts/portfolio-architecture.mjs
+
       - name: Apply international service-area SEO source
         run: node scripts/international-service-seo.mjs
 
