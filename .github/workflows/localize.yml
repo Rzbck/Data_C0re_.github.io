@@ -58,6 +58,9 @@ jobs:
       - name: Apply editorial FR / ES localization
         run: node scripts/editorial-localization.mjs
 
+      - name: Polish Work Archive Lab and SIGNAL localization
+        run: node scripts/portfolio-architecture-polish.mjs
+
       - name: Apply structured index and clean contact interaction
         run: node scripts/menu-layout-integration.mjs
 
