@@ -34,6 +34,10 @@ Home and Archive may contain short navigation teasers for a project, but the sub
 
 Avoid separate top-level Work, About, Services or Lab pages when their content is already covered by Home, Archive, CV or individual project pages.
 
+## Archive labels
+
+Archive status remains machine-readable for filtering (`realized`, `research`, `simulation`, `study`), but visible project labels should describe the visitor-relevant context rather than repeat a generic status such as REALIZED. Use factual project contexts such as INSTALLATION, FESTIVAL, OPERA, THEATRE, LIVE AV, STAGE SYSTEMS, SOFTWARE, SIMULATION, RESEARCH or STUDY, localized naturally in EN / FR / ES. Do not invent a prestigious context that the project does not support.
+
 ## Visitor test
 
 A visitor should be able to answer within seconds:
