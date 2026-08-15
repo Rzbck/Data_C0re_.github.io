@@ -85,6 +85,9 @@ jobs:
       - name: Apply final V2 cleanup
         run: node scripts/portfolio-v2-finalize.mjs
 
+      - name: Apply compact Home V3
+        run: node scripts/home-compact-v3.mjs
+
       - name: Commit generated localization layer
         shell: bash
         run: |
