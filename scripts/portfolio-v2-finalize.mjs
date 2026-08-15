@@ -9,7 +9,7 @@ const taxonomy = JSON.parse(fs.readFileSync(path.join(ROOT,'data/project-taxonom
 
 const projectMeta = {
   lumina:{status:'realized',type:'installation',years:'2025 2026 2027',poster:'assets/media/lumina/tunnel-blue.webp',video:'assets/media/lumina/experience-long.mp4?v=20260809-2'},
-  'last-low-bandwidth-message':{status:'realized',type:'film',years:'2026'},
+  'last-low-bandwidth-message':{status:'realized',type:'film',years:'2026',poster:'assets/media/low-bandwidth-message/promo.webp',video:'assets/media/low-bandwidth-message/excerpt.mp4'},
   'grand-theatre':{status:'realized',type:'stage',years:'2023 2024',poster:'assets/media/grand-theatre/hero.webp',video:'assets/media/grand-theatre/loop.mp4'},
   comedie:{status:'realized',type:'stage',years:'2021 2022 2023',poster:'assets/media/comedie/venue.jpg'},
   hardwinner:{status:'realized',type:'live-av stage',years:'2016 2017 2018',poster:'assets/media/hardwinner/lbe-2018.webp',video:'assets/media/hardwinner/amen-loop.mp4'},
@@ -86,12 +86,13 @@ function ensureLowBandwidthArchiveEntry($,rel,shell){
   if(shell.find('[data-archive-project="last-low-bandwidth-message"]').length||shell.find('a[href$="projects/last-low-bandwidth-message.html"]').length)return;
   const lang=langFor(rel),prefix=prefixFor(rel);
   const copy={
-    en:{head:'OFFICIAL SELECTION',status:'OFFICIAL SELECTION',summary:'France / small-file film / 1 min / 1.79 MB / SFMF 2026'},
-    fr:{head:'SÉLECTION',status:'SÉLECTION OFFICIELLE',summary:'France / film small-file / 1 min / 1,79 MB / SFMF 2026'},
-    es:{head:'SELECCIÓN',status:'SELECCIÓN OFICIAL',summary:'Francia / película small-file / 1 min / 1,79 MB / SFMF 2026'}
+    en:{head:'OFFICIAL SELECTION',status:'OFFICIAL SELECTION',summary:'France / small-file film / 1:25 / 1.79 MB / SFMF 2026'},
+    fr:{head:'SÉLECTION',status:'SÉLECTION OFFICIELLE',summary:'France / film small-file / 1:25 / 1,79 MB / SFMF 2026'},
+    es:{head:'SELECCIÓN',status:'SELECCIÓN OFICIAL',summary:'Francia / película small-file / 1:25 / 1,79 MB / SFMF 2026'}
   }[lang];
   const tags=(taxonomy.projects?.['last-low-bandwidth-message']||[]).join(' ');
-  const block=`<div class="archive-year reveal"><div class="archive-year-head"><time>2026</time><span>${copy.head}</span></div><div class="archive-list"><a class="archive-entry" href="${prefix}projects/last-low-bandwidth-message.html" data-archive-project="last-low-bandwidth-message" data-archive-status="realized" data-archive-type="film" data-archive-years="2026" data-archive-tags="${esc(tags)}"><span class="archive-status status-realized">${copy.status}</span><div><strong>The Last Low-Bandwidth Message</strong><small>${copy.summary}</small></div><time>2026</time></a></div></div>`;
+  const meta=projectMeta['last-low-bandwidth-message'];
+  const block=`<div class="archive-year reveal"><div class="archive-year-head"><time>2026</time><span>${copy.head}</span></div><div class="archive-list"><a class="archive-entry" href="${prefix}projects/last-low-bandwidth-message.html" data-archive-project="last-low-bandwidth-message" data-archive-status="realized" data-archive-type="film" data-archive-years="2026" data-archive-tags="${esc(tags)}" data-archive-video="${meta.video}"><span class="archive-entry-media" aria-hidden="true"><img src="${meta.poster}" alt="" loading="lazy" decoding="async"><video muted loop playsinline preload="none"></video></span><span class="archive-status status-realized">${copy.status}</span><div><strong>The Last Low-Bandwidth Message</strong><small>${copy.summary}</small></div><time>2026</time></a></div></div>`;
   const first=shell.find('.archive-year').first();
   if(first.length)first.after(block);else shell.append(block);
 }
@@ -128,4 +129,3 @@ for(const file of walk(ROOT)){
   if(legacy.test(rel)){$('title').text('DATA C0RE');$('meta[name="description"]').attr('content','DATA C0RE');$('meta[property="og:title"]').attr('content','DATA C0RE');$('meta[property="og:description"]').attr('content','DATA C0RE');$('meta[name="twitter:title"]').attr('content','DATA C0RE');$('meta[name="twitter:description"]').attr('content','DATA C0RE')}
   fs.writeFileSync(file,$.html(),'utf8');
 }
-console.log('Portfolio V2 final cleanup applied: Home + Archive + CV + Contact stable primary header, static language switcher, single archive filter layer and reusable project taxonomy.');
