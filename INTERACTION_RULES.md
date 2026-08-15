@@ -15,6 +15,10 @@ The three surviving primary destinations must remain directly accessible in the 
 
 Do not hide these three links on tablet or phone. The current destination is highlighted with the acid/yellow accent. The DATA C0RE brand returns Home.
 
+The EN / FR / ES language switcher is structural header content and must be rendered statically in the generated HTML. Do not create it only after page load with JavaScript. Runtime scripts may synchronize `aria-pressed`, routing and stored preference, but the controls must already occupy their final width on first paint so Archive / CV / Contact / Index never jump horizontally during reload or navigation.
+
+When switching languages, preserve meaningful query parameters such as Archive `?tag=<slug>` filters.
+
 The INDEX overlay is secondary. On very small phones it may be hidden if needed to preserve the three primary links and language switcher without overflow.
 
 ## Home fullpage / magnets
