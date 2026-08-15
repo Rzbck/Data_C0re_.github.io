@@ -61,6 +61,9 @@ jobs:
       - name: Polish Work Archive Lab and SIGNAL localization
         run: node scripts/portfolio-architecture-polish.mjs
 
+      - name: Finalize localized SIGNAL diagram and metadata
+        run: node scripts/portfolio-architecture-finalize.mjs
+
       - name: Apply structured index and clean contact interaction
         run: node scripts/menu-layout-integration.mjs
 
