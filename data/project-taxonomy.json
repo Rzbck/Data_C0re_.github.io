@@ -47,7 +47,7 @@
   "projects": {
     "lumina": ["geneva", "switzerland", "installation", "lighting", "led", "interactive", "touchdesigner", "dmx", "art-net", "show-control", "networked-media"],
     "grand-theatre": ["geneva", "switzerland", "stage", "theatre", "theatre-video", "projection", "smode", "show-control", "calibration"],
-    "comedie": ["geneva", "switzerland", "stage", "theatre", "touring", "theatre-video", "projection", "realtime-video", "show-control", "networked-media"],
+    "comedie": ["geneva", "switzerland", "stage", "theatre", "touring", "theatre-video", "projection", "realtime-video", "show-control", "networked-media", "calibration"],
     "hardwinner": ["grenoble", "stage", "live-av", "realtime-video", "lighting", "led", "audio-reactive", "touchdesigner", "resolume", "glsl", "dmx", "show-control"],
     "stage-systems": ["chambery", "stage", "live-av", "realtime-video", "lighting", "led", "touchdesigner", "resolume", "dmx"],
     "snake": ["research", "software", "interactive", "touchdesigner", "networked-media"],
