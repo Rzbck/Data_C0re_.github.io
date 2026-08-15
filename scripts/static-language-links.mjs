@@ -5,7 +5,8 @@ import { load } from 'cheerio';
 const ROOT=process.cwd();
 const supported=['en','fr','es'];
 const critical=`
-/* Critical first-paint language navigation: keep header geometry stable before runtime JS. */
+/* Critical first-paint header geometry: no scrollbar or language-control layout shift. */
+html{overflow-y:scroll;scrollbar-gutter:stable}
 .site-header .lang-switcher{display:flex;align-items:center;gap:0;flex:0 0 auto;margin-left:2px}
 .site-header .lang-switcher>a{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-width:28px;height:34px;padding:9px 5px;border:0;background:transparent;color:var(--grey,#999791);text-decoration:none;font-family:inherit;font-size:9px;font-weight:800;line-height:1;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
 .site-header .lang-switcher>a:hover,.site-header .lang-switcher>a:focus-visible{color:var(--acid,#dfff00)}
@@ -52,4 +53,4 @@ for(const file of walk(ROOT)){
   $('head').append(`<style data-language-switcher-critical>${critical}</style>`);
   fs.writeFileSync(file,$.html(),'utf8');
 }
-console.log('Static EN / FR / ES anchors and critical no-flash header geometry applied.');
+console.log('Static language anchors + stable scrollbar gutter applied before first paint.');
