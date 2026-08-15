@@ -89,6 +89,9 @@ jobs:
       - name: Stabilize language switcher before first paint
         run: node scripts/static-language-links.mjs
 
+      - name: Localize The Last Low-Bandwidth Message
+        run: node scripts/localize-low-bandwidth-project.mjs
+
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
