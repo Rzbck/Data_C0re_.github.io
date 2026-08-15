@@ -1,6 +1,6 @@
 # DATA C0RE — EDITORIAL RULES
 
-Persistent rules for all future portfolio work. Read together with `PROJECT_AI_CONTEXT.md` before editing the site.
+Persistent rules for all future portfolio work. Read together with `PROJECT_AI_CONTEXT.md` and `INTERACTION_RULES.md` before editing the site.
 
 ## Hard rule: never explain the website strategy to the visitor
 
