@@ -1,0 +1,21 @@
+/* DATA C0RE — experimental directional type trail for Home Archive / Contact gates.
+   Fine-pointer desktop only. Touch and reduced-motion remain static. */
+.home-gate{overflow:hidden}
+.home-gate-title{position:relative;display:block;isolation:isolate;overflow:visible}
+.home-gate-title__front{position:relative;z-index:6;display:block}
+.home-gate-title__echo{position:absolute;left:0;top:0;z-index:1;display:block;white-space:nowrap;pointer-events:none;opacity:0;will-change:transform,opacity;mix-blend-mode:screen;transition:transform 110ms cubic-bezier(.16,.84,.32,1),opacity 130ms ease}
+.home-gate-title__echo--1{transform:translate(var(--gate-echo-1-x,0),var(--gate-echo-1-y,0));color:rgba(223,255,0,.42)}
+.home-gate-title__echo--2{transform:translate(var(--gate-echo-2-x,0),var(--gate-echo-2-y,0));color:transparent;-webkit-text-stroke:1px rgba(223,255,0,.34)}
+.home-gate-title__echo--3{transform:translate(var(--gate-echo-3-x,0),var(--gate-echo-3-y,0));color:rgba(223,255,0,.12)}
+.home-gate-title__echo--4{transform:translate(var(--gate-echo-4-x,0),var(--gate-echo-4-y,0));color:transparent;-webkit-text-stroke:1px rgba(245,244,239,.12)}
+.home-gate.is-gate-trailing .home-gate-title__echo--1{opacity:.78}
+.home-gate.is-gate-trailing .home-gate-title__echo--2{opacity:.68}
+.home-gate.is-gate-trailing .home-gate-title__echo--3{opacity:.58}
+.home-gate.is-gate-trailing .home-gate-title__echo--4{opacity:.5}
+
+@media(max-width:900px),(hover:none),(pointer:coarse){
+  .home-gate-title__echo{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .home-gate-title__echo{display:none!important}
+}
