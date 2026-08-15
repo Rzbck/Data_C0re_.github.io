@@ -1,8 +1,13 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { chromium } from 'playwright';
 
 const base = process.env.AUDIT_BASE_URL || 'http://127.0.0.1:4173';
 const locales = ['en','fr','es'];
-const routes = ['', 'archive.html', 'cv.html', 'contact.html'];
+const coreRoutes = ['', 'archive.html', 'cv.html', 'contact.html'];
+const projectDir = lang => path.join(process.cwd(), lang, 'projects');
+const projectFiles = fs.readdirSync(projectDir('en')).filter(name => name.endsWith('.html')).sort();
+const routes = [...coreRoutes, ...projectFiles.map(name => `projects/${name}`)];
 const viewports = [
   { name:'mobile-small', width:360, height:800 },
   { name:'mobile', width:390, height:844 },
@@ -14,12 +19,20 @@ const viewports = [
 ];
 
 const failures = [];
-const browser = await chromium.launch({ headless:true });
-
 function fail(label, detail){ failures.push(`${label}: ${detail}`); }
 function overlaps(a,b){
   return a && b && !(a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top);
 }
+
+/* Locale project directories must remain exact structural copies. */
+for (const lang of locales) {
+  const files = fs.readdirSync(projectDir(lang)).filter(name => name.endsWith('.html')).sort();
+  if (JSON.stringify(files) !== JSON.stringify(projectFiles)) {
+    fail(`locale ${lang}`, `project route mismatch; expected ${projectFiles.join(', ')}, got ${files.join(', ')}`);
+  }
+}
+
+const browser = await chromium.launch({ headless:true });
 
 for (const vp of viewports) {
   const context = await browser.newContext({ viewport:{width:vp.width,height:vp.height}, reducedMotion:'no-preference' });
@@ -27,37 +40,65 @@ for (const vp of viewports) {
     for (const route of routes) {
       const page = await context.newPage();
       const label = `${vp.name} ${lang}/${route || 'index'}`;
+      const isProject = route.startsWith('projects/');
       const pageErrors = [];
       page.on('pageerror', err => pageErrors.push(String(err.message || err)));
       await page.goto(`${base}/${lang}/${route}`, { waitUntil:'domcontentloaded', timeout:30000 });
-      await page.waitForTimeout(250);
+      await page.waitForTimeout(150);
 
-      const checks = await page.evaluate(() => {
+      const checks = await page.evaluate(({isProject}) => {
         const q = s => document.querySelector(s);
         const qa = s => [...document.querySelectorAll(s)];
         const rect = el => el ? el.getBoundingClientRect().toJSON() : null;
+        const visible = el => !!el && !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
         const html = document.documentElement;
         const body = document.body;
-        const header = q('.site-header');
         const primary = qa('.site-header [data-v2-primary]');
         const langs = qa('.site-header .lang-switcher a[data-lang]');
+
+        const clippingSelectors = [
+          '.signal-hero-system', '.signal-tech-grid', '.project-grid', '.stack-grid',
+          '.route', '.system-flow', '.stats-grid', '.tech-tabs', '.project-next',
+          '.project-facts', '.production-facts', '.stage-facts', '.pro-metrics',
+          '.install-steps', '.pro-responsibilities', '.experience-motion-grid',
+          '.fabrication-grid'
+        ];
+        const clippedContainers = clippingSelectors.flatMap(selector => qa(selector).map((el, index) => {
+          const style = getComputedStyle(el);
+          const overflowX = style.overflowX;
+          const overflowY = style.overflowY;
+          const clipsX = /hidden|clip/.test(overflowX) && el.scrollWidth > el.clientWidth + 3;
+          const clipsY = /hidden|clip/.test(overflowY) && el.scrollHeight > el.clientHeight + 3;
+          return {selector, index, clipsX, clipsY, scrollWidth:el.scrollWidth, clientWidth:el.clientWidth, scrollHeight:el.scrollHeight, clientHeight:el.clientHeight};
+        })).filter(item => item.clipsX || item.clipsY);
+
+        const projectBlocks = isProject ? qa('.project-hero,.project-section,.project-next').map((el, index) => ({index, rect:rect(el)})) : [];
+        const projectTitle = isProject ? rect(q('.project-hero h1')) : null;
+        const signalSystem = rect(q('.signal-hero-system'));
+        const signalNodes = qa('.signal-node').map(el => ({rect:rect(el), visible:visible(el)}));
+        const signalTech = qa('.signal-tech-grid article').map(el => ({rect:rect(el), visible:visible(el)}));
+
         return {
           viewportMeta: !!q('meta[name="viewport"]'),
           horizontalOverflow: Math.max(html.scrollWidth, body?.scrollWidth || 0) - window.innerWidth,
-          header: rect(header),
-          primary: primary.map(el => ({text:el.textContent.trim(), rect:rect(el), visible:!!(el.offsetWidth||el.offsetHeight)})),
-          langs: langs.map(el => ({text:el.textContent.trim(), rect:rect(el), visible:!!(el.offsetWidth||el.offsetHeight)})),
-          motionToggle: !!q('.motion-toggle:not([style*="display:none"])'),
-          contactLayout: rect(q('.contact-layout')),
+          primary: primary.map(el => ({text:el.textContent.trim(), rect:rect(el), visible:visible(el)})),
+          langs: langs.map(el => ({text:el.textContent.trim(), rect:rect(el), visible:visible(el)})),
+          motionToggleVisible: qa('.motion-toggle').some(visible),
           contactInputs: qa('.contact-field input,.contact-field textarea,.contact-field select').map(rect),
           archiveControls: rect(q('.archive-controls')),
-          homePanels: qa('[data-home-panel]').map(rect)
+          homePanels: qa('[data-home-panel]').map(rect),
+          projectBlocks,
+          projectTitle,
+          clippedContainers,
+          signalSystem,
+          signalNodes,
+          signalTech
         };
-      });
+      }, {isProject});
 
       if (!checks.viewportMeta) fail(label,'missing viewport meta');
       if (checks.horizontalOverflow > 3) fail(label,`horizontal overflow ${checks.horizontalOverflow}px`);
-      if (checks.motionToggle) fail(label,'motion toggle still present');
+      if (checks.motionToggleVisible) fail(label,'motion toggle visible');
       if (checks.primary.length !== 4) fail(label,`expected 4 primary nav links, got ${checks.primary.length}`);
       if (checks.langs.length !== 3) fail(label,`expected 3 language links, got ${checks.langs.length}`);
 
@@ -87,6 +128,39 @@ for (const vp of viewports) {
         }
       }
 
+      if (isProject) {
+        if (!checks.projectTitle) fail(label,'missing project title');
+        if (checks.projectTitle && (checks.projectTitle.left < -1 || checks.projectTitle.right > vp.width + 2)) {
+          fail(label,'project title outside viewport');
+        }
+        for (const block of checks.projectBlocks) {
+          const r = block.rect;
+          if (!r) continue;
+          if (r.left < -1 || r.right > vp.width + 2) fail(label,`project block ${block.index} outside viewport`);
+        }
+        for (const item of checks.clippedContainers) {
+          fail(label,`${item.selector}[${item.index}] clips content (${item.scrollWidth}×${item.scrollHeight} inside ${item.clientWidth}×${item.clientHeight})`);
+        }
+      }
+
+      if (route.endsWith('projects/signal.html') && vp.width <= 900) {
+        if (!checks.signalSystem) fail(label,'missing SIGNAL pipeline');
+        if (checks.signalNodes.length !== 5 || checks.signalNodes.some(node => !node.visible)) {
+          fail(label,`SIGNAL pipeline expected 5 visible nodes, got ${checks.signalNodes.filter(node=>node.visible).length}`);
+        }
+        if (checks.signalSystem) {
+          for (const [index,node] of checks.signalNodes.entries()) {
+            if (!node.rect) continue;
+            if (node.rect.bottom > checks.signalSystem.bottom + 2 || node.rect.top < checks.signalSystem.top - 2) {
+              fail(label,`SIGNAL node ${index+1} clipped by pipeline container`);
+            }
+          }
+        }
+        if (checks.signalTech.length !== 5 || checks.signalTech.some(item => !item.visible)) {
+          fail(label,`SIGNAL tech grid expected 5 visible cards, got ${checks.signalTech.filter(item=>item.visible).length}`);
+        }
+      }
+
       const relevantErrors = pageErrors.filter(msg => !/turnstile|cloudflare|Failed to fetch/i.test(msg));
       if (relevantErrors.length) fail(label,`page errors: ${relevantErrors.join(' | ')}`);
       await page.close();
@@ -102,4 +176,4 @@ if (failures.length) {
   failures.forEach(x => console.error(`- ${x}`));
   process.exit(1);
 }
-console.log(`Responsive release audit passed: ${viewports.length} viewports × ${locales.length} locales × ${routes.length} routes.`);
+console.log(`Responsive release audit passed: ${viewports.length} viewports × ${locales.length} locales × ${routes.length} routes (${projectFiles.length} project pages per locale).`);
