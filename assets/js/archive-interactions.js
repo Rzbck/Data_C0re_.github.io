@@ -67,6 +67,21 @@
     empty?.classList.toggle('is-visible',visible===0);
   };
 
+  const syncCanonicalTaxonomy=async()=>{
+    try{
+      const url=new URL('data/project-taxonomy.json',document.baseURI);
+      const response=await fetch(url,{credentials:'same-origin'});
+      if(!response.ok)return;
+      const taxonomy=await response.json();
+      const projects=taxonomy?.projects||{};
+      entries.forEach(entry=>{
+        const slug=entry.dataset.archiveProject;
+        const tags=projects[slug];
+        if(slug&&Array.isArray(tags))entry.dataset.archiveTags=tags.join(' ');
+      });
+    }catch{}
+  };
+
   statusButtons.forEach(button=>button.addEventListener('click',()=>{
     status=button.dataset.archiveStatusFilter||'all';
     statusButtons.forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
@@ -101,5 +116,5 @@
 
   addEventListener('resize',()=>{if(!desktop())entries.forEach(deactivateMedia)},{passive:true});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)entries.forEach(deactivateMedia)});
-  syncProjectChip();apply();
+  syncCanonicalTaxonomy().finally(()=>{syncProjectChip();apply()});
 })();
