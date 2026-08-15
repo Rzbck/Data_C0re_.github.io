@@ -13,8 +13,8 @@
       if(!fine())return;
       const r=item.getBoundingClientRect();
       const isGate=item.hasAttribute('data-home-gate-magnet');
-      const x=(event.clientX-r.left-r.width/2)*(isGate?.018:.055);
-      const y=(event.clientY-r.top-r.height/2)*(isGate?.035:.095);
+      const x=(event.clientX-r.left-r.width/2)*(isGate ? .018 : .055);
+      const y=(event.clientY-r.top-r.height/2)*(isGate ? .035 : .095);
       item.style.setProperty('--magnet-x',`${x.toFixed(2)}px`);
       item.style.setProperty('--magnet-y',`${y.toFixed(2)}px`);
     });
