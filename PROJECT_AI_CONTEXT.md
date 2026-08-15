@@ -3,6 +3,7 @@
 Updated: 2026-08-15
 
 **READ THIS FILE BEFORE ANY PORTFOLIO WRITE.**
+**ALSO READ `EDITORIAL_RULES.md` BEFORE ANY PUBLIC COPY OR INFORMATION-ARCHITECTURE CHANGE.**
 
 This file is the persistent handoff for future ChatGPT / AI conversations working on this repository.
 
@@ -34,10 +35,9 @@ Recommended FR preview:
 Preview architecture:
 - Vercel project: `datac0re-dev-preview`
 - Vercel team: `datacoredrive1-6167s-projects`
-- The preview is a lightweight proxy that reads files directly from:
-  `https://raw.githubusercontent.com/Rzbck/Data_C0re_.github.io/dev/...`
-- Therefore normal content commits to `dev` appear through the stable preview without publishing `main`.
-- Preview responses send: `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet` and `Cache-Control: no-store`.
+- The preview is a lightweight proxy that reads files directly from the GitHub `dev` branch.
+- Normal content commits to `dev` appear through the stable preview without publishing `main`.
+- Preview responses send `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet` and no-store caching headers.
 - The Vercel preview is NOT the production deployment.
 
 Tools used for the current workflow:
@@ -59,9 +59,15 @@ A future `dev.datac0re.is-a.dev` would require a separate is-a.dev DNS registrat
 - No DEV workflow may push to `main`.
 - IndexNow / production SEO submission must remain production-only.
 
-## Current editorial architecture
+## Current editorial direction
 
-Keep the public-facing structure simple.
+Keep the public-facing architecture extremely simple and do not make the visitor learn internal portfolio taxonomy.
+
+Target navigation direction:
+- Home is reached through the DATA C0RE brand/logo, not treated as a separate menu destination.
+- Primary destinations should converge toward `Archive`, `CV`, and `Contact`.
+- Remove redundant top-level `Work`, `About`, `Services`, and `Lab` roles once their useful content is consolidated.
+- Keep exactly one canonical detailed page per project/case study. Home and Archive can contain short teasers/navigation entries only.
 
 ### HOME
 The landing page must answer quickly:
@@ -70,7 +76,7 @@ The landing page must answer quickly:
 3. With which institutions, collectives and venues?
 4. In which places / production contexts?
 5. What are the concrete technical capabilities?
-6. Where can the visitor go next?
+6. What is the next useful action: open a project, Archive, CV or Contact?
 
 HOME should foreground realized professional / collaborative contexts, not experiments.
 
@@ -89,16 +95,22 @@ Core capabilities to communicate without repeating them everywhere:
 - system design / networked media / onsite integration
 - Fusion 360 / fabrication coordination where relevant
 
-### WORK
-`Work` contains the strongest realized / delivered / operated case studies.
-Do not pad it with experiments just to increase project count.
-
 ### ARCHIVE
-`Archive` is the single place for the broader catalogue. It includes both realized history and R&D / studies / simulations, clearly status-labelled.
+`Archive` is the single complete project index. It includes realized history and R&D / studies / simulations with clear status labels and concise metadata. It links to the one canonical detailed page for each project.
 
-### LAB
-Do not maintain Lab as a separate top-level information architecture. It created unnecessary overlap with Archive. Research, prototypes, simulations and studies belong inside Archive.
-Legacy `lab.html` can redirect / point to Archive and should not be a main navigation item.
+### CV
+`CV` exists for professional chronology, roles, institutions, skills and experience. Avoid repeating the full Home biography or project case-study narratives.
+
+### CONTACT
+`Contact` remains a unique functional route for the secure form. It can remain a primary navigation destination.
+
+### LEGACY TOP-LEVEL ROUTES
+- `Work`: redundant once selected realized work is on Home and the complete catalogue is in Archive.
+- `About`: redundant if the essential identity/practice statement is on Home and chronology is in CV.
+- `Services`: redundant if concrete capabilities and mobility are integrated concisely into Home/CV.
+- `Lab`: redundant; research, prototypes, simulations and studies belong inside Archive.
+
+Legacy routes should eventually become noindex redirects/canonical handoffs to the relevant surviving destination and should be removed from the sitemap when the simplified architecture is implemented.
 
 ### Research / archive-only material
 Do NOT foreground these on the landing page:
