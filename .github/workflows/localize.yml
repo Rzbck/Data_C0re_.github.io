@@ -99,7 +99,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A en fr es sitemap.xml robots.txt assets/js/seo.js '*.html' 'projects/*.html'
+          # Stage only actual portfolio output. 404.html and the Google verification
+          # file are intentionally excluded: generator formatting changes there
+          # caused a second automatic main push while GitHub Pages was building.
+          git add -A en fr es sitemap.xml robots.txt assets/js/seo.js \
+            index.html work.html about.html services.html lab.html archive.html cv.html contact.html \
+            'projects/*.html'
           if git diff --cached --quiet; then
             echo "No localization changes to commit."
           else
