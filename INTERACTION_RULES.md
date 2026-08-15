@@ -1,6 +1,6 @@
 # DATA C0RE — INTERACTION / RESPONSIVE RULES
 
-Persistent implementation rules for the compact V2 portfolio. Read together with `PROJECT_AI_CONTEXT.md` and `EDITORIAL_RULES.md` before changing navigation, archive interactions, responsive layouts or localized display copy.
+Persistent implementation rules for the compact V2/V3 portfolio. Read together with `PROJECT_AI_CONTEXT.md` and `EDITORIAL_RULES.md` before changing navigation, archive interactions, responsive layouts or localized display copy.
 
 ## Branch / preview
 - Active work is always written explicitly to `dev`.
@@ -16,6 +16,24 @@ The three surviving primary destinations must remain directly accessible in the 
 Do not hide these three links on tablet or phone. The current destination is highlighted with the acid/yellow accent. The DATA C0RE brand returns Home.
 
 The INDEX overlay is secondary. On very small phones it may be hidden if needed to preserve the three primary links and language switcher without overflow.
+
+## Home fullpage / magnets
+The compact Home must retain the site's fluid fullpage/magnetic navigation language instead of becoming a conventional long static landing page.
+
+Desktop / fine pointer direction:
+- Panel 1 = audiovisual Hero.
+- Panel 2 = practice + geographic scope + compact references.
+- Panel 3 = capabilities + primary Archive / Contact gates.
+- Wheel, trackpad and keyboard navigation snap magnetically between these logical panels through the existing fullpage system.
+- Compact reference links use subtle pointer magnets.
+- The large Archive / Contact gates also use restrained magnetic displacement; interaction must not change page geometry.
+- Fullpage composition must remain stable on short desktop viewports; reduce typography/spacing before allowing overflow.
+
+Tablet / touch / phone direction:
+- keep native readable scrolling when content is taller than the viewport;
+- do not depend on magnetic pointer effects;
+- touch snapping may only occur when a panel fits or when the user has actually reached the edge of a taller panel;
+- never trap touch scrolling inside a fullpage animation.
 
 ## Responsive requirement
 Every visual/site change must be considered at three levels before completion:
