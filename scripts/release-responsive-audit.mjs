@@ -24,7 +24,6 @@ function overlaps(a,b){
   return a && b && !(a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top);
 }
 
-/* Locale project directories must remain exact structural copies. */
 for (const lang of locales) {
   const files = fs.readdirSync(projectDir(lang)).filter(name => name.endsWith('.html')).sort();
   if (JSON.stringify(files) !== JSON.stringify(projectFiles)) {
@@ -50,7 +49,16 @@ for (const vp of viewports) {
         const q = s => document.querySelector(s);
         const qa = s => [...document.querySelectorAll(s)];
         const rect = el => el ? el.getBoundingClientRect().toJSON() : null;
-        const visible = el => !!el && !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+        const visible = el => {
+          if (!el) return false;
+          const style = getComputedStyle(el);
+          return style.display !== 'none' && style.visibility !== 'hidden' && !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+        };
+        const describe = el => {
+          const id = el.id ? `#${el.id}` : '';
+          const cls = typeof el.className === 'string' && el.className.trim() ? `.${el.className.trim().replace(/\s+/g,'.')}` : '';
+          return `${el.tagName.toLowerCase()}${id}${cls}`;
+        };
         const html = document.documentElement;
         const body = document.body;
         const primary = qa('.site-header [data-v2-primary]');
@@ -72,6 +80,15 @@ for (const vp of viewports) {
           return {selector, index, clipsX, clipsY, scrollWidth:el.scrollWidth, clientWidth:el.clientWidth, scrollHeight:el.scrollHeight, clientHeight:el.clientHeight};
         })).filter(item => item.clipsX || item.clipsY);
 
+        const overflowingElements = qa('body *').filter(el => {
+          if (!visible(el)) return false;
+          const r = el.getBoundingClientRect();
+          return r.left < -3 || r.right > window.innerWidth + 3;
+        }).map(el => {
+          const r = el.getBoundingClientRect();
+          return {name:describe(el), left:Math.round(r.left), right:Math.round(r.right), width:Math.round(r.width), scrollWidth:el.scrollWidth, clientWidth:el.clientWidth};
+        }).sort((a,b) => Math.max(0,b.right-window.innerWidth,-b.left) - Math.max(0,a.right-window.innerWidth,-a.left)).slice(0,8);
+
         const projectBlocks = isProject ? qa('.project-hero,.project-section,.project-next').map((el, index) => ({index, rect:rect(el)})) : [];
         const projectTitle = isProject ? rect(q('.project-hero h1')) : null;
         const signalSystem = rect(q('.signal-hero-system'));
@@ -81,6 +98,7 @@ for (const vp of viewports) {
         return {
           viewportMeta: !!q('meta[name="viewport"]'),
           horizontalOverflow: Math.max(html.scrollWidth, body?.scrollWidth || 0) - window.innerWidth,
+          overflowingElements,
           primary: primary.map(el => ({text:el.textContent.trim(), rect:rect(el), visible:visible(el)})),
           langs: langs.map(el => ({text:el.textContent.trim(), rect:rect(el), visible:visible(el)})),
           motionToggleVisible: qa('.motion-toggle').some(visible),
@@ -97,7 +115,10 @@ for (const vp of viewports) {
       }, {isProject});
 
       if (!checks.viewportMeta) fail(label,'missing viewport meta');
-      if (checks.horizontalOverflow > 3) fail(label,`horizontal overflow ${checks.horizontalOverflow}px`);
+      if (checks.horizontalOverflow > 3) {
+        const offenders = checks.overflowingElements.map(x => `${x.name}[${x.left}..${x.right}]`).join(', ');
+        fail(label,`horizontal overflow ${checks.horizontalOverflow}px${offenders ? `; offenders: ${offenders}` : ''}`);
+      }
       if (checks.motionToggleVisible) fail(label,'motion toggle visible');
       if (checks.primary.length !== 4) fail(label,`expected 4 primary nav links, got ${checks.primary.length}`);
       if (checks.langs.length !== 3) fail(label,`expected 3 language links, got ${checks.langs.length}`);
