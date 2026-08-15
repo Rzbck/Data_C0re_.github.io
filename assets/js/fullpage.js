@@ -5,7 +5,7 @@
 
   const css=document.createElement('link');
   css.rel='stylesheet';
-  css.href=new URL('assets/css/fullpage.css',document.baseURI).href;
+  css.href=new URL('assets/css/fullpage.css?v=20260815-2',document.baseURI).href;
   document.head.appendChild(css);
 
   const pageClass=filename.replace(/\.html$/,'').replace(/[^a-z0-9-]/gi,'-');
@@ -17,7 +17,8 @@
   let panels=[];
   if(filename==='index.html'){
     body.classList.add('fullpage-index');
-    panels=qa('main > .hero,main > .home-statement,main > .home-work,main > .home-direction');
+    const compactPanels=qa('main > .home-compact-v3 > .home-compact-v3__panel');
+    panels=[q('main > .hero'),...(compactPanels.length?compactPanels:qa('main > .home-statement,main > .home-work,main > .home-direction'))].filter(Boolean);
   }else if(filename==='work.html'){
     body.classList.add('fullpage-work');
     panels=qa('main > .page-intro,main > .work-screen');
