@@ -7,9 +7,9 @@
   const localizedPath=/^\/(en|fr|es)\//.test(location.pathname);
   const routePrefix=localizedPath?`${lang}/`:'';
   const copy={
-    en:{year:'OFFICIAL SELECTION',status:'OFFICIAL SELECTION',summary:'France / small-file film / 1 min / 1.79 MB / SFMF 2026'},
-    fr:{year:'SÉLECTION',status:'SÉLECTION OFFICIELLE',summary:'France / film small-file / 1 min / 1,79 MB / SFMF 2026'},
-    es:{year:'SELECCIÓN',status:'SELECCIÓN OFICIAL',summary:'Francia / película small-file / 1 min / 1,79 MB / SFMF 2026'}
+    en:{year:'OFFICIAL SELECTION',status:'OFFICIAL SELECTION',summary:'France / small-file film / 1:25 / 1.79 MB / SFMF 2026'},
+    fr:{year:'SÉLECTION',status:'SÉLECTION OFFICIELLE',summary:'France / film small-file / 1:25 / 1,79 MB / SFMF 2026'},
+    es:{year:'SELECCIÓN',status:'SELECCIÓN OFICIAL',summary:'Francia / película small-file / 1:25 / 1,79 MB / SFMF 2026'}
   }[lang]||null;
 
   const ensureLowBandwidthEntry=()=>{
@@ -22,6 +22,16 @@
     if(firstGroup)firstGroup.after(group);else root.appendChild(group);
   };
   ensureLowBandwidthEntry();
+
+  const lowBandwidthEntry=root.querySelector('[data-archive-project="last-low-bandwidth-message"]');
+  if(lowBandwidthEntry){
+    const summary=lowBandwidthEntry.querySelector('small');
+    if(summary)summary.textContent=copy.summary;
+    lowBandwidthEntry.dataset.archiveVideo='assets/media/low-bandwidth-message/excerpt.mp4';
+    if(!lowBandwidthEntry.querySelector('.archive-entry-media')){
+      lowBandwidthEntry.insertAdjacentHTML('afterbegin','<span class="archive-entry-media" aria-hidden="true"><img src="assets/media/low-bandwidth-message/promo.webp" alt="" loading="lazy" decoding="async"><video muted loop playsinline preload="none"></video></span>');
+    }
+  }
 
   const entries=[...root.querySelectorAll('.archive-entry[data-archive-status]')];
   const groups=[...root.querySelectorAll('.archive-year')];
