@@ -76,11 +76,14 @@ jobs:
       - name: Synchronize canonical origin
         run: node scripts/sync-origin.mjs
 
-      - name: Simplify final information architecture and landing page
+      - name: Collapse portfolio to Home Archive CV Contact
         run: node scripts/portfolio-editorial-simplify.mjs
 
       - name: Finalize legacy Lab redirects
         run: node scripts/lab-redirect-finalize.mjs
+
+      - name: Apply final V2 cleanup
+        run: node scripts/portfolio-v2-finalize.mjs
 
       - name: Commit generated localization layer
         shell: bash
