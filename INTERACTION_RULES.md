@@ -23,7 +23,7 @@ The compact Home must retain the site's fluid fullpage/magnetic navigation langu
 Desktop / fine pointer direction:
 - Panel 1 = audiovisual Hero.
 - Panel 2 = practice + geographic scope + compact references.
-- Panel 3 = capabilities + primary Archive / Contact gates.
+- Panel 3 = capabilities + reusable topic tags + primary Archive / Contact gates.
 - Wheel, trackpad and keyboard navigation snap magnetically between these logical panels through the existing fullpage system.
 - Compact reference links use subtle pointer magnets.
 - The large Archive / Contact gates also use restrained magnetic displacement; interaction must not change page geometry.
@@ -34,6 +34,27 @@ Tablet / touch / phone direction:
 - do not depend on magnetic pointer effects;
 - touch snapping may only occur when a panel fits or when the user has actually reached the edge of a taller panel;
 - never trap touch scrolling inside a fullpage animation.
+
+## Link semantics: project vs tag
+This distinction is mandatory everywhere on the site:
+- a named project, venue or production reference such as `Comédie de Genève`, `Grand Théâtre de Genève` or `Geneva Lux` links to that project's canonical detail page;
+- a reusable topic/technology/location label such as `theatre video`, `TouchDesigner`, `projection`, `DMX`, `Geneva` or `touring` links to Archive with `?tag=<slug>` and activates that tag filter;
+- do not route a named project to a one-project Archive filter when a canonical project page already exists.
+
+## Project taxonomy
+`data/project-taxonomy.json` is the persistent source of reusable project metadata.
+
+Tag categories currently include:
+- location;
+- context;
+- discipline;
+- tool;
+- protocol;
+- system.
+
+Each Archive project receives `data-archive-tags` from this taxonomy. Future projects should extend the taxonomy rather than hard-code filter words into Home or Archive markup. Tags may be used for filters, Home navigation, future visualisations, statistics or other interfaces without needing to be visibly printed on every project row.
+
+Only tag a fact that is actually supported by the project documentation. Do not infer a protocol, venue, technology or location merely to fill the taxonomy.
 
 ## Responsive requirement
 Every visual/site change must be considered at three levels before completion:
@@ -47,9 +68,12 @@ Localized FR/ES strings must never collide with adjacent columns or controls. Lo
 Archive is the only complete catalogue and should feel interactive without becoming visually noisy.
 
 Required interaction direction:
+- keep one status control layer only; do not duplicate the status legend immediately above the status filter buttons;
 - filter by status;
 - filter by project type;
 - filter by year;
+- filter by reusable taxonomy tag;
+- accept `?tag=<slug>` deep links and immediately show the matching Archive results;
 - update results immediately without navigation;
 - desktop/fine pointer: project rows reveal their associated poster/video as a background layer on hover/focus;
 - touch/tablet/phone: no hover-dependent video playback; use a restrained static poster/background when available;
