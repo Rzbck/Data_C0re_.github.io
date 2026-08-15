@@ -24,7 +24,7 @@ for(const rel of homes){
   $('link[data-home-compact-v3]').remove();
   $('link[data-home-gate-trail]').remove();
   $('head').append('<link rel="stylesheet" href="assets/css/home-compact-v3.css?v=20260815-4" data-home-compact-v3>');
-  $('head').append('<link rel="stylesheet" href="assets/css/home-gate-trail.css?v=20260815-1" data-home-gate-trail>');
+  $('head').append('<link rel="stylesheet" href="assets/css/home-gate-trail.css?v=20260815-2" data-home-gate-trail>');
   $('.skip-link').text(t.skip).attr('href','#practice');
   const hero=$('main .hero').first();if(!hero.length)continue;
   hero.find('.hero-foot span').text(lang==='fr'?'Systèmes audiovisuels / 2016—2027':lang==='es'?'Sistemas audiovisuales / 2016—2027':'Audiovisual systems / 2016—2027');
@@ -50,7 +50,7 @@ for(const rel of homes){
   hero.after(section);
   $('footer.global-footer').remove();
   $('body script[data-home-compact-v3-js]').remove();
-  $('body').append('<script src="assets/js/home-compact-v3.js?v=20260815-4" defer data-home-compact-v3-js></script>');
+  $('body').append('<script src="assets/js/home-compact-v3.js?v=20260815-5" defer data-home-compact-v3-js></script>');
   fs.writeFileSync(file,$.html(),'utf8');
 }
-console.log('Compact Home V3 applied: project names route to project pages; topic tags filter Archive; large gates use directional type trail on fine-pointer desktop.');
+console.log('Compact Home V3 applied: project names route to project pages; topic tags filter Archive; amplified directional type trail runs on fine-pointer desktop.');
