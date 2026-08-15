@@ -21,9 +21,9 @@ const projectMeta = {
 };
 
 const locale = {
-  en:{archive:'Archive',contact:'Contact',projects:'projects',all:'All',type:'Type',year:'Year',tag:'Tag',allTypes:'All types',allYears:'All years',allTags:'All tags',installation:'Installation',stage:'Stage',live:'Live AV',software:'Software',simulation:'Simulation',study:'Study',realized:'Realized',research:'R&D',empty:'No project matches these filters.'},
-  fr:{archive:'Archives',contact:'Contact',projects:'projets',all:'Tous',type:'Type',year:'Année',tag:'Tag',allTypes:'Tous les types',allYears:'Toutes les années',allTags:'Tous les tags',installation:'Installation',stage:'Scène',live:'Live AV',software:'Logiciel',simulation:'Simulation',study:'Étude',realized:'Réalisé',research:'R&D',empty:'Aucun projet ne correspond à ces filtres.'},
-  es:{archive:'Archivo',contact:'Contacto',projects:'proyectos',all:'Todos',type:'Tipo',year:'Año',tag:'Tag',allTypes:'Todos los tipos',allYears:'Todos los años',allTags:'Todos los tags',installation:'Instalación',stage:'Escena',live:'Live AV',software:'Software',simulation:'Simulación',study:'Estudio',realized:'Realizado',research:'I+D',empty:'Ningún proyecto coincide con estos filtros.'}
+  en:{home:'Home',archive:'Archive',contact:'Contact',projects:'projects',all:'All',type:'Type',year:'Year',tag:'Tag',allTypes:'All types',allYears:'All years',allTags:'All tags',installation:'Installation',stage:'Stage',live:'Live AV',software:'Software',simulation:'Simulation',study:'Study',realized:'Realized',research:'R&D',empty:'No project matches these filters.'},
+  fr:{home:'Accueil',archive:'Archives',contact:'Contact',projects:'projets',all:'Tous',type:'Type',year:'Année',tag:'Tag',allTypes:'Tous les types',allYears:'Toutes les années',allTags:'Tous les tags',installation:'Installation',stage:'Scène',live:'Live AV',software:'Logiciel',simulation:'Simulation',study:'Étude',realized:'Réalisé',research:'R&D',empty:'Aucun projet ne correspond à ces filtres.'},
+  es:{home:'Inicio',archive:'Archivo',contact:'Contacto',projects:'proyectos',all:'Todos',type:'Tipo',year:'Año',tag:'Tag',allTypes:'Todos los tipos',allYears:'Todos los años',allTags:'Todos los tags',installation:'Instalación',stage:'Escena',live:'Live AV',software:'Software',simulation:'Simulación',study:'Estudio',realized:'Realizado',research:'I+D',empty:'Ningún proyecto coincide con estos filtros.'}
 };
 
 function walk(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(entry=>{const full=path.join(dir,entry.name);if(entry.isDirectory())return entry.name==='node_modules'?[]:walk(full);return entry.isFile()&&entry.name.endsWith('.html')?[full]:[]})}
@@ -34,8 +34,9 @@ function esc(value){return String(value).replaceAll('&','&amp;').replaceAll('<',
 
 function ensureV2Styles($){const link=$('link[data-v2-interface]').first();if(link.length)link.attr('href',V2_STYLE);else $('head').append(`<link rel="stylesheet" href="${V2_STYLE}" data-v2-interface>`)}
 
-function languageSwitcher(lang){
-  return `<div class="lang-switcher" role="group" aria-label="Language / Langue / Idioma" data-static-language-switcher>${[['en','EN'],['fr','FR'],['es','ES']].map(([target,label])=>`<button type="button" data-lang="${target}" aria-pressed="${target===lang?'true':'false'}">${label}</button>`).join('')}</div>`;
+function languageSwitcher(lang,prefix,route){
+  const routeHref=route==='index.html'?'':route;
+  return `<div class="lang-switcher" role="group" aria-label="Language / Langue / Idioma" data-static-language-switcher>${[['en','EN'],['fr','FR'],['es','ES']].map(([target,label])=>`<a href="${target}/${routeHref}" data-lang="${target}"${target===lang?' aria-current="page"':''}>${label}</a>`).join('')}</div>`;
 }
 
 function rebuildHeader($,rel){
@@ -43,10 +44,10 @@ function rebuildHeader($,rel){
   const lang=langFor(rel),t=locale[lang],prefix=prefixFor(rel),route=routeFor(rel);
   actions.find('.nav-text').remove();
   actions.find('.lang-switcher').remove();
-  const current=route==='archive.html'?'archive':route==='cv.html'?'cv':route==='contact.html'?'contact':'';
-  const links=[['archive',`${prefix}archive.html`,t.archive],['cv',`${prefix}cv.html`,'CV'],['contact',`${prefix}contact.html`,t.contact]].map(([key,href,label])=>{const active=current===key;return `<a class="nav-text nav-primary nav-primary--${key}${active?' is-active':''}" href="${href}" data-v2-primary="${key}"${active?' aria-current="page"':''}>${label}</a>`}).join('');
+  const current=route==='index.html'?'home':route==='archive.html'?'archive':route==='cv.html'?'cv':route==='contact.html'?'contact':'';
+  const links=[['home',`${prefix}`,t.home],['archive',`${prefix}archive.html`,t.archive],['cv',`${prefix}cv.html`,'CV'],['contact',`${prefix}contact.html`,t.contact]].map(([key,href,label])=>{const active=current===key;return `<a class="nav-text nav-primary nav-primary--${key}${active?' is-active':''}" href="${href}" data-v2-primary="${key}"${active?' aria-current="page"':''}>${label}</a>`}).join('');
   const menu=actions.find('[data-menu-toggle]').first();
-  const stableHeader=`${links}${languageSwitcher(lang)}`;
+  const stableHeader=`${links}${languageSwitcher(lang,prefix,route)}`;
   if(menu.length)menu.before(stableHeader);else actions.append(stableHeader);
 }
 
@@ -111,4 +112,4 @@ for(const file of walk(ROOT)){
   if(legacy.test(rel)){$('title').text('DATA C0RE');$('meta[name="description"]').attr('content','DATA C0RE');$('meta[property="og:title"]').attr('content','DATA C0RE');$('meta[property="og:description"]').attr('content','DATA C0RE');$('meta[name="twitter:title"]').attr('content','DATA C0RE');$('meta[name="twitter:description"]').attr('content','DATA C0RE')}
   fs.writeFileSync(file,$.html(),'utf8');
 }
-console.log('Portfolio V2 final cleanup applied: stable static header language switcher, primary navigation, single archive filter layer and reusable project taxonomy.');
+console.log('Portfolio V2 final cleanup applied: Home + Archive + CV + Contact stable primary header, static language switcher, single archive filter layer and reusable project taxonomy.');
