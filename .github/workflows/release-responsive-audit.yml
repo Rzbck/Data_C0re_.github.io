@@ -1,0 +1,58 @@
+name: Responsive release audit
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/release-responsive-audit.yml'
+      - 'scripts/release-responsive-audit.mjs'
+      - 'assets/**'
+      - '*.html'
+      - 'en/**'
+      - 'fr/**'
+      - 'es/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: responsive-release-audit
+  cancel-in-progress: true
+
+jobs:
+  browser-audit:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install browser audit dependency
+        run: npm install --no-save --package-lock=false playwright@1.55.0
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start static server
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/datac0re-http.log 2>&1 &
+          echo $! > /tmp/datac0re-http.pid
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:4173/fr/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/datac0re-http.log
+          exit 1
+
+      - name: Audit responsive layouts EN FR ES
+        env:
+          AUDIT_BASE_URL: http://127.0.0.1:4173
+        run: node scripts/release-responsive-audit.mjs
