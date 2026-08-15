@@ -7,10 +7,15 @@
   const localizedPath=/^\/(en|fr|es)\//.test(location.pathname);
   const routePrefix=localizedPath?`${lang}/`:'';
   const copy={
-    en:{year:'OFFICIAL SELECTION',status:'OFFICIAL SELECTION',summary:'France / small-file film / 1:25 / 1.79 MB / SFMF 2026'},
-    fr:{year:'SÉLECTION',status:'SÉLECTION OFFICIELLE',summary:'France / film small-file / 1:25 / 1,79 MB / SFMF 2026'},
-    es:{year:'SELECCIÓN',status:'SELECCIÓN OFICIAL',summary:'Francia / película small-file / 1:25 / 1,79 MB / SFMF 2026'}
+    en:{year:'FESTIVAL',status:'FESTIVAL',summary:'France / small-file film / 1:25 / 1.79 MB / SFMF 2026'},
+    fr:{year:'FESTIVAL',status:'FESTIVAL',summary:'France / film small-file / 1:25 / 1,79 MB / SFMF 2026'},
+    es:{year:'FESTIVAL',status:'FESTIVAL',summary:'Francia / película small-file / 1:25 / 1,79 MB / SFMF 2026'}
   }[lang]||null;
+  const contextLabels={
+    en:{lumina:'INSTALLATION','last-low-bandwidth-message':'FESTIVAL','grand-theatre':'OPERA',comedie:'THEATRE',hardwinner:'LIVE AV','stage-systems':'STAGE SYSTEMS',snake:'SOFTWARE',signal:'SIMULATION',ascii:'STUDY',realtime:'RESEARCH',cloud:'STUDY'},
+    fr:{lumina:'INSTALLATION','last-low-bandwidth-message':'FESTIVAL','grand-theatre':'OPÉRA',comedie:'THÉÂTRE',hardwinner:'LIVE AV','stage-systems':'SYSTÈMES SCÈNE',snake:'LOGICIEL',signal:'SIMULATION',ascii:'ÉTUDE',realtime:'RECHERCHE',cloud:'ÉTUDE'},
+    es:{lumina:'INSTALACIÓN','last-low-bandwidth-message':'FESTIVAL','grand-theatre':'ÓPERA',comedie:'TEATRO',hardwinner:'LIVE AV','stage-systems':'SISTEMAS ESCÉNICOS',snake:'SOFTWARE',signal:'SIMULACIÓN',ascii:'ESTUDIO',realtime:'INVESTIGACIÓN',cloud:'ESTUDIO'}
+  }[lang]||{};
 
   const ensureLowBandwidthEntry=()=>{
     if(root.querySelector('[data-archive-project="last-low-bandwidth-message"]'))return;
@@ -35,6 +40,20 @@
 
   const entries=[...root.querySelectorAll('.archive-entry[data-archive-status]')];
   const groups=[...root.querySelectorAll('.archive-year')];
+  const syncContextLabels=()=>{
+    entries.forEach(entry=>{
+      const slug=entry.dataset.archiveProject;
+      const label=contextLabels[slug];
+      if(!label)return;
+      const badge=entry.querySelector('.archive-status');
+      if(badge)badge.textContent=label;
+      const group=entry.closest('.archive-year');
+      const heading=group?.querySelector('.archive-year-head span');
+      if(heading)heading.textContent=label;
+    });
+  };
+  syncContextLabels();
+
   const statusButtons=[...document.querySelectorAll('[data-archive-status-filter]')];
   const typeSelect=document.querySelector('[data-archive-type-filter]');
   const yearSelect=document.querySelector('[data-archive-year-filter]');
@@ -178,5 +197,5 @@
 
   addEventListener('resize',()=>{if(!desktop())entries.forEach(deactivateMedia)},{passive:true});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)entries.forEach(deactivateMedia)});
-  syncCanonicalTaxonomy().finally(()=>{syncProjectChip();apply()});
+  syncCanonicalTaxonomy().finally(()=>{syncContextLabels();syncProjectChip();apply()});
 })();
