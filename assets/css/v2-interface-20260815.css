@@ -1,6 +1,9 @@
 /* DATA C0RE — compact V2 interface polish
    Primary navigation, contact locale hardening, archive interaction layer. */
 
+/* Motion toggle is intentionally removed from the public interface in every locale. */
+.site-header .motion-toggle{display:none!important}
+
 /* Primary navigation is always directly accessible. */
 .site-header .nav-primary{position:relative;display:inline-flex;align-items:center;white-space:nowrap}
 .site-header .nav-primary.is-active,.site-header .nav-primary[aria-current="page"]{color:var(--acid)}
@@ -22,14 +25,13 @@ html[lang="es"] body.contact-route .contact-copy h1{font-size:clamp(48px,5.8vw,9
   body.contact-route .contact-field input,body.contact-route .contact-field textarea{min-width:0;max-width:100%}
 }
 
-/* Header density: keep Archive / CV / Contact reachable on tablet and phone. */
+/* Header density: keep Home / Archive / CV / Contact reachable on tablet and phone. */
 @media(max-width:900px){
-  .site-header .motion-toggle{display:none!important}
   .site-header .header-actions{gap:0;min-width:0}
   .site-header .nav-primary{font-size:9px;padding:8px 6px!important;letter-spacing:.065em}
   .site-header .nav-primary.is-active::after,.site-header .nav-primary[aria-current="page"]::after{left:6px;right:6px;bottom:3px}
   .site-header .lang-switcher{display:flex;align-items:center;margin-left:2px}
-  .site-header .lang-switcher button{padding:8px 4px!important;font-size:8px!important;letter-spacing:.04em!important}
+  .site-header .lang-switcher button,.site-header .lang-switcher a{padding:8px 4px!important;font-size:8px!important;letter-spacing:.04em!important}
   .site-header .menu-toggle{font-size:9px;padding:8px 6px}
 }
 @media(max-width:620px){
@@ -37,7 +39,7 @@ html[lang="es"] body.contact-route .contact-copy h1{font-size:clamp(48px,5.8vw,9
   .site-header{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
   .site-header .brand{font-size:11px;flex:0 0 auto}
   .site-header .nav-primary{font-size:8.3px;padding:7px 4px!important;letter-spacing:.035em}
-  .site-header .lang-switcher button{font-size:7.5px!important;padding:7px 3px!important}
+  .site-header .lang-switcher button,.site-header .lang-switcher a{font-size:7.5px!important;padding:7px 3px!important}
   .site-header .menu-toggle{font-size:8px;padding:7px 3px;border-left:0}
 }
 @media(max-width:520px){
@@ -47,7 +49,7 @@ html[lang="es"] body.contact-route .contact-copy h1{font-size:clamp(48px,5.8vw,9
 @media(max-width:380px){
   .site-header .brand{font-size:10px}
   .site-header .nav-primary{font-size:7.35px;letter-spacing:0;padding-left:2px!important;padding-right:2px!important}
-  .site-header .lang-switcher button{font-size:7px!important;padding-left:2px!important;padding-right:2px!important}
+  .site-header .lang-switcher button,.site-header .lang-switcher a{font-size:7px!important;padding-left:2px!important;padding-right:2px!important}
 }
 
 /* Archive controls */
