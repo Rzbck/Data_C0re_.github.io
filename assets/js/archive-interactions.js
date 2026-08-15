@@ -10,10 +10,35 @@
   const yearSelect=document.querySelector('[data-archive-year-filter]');
   const count=document.querySelector('[data-archive-count]');
   const empty=document.querySelector('[data-archive-empty]');
+  const statusRow=document.querySelector('.archive-control-row--status');
   const lang=(document.documentElement.lang||'en').slice(0,2);
   let status='all';
+  const params=new URLSearchParams(location.search);
+  let projectFilter=params.get('project')||'';
+  if(projectFilter&&!entries.some(entry=>entry.dataset.archiveProject===projectFilter))projectFilter='';
 
   const countLabel=n=>lang==='fr'?`${n} projet${n>1?'s':''}`:lang==='es'?`${n} proyecto${n>1?'s':''}`:`${n} project${n>1?'s':''}`;
+  const projectPrefix=lang==='fr'?'Projet':lang==='es'?'Proyecto':'Project';
+
+  let projectChip=null;
+  const syncProjectChip=()=>{
+    projectChip?.remove();projectChip=null;
+    if(!projectFilter||!statusRow)return;
+    const entry=entries.find(item=>item.dataset.archiveProject===projectFilter);
+    if(!entry)return;
+    const title=entry.querySelector('strong')?.textContent?.trim()||projectFilter;
+    projectChip=document.createElement('button');
+    projectChip.type='button';projectChip.className='archive-project-query';
+    projectChip.textContent=`${projectPrefix} · ${title} ×`;
+    projectChip.setAttribute('aria-label',`${projectPrefix}: ${title}`);
+    projectChip.addEventListener('click',()=>{
+      projectFilter='';
+      const next=new URL(location.href);next.searchParams.delete('project');
+      history.replaceState({},'',`${next.pathname}${next.search}${next.hash}`);
+      syncProjectChip();apply();
+    });
+    statusRow.appendChild(projectChip);
+  };
 
   const apply=()=>{
     const type=typeSelect?.value||'all';
@@ -26,7 +51,8 @@
       const matchesStatus=status==='all'||statuses.includes(status);
       const matchesType=type==='all'||types.includes(type);
       const matchesYear=year==='all'||years.includes(year);
-      const show=matchesStatus&&matchesType&&matchesYear;
+      const matchesProject=!projectFilter||entry.dataset.archiveProject===projectFilter;
+      const show=matchesStatus&&matchesType&&matchesYear&&matchesProject;
       entry.hidden=!show;
       if(show)visible++;
     });
@@ -97,5 +123,5 @@
 
   addEventListener('resize',()=>{if(!desktop())entries.forEach(deactivateMedia)},{passive:true});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)entries.forEach(deactivateMedia)});
-  apply();
+  syncProjectChip();apply();
 })();
