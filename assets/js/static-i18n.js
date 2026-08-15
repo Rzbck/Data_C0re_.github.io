@@ -26,28 +26,36 @@
     if(!route||route==='index.html')route='';
     const path=[repoSegment,target,route].filter(Boolean).join('/').replace(/\/+/g,'/');
     const normalized=path.startsWith('/')?path:`/${path}`;
-    return `${location.origin}${normalized}${route?'':'/'}${location.hash||''}`;
+    return `${location.origin}${normalized}${route?'':'/'}${location.search||''}${location.hash||''}`;
   };
 
-  const injectSwitcher=()=>{
-    const actions=document.querySelector('.header-actions'),menu=document.querySelector('[data-menu-toggle]');
-    if(!actions||actions.querySelector('.lang-switcher'))return;
-    const wrap=document.createElement('div');
-    wrap.className='lang-switcher';wrap.setAttribute('role','group');wrap.setAttribute('aria-label','Language / Langue / Idioma');
-    [['en','EN'],['fr','FR'],['es','ES']].forEach(([target,label])=>{
-      const button=document.createElement('button');
-      button.type='button';button.dataset.lang=target;button.textContent=label;button.setAttribute('aria-pressed',String(target===lang));
+  const bindSwitcher=()=>{
+    const actions=document.querySelector('.header-actions');
+    if(!actions)return;
+    let wrap=actions.querySelector('.lang-switcher');
+    if(!wrap){
+      const menu=document.querySelector('[data-menu-toggle]');
+      wrap=document.createElement('div');
+      wrap.className='lang-switcher';wrap.setAttribute('role','group');wrap.setAttribute('aria-label','Language / Langue / Idioma');
+      [['en','EN'],['fr','FR'],['es','ES']].forEach(([target,label])=>{
+        const button=document.createElement('button');button.type='button';button.dataset.lang=target;button.textContent=label;wrap.appendChild(button);
+      });
+      actions.insertBefore(wrap,menu||null);
+    }
+    wrap.querySelectorAll('[data-lang]').forEach(button=>{
+      const target=button.dataset.lang;
+      button.setAttribute('aria-pressed',String(target===lang));
+      if(button.dataset.staticI18nBound==='true')return;
+      button.dataset.staticI18nBound='true';
       button.addEventListener('click',event=>{
         if(target===lang){event.preventDefault();return}
         try{localStorage.setItem(storage,target)}catch{}
         location.assign(destination(target));
       });
-      wrap.appendChild(button);
     });
-    actions.insertBefore(wrap,menu||null);
   };
 
-  injectSwitcher();
+  bindSwitcher();
   window.DATA_C0RE_I18N={get lang(){return lang},set:target=>{if(supported.includes(target)&&target!==lang)location.assign(destination(target))},t};
   document.dispatchEvent(new CustomEvent('data-c0re-languagechange',{detail:{lang,static:true}}));
 
