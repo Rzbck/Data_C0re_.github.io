@@ -2,7 +2,7 @@ name: Responsive release audit
 
 on:
   push:
-    branches: [dev]
+    branches: [main, dev]
     paths:
       - '.github/workflows/release-responsive-audit.yml'
       - 'scripts/release-responsive-audit.mjs'
@@ -17,18 +17,18 @@ permissions:
   contents: read
 
 concurrency:
-  group: responsive-release-audit
+  group: responsive-release-audit-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   browser-audit:
-    if: github.ref == 'refs/heads/dev'
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout dev
+      - name: Checkout audited branch
         uses: actions/checkout@v4
         with:
-          ref: dev
+          ref: ${{ github.ref_name }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
