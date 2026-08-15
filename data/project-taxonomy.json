@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "categories": {
     "location": {"en": "Location", "fr": "Lieu", "es": "Lugar"},
     "context": {"en": "Context", "fr": "Contexte", "es": "Contexto"},
@@ -21,6 +21,7 @@
     "research": {"category": "context", "en": "R&D", "fr": "R&D", "es": "I+D"},
     "simulation": {"category": "context", "en": "Simulation", "fr": "Simulation", "es": "Simulación"},
     "study": {"category": "context", "en": "Study", "fr": "Étude", "es": "Estudio"},
+    "festival": {"category": "context", "en": "Festival", "fr": "Festival", "es": "Festival"},
     "theatre-video": {"category": "discipline", "en": "Theatre video", "fr": "Vidéo théâtre", "es": "Vídeo teatral"},
     "projection": {"category": "discipline", "en": "Projection", "fr": "Projection", "es": "Proyección"},
     "realtime-video": {"category": "discipline", "en": "Realtime video", "fr": "Vidéo temps réel", "es": "Vídeo en tiempo real"},
@@ -29,6 +30,7 @@
     "interactive": {"category": "discipline", "en": "Interactive", "fr": "Interactif", "es": "Interactivo"},
     "image-processing": {"category": "discipline", "en": "Image processing", "fr": "Traitement d’image", "es": "Procesamiento de imagen"},
     "audio-reactive": {"category": "discipline", "en": "Audio reactive", "fr": "Audio-réactif", "es": "Audio-reactivo"},
+    "small-file": {"category": "discipline", "en": "Small-file", "fr": "Small-file", "es": "Small-file"},
     "touchdesigner": {"category": "tool", "en": "TouchDesigner", "fr": "TouchDesigner", "es": "TouchDesigner"},
     "smode": {"category": "tool", "en": "SMODE", "fr": "SMODE", "es": "SMODE"},
     "resolume": {"category": "tool", "en": "Resolume", "fr": "Resolume", "es": "Resolume"},
@@ -42,7 +44,8 @@
     "calibration": {"category": "system", "en": "Calibration", "fr": "Calibration", "es": "Calibración"},
     "networked-media": {"category": "system", "en": "Networked media", "fr": "Média en réseau", "es": "Media en red"},
     "mmwave-tracking": {"category": "system", "en": "mmWave tracking", "fr": "Tracking mmWave", "es": "Tracking mmWave"},
-    "software": {"category": "system", "en": "Software", "fr": "Logiciel", "es": "Software"}
+    "software": {"category": "system", "en": "Software", "fr": "Logiciel", "es": "Software"},
+    "low-bandwidth": {"category": "system", "en": "Low bandwidth", "fr": "Faible bande passante", "es": "Bajo ancho de banda"}
   },
   "projects": {
     "lumina": ["geneva", "switzerland", "installation", "lighting", "led", "interactive", "touchdesigner", "dmx", "art-net", "show-control", "networked-media"],
@@ -54,7 +57,8 @@
     "signal": ["simulation", "interactive", "led", "touchdesigner", "mmwave-tracking", "esp32", "websocket", "json", "art-net", "networked-media", "software"],
     "ascii": ["study", "realtime-video", "touchdesigner", "image-processing"],
     "realtime": ["research", "touchdesigner", "glsl", "audio-reactive", "realtime-video", "image-processing"],
-    "cloud": ["study", "realtime-video", "touchdesigner", "glsl", "image-processing"]
+    "cloud": ["study", "realtime-video", "touchdesigner", "glsl", "image-processing"],
+    "last-low-bandwidth-message": ["festival", "small-file", "low-bandwidth"]
   },
   "home_tags": ["theatre-video", "projection", "touchdesigner", "live-av", "realtime-video", "lighting", "led", "dmx", "art-net", "show-control", "touring", "geneva"]
 }
