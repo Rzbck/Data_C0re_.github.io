@@ -58,27 +58,23 @@ A future `dev.datac0re.is-a.dev` would require a separate is-a.dev DNS registrat
 - DEV build workflow must remain restricted to `dev`.
 - No DEV workflow may push to `main`.
 - IndexNow / production SEO submission must remain production-only.
+- `scripts/portfolio-editorial-simplify.mjs` and `scripts/portfolio-v2-finalize.mjs` are the final architecture layers and must run after localization/layout generation.
 
-## Current editorial direction
+## CURRENT PUBLIC ARCHITECTURE — V2
 
-Keep the public-facing architecture extremely simple and do not make the visitor learn internal portfolio taxonomy.
-
-Target navigation direction:
-- Home is reached through the DATA C0RE brand/logo, not treated as a separate menu destination.
-- Primary destinations should converge toward `Archive`, `CV`, and `Contact`.
-- Remove redundant top-level `Work`, `About`, `Services`, and `Lab` roles once their useful content is consolidated.
-- Keep exactly one canonical detailed page per project/case study. Home and Archive can contain short teasers/navigation entries only.
+This structure is implemented on `dev`. Do not reintroduce redundant top-level pages without an explicit user request.
 
 ### HOME
-The landing page must answer quickly:
+Home is the main portfolio presentation and is reached through the DATA C0RE brand/logo.
+It must answer within seconds:
 1. What does DATA C0RE do?
 2. What has DATA C0RE actually delivered / operated?
 3. With which institutions, collectives and venues?
 4. In which places / production contexts?
 5. What are the concrete technical capabilities?
-6. What is the next useful action: open a project, Archive, CV or Contact?
+6. How can the visitor open a project, Archive, CV or Contact?
 
-HOME should foreground realized professional / collaborative contexts, not experiments.
+Home foregrounds realized professional / collaborative contexts, not experiments.
 
 Priority proof / contexts:
 - LUMINA / Geneva Lux / StripLab — Geneva — collaborative public installation; realtime systems and integration.
@@ -87,7 +83,7 @@ Priority proof / contexts:
 - Hardwinner / La Belle Électrique — Grenoble — collaborative live AV systems; TouchDesigner, GLSL, Resolume, LED / DMX.
 - Fun Radio Party — Chambéry — realtime video and lighting system; TouchDesigner / Resolume / video-light synchronization.
 
-Core capabilities to communicate without repeating them everywhere:
+Core capabilities to communicate concisely:
 - TouchDesigner / realtime audiovisual systems
 - SMODE / projection / geometric adaptation / calibration
 - Resolume / live AV / stage video
@@ -95,30 +91,49 @@ Core capabilities to communicate without repeating them everywhere:
 - system design / networked media / onsite integration
 - Fusion 360 / fabrication coordination where relevant
 
+### PRIMARY INDEX
+The site index contains exactly three primary destinations:
+- `Archive`
+- `CV`
+- `Contact`
+
+Home is reached through the DATA C0RE logo/brand and is not a separate index card.
+
 ### ARCHIVE
-`Archive` is the single complete project index. It includes realized history and R&D / studies / simulations with clear status labels and concise metadata. It links to the one canonical detailed page for each project.
+`Archive` is the single complete project catalogue. It is chronological and uses status labels such as REALIZED / R&D / SIMULATION / STUDY. It links to the one canonical detailed page for each project.
+
+### PROJECT PAGES
+There must be exactly one substantive detailed editorial page per project/case study.
+Home and Archive may repeat only short titles, metadata and navigation teasers.
+Do not create a second narrative version of the same project on another top-level page.
 
 ### CV
-`CV` exists for professional chronology, roles, institutions, skills and experience. Avoid repeating the full Home biography or project case-study narratives.
+`CV` exists for professional chronology, roles, institutions, skills, tools, references and mobility.
+Do not repeat the full Home biography or project case-study narratives.
 
 ### CONTACT
-`Contact` remains a unique functional route for the secure form. It can remain a primary navigation destination.
+`Contact` remains the unique functional route for the secure form.
 
 ### LEGACY TOP-LEVEL ROUTES
-- `Work`: redundant once selected realized work is on Home and the complete catalogue is in Archive.
-- `About`: redundant if the essential identity/practice statement is on Home and chronology is in CV.
-- `Services`: redundant if concrete capabilities and mobility are integrated concisely into Home/CV.
-- `Lab`: redundant; research, prototypes, simulations and studies belong inside Archive.
+These are no longer real portfolio sections:
+- `work.html` → redirects to Home
+- `about.html` → redirects to Home
+- `services.html` → redirects to Home
+- `lab.html` → redirects to Archive
 
-Legacy routes should eventually become noindex redirects/canonical handoffs to the relevant surviving destination and should be removed from the sitemap when the simplified architecture is implemented.
+They must remain `noindex`, canonicalized to the surviving destination, and excluded from the sitemap.
 
 ### Research / archive-only material
 Do NOT foreground these on the landing page:
-- Snake / Networked Retro System — treat editorially as R&D / interactive software prototype for current public hierarchy.
+- Snake / Networked Retro System — R&D / interactive software prototype.
 - ASCII / Pixel Realtime Study — study / R&D.
 - Realtime Studies — R&D.
 - SIGNAL — simulation / R&D only; not installed.
 - Cloud Processing / GLSL and other studies — archive material unless a specific application needs them.
+
+## Editorial hard rule
+
+Never expose the site's internal strategy to visitors. Public copy must not explain why Home, Archive, CV or any section exists, how the portfolio has been curated, or where prototypes are placed as a strategy decision. The hierarchy must be understandable through the interface itself. See `EDITORIAL_RULES.md`.
 
 ## SIGNAL confidentiality / accuracy
 
@@ -163,7 +178,9 @@ Git author email: `10966796+Rzbck@users.noreply.github.com`.
 Before reporting completion:
 1. verify the latest DEV GitHub Action succeeds;
 2. fetch the generated FR page(s), not only source scripts;
-3. verify `main` SHA did not move;
-4. verify GitHub Pages still sources `main /`;
-5. verify the Vercel DEV preview returns the updated branch with HTTP 200;
-6. never claim production changed unless the user explicitly requested publication.
+3. verify legacy routes remain noindex redirects;
+4. verify sitemap excludes work/about/services/lab;
+5. verify `main` SHA did not move;
+6. verify GitHub Pages still sources `main /`;
+7. verify the Vercel DEV preview returns the updated branch with HTTP 200 and noindex headers;
+8. never claim production changed unless the user explicitly requested publication.
