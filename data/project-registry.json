@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "rules": {
+    "work": "realized projects only",
+    "archive": "all documented project pages",
+    "lab": "simulation, research and studies",
+    "confidential": "remove client, venue and identifying deployment details before public use"
+  },
+  "projects": [
+    {"slug":"lumina","title":"LUMINA / Geneva Lux","year":"2025—27","status":"realized","type":"collaborative installation","role":"Creative Technologist / Realtime Systems & Integration","route":"projects/lumina.html","section":"work","selectedHome":true},
+    {"slug":"snake","title":"Snake / Networked Retro System","year":"2026","status":"realized","type":"solo interactive software","role":"concept / programming / visual direction","route":"projects/snake.html","section":"work","selectedHome":true},
+    {"slug":"grand-theatre","title":"Grand Théâtre de Genève","year":"2023—24","status":"realized","type":"professional projection system","role":"SMODE programming / projection integration","route":"projects/grand-theatre.html","section":"work","selectedHome":true},
+    {"slug":"hardwinner","title":"Hardwinner / Realtime AV Systems","year":"2016—18","status":"realized","type":"collaborative live AV systems","role":"creative & technical contributor","route":"projects/hardwinner.html","section":"work","selectedHome":true},
+    {"slug":"comedie","title":"Comédie de Genève / Video Systems","year":"2021—23","status":"realized","type":"professional theatre video systems","role":"video systems / touring adaptation / operation","route":"projects/comedie.html","section":"work","selectedHome":true},
+    {"slug":"stage-systems","title":"Stage Systems / Fun Radio","year":"2016—17","status":"realized","type":"professional stage systems","role":"realtime video / lighting systems","route":"projects/stage-systems.html","section":"work","selectedHome":false},
+    {"slug":"signal","title":"SIGNAL / Spatial Interaction Simulator","year":"2026","status":"simulation","type":"spatial interaction system R&D","role":"system design / simulator / realtime architecture","route":"projects/signal.html","section":"lab","selectedHome":false},
+    {"slug":"ascii","title":"ASCII / Pixel Realtime Study","year":"2026","status":"study","type":"realtime image study","role":"concept / visual system / programming","route":"projects/ascii.html","section":"lab","selectedHome":false},
+    {"slug":"realtime","title":"Realtime Studies","year":"2025—26","status":"research","type":"audio-reactive / cellular research","role":"independent research","route":"projects/realtime.html","section":"lab","selectedHome":false},
+    {"slug":"cloud","title":"Cloud Processing / Anisotropic GLSL","year":"2018","status":"study","type":"solo visual study","role":"TouchDesigner / GLSL","route":"projects/cloud.html","section":"lab","selectedHome":false}
+  ]
+}
