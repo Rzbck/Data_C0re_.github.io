@@ -38,6 +38,11 @@ for(const file of walk(ROOT)){
   const $=load(fs.readFileSync(file,'utf8'),{decodeEntities:false});
   const actions=$('.header-actions').first();
   if(!actions.length)continue;
+
+  /* Keep the public header identical on every route. The old homepage-only
+     motion control is intentionally removed and must never be regenerated. */
+  actions.find('.motion-toggle').remove();
+
   const {lang,route}=stateFor(rel);
   const switcher=actions.find('.lang-switcher').first();
   if(!switcher.length)continue;
@@ -53,4 +58,4 @@ for(const file of walk(ROOT)){
   $('head').append(`<style data-language-switcher-critical>${critical}</style>`);
   fs.writeFileSync(file,$.html(),'utf8');
 }
-console.log('Static language anchors + stable scrollbar gutter applied before first paint.');
+console.log('Stable four-link header, no public motion toggle, static language anchors and scrollbar gutter applied before first paint.');
