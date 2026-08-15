@@ -3,6 +3,26 @@
   const root=document.querySelector('[data-archive-interactive]');
   if(!root)return;
 
+  const lang=(document.documentElement.lang||'en').slice(0,2);
+  const localizedPath=/^\/(en|fr|es)\//.test(location.pathname);
+  const routePrefix=localizedPath?`${lang}/`:'';
+  const copy={
+    en:{year:'OFFICIAL SELECTION',status:'OFFICIAL SELECTION',summary:'France / small-file film / 1 min / 1.79 MB / SFMF 2026'},
+    fr:{year:'SÉLECTION',status:'SÉLECTION OFFICIELLE',summary:'France / film small-file / 1 min / 1,79 MB / SFMF 2026'},
+    es:{year:'SELECCIÓN',status:'SELECCIÓN OFICIAL',summary:'Francia / película small-file / 1 min / 1,79 MB / SFMF 2026'}
+  }[lang]||null;
+
+  const ensureLowBandwidthEntry=()=>{
+    if(root.querySelector('[data-archive-project="last-low-bandwidth-message"]'))return;
+    const group=document.createElement('div');
+    group.className='archive-year';
+    group.dataset.archiveInjected='last-low-bandwidth-message';
+    group.innerHTML=`<div class="archive-year-head"><time>2026</time><span>${copy.year}</span></div><div class="archive-list"><a class="archive-entry" href="${routePrefix}projects/last-low-bandwidth-message.html" data-archive-project="last-low-bandwidth-message" data-archive-status="realized" data-archive-type="film" data-archive-years="2026" data-archive-tags="festival small-file low-bandwidth"><span class="archive-status status-realized">${copy.status}</span><div><strong>The Last Low-Bandwidth Message</strong><small>${copy.summary}</small></div><time>2026</time></a></div>`;
+    const firstGroup=root.querySelector('.archive-year');
+    if(firstGroup)firstGroup.after(group);else root.appendChild(group);
+  };
+  ensureLowBandwidthEntry();
+
   const entries=[...root.querySelectorAll('.archive-entry[data-archive-status]')];
   const groups=[...root.querySelectorAll('.archive-year')];
   const statusButtons=[...document.querySelectorAll('[data-archive-status-filter]')];
@@ -12,15 +32,12 @@
   const count=document.querySelector('[data-archive-count]');
   const empty=document.querySelector('[data-archive-empty]');
   const statusRow=document.querySelector('.archive-control-row--status');
-  const lang=(document.documentElement.lang||'en').slice(0,2);
   const params=new URLSearchParams(location.search);
   let status='all';
   let projectFilter=params.get('project')||'';
   if(projectFilter&&!entries.some(entry=>entry.dataset.archiveProject===projectFilter))projectFilter='';
 
   const requestedTag=params.get('tag')||'';
-  if(tagSelect&&requestedTag&&[...tagSelect.options].some(option=>option.value===requestedTag))tagSelect.value=requestedTag;
-
   const countLabel=n=>lang==='fr'?`${n} projet${n>1?'s':''}`:lang==='es'?`${n} proyecto${n>1?'s':''}`:`${n} project${n>1?'s':''}`;
   const projectPrefix=lang==='fr'?'Projet':lang==='es'?'Proyecto':'Project';
 
@@ -67,6 +84,32 @@
     empty?.classList.toggle('is-visible',visible===0);
   };
 
+  const syncTagOptions=taxonomy=>{
+    if(!tagSelect)return;
+    const categories=taxonomy?.categories||{};
+    const tags=taxonomy?.tags||{};
+    const projects=taxonomy?.projects||{};
+    const used=new Set(Object.values(projects).flatMap(value=>Array.isArray(value)?value:[]));
+    const all=tagSelect.querySelector('option[value="all"]');
+    [...tagSelect.querySelectorAll('optgroup')].forEach(group=>group.remove());
+    [...tagSelect.querySelectorAll('option:not([value="all"])')].forEach(option=>option.remove());
+    for(const [category,labels] of Object.entries(categories)){
+      const items=Object.entries(tags)
+        .filter(([slug,meta])=>meta?.category===category&&used.has(slug))
+        .sort((a,b)=>(a[1]?.[lang]||a[1]?.en||a[0]).localeCompare(b[1]?.[lang]||b[1]?.en||b[0],lang));
+      if(!items.length)continue;
+      const group=document.createElement('optgroup');
+      group.label=labels?.[lang]||labels?.en||category;
+      for(const [slug,meta] of items){
+        const option=document.createElement('option');
+        option.value=slug;option.textContent=meta?.[lang]||meta?.en||slug;group.appendChild(option);
+      }
+      tagSelect.appendChild(group);
+    }
+    if(all)tagSelect.prepend(all);
+    if(requestedTag&&[...tagSelect.options].some(option=>option.value===requestedTag))tagSelect.value=requestedTag;
+  };
+
   const syncCanonicalTaxonomy=async()=>{
     try{
       const url=new URL('data/project-taxonomy.json',document.baseURI);
@@ -79,6 +122,7 @@
         const tags=projects[slug];
         if(slug&&Array.isArray(tags))entry.dataset.archiveTags=tags.join(' ');
       });
+      syncTagOptions(taxonomy);
     }catch{}
   };
 
