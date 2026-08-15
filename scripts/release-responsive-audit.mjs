@@ -43,9 +43,9 @@ for (const vp of viewports) {
       const pageErrors = [];
       page.on('pageerror', err => pageErrors.push(String(err.message || err)));
       await page.goto(`${base}/${lang}/${route}`, { waitUntil:'domcontentloaded', timeout:30000 });
-      await page.waitForTimeout(150);
+      await page.waitForTimeout(route === 'archive.html' ? 260 : 150);
 
-      const checks = await page.evaluate(({isProject}) => {
+      const checks = await page.evaluate(async ({isProject}) => {
         const q = s => document.querySelector(s);
         const qa = s => [...document.querySelectorAll(s)];
         const rect = el => el ? el.getBoundingClientRect().toJSON() : null;
@@ -95,6 +95,36 @@ for (const vp of viewports) {
         const signalNodes = qa('.signal-node').map(el => ({rect:rect(el), visible:visible(el)}));
         const signalTech = qa('.signal-tech-grid article').map(el => ({rect:rect(el), visible:visible(el)}));
 
+        const archiveTagMismatches=[];
+        const archiveDatasetMismatches=[];
+        const tagSelect=q('[data-archive-tag-filter]');
+        const archiveEntries=qa('.archive-entry[data-archive-project]');
+        if(tagSelect&&archiveEntries.length){
+          try{
+            const taxonomy=await fetch(new URL('data/project-taxonomy.json',document.baseURI),{credentials:'same-origin'}).then(r=>r.json());
+            await new Promise(resolve=>setTimeout(resolve,80));
+            const projects=taxonomy?.projects||{};
+            for(const entry of archiveEntries){
+              const slug=entry.dataset.archiveProject;
+              const actual=(entry.dataset.archiveTags||'').split(/\s+/).filter(Boolean).sort();
+              const expected=[...(projects[slug]||[])].sort();
+              if(JSON.stringify(actual)!==JSON.stringify(expected))archiveDatasetMismatches.push(`${slug}: DOM=${actual.join(',')} taxonomy=${expected.join(',')}`);
+            }
+            for(const option of [...tagSelect.options].filter(option=>option.value&&option.value!=='all')){
+              const tag=option.value;
+              tagSelect.value=tag;
+              tagSelect.dispatchEvent(new Event('change',{bubbles:true}));
+              const actual=archiveEntries.filter(entry=>!entry.hidden).map(entry=>entry.dataset.archiveProject).sort();
+              const expected=Object.entries(projects).filter(([,tags])=>Array.isArray(tags)&&tags.includes(tag)).map(([slug])=>slug).sort();
+              if(JSON.stringify(actual)!==JSON.stringify(expected))archiveTagMismatches.push(`${tag}: visible=${actual.join(',')} expected=${expected.join(',')}`);
+            }
+            tagSelect.value='all';
+            tagSelect.dispatchEvent(new Event('change',{bubbles:true}));
+          }catch(error){
+            archiveTagMismatches.push(`taxonomy fetch/check failed: ${String(error?.message||error)}`);
+          }
+        }
+
         return {
           viewportMeta: !!q('meta[name="viewport"]'),
           horizontalOverflow: Math.max(html.scrollWidth, body?.scrollWidth || 0) - window.innerWidth,
@@ -104,6 +134,8 @@ for (const vp of viewports) {
           motionToggleVisible: qa('.motion-toggle').some(visible),
           contactInputs: qa('.contact-field input,.contact-field textarea,.contact-field select').map(rect),
           archiveControls: rect(q('.archive-controls')),
+          archiveTagMismatches,
+          archiveDatasetMismatches,
           homePanels: qa('[data-home-panel]').map(rect),
           projectBlocks,
           projectTitle,
@@ -139,8 +171,10 @@ for (const vp of viewports) {
           if (r.left < -1 || r.right > vp.width + 1) fail(label,'contact field outside viewport');
         }
       }
-      if (route === 'archive.html' && checks.archiveControls) {
-        if (checks.archiveControls.left < -1 || checks.archiveControls.right > vp.width + 1) fail(label,'archive controls outside viewport');
+      if (route === 'archive.html') {
+        if (checks.archiveControls && (checks.archiveControls.left < -1 || checks.archiveControls.right > vp.width + 1)) fail(label,'archive controls outside viewport');
+        for(const mismatch of checks.archiveDatasetMismatches)fail(label,`archive taxonomy sync mismatch: ${mismatch}`);
+        for(const mismatch of checks.archiveTagMismatches)fail(label,`archive tag filter mismatch: ${mismatch}`);
       }
       if (route === '' && vp.width <= 900) {
         for (const r of checks.homePanels) {
@@ -197,4 +231,4 @@ if (failures.length) {
   failures.forEach(x => console.error(`- ${x}`));
   process.exit(1);
 }
-console.log(`Responsive release audit passed: ${viewports.length} viewports × ${locales.length} locales × ${routes.length} routes (${projectFiles.length} project pages per locale).`);
+console.log(`Responsive release audit passed: ${viewports.length} viewports × ${locales.length} locales × ${routes.length} routes (${projectFiles.length} project pages per locale), with canonical Archive tag-filter parity.`);
