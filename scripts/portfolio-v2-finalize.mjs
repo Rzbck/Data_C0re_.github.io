@@ -9,6 +9,7 @@ const taxonomy = JSON.parse(fs.readFileSync(path.join(ROOT,'data/project-taxonom
 
 const projectMeta = {
   lumina:{status:'realized',type:'installation',years:'2025 2026 2027',poster:'assets/media/lumina/tunnel-blue.webp',video:'assets/media/lumina/experience-long.mp4?v=20260809-2'},
+  'last-low-bandwidth-message':{status:'realized',type:'film',years:'2026'},
   'grand-theatre':{status:'realized',type:'stage',years:'2023 2024',poster:'assets/media/grand-theatre/hero.webp',video:'assets/media/grand-theatre/loop.mp4'},
   comedie:{status:'realized',type:'stage',years:'2021 2022 2023',poster:'assets/media/comedie/venue.jpg'},
   hardwinner:{status:'realized',type:'live-av stage',years:'2016 2017 2018',poster:'assets/media/hardwinner/lbe-2018.webp',video:'assets/media/hardwinner/amen-loop.mp4'},
@@ -21,9 +22,9 @@ const projectMeta = {
 };
 
 const locale = {
-  en:{home:'Home',archive:'Archive',contact:'Contact',projects:'projects',all:'All',type:'Type',year:'Year',tag:'Tag',allTypes:'All types',allYears:'All years',allTags:'All tags',installation:'Installation',stage:'Stage',live:'Live AV',software:'Software',simulation:'Simulation',study:'Study',realized:'Realized',research:'R&D',empty:'No project matches these filters.'},
-  fr:{home:'Accueil',archive:'Archives',contact:'Contact',projects:'projets',all:'Tous',type:'Type',year:'Année',tag:'Tag',allTypes:'Tous les types',allYears:'Toutes les années',allTags:'Tous les tags',installation:'Installation',stage:'Scène',live:'Live AV',software:'Logiciel',simulation:'Simulation',study:'Étude',realized:'Réalisé',research:'R&D',empty:'Aucun projet ne correspond à ces filtres.'},
-  es:{home:'Inicio',archive:'Archivo',contact:'Contacto',projects:'proyectos',all:'Todos',type:'Tipo',year:'Año',tag:'Tag',allTypes:'Todos los tipos',allYears:'Todos los años',allTags:'Todos los tags',installation:'Instalación',stage:'Escena',live:'Live AV',software:'Software',simulation:'Simulación',study:'Estudio',realized:'Realizado',research:'I+D',empty:'Ningún proyecto coincide con estos filtros.'}
+  en:{home:'Home',archive:'Archive',contact:'Contact',projects:'projects',all:'All',type:'Type',year:'Year',tag:'Tag',allTypes:'All types',allYears:'All years',allTags:'All tags',installation:'Installation',stage:'Stage',live:'Live AV',film:'Film',software:'Software',simulation:'Simulation',study:'Study',realized:'Realized',research:'R&D',empty:'No project matches these filters.'},
+  fr:{home:'Accueil',archive:'Archives',contact:'Contact',projects:'projets',all:'Tous',type:'Type',year:'Année',tag:'Tag',allTypes:'Tous les types',allYears:'Toutes les années',allTags:'Tous les tags',installation:'Installation',stage:'Scène',live:'Live AV',film:'Film',software:'Logiciel',simulation:'Simulation',study:'Étude',realized:'Réalisé',research:'R&D',empty:'Aucun projet ne correspond à ces filtres.'},
+  es:{home:'Inicio',archive:'Archivo',contact:'Contacto',projects:'proyectos',all:'Todos',type:'Tipo',year:'Año',tag:'Tag',allTypes:'Todos los tipos',allYears:'Todos los años',allTags:'Todos los tags',installation:'Instalación',stage:'Escena',live:'Live AV',film:'Película',software:'Software',simulation:'Simulación',study:'Estudio',realized:'Realizado',research:'I+D',empty:'Ningún proyecto coincide con estos filtros.'}
 };
 
 function walk(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(entry=>{const full=path.join(dir,entry.name);if(entry.isDirectory())return entry.name==='node_modules'?[]:walk(full);return entry.isFile()&&entry.name.endsWith('.html')?[full]:[]})}
@@ -72,18 +73,33 @@ function archiveControls(lang){
         <button class="archive-filter-button" type="button" data-archive-status-filter="study" aria-pressed="false">${t.study}</button>
       </div>
       <div class="archive-control-row archive-control-row--selects">
-        <label class="archive-filter-label"><span>${t.type}</span><select class="archive-filter-select" data-archive-type-filter><option value="all">${t.allTypes}</option><option value="installation">${t.installation}</option><option value="stage">${t.stage}</option><option value="live-av">${t.live}</option><option value="software">${t.software}</option><option value="simulation">${t.simulation}</option><option value="study">${t.study}</option></select></label>
+        <label class="archive-filter-label"><span>${t.type}</span><select class="archive-filter-select" data-archive-type-filter><option value="all">${t.allTypes}</option><option value="installation">${t.installation}</option><option value="stage">${t.stage}</option><option value="live-av">${t.live}</option><option value="film">${t.film}</option><option value="software">${t.software}</option><option value="simulation">${t.simulation}</option><option value="study">${t.study}</option></select></label>
         <label class="archive-filter-label"><span>${t.year}</span><select class="archive-filter-select" data-archive-year-filter><option value="all">${t.allYears}</option>${years.map(y=>`<option value="${y}">${y}</option>`).join('')}</select></label>
         <label class="archive-filter-label"><span>${t.tag}</span><select class="archive-filter-select" data-archive-tag-filter><option value="all">${t.allTags}</option>${tagOptions(lang)}</select></label>
       </div>
     </div>
-    <span class="archive-count" data-archive-count aria-live="polite">10 ${t.projects}</span>
+    <span class="archive-count" data-archive-count aria-live="polite">${Object.keys(projectMeta).length} ${t.projects}</span>
   </section>`;
+}
+
+function ensureLowBandwidthArchiveEntry($,rel,shell){
+  if(shell.find('[data-archive-project="last-low-bandwidth-message"]').length||shell.find('a[href$="projects/last-low-bandwidth-message.html"]').length)return;
+  const lang=langFor(rel),prefix=prefixFor(rel);
+  const copy={
+    en:{head:'OFFICIAL SELECTION',status:'OFFICIAL SELECTION',summary:'France / small-file film / 1 min / 1.79 MB / SFMF 2026'},
+    fr:{head:'SÉLECTION',status:'SÉLECTION OFFICIELLE',summary:'France / film small-file / 1 min / 1,79 MB / SFMF 2026'},
+    es:{head:'SELECCIÓN',status:'SELECCIÓN OFICIAL',summary:'Francia / película small-file / 1 min / 1,79 MB / SFMF 2026'}
+  }[lang];
+  const tags=(taxonomy.projects?.['last-low-bandwidth-message']||[]).join(' ');
+  const block=`<div class="archive-year reveal"><div class="archive-year-head"><time>2026</time><span>${copy.head}</span></div><div class="archive-list"><a class="archive-entry" href="${prefix}projects/last-low-bandwidth-message.html" data-archive-project="last-low-bandwidth-message" data-archive-status="realized" data-archive-type="film" data-archive-years="2026" data-archive-tags="${esc(tags)}"><span class="archive-status status-realized">${copy.status}</span><div><strong>The Last Low-Bandwidth Message</strong><small>${copy.summary}</small></div><time>2026</time></a></div></div>`;
+  const first=shell.find('.archive-year').first();
+  if(first.length)first.after(block);else shell.append(block);
 }
 
 function enhanceArchive($,rel){
   const lang=langFor(rel),t=locale[lang],shell=$('.archive-shell').first();if(!shell.length)return;
   shell.attr('data-archive-interactive','');
+  ensureLowBandwidthArchiveEntry($,rel,shell);
   $('.archive-intro .archive-legend').remove();
   $('.archive-controls').remove();
   $('.archive-intro').first().after(archiveControls(lang));
