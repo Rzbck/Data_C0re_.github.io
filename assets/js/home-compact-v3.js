@@ -14,8 +14,8 @@
       const r=item.getBoundingClientRect();
       const isGate=item.hasAttribute('data-home-gate-magnet');
       const isTopic=item.hasAttribute('data-home-topic-magnet');
-      const x=(event.clientX-r.left-r.width/2)*(isGate?.018:isTopic?.05:.055);
-      const y=(event.clientY-r.top-r.height/2)*(isGate?.035:isTopic?.085:.095);
+      const x=(event.clientX-r.left-r.width/2)*(isGate ? .018 : isTopic ? .05 : .055);
+      const y=(event.clientY-r.top-r.height/2)*(isGate ? .035 : isTopic ? .085 : .095);
       item.style.setProperty('--magnet-x',`${x.toFixed(2)}px`);
       item.style.setProperty('--magnet-y',`${y.toFixed(2)}px`);
     });
