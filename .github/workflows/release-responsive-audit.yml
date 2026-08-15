@@ -5,9 +5,10 @@ on:
     branches: [main, dev]
     paths:
       - '.github/workflows/release-responsive-audit.yml'
-      - 'scripts/release-responsive-audit.mjs'
-      - 'scripts/check-project-taxonomy.mjs'
+      - '.github/workflows/localize.yml'
+      - 'scripts/**'
       - 'data/project-taxonomy.json'
+      - 'sitemap.xml'
       - 'assets/**'
       - '*.html'
       - 'en/**'
