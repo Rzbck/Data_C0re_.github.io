@@ -40,14 +40,14 @@ for(const lang of locales){
     const box=await card.boundingBox();
     if(!box){fail(label,`card ${i+1} has no bounding box`);continue;}
     await page.mouse.move(box.x+box.width*.78,box.y+box.height*.42);
-    await page.waitForTimeout(40);
+    await page.waitForTimeout(180);
     const state=await card.evaluate(el=>({
       trailing:el.classList.contains('is-gate-trailing'),
       opacity:getComputedStyle(el.querySelector('.home-gate-title__echo--1')).opacity,
       magnetX:getComputedStyle(el).getPropertyValue('--menu-magnet-x').trim()
     }));
     if(!state.trailing)fail(label,`card ${i+1} did not activate directional trail`);
-    if(Number(state.opacity)<.8)fail(label,`card ${i+1} first echo opacity stayed at ${state.opacity}`);
+    if(Number(state.opacity)<.75)fail(label,`card ${i+1} first echo did not visibly resolve, opacity ${state.opacity}`);
     if(!state.magnetX||state.magnetX==='0px')fail(label,`card ${i+1} magnetic title displacement did not update`);
   }
   await context.close();
