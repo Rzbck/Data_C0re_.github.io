@@ -20,3 +20,4 @@ for(const rel of files){
   fs.writeFileSync(file,$.html(),'utf8');
 }
 console.log('Small-file project uses the same lazy video contract as other project videos.');
+// Final release audit marker: archive/location/video correction 2026-08-16.
