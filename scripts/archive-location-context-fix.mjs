@@ -54,10 +54,22 @@ for(const rel of archives){
     if(context)entry.find('.archive-status').first().text(context);
     const line=copy[lang]?.[slug];
     if(line)entry.find('small').first().text(line);
-    if(slug==='last-low-bandwidth-message')entry.attr('data-archive-video','assets/media/low-bandwidth-message/excerpt.mp4?v=20260816-4');
+    if(slug==='last-low-bandwidth-message'){
+      entry.removeAttr('data-archive-video');
+      entry.attr('data-archive-tags','vancouver canada festival small-file low-bandwidth');
+      let media=entry.find('.archive-entry-media').first();
+      if(!media.length){
+        entry.prepend('<span class="archive-entry-media" aria-hidden="true"><img src="assets/media/low-bandwidth-message/archive-still.webp" alt="" loading="lazy" decoding="async"></span>');
+        media=entry.find('.archive-entry-media').first();
+      }
+      media.find('video').remove();
+      let image=media.find('img').first();
+      if(!image.length){media.prepend('<img src="assets/media/low-bandwidth-message/archive-still.webp" alt="" loading="lazy" decoding="async">');image=media.find('img').first()}
+      image.attr('src','assets/media/low-bandwidth-message/archive-still.webp');
+    }
   });
   const count=$('.archive-entry').length;
   $('[data-archive-count]').text(`${count} ${lang==='fr'?'projets':lang==='es'?'proyectos':'projects'}`);
   fs.writeFileSync(file,$.html(),'utf8');
 }
-console.log('Archive locations normalized and duplicate context headings removed.');
+console.log('Archive locations and media normalized.');

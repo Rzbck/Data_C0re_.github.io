@@ -7,9 +7,9 @@
   const localizedPath=/^\/(en|fr|es)\//.test(location.pathname);
   const routePrefix=localizedPath?`${lang}/`:'';
   const copy={
-    en:{year:'FESTIVAL',status:'FESTIVAL',summary:'France / small-file film / 1:25 / 1.79 MB / SFMF 2026'},
-    fr:{year:'FESTIVAL',status:'FESTIVAL',summary:'France / film small-file / 1:25 / 1,79 MB / SFMF 2026'},
-    es:{year:'FESTIVAL',status:'FESTIVAL',summary:'Francia / película small-file / 1:25 / 1,79 MB / SFMF 2026'}
+    en:{year:'FESTIVAL',status:'FESTIVAL',summary:'Vancouver, Canada / small-file film / 1:25 / 1.79 MB / SFMF 2026'},
+    fr:{year:'FESTIVAL',status:'FESTIVAL',summary:'Vancouver, Canada / film small-file / 1:25 / 1,79 MB / SFMF 2026'},
+    es:{year:'FESTIVAL',status:'FESTIVAL',summary:'Vancouver, Canadá / película small-file / 1:25 / 1,79 MB / SFMF 2026'}
   }[lang]||null;
   const contextLabels={
     en:{lumina:'INSTALLATION','last-low-bandwidth-message':'FESTIVAL','grand-theatre':'OPERA',comedie:'THEATRE',hardwinner:'LIVE AV','stage-systems':'STAGE SYSTEMS',snake:'SOFTWARE',signal:'SIMULATION',ascii:'STUDY',realtime:'RESEARCH',cloud:'STUDY'},
@@ -22,7 +22,7 @@
     const group=document.createElement('div');
     group.className='archive-year';
     group.dataset.archiveInjected='last-low-bandwidth-message';
-    group.innerHTML=`<div class="archive-year-head"><time>2026</time><span>${copy.year}</span></div><div class="archive-list"><a class="archive-entry" href="${routePrefix}projects/last-low-bandwidth-message.html" data-archive-project="last-low-bandwidth-message" data-archive-status="realized" data-archive-type="film" data-archive-years="2026" data-archive-tags="festival small-file low-bandwidth"><span class="archive-status status-realized">${copy.status}</span><div><strong>The Last Low-Bandwidth Message</strong><small>${copy.summary}</small></div><time>2026</time></a></div>`;
+    group.innerHTML=`<div class="archive-year-head"><time>2026</time><span>${copy.year}</span></div><div class="archive-list"><a class="archive-entry" href="${routePrefix}projects/last-low-bandwidth-message.html" data-archive-project="last-low-bandwidth-message" data-archive-status="realized" data-archive-type="film" data-archive-years="2026" data-archive-tags="festival vancouver canada small-file low-bandwidth"><span class="archive-entry-media" aria-hidden="true"><img src="assets/media/low-bandwidth-message/archive-still.webp" alt="" loading="lazy" decoding="async"></span><span class="archive-status status-realized">${copy.status}</span><div><strong>The Last Low-Bandwidth Message</strong><small>${copy.summary}</small></div><time>2026</time></a></div>`;
     const firstGroup=root.querySelector('.archive-year');
     if(firstGroup)firstGroup.after(group);else root.appendChild(group);
   };
@@ -32,9 +32,21 @@
   if(lowBandwidthEntry){
     const summary=lowBandwidthEntry.querySelector('small');
     if(summary)summary.textContent=copy.summary;
-    lowBandwidthEntry.dataset.archiveVideo='assets/media/low-bandwidth-message/excerpt.mp4';
-    if(!lowBandwidthEntry.querySelector('.archive-entry-media')){
-      lowBandwidthEntry.insertAdjacentHTML('afterbegin','<span class="archive-entry-media" aria-hidden="true"><img src="assets/media/low-bandwidth-message/promo.webp" alt="" loading="lazy" decoding="async"><video muted loop playsinline preload="none"></video></span>');
+    lowBandwidthEntry.removeAttribute('data-archive-video');
+    lowBandwidthEntry.dataset.archiveTags='festival vancouver canada small-file low-bandwidth';
+    let media=lowBandwidthEntry.querySelector('.archive-entry-media');
+    if(!media){
+      lowBandwidthEntry.insertAdjacentHTML('afterbegin','<span class="archive-entry-media" aria-hidden="true"><img src="assets/media/low-bandwidth-message/archive-still.webp" alt="" loading="lazy" decoding="async"></span>');
+      media=lowBandwidthEntry.querySelector('.archive-entry-media');
+    }
+    if(media){
+      let image=media.querySelector('img');
+      if(!image){
+        media.insertAdjacentHTML('afterbegin','<img src="assets/media/low-bandwidth-message/archive-still.webp" alt="" loading="lazy" decoding="async">');
+        image=media.querySelector('img');
+      }
+      if(image){image.src='assets/media/low-bandwidth-message/archive-still.webp';image.style.objectPosition='center center'}
+      media.querySelectorAll('video').forEach(video=>{video.pause();video.remove()});
     }
   }
 

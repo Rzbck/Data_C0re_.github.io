@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "categories": {
     "location": {"en": "Location", "fr": "Lieu", "es": "Lugar"},
     "context": {"en": "Context", "fr": "Contexte", "es": "Contexto"},
@@ -13,6 +13,8 @@
     "switzerland": {"category": "location", "en": "Switzerland", "fr": "Suisse", "es": "Suiza"},
     "grenoble": {"category": "location", "en": "Grenoble", "fr": "Grenoble", "es": "Grenoble"},
     "chambery": {"category": "location", "en": "Chambéry", "fr": "Chambéry", "es": "Chambéry"},
+    "vancouver": {"category": "location", "en": "Vancouver", "fr": "Vancouver", "es": "Vancouver"},
+    "canada": {"category": "location", "en": "Canada", "fr": "Canada", "es": "Canadá"},
     "installation": {"category": "context", "en": "Installation", "fr": "Installation", "es": "Instalación"},
     "stage": {"category": "context", "en": "Stage", "fr": "Scène", "es": "Escena"},
     "theatre": {"category": "context", "en": "Theatre", "fr": "Théâtre", "es": "Teatro"},
@@ -58,7 +60,7 @@
     "ascii": ["study", "realtime-video", "touchdesigner", "image-processing"],
     "realtime": ["research", "touchdesigner", "glsl", "audio-reactive", "realtime-video", "image-processing"],
     "cloud": ["study", "realtime-video", "touchdesigner", "glsl", "image-processing"],
-    "last-low-bandwidth-message": ["festival", "small-file", "low-bandwidth"]
+    "last-low-bandwidth-message": ["vancouver", "canada", "festival", "small-file", "low-bandwidth"]
   },
   "home_tags": ["theatre-video", "projection", "touchdesigner", "live-av", "realtime-video", "lighting", "led", "dmx", "art-net", "show-control", "touring", "geneva"]
 }

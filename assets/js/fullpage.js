@@ -36,6 +36,35 @@
       panels=[q('.project-hero'),q('.stage-main-media'),...qa('.stage-study')].filter(Boolean);
     }else if(filename==='grand-theatre.html'){
       panels=[q('.project-hero'),q('.pro-main-media'),...qa('.project-section')].filter(Boolean);
+    }else if(filename==='last-low-bandwidth-message.html'){
+      const article=q('main > article');
+      const hero=q('.project-hero',article||document);
+      const sections=article?qa('.project-section',article):[];
+      const narrative=sections[0],process=sections[1],selection=sections[2];
+      if(article&&narrative&&process&&selection){
+        article.insertBefore(selection,process);
+        const lang=(document.documentElement.lang||'en').slice(0,2);
+        const labels={
+          en:{context:'Festival context',technical:'Technical construction'},
+          fr:{context:'Contexte festival',technical:'Construction technique'},
+          es:{context:'Contexto del festival',technical:'Construcción técnica'}
+        }[lang]||{context:'Festival context',technical:'Technical construction'};
+        const setKicker=(section,number,label)=>{
+          const kicker=q('.section-kicker',section);if(!kicker)return;
+          const index=q('span',kicker),text=q('p',kicker);
+          if(index)index.textContent=number;if(label&&text)text.textContent=label;
+        };
+        setKicker(narrative,'01','');
+        setKicker(selection,'02',labels.context);
+        setKicker(process,'03',labels.technical);
+        process.classList.add('smallfile-technical');
+        const processKicker=q('.section-kicker',process);
+        const facts=hero&&q('.project-facts',hero);
+        const signal=hero&&q('.smallfile-signal',hero);
+        let anchor=processKicker;
+        for(const node of [facts,signal]){if(anchor&&node){anchor.after(node);anchor=node}}
+      }
+      panels=[hero,narrative,selection,process].filter(Boolean);
     }else{
       panels=[q('.project-hero'),...qa('.project-section')].filter(Boolean);
     }
