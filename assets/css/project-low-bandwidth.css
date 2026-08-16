@@ -62,3 +62,38 @@
   .smallfile-media--hero{width:100%;max-width:none;height:clamp(190px,34vw,300px);margin-left:0;margin-right:0}.smallfile-media--hero img{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:center center}.smallfile-signal{grid-template-columns:1fr 1fr}.smallfile-signal div:nth-child(2){border-right:0}.smallfile-signal div:nth-child(n+3){border-top:1px solid var(--line)}.smallfile-narrative,.smallfile-selection{grid-template-columns:1fr}.smallfile-narrative-aside{grid-template-columns:minmax(0,1fr) minmax(240px,.82fr);gap:14px;margin-top:20px}.smallfile-preview{width:100%;margin:0}.smallfile-pipeline{grid-template-columns:1fr 1fr}.smallfile-pipeline article{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.smallfile-pipeline article:nth-child(3n){border-right:1px solid var(--line)}.smallfile-pipeline article:nth-last-child(-n+3){border-bottom:1px solid var(--line)}.smallfile-pipeline article:nth-child(2n){border-right:0}.smallfile-pipeline article:nth-last-child(-n+2){border-bottom:0}.smallfile-phases{grid-template-columns:1fr 1fr}.smallfile-phases div:nth-child(2){border-right:0}.smallfile-phases div:nth-child(n+3){border-top:1px solid var(--line)}.smallfile-tech-note{min-height:0;padding:13px 0 0;border-bottom:0;font-size:10px;line-height:1.5}.smallfile-tech-note::after{position:static;display:block;width:100%;height:auto;aspect-ratio:1320/540;margin-top:14px}.smallfile-final{width:min(100%,420px);margin:22px 0 0}}
 @media(max-width:620px){.smallfile-media--hero{margin-top:20px;height:clamp(165px,48vw,235px)}.smallfile-media--hero img{height:100%;object-fit:cover}.smallfile-signal,.smallfile-phases,.smallfile-pipeline{grid-template-columns:1fr}.smallfile-signal div,.smallfile-phases div,.smallfile-pipeline article{border-right:0!important;border-top:1px solid var(--line);border-bottom:0!important;min-height:auto}.smallfile-signal div:first-child,.smallfile-phases div:first-child,.smallfile-pipeline article:first-child{border-top:0}.smallfile-narrative-aside{grid-template-columns:1fr;margin-top:18px}.smallfile-quote{font-size:20px}.smallfile-preview{width:100%;max-width:none}.smallfile-pipeline strong{margin-top:14px}.smallfile-final{width:100%;max-width:none;margin-top:20px}.smallfile-tech-note::after{margin-top:16px}}
 /* release-audit-sync */
+
+/* 2026-08-16 media composition refinement */
+.smallfile-narrative-aside{position:relative;display:block;min-height:clamp(270px,27vw,410px)}
+.smallfile-narrative-aside .smallfile-preview{position:absolute;inset:0;width:100%;height:100%;margin:0;overflow:hidden;border:1px solid var(--line);background:#020202}
+.smallfile-narrative-aside .smallfile-preview video{width:100%;height:100%;max-height:none;aspect-ratio:auto;object-fit:cover;object-position:center center;border:0}
+.smallfile-narrative-aside .smallfile-preview figcaption{position:absolute;left:12px;right:12px;bottom:10px;z-index:3;width:max-content;max-width:calc(100% - 24px);padding:6px 8px;background:rgba(0,0,0,.72);color:var(--grey)}
+.smallfile-narrative-aside .smallfile-quote{position:absolute;z-index:4;top:14px;left:14px;width:min(64%,390px);min-height:0;margin:0;padding:16px 17px;border:1px solid rgba(255,255,255,.2);background:rgba(3,3,3,.76);font-size:clamp(20px,2vw,34px);box-sizing:border-box}
+.smallfile-tech-note{min-height:clamp(180px,22vh,250px);padding-right:calc(70% + 28px)}
+.smallfile-tech-note::after{top:8px;right:0;bottom:8px;width:70%;background-size:cover;background-position:center center}
+@media(min-width:821px) and (pointer:fine){
+  body.fullpage-last-low-bandwidth-message .smallfile-narrative{grid-template-columns:minmax(0,.95fr) minmax(500px,1.05fr);gap:clamp(24px,3vw,48px)}
+  body.fullpage-last-low-bandwidth-message .smallfile-narrative-aside{min-height:clamp(250px,29vh,360px)}
+  body.fullpage-last-low-bandwidth-message .smallfile-preview video{max-height:none}
+  body.fullpage-last-low-bandwidth-message .smallfile-tech-note{min-height:min(21vh,215px);padding-right:calc(70% + 24px)}
+  body.fullpage-last-low-bandwidth-message .smallfile-tech-note::after{width:70%;top:7px;bottom:7px}
+}
+@media(min-width:821px) and (pointer:fine) and (max-height:760px){
+  body.fullpage-last-low-bandwidth-message .smallfile-narrative{grid-template-columns:minmax(0,1fr) minmax(450px,1fr)}
+  body.fullpage-last-low-bandwidth-message .smallfile-narrative-aside{min-height:225px}
+  body.fullpage-last-low-bandwidth-message .smallfile-narrative-aside .smallfile-quote{width:min(62%,320px);font-size:17px;padding:12px 13px}
+  body.fullpage-last-low-bandwidth-message .smallfile-tech-note{min-height:128px;padding-right:calc(66% + 20px)}
+  body.fullpage-last-low-bandwidth-message .smallfile-tech-note::after{width:66%;background-size:cover}
+}
+@media(max-width:900px){
+  .smallfile-narrative-aside{min-height:clamp(300px,57vw,470px);margin-top:20px}
+  .smallfile-narrative-aside .smallfile-quote{width:min(70%,390px);top:14px;left:14px}
+  .smallfile-tech-note{min-height:0;padding:13px 0 0}
+  .smallfile-tech-note::after{position:static;width:100%;height:auto;aspect-ratio:1320/540;margin-top:16px;background-size:cover}
+}
+@media(max-width:620px){
+  .smallfile-narrative-aside{min-height:clamp(240px,72vw,340px);margin-top:18px}
+  .smallfile-narrative-aside .smallfile-quote{top:10px;left:10px;width:calc(100% - 20px);max-width:390px;padding:12px 13px;font-size:clamp(18px,6vw,25px)}
+  .smallfile-narrative-aside .smallfile-preview figcaption{left:10px;right:10px;bottom:8px;max-width:calc(100% - 20px);font-size:7px}
+  .smallfile-tech-note::after{margin-top:14px;background-size:cover}
+}
