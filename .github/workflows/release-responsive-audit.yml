@@ -41,8 +41,11 @@ jobs:
       - name: Audit canonical project taxonomy
         run: node scripts/check-project-taxonomy.mjs
 
-      - name: Install browser audit dependency
-        run: npm install --no-save --package-lock=false playwright@1.55.0
+      - name: Install audit dependencies
+        run: npm install --no-save --package-lock=false cheerio@1.0.0 playwright@1.55.0
+
+      - name: Audit EN FR ES structural parity
+        run: node scripts/check-locale-parity.mjs
 
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
