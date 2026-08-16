@@ -61,6 +61,11 @@ jobs:
           cat /tmp/datac0re-http.log
           exit 1
 
+      - name: Audit INDEX directional trail EN FR ES
+        env:
+          AUDIT_BASE_URL: http://127.0.0.1:4173
+        run: node scripts/check-index-trail-browser.mjs
+
       - name: Audit responsive layouts EN FR ES
         env:
           AUDIT_BASE_URL: http://127.0.0.1:4173
