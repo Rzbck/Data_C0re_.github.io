@@ -10,6 +10,18 @@ const files=[
   'es/projects/last-low-bandwidth-message.html'
 ];
 
+const caption={
+  en:'Motion excerpt / signal-loss state',
+  fr:'Extrait vidéo / état de perte du signal',
+  es:'Extracto de vídeo / estado de pérdida de señal'
+};
+
+function langFor(rel){
+  if(rel.startsWith('fr/'))return 'fr';
+  if(rel.startsWith('es/'))return 'es';
+  return 'en';
+}
+
 for(const rel of files){
   const file=path.join(ROOT,rel);
   if(!fs.existsSync(file))continue;
@@ -21,7 +33,8 @@ for(const rel of files){
   video.removeAttr('autoplay controls webkit-playsinline');
   video.attr('muted','').attr('loop','').attr('playsinline','').attr('poster','assets/media/low-bandwidth-message/promo.webp').attr('data-lazy-video','');
   video.removeAttr('preload src');
-  video.empty().append('<source data-src="assets/media/low-bandwidth-message/excerpt.mp4?v=20260816-2" type="video/mp4">');
+  video.empty().append('<source data-src="assets/media/low-bandwidth-message/excerpt.mp4?v=20260816-3" type="video/mp4">');
+  $('.smallfile-media figcaption').first().text(caption[langFor(rel)]);
 
   fs.writeFileSync(file,$.html(),'utf8');
 }
