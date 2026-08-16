@@ -64,3 +64,87 @@
     location.assign(destination(lang,current.route));
   },true);
 })();
+
+/* Small-file project media: Safari/iOS-safe poster + explicit playback fallback.
+   The real poster remains visible until the browser confirms `playing`, so a
+   refused/stalled autoplay can never leave a large black rectangle. */
+(() => {
+  'use strict';
+  const boot=()=>{
+    const figure=document.querySelector('.smallfile-media');
+    const video=figure?.querySelector('video');
+    if(!figure||!video||figure.dataset.videoFallbackReady==='true')return;
+    figure.dataset.videoFallbackReady='true';
+
+    const lang=(document.documentElement.lang||'en').slice(0,2);
+    const label=lang==='fr'?'LIRE L’EXTRAIT':lang==='es'?'REPRODUCIR EXTRACTO':'PLAY EXCERPT';
+    const posterSrc=video.getAttribute('poster')||'assets/media/low-bandwidth-message/promo.webp';
+
+    if(!document.querySelector('style[data-smallfile-video-fallback]')){
+      const style=document.createElement('style');
+      style.dataset.smallfileVideoFallback='true';
+      style.textContent=`
+        .smallfile-media{position:relative}
+        .smallfile-media>video{position:relative;z-index:1}
+        .smallfile-video-poster{position:absolute;z-index:2;inset:0 0 auto 0;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;background:#020202;opacity:1;transition:opacity .18s ease;pointer-events:none}
+        .smallfile-media.is-video-playing .smallfile-video-poster{opacity:0}
+        .smallfile-video-play{position:absolute;z-index:3;left:14px;bottom:34px;display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:8px 11px;border:1px solid rgba(223,255,0,.55);background:rgba(2,2,2,.88);color:var(--acid,#dfff00);font:800 8px/1 inherit;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+        .smallfile-video-play[hidden]{display:none}
+        .smallfile-video-play:hover,.smallfile-video-play:focus-visible{background:var(--acid,#dfff00);color:#050505}
+        @media(max-width:620px){.smallfile-video-play{left:10px;bottom:31px;min-height:30px;padding:7px 9px;font-size:7px}}
+      `;
+      document.head.appendChild(style);
+    }
+
+    const poster=document.createElement('img');
+    poster.className='smallfile-video-poster';
+    poster.src=new URL(posterSrc,document.baseURI).href;
+    poster.alt='';
+    poster.decoding='async';
+    figure.insertBefore(poster,video);
+
+    const play=document.createElement('button');
+    play.type='button';
+    play.className='smallfile-video-play';
+    play.textContent=label;
+    play.hidden=true;
+    figure.insertBefore(play,figure.querySelector('figcaption'));
+
+    video.muted=true;
+    video.defaultMuted=true;
+    video.setAttribute('muted','');
+    video.setAttribute('playsinline','');
+    video.setAttribute('webkit-playsinline','');
+    video.preload='auto';
+
+    let fallbackTimer=0;
+    const playing=()=>{
+      clearTimeout(fallbackTimer);
+      figure.classList.add('is-video-playing');
+      play.hidden=true;
+    };
+    const fallback=()=>{
+      if(!figure.classList.contains('is-video-playing'))play.hidden=false;
+    };
+    const tryPlay=()=>{
+      video.muted=true;
+      const result=video.play();
+      if(result&&typeof result.catch==='function')result.catch(fallback);
+    };
+
+    video.addEventListener('playing',playing);
+    video.addEventListener('canplay',tryPlay,{once:true});
+    video.addEventListener('error',fallback);
+    video.addEventListener('stalled',fallback);
+    play.addEventListener('click',tryPlay);
+
+    fallbackTimer=setTimeout(fallback,1200);
+    if(video.readyState>=2)tryPlay();
+    else {
+      try{video.load()}catch{}
+      requestAnimationFrame(tryPlay);
+    }
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
