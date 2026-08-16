@@ -10,17 +10,24 @@
 .home-gate-title__echo--4{transform:translate(var(--gate-echo-4-x,0),var(--gate-echo-4-y,0)) rotate(var(--gate-echo-4-r,0deg)) scale(var(--gate-echo-4-s,1));color:transparent;-webkit-text-stroke:1px rgba(245,244,239,.32)}
 .home-gate-title__echo--5{transform:translate(var(--gate-echo-5-x,0),var(--gate-echo-5-y,0)) rotate(var(--gate-echo-5-r,0deg)) scale(var(--gate-echo-5-s,1));color:rgba(223,255,0,.14)}
 .home-gate-title__echo--6{transform:translate(var(--gate-echo-6-x,0),var(--gate-echo-6-y,0)) rotate(var(--gate-echo-6-r,0deg)) scale(var(--gate-echo-6-s,1));color:transparent;-webkit-text-stroke:1px rgba(245,244,239,.2)}
-.home-gate.is-gate-trailing .home-gate-title__echo--1{opacity:.94}
-.home-gate.is-gate-trailing .home-gate-title__echo--2{opacity:.86}
-.home-gate.is-gate-trailing .home-gate-title__echo--3{opacity:.74}
-.home-gate.is-gate-trailing .home-gate-title__echo--4{opacity:.64}
-.home-gate.is-gate-trailing .home-gate-title__echo--5{opacity:.5}
-.home-gate.is-gate-trailing .home-gate-title__echo--6{opacity:.38}
-.home-gate.is-gate-trailing .home-gate-title__front{text-shadow:0 0 18px rgba(223,255,0,.08)}
+.home-gate.is-gate-trailing .home-gate-title__echo--1,.site-menu .menu-card.is-gate-trailing .home-gate-title__echo--1{opacity:.94}
+.home-gate.is-gate-trailing .home-gate-title__echo--2,.site-menu .menu-card.is-gate-trailing .home-gate-title__echo--2{opacity:.86}
+.home-gate.is-gate-trailing .home-gate-title__echo--3,.site-menu .menu-card.is-gate-trailing .home-gate-title__echo--3{opacity:.74}
+.home-gate.is-gate-trailing .home-gate-title__echo--4,.site-menu .menu-card.is-gate-trailing .home-gate-title__echo--4{opacity:.64}
+.home-gate.is-gate-trailing .home-gate-title__echo--5,.site-menu .menu-card.is-gate-trailing .home-gate-title__echo--5{opacity:.5}
+.home-gate.is-gate-trailing .home-gate-title__echo--6,.site-menu .menu-card.is-gate-trailing .home-gate-title__echo--6{opacity:.38}
+.home-gate.is-gate-trailing .home-gate-title__front,.site-menu .menu-card.is-gate-trailing .home-gate-title__front{text-shadow:0 0 18px rgba(223,255,0,.08)}
+
+/* INDEX overlay reuses the exact Home trail language without shifting row geometry. */
+.site-menu .menu-card{overflow:hidden}
+.site-menu .menu-card .menu-card-title--trail{transform:translate(var(--menu-magnet-x,0),var(--menu-magnet-y,0));transition:transform .16s var(--ease);will-change:transform}
+.site-menu .menu-card .menu-card-title--trail .home-gate-title__echo{line-height:inherit;letter-spacing:inherit}
 
 @media(max-width:900px),(hover:none),(pointer:coarse){
   .home-gate-title__echo{display:none!important}
+  .site-menu .menu-card .menu-card-title--trail{transform:none!important}
 }
 @media(prefers-reduced-motion:reduce){
   .home-gate-title__echo{display:none!important}
+  .site-menu .menu-card .menu-card-title--trail{transform:none!important}
 }
