@@ -35,6 +35,7 @@ jobs:
               raise SystemExit('No staged video parts found.')
 
           encoded = ''.join(p.read_text(encoding='utf-8').strip() for p in parts)
+          encoded += '=' * ((-len(encoded)) % 4)
           try:
               video = base64.b64decode(encoded, validate=True)
           except Exception as exc:
@@ -79,7 +80,7 @@ jobs:
           except OSError:
               pass
 
-          # This workflow is transport only. Remove it in the same final repair commit.
+          # This workflow exists only to replace the previous chunk workaround.
           Path('.github/workflows/repair-low-bandwidth-direct-video.yml').unlink(missing_ok=True)
           PY
 
