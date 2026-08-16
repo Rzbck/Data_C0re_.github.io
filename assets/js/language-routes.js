@@ -4,19 +4,32 @@
   const storage='data-c0re-lang-v1';
   const repoSegment=location.hostname.endsWith('github.io')&&location.pathname.startsWith('/Data_C0re_.github.io')?'/Data_C0re_.github.io':'';
 
-  /* Load the homepage selected-work guards on every route, including the legacy
-     root-language runtime. A versioned URL avoids Safari/iOS keeping the broken
-     pre-fix stylesheet after a deployment. */
+  /* Load shared interaction guards on every route, including generated locales. */
   const ensureCss=(path,attr)=>{
-    if(document.querySelector(`link[${attr}]`))return;
+    const href=new URL(path,document.baseURI).href;
+    const existing=document.querySelector(`link[${attr}]`);
+    if(existing){
+      if(existing.href!==href)existing.href=href;
+      return;
+    }
     const link=document.createElement('link');
     link.rel='stylesheet';
-    link.href=new URL(path,document.baseURI).href;
+    link.href=href;
     link.setAttribute(attr,'true');
     document.head.appendChild(link);
   };
+  const ensureScript=(path,attr)=>{
+    if(document.querySelector(`script[${attr}]`))return;
+    const script=document.createElement('script');
+    script.src=new URL(path,document.baseURI).href;
+    script.async=false;
+    script.setAttribute(attr,'true');
+    document.head.appendChild(script);
+  };
   ensureCss('assets/css/home-work-immersive-fix.css?v=20260814-7','data-home-work-immersive-fix');
   ensureCss('assets/css/home-work-mobile-final.css?v=20260814-7','data-home-work-mobile-final');
+  ensureCss('assets/css/home-gate-trail.css?v=20260816-3','data-home-gate-trail');
+  ensureScript('assets/js/menu-card-trail.js?v=20260816-1','data-menu-card-trail');
 
   const routeState=()=>{
     let rel=location.pathname.slice(repoSegment.length).replace(/^\/+|\/+$/g,'');
