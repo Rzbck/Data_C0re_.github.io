@@ -97,3 +97,10 @@
   .smallfile-narrative-aside .smallfile-preview figcaption{left:10px;right:10px;bottom:8px;max-width:calc(100% - 20px);font-size:7px}
   .smallfile-tech-note::after{margin-top:14px;background-size:cover}
 }
+
+/* 2026-08-16 centered quote refinement */
+.smallfile-narrative-aside .smallfile-quote{top:50%;left:50%;transform:translate(-50%,-50%);width:min(72%,430px);max-width:calc(100% - 32px);text-align:center;align-items:center}
+.smallfile-narrative-aside .smallfile-quote small{text-align:center}
+@media(min-width:821px) and (pointer:fine) and (max-height:760px){body.fullpage-last-low-bandwidth-message .smallfile-narrative-aside .smallfile-quote{top:50%;left:50%;transform:translate(-50%,-50%);width:min(68%,350px);max-width:calc(100% - 28px);text-align:center}}
+@media(max-width:900px){.smallfile-narrative-aside .smallfile-quote{top:50%;left:50%;transform:translate(-50%,-50%);width:min(76%,430px);max-width:calc(100% - 28px);text-align:center}}
+@media(max-width:620px){.smallfile-narrative-aside .smallfile-quote{top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 28px);max-width:390px;text-align:center}}
