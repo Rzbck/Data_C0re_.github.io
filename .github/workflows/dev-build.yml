@@ -91,6 +91,15 @@ jobs:
       - name: Stabilize language switcher before first paint
         run: node scripts/static-language-links.mjs
 
+      - name: Localize The Last Low-Bandwidth Message
+        run: node scripts/localize-low-bandwidth-project.mjs
+
+      - name: Normalize Archive context and locations
+        run: node scripts/archive-location-context-fix.mjs
+
+      - name: Apply shared small-file video behavior
+        run: node scripts/low-bandwidth-video-fix.mjs
+
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
