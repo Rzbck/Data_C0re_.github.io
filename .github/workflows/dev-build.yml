@@ -94,6 +94,9 @@ jobs:
       - name: Apply simplified SIGNAL development case study
         run: node scripts/signal-project-page-v1.mjs
 
+      - name: Apply full-screen SIGNAL hero composition
+        run: node scripts/signal-hero-v2.mjs
+
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
