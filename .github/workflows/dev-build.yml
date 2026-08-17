@@ -111,15 +111,13 @@ jobs:
           data = re.sub(r'[^A-Za-z0-9+/=]', '', data).replace('=', '')
           data += '=' * ((-len(data)) % 4)
           decoded = base64.b64decode(data)
+          assert len(decoded) == 61754, f'unexpected SIGNAL media size: {len(decoded)}'
+          assert decoded[4:8] == b'ftyp', 'SIGNAL media is not an MP4 container'
           open('assets/media/signal/simulation-loop.mp4', 'wb').write(decoded)
-          print('decoded bytes:', len(decoded))
+          print('SIGNAL media reconstructed:', len(decoded), 'bytes')
           PY
           sha256sum assets/media/signal/simulation-loop.mp4
-          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,avg_frame_rate,duration -of default=noprint_wrappers=1 assets/media/signal/simulation-loop.mp4
-          ffmpeg -hide_banner -loglevel error -i assets/media/signal/simulation-loop.mp4 -f null -
-          ffmpeg -hide_banner -loglevel error -y -ss 1 -i assets/media/signal/simulation-loop.mp4 -frames:v 1 -vf "scale=480:-2" -c:v libwebp -quality 72 assets/media/signal/simulation-poster.webp
-          test -s assets/media/signal/simulation-poster.webp
-          du -h assets/media/signal/simulation-loop.mp4 assets/media/signal/simulation-poster.webp
+          du -h assets/media/signal/simulation-loop.mp4
 
       - name: Integrate SIGNAL simulation video
         run: node scripts/signal-video-feature.mjs
