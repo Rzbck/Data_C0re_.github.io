@@ -81,7 +81,7 @@ for (const c of configs) {
 <section class="project-section signal-simulation-feature" aria-label="${c.aria}">
   <div class="signal-simulation-grid reveal">
     <figure class="signal-simulation-media">
-      <video muted loop playsinline preload="none" poster="assets/media/signal/simulation-poster.webp" data-lazy-video data-signal-simulation-video aria-label="${c.aria}">
+      <video muted loop playsinline preload="none" data-lazy-video data-signal-simulation-video aria-label="${c.aria}">
         <source data-src="assets/media/signal/simulation-loop.mp4?v=20260817-1" type="video/mp4">
       </video>
     </figure>
