@@ -103,20 +103,25 @@ jobs:
           set -euo pipefail
           mkdir -p assets/media/signal
           python - <<'PY'
-          import base64, glob, re
+          import base64, glob, hashlib, re
           parts = []
           for path in sorted(glob.glob('scripts/signal-media/video.part*.b64')):
               parts.append(open(path, 'r', encoding='utf-8').read())
           data = ''.join(parts)
           data = re.sub(r'[^A-Za-z0-9+/=]', '', data).replace('=', '')
           data += '=' * ((-len(data)) % 4)
-          decoded = base64.b64decode(data)
+          decoded = bytearray(base64.b64decode(data))
           assert len(decoded) == 61754, f'unexpected SIGNAL media size: {len(decoded)}'
+          # Correct two transcription bytes in the text-transported media payload.
+          decoded[1504] = 0
+          decoded[4319] = 137
+          decoded = bytes(decoded)
           assert decoded[4:8] == b'ftyp', 'SIGNAL media is not an MP4 container'
+          digest = hashlib.sha256(decoded).hexdigest()
+          assert digest == 'd4bf9f07f3a7743345860fc41ec5b1ef426604754bc08a1cad9263ba1f218112', f'unexpected SIGNAL media digest: {digest}'
           open('assets/media/signal/simulation-loop.mp4', 'wb').write(decoded)
-          print('SIGNAL media reconstructed:', len(decoded), 'bytes')
+          print('SIGNAL media reconstructed:', len(decoded), 'bytes', digest)
           PY
-          sha256sum assets/media/signal/simulation-loop.mp4
           du -h assets/media/signal/simulation-loop.mp4
 
       - name: Integrate SIGNAL simulation video
