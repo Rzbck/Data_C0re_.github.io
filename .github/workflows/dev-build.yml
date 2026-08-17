@@ -102,7 +102,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p assets/media/signal
-          cat scripts/signal-media/video.part*.b64 | LC_ALL=C tr -cd 'A-Za-z0-9+/=' | base64 -d > assets/media/signal/simulation-loop.mp4
+          python - <<'PY'
+          import base64, glob, re
+          parts = []
+          for path in sorted(glob.glob('scripts/signal-media/video.part*.b64')):
+              parts.append(open(path, 'r', encoding='utf-8').read())
+          data = ''.join(parts)
+          data = re.sub(r'[^A-Za-z0-9+/=]', '', data).replace('=', '')
+          data += '=' * ((-len(data)) % 4)
+          decoded = base64.b64decode(data)
+          open('assets/media/signal/simulation-loop.mp4', 'wb').write(decoded)
+          print('decoded bytes:', len(decoded))
+          PY
           echo "d4bf9f07f3a7743345860fc41ec5b1ef426604754bc08a1cad9263ba1f218112  assets/media/signal/simulation-loop.mp4" | sha256sum -c -
           ffmpeg -hide_banner -loglevel error -y -ss 1 -i assets/media/signal/simulation-loop.mp4 -frames:v 1 -vf "scale=480:-2" -c:v libwebp -quality 72 assets/media/signal/simulation-poster.webp
           test -s assets/media/signal/simulation-poster.webp
