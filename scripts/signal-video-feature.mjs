@@ -82,7 +82,7 @@ for (const c of configs) {
   <div class="signal-simulation-grid reveal">
     <figure class="signal-simulation-media">
       <video muted loop playsinline preload="none" data-lazy-video data-signal-simulation-video aria-label="${c.aria}">
-        <source data-src="assets/media/signal/simulation-loop.mp4?v=20260817-1" type="video/mp4">
+        <source data-src="assets/media/signal/simulation-loop.mp4?v=20260817-2" type="video/mp4">
       </video>
     </figure>
     <div class="signal-simulation-caption">
