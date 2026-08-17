@@ -97,6 +97,20 @@ jobs:
       - name: Apply full-screen SIGNAL hero composition
         run: node scripts/signal-hero-v2.mjs
 
+      - name: Rebuild optimized SIGNAL simulation media
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/media/signal
+          cat scripts/signal-media/video.part*.b64 | tr -d '\n\r ' | base64 -d > assets/media/signal/simulation-loop.mp4
+          echo "d4bf9f07f3a7743345860fc41ec5b1ef426604754bc08a1cad9263ba1f218112  assets/media/signal/simulation-loop.mp4" | sha256sum -c -
+          ffmpeg -hide_banner -loglevel error -y -ss 1 -i assets/media/signal/simulation-loop.mp4 -frames:v 1 -vf "scale=480:-2" -c:v libwebp -quality 72 assets/media/signal/simulation-poster.webp
+          test -s assets/media/signal/simulation-poster.webp
+          du -h assets/media/signal/simulation-loop.mp4 assets/media/signal/simulation-poster.webp
+
+      - name: Integrate SIGNAL simulation video
+        run: node scripts/signal-video-feature.mjs
+
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
@@ -113,6 +127,7 @@ jobs:
             favicon.ico
             assets/css
             assets/js
+            assets/media/signal
             assets/img/favicon.svg
             assets/img/og-cover.jpg
             projects
@@ -125,7 +140,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A index.html work.html about.html services.html lab.html archive.html cv.html contact.html projects en fr es sitemap.xml robots.txt assets/js/seo.js
+          git add -A index.html work.html about.html services.html lab.html archive.html cv.html contact.html projects en fr es sitemap.xml robots.txt assets/js/seo.js assets/media/signal
           if git diff --cached --quiet; then
             echo "No development generation changes to commit."
           else
