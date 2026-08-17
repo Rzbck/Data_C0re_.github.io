@@ -100,6 +100,26 @@ jobs:
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
+      - name: Package static dev preview bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: datac0re-dev-static-bundle
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            *.html
+            robots.txt
+            sitemap.xml
+            favicon.ico
+            assets/css
+            assets/js
+            assets/img/favicon.svg
+            assets/img/og-cover.jpg
+            projects
+            en
+            fr
+            es
+
       - name: Commit generated development layer
         shell: bash
         run: |
