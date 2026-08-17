@@ -91,6 +91,9 @@ jobs:
       - name: Stabilize language switcher before first paint
         run: node scripts/static-language-links.mjs
 
+      - name: Apply simplified SIGNAL development case study
+        run: node scripts/signal-project-page-v1.mjs
+
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
