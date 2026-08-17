@@ -70,37 +70,6 @@ html{overflow-y:scroll;scrollbar-gutter:stable}
   .signal-page .signal-step::after{right:0}
   .signal-page .signal-step h2{font-size:clamp(62px,19vw,104px)}
 }
-</style>
-<style data-signal-video-feature="">
-.signal-page .signal-simulation-feature{padding-top:clamp(88px,9vw,148px);padding-bottom:clamp(88px,9vw,148px);border-top:1px solid var(--line)}
-.signal-page .signal-simulation-grid{display:grid;grid-template-columns:minmax(0,1.72fr) minmax(270px,.52fr);gap:clamp(34px,5.5vw,94px);align-items:end}
-.signal-page .signal-simulation-media{position:relative;margin:0;min-width:0;background:#020202;border:1px solid var(--line);overflow:hidden}
-.signal-page .signal-simulation-media::before{content:'SIM / LIVE MODEL';position:absolute;z-index:2;left:14px;top:13px;padding:6px 8px;background:rgba(7,7,7,.78);border:1px solid rgba(243,241,235,.18);color:var(--acid);font-size:8.5px;font-weight:800;line-height:1;letter-spacing:.11em;text-transform:uppercase;pointer-events:none}
-.signal-page .signal-simulation-media video{display:block;width:100%;aspect-ratio:16/9;height:auto;object-fit:cover;background:#020202}
-.signal-page .signal-simulation-caption{max-width:390px;padding-bottom:4px}
-.signal-page .signal-simulation-caption .eyebrow{margin-bottom:17px}
-.signal-page .signal-simulation-caption>p:not(.eyebrow){margin:0;color:#c6c4be;font-size:clamp(16px,1.12vw,20px);line-height:1.48}
-.signal-page .signal-simulation-caption small{display:block;margin-top:clamp(24px,3vw,42px);padding-top:13px;border-top:1px solid var(--line);color:var(--grey);font-size:9px;line-height:1.45;letter-spacing:.09em;text-transform:uppercase}
-@media(max-width:980px){
-  .signal-page .signal-simulation-grid{grid-template-columns:1fr;gap:28px}
-  .signal-page .signal-simulation-caption{max-width:720px;display:grid;grid-template-columns:minmax(0,1fr) minmax(210px,.45fr);column-gap:34px;align-items:start}
-  .signal-page .signal-simulation-caption .eyebrow{grid-column:1/-1}
-  .signal-page .signal-simulation-caption small{margin-top:0}
-}
-@media(max-width:620px){
-  .signal-page .signal-simulation-feature{padding-top:68px;padding-bottom:72px}
-  .signal-page .signal-simulation-grid{gap:22px}
-  .signal-page .signal-simulation-media{margin-left:calc(var(--gutter) * -.18);margin-right:calc(var(--gutter) * -.18)}
-  .signal-page .signal-simulation-media::before{left:10px;top:10px;font-size:7.5px}
-  .signal-page .signal-simulation-media video{aspect-ratio:16/10;object-fit:cover}
-  .signal-page .signal-simulation-caption{display:block;max-width:none}
-  .signal-page .signal-simulation-caption>p:not(.eyebrow){font-size:16px;line-height:1.5}
-  .signal-page .signal-simulation-caption small{margin-top:20px}
-}
-@media(max-width:380px){
-  .signal-page .signal-simulation-feature{padding-top:58px;padding-bottom:62px}
-  .signal-page .signal-simulation-media video{aspect-ratio:4/3}
-}
 </style></head>
 <body class="signal-page">
 <header class="site-header" data-header=""><a class="brand" href="fr/">DATA C0RE</a><div class="header-actions"><a class="nav-text nav-primary nav-primary--home" href="fr/" data-v2-primary="home">Accueil</a><a class="nav-text nav-primary nav-primary--archive" href="fr/archive.html" data-v2-primary="archive">Archives</a><a class="nav-text nav-primary nav-primary--cv" href="fr/cv.html" data-v2-primary="cv">CV</a><a class="nav-text nav-primary nav-primary--contact" href="fr/contact.html" data-v2-primary="contact">Contact</a><div class="lang-switcher" role="group" aria-label="Language / Langue / Idioma" data-static-language-switcher=""><a href="en/projects/signal.html" data-lang="en">EN</a><a href="fr/projects/signal.html" data-lang="fr" aria-current="page">FR</a><a href="es/projects/signal.html" data-lang="es">ES</a></div><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle="">index ↗</button></div></header>
@@ -128,20 +97,6 @@ html{overflow-y:scroll;scrollbar-gutter:stable}
       <p>TouchDesigner / pixel mapping / LED / Art-Net</p>
     </article>
   </section></header>
-<section class="project-section signal-simulation-feature" aria-label="Simulation actuelle des flux de foule et de la couverture des capteurs de SIGNAL">
-  <div class="signal-simulation-grid reveal">
-    <figure class="signal-simulation-media">
-      <video muted="" loop="" playsinline="" preload="none" data-lazy-video="" data-signal-simulation-video="" aria-label="Simulation actuelle des flux de foule et de la couverture des capteurs de SIGNAL">
-        <source data-src="assets/media/signal/simulation-loop.mp4?v=20260817-2" type="video/mp4">
-      </video>
-    </figure>
-    <div class="signal-simulation-caption">
-      <p class="eyebrow accent-acid">Simulation actuelle / flux de foule</p>
-      <p>Le mouvement de la foule traverse le modèle actuel de couverture des capteurs dans le jumeau numérique Godot. Cette simulation de travail sert à tester présences, trajectoires et réponse spatiale avant l’existence de l’installation physique.</p>
-      <small>Godot / simulation de foule / couverture capteurs / en cours</small>
-    </div>
-  </div>
-</section>
 <section class="project-section project-section--split"><div class="section-kicker reveal"><span>01</span><p>Projet</p></div><div class="prose-large reveal"><h2>Un jumeau numérique pour une installation qui réagit aux présences.</h2><p>SIGNAL est conçu comme un système spatial modulaire dans lequel les personnes qui traversent l’architecture sont suivies par radar mmWave plutôt que par une image caméra. Leurs positions deviennent un état temps réel partagé capable de piloter texte, lumière, mouvement et autres comportements sur des surfaces LED distribuées. La phase actuelle consiste à concevoir et tester le système avant une construction in situ.</p></div></section>
 <section class="project-section"><div class="section-head reveal"><div><p class="eyebrow">Développement système</p><h2>Concevoir. Simuler.<br>Suivre. Mapper.</h2></div></div><div class="system-flow reveal"><span>CAD / espace</span><b>→</b><span>simulation de foule</span><b>→</b><span>modèle radar mmWave</span><b>→</b><span>réseau / fusion</span><b>→</b><span>TouchDesigner</span><b>→</b><span>LED / Art-Net</span></div><div class="prose reveal" style="margin-top:clamp(34px,4vw,64px)"><p>Godot sert d’environnement de conception, de simulation et de diagnostic : géométrie de l’installation, murs et flux piétons, couverture radar, écrans, mouvement de foule et paramètres partagés des appareils peuvent être testés dans un même projet. L’architecture matérielle cible reste modulaire, avec des pods radar reliés à des passerelles Ethernet avant d’envoyer l’état de tracking vers TouchDesigner puis la couche finale de mapping LED.</p></div></section>
 <section class="project-section project-section--split"><div class="section-kicker reveal"><span>02</span><p>État actuel</p></div><div class="prose-large reveal"><h2>Construire le système avant de construire l’installation.</h2><p>Aucune installation finalisée ni documentation visuelle définitive n’est présentée pour l’instant. SIGNAL est en développement actif. Le prototype actuel réunit déjà le workspace CAD / 3D, la simulation de foule et de flux, le modèle radar / fusion, l’inspecteur appareil partagé et la configuration projet. L’implémentation physique des écrans LED multi-murs et l’intégration matérielle in situ restent dans la phase suivante.</p></div></section>
