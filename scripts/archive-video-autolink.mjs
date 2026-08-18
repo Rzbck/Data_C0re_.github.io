@@ -1,11 +1,11 @@
 import fs from 'node:fs';
-import path from 'node:path';
 import * as cheerio from 'cheerio';
 
 const archiveFiles = ['archive.html', 'en/archive.html', 'fr/archive.html', 'es/archive.html'];
 const videoPattern = /\.(mp4|webm|m4v)(?:[?#].*)?$/i;
 
 const cleanSource = value => (value || '').trim();
+const sourceKey = value => cleanSource(value).split(/[?#]/, 1)[0];
 
 const projectFileFor = (archiveFile, slug) => {
   const locale = archiveFile.includes('/') ? archiveFile.split('/')[0] : '';
@@ -17,6 +17,7 @@ const collectVideos = projectFile => {
   const html = fs.readFileSync(projectFile, 'utf8');
   const $ = cheerio.load(html, { decodeEntities: false });
   const found = [];
+  const seen = new Set();
 
   $('video, video source').each((_, element) => {
     const node = $(element);
@@ -24,7 +25,12 @@ const collectVideos = projectFile => {
       .map(cleanSource)
       .filter(Boolean)
       .filter(src => videoPattern.test(src));
-    for (const src of candidates) if (!found.includes(src)) found.push(src);
+    for (const src of candidates) {
+      const key = sourceKey(src);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      found.push(src);
+    }
   });
 
   return found;
@@ -42,7 +48,7 @@ const ensureMediaLayer = ($, entry) => {
 for (const archiveFile of archiveFiles) {
   if (!fs.existsSync(archiveFile)) continue;
   const html = fs.readFileSync(archiveFile, 'utf8');
-  const $ = cheerio.load(html, { decodeEntities: false }, false);
+  const $ = cheerio.load(html, { decodeEntities: false });
   let changed = false;
 
   $('.archive-entry[data-archive-project]').each((_, element) => {
