@@ -33,6 +33,8 @@
     const summary=lowBandwidthEntry.querySelector('small');
     if(summary)summary.textContent=copy.summary;
     lowBandwidthEntry.removeAttribute('data-archive-video');
+    lowBandwidthEntry.removeAttribute('data-archive-videos');
+    lowBandwidthEntry.dataset.archiveVideoResolved='true';
     lowBandwidthEntry.dataset.archiveTags='festival vancouver canada small-file low-bandwidth';
     let media=lowBandwidthEntry.querySelector('.archive-entry-media');
     if(!media){
@@ -187,11 +189,72 @@
   const desktop=()=>matchMedia('(min-width:901px) and (hover:hover) and (pointer:fine)').matches;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   const motionOff=()=>reduced.matches||document.querySelector('[data-motion-toggle]')?.getAttribute('aria-pressed')==='true';
+  const videoPattern=/\.(mp4|webm|m4v)(?:[?#].*)?$/i;
 
-  const activateMedia=entry=>{
-    entry.classList.add('is-media-active');
+  const ensureMediaLayer=entry=>{
+    let media=entry.querySelector('.archive-entry-media');
+    if(!media){
+      media=document.createElement('span');
+      media.className='archive-entry-media';media.setAttribute('aria-hidden','true');
+      media.innerHTML='<video muted loop playsinline preload="none"></video>';
+      entry.prepend(media);
+    }else if(!media.querySelector('video')){
+      const video=document.createElement('video');video.muted=true;video.loop=true;video.playsInline=true;video.preload='none';media.append(video);
+    }
+    return media;
+  };
+
+  const getVideoPool=entry=>{
+    const fallback=entry.dataset.archiveVideo||'';
+    const raw=entry.dataset.archiveVideos||'';
+    if(!raw)return fallback?[fallback]:[];
+    try{
+      const parsed=JSON.parse(raw);
+      if(Array.isArray(parsed))return [...new Set(parsed.filter(Boolean))];
+    }catch{}
+    const list=raw.split('|').map(item=>item.trim()).filter(Boolean);
+    return list.length?[...new Set(list)]:fallback?[fallback]:[];
+  };
+
+  const discoverVideos=async entry=>{
+    let pool=getVideoPool(entry);
+    if(pool.length){ensureMediaLayer(entry);return pool;}
+    if(entry.dataset.archiveVideoResolved==='true')return [];
+    entry.dataset.archiveVideoResolved='true';
+    try{
+      const response=await fetch(entry.href,{credentials:'same-origin',cache:'force-cache'});
+      if(!response.ok)return [];
+      const html=await response.text();
+      const doc=new DOMParser().parseFromString(html,'text/html');
+      const found=[];
+      doc.querySelectorAll('video,video source').forEach(node=>{
+        [node.getAttribute('src'),node.getAttribute('data-src')].filter(Boolean).forEach(src=>{
+          src=src.trim();if(videoPattern.test(src)&&!found.includes(src))found.push(src);
+        });
+      });
+      if(!found.length)return [];
+      entry.dataset.archiveVideo=found[0];
+      if(found.length>1)entry.dataset.archiveVideos=JSON.stringify(found);
+      ensureMediaLayer(entry);
+      return found;
+    }catch{return [];}
+  };
+
+  const chooseVideo=(entry,pool)=>{
+    if(pool.length<2)return pool[0]||'';
+    const previous=entry.dataset.archiveVideoLast||'';
+    const candidates=pool.filter(src=>src!==previous);
+    const source=candidates[Math.floor(Math.random()*candidates.length)]||pool[0];
+    entry.dataset.archiveVideoLast=source;
+    return source;
+  };
+
+  const activateMedia=async entry=>{
+    entry.classList.add('is-media-active');entry.dataset.archiveMediaWanted='true';
     if(!desktop()||motionOff())return;
-    const src=entry.dataset.archiveVideo,video=entry.querySelector('.archive-entry-media video');
+    const pool=await discoverVideos(entry);
+    if(entry.dataset.archiveMediaWanted!=='true'||!desktop()||motionOff())return;
+    const src=chooseVideo(entry,pool),video=entry.querySelector('.archive-entry-media video');
     if(!src||!video)return;
     if(video.dataset.src!==src){
       video.dataset.src=src;video.src=src;video.preload='metadata';video.load();
@@ -199,7 +262,7 @@
     }
     video.play().then(()=>entry.classList.add('has-archive-video')).catch(()=>{});
   };
-  const deactivateMedia=entry=>{entry.classList.remove('is-media-active','has-archive-video');const video=entry.querySelector('.archive-entry-media video');if(video)video.pause()};
+  const deactivateMedia=entry=>{entry.dataset.archiveMediaWanted='false';entry.classList.remove('is-media-active','has-archive-video');const video=entry.querySelector('.archive-entry-media video');if(video)video.pause()};
   entries.forEach(entry=>{entry.addEventListener('pointerenter',()=>activateMedia(entry));entry.addEventListener('pointerleave',()=>deactivateMedia(entry));entry.addEventListener('focus',()=>activateMedia(entry));entry.addEventListener('blur',()=>deactivateMedia(entry))});
 
   [...document.querySelectorAll('.archive-filter-button')].forEach(item=>{
