@@ -80,10 +80,32 @@
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   const motionOff=()=>reduced.matches||document.querySelector('[data-motion-toggle]')?.getAttribute('aria-pressed')==='true';
 
+  const getVideoPool=entry=>{
+    const fallback=entry.dataset.archiveVideo||'';
+    const raw=entry.dataset.archiveVideos||'';
+    if(!raw)return fallback?[fallback]:[];
+    try{
+      const parsed=JSON.parse(raw);
+      if(Array.isArray(parsed))return [...new Set(parsed.filter(Boolean))];
+    }catch{}
+    const list=raw.split('|').map(item=>item.trim()).filter(Boolean);
+    return list.length?[...new Set(list)]:fallback?[fallback]:[];
+  };
+
+  const chooseVideo=entry=>{
+    const pool=getVideoPool(entry);
+    if(pool.length<2)return pool[0]||'';
+    const previous=entry.dataset.archiveVideoLast||'';
+    const candidates=pool.filter(src=>src!==previous);
+    const source=candidates[Math.floor(Math.random()*candidates.length)]||pool[0];
+    entry.dataset.archiveVideoLast=source;
+    return source;
+  };
+
   const activateMedia=entry=>{
     entry.classList.add('is-media-active');
     if(!desktop()||motionOff())return;
-    const src=entry.dataset.archiveVideo,video=entry.querySelector('.archive-entry-media video');
+    const src=chooseVideo(entry),video=entry.querySelector('.archive-entry-media video');
     if(!src||!video)return;
     if(video.dataset.src!==src){
       video.dataset.src=src;video.src=src;video.preload='metadata';video.load();
