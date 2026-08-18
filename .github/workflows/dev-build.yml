@@ -103,6 +103,9 @@ jobs:
       - name: Integrate HQ SIGNAL simulation video
         run: node scripts/signal-video-feature.mjs
 
+      - name: Auto-link project videos to archive hover previews
+        run: node scripts/archive-video-autolink.mjs
+
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
