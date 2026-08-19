@@ -34,15 +34,50 @@ html{overflow-y:scroll;scrollbar-gutter:stable}
 @media(max-width:900px){.site-header .lang-switcher>a{min-width:23px;height:32px;padding:8px 4px;font-size:8px;letter-spacing:.04em}}
 @media(max-width:620px){.site-header .lang-switcher>a{min-width:20px;height:30px;padding:7px 3px;font-size:7.5px}}
 @media(max-width:380px){.site-header .lang-switcher>a{min-width:18px;padding-left:2px;padding-right:2px;font-size:7px}}
-</style></head>
-<body>
+</style>
+<style data-comedie-official-media="">
+/* Comédie case study — official production imagery, using the shared DATA C0RE layout language. */
+body.comedie-page .project-hero{padding-top:clamp(96px,9vw,150px);padding-bottom:clamp(24px,3vw,42px)}
+body.comedie-page .project-hero-copy{align-items:end}
+body.comedie-page .project-facts{margin-bottom:0}
+.comedie-visual-intro{width:min(var(--max),100%);margin:0 auto;padding:0 var(--gutter) clamp(64px,8vw,118px);display:grid;grid-template-columns:minmax(0,1.6fr) minmax(290px,.64fr);gap:10px}
+.comedie-visual-intro figure{margin:0;min-width:0;background:#020202;overflow:hidden}
+.comedie-visual-intro__main,.comedie-visual-intro__stack{height:min(62vh,720px)}
+.comedie-visual-intro__stack{display:grid;grid-template-rows:1fr 1fr;gap:10px}
+.comedie-visual-intro__stack figure{min-height:0}
+.comedie-visual-intro img{display:block;width:100%;height:100%;object-fit:cover;background:#020202}
+.comedie-visual-intro figcaption{padding:9px 0 2px;color:var(--grey);font-size:9px;line-height:1.35;text-transform:uppercase;letter-spacing:.075em}
+.comedie-visual-intro figcaption a:hover{color:var(--acid)}
+body.comedie-page .theatre-lead{display:none}
+@media(max-width:900px){.comedie-visual-intro{grid-template-columns:1fr}.comedie-visual-intro__main{height:min(58vh,620px)}.comedie-visual-intro__stack{height:auto;grid-template-columns:1fr 1fr;grid-template-rows:none}.comedie-visual-intro__stack figure{height:42vw;min-height:260px;max-height:440px}}
+@media(max-width:620px){body.comedie-page .project-hero{padding-top:90px}.comedie-visual-intro{padding-inline:18px}.comedie-visual-intro__main{height:58vw;min-height:300px}.comedie-visual-intro__stack{grid-template-columns:1fr}.comedie-visual-intro__stack figure{height:58vw;min-height:260px}.comedie-visual-intro figcaption{font-size:8px}}
+</style>
+<link rel="preconnect" href="https://festival-avignon.com" crossorigin="" data-comedie-preconnect="">
+<link rel="preconnect" href="https://cdn.artishoc.coop" crossorigin="" data-comedie-preconnect="">
+</head>
+<body class="comedie-page">
 <header class="site-header" data-header=""><a class="brand" href="fr/">DATA C0RE</a><div class="header-actions"><a class="nav-text nav-primary nav-primary--home" href="fr/" data-v2-primary="home">Accueil</a><a class="nav-text nav-primary nav-primary--archive" href="fr/archive.html" data-v2-primary="archive">Archives</a><a class="nav-text nav-primary nav-primary--cv" href="fr/cv.html" data-v2-primary="cv">CV</a><a class="nav-text nav-primary nav-primary--contact" href="fr/contact.html" data-v2-primary="contact">Contact</a><div class="lang-switcher" role="group" aria-label="Language / Langue / Idioma" data-static-language-switcher=""><a href="en/projects/comedie.html" data-lang="en">EN</a><a href="fr/projects/comedie.html" data-lang="fr" aria-current="page">FR</a><a href="es/projects/comedie.html" data-lang="es">ES</a></div><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle="">index ↗</button></div></header>
 <nav class="site-menu" id="site-menu" aria-hidden="true" data-menu=""><div class="menu-shell"><p class="menu-label">DATA C0RE / INDEX</p><div class="menu-links" data-menu-grid=""><a class="menu-card menu-card--archive" href="fr/archive.html" aria-label="Archives"><span class="menu-card-meta" aria-hidden="true"><b>01 / Projets</b><small>Réalisé / R&amp;D / études</small></span><span class="menu-card-title">Archives</span><span class="menu-card-arrow" aria-hidden="true">↗</span></a><a class="menu-card menu-card--cv" href="fr/cv.html" aria-label="CV"><span class="menu-card-meta" aria-hidden="true"><b>02 / Expérience</b><small>Parcours / outils</small></span><span class="menu-card-title">CV</span><span class="menu-card-arrow" aria-hidden="true">↗</span></a><a class="menu-card menu-card--contact" href="fr/contact.html" aria-label="Contact" data-contact-nav="1"><span class="menu-card-meta" aria-hidden="true"><b>03 / Contact</b><small>Projets / collaborations</small></span><span class="menu-card-title">Contact</span><span class="menu-card-arrow" aria-hidden="true">↗</span></a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav>
 <main><article>
 <header class="project-hero">
   <div class="project-hero-copy reveal"><div><p class="eyebrow accent-cyan">Professionnel / systèmes vidéo théâtre / 2021—2023</p><h1>Comédie de Genève /<br>Video Systems</h1></div><p class="project-intent">Trois contextes de production, trois responsabilités différentes : création et continuité en tournée, travail de système vidéo en phase de création, puis installation en tournée et exploitation du spectacle.</p></div>
   <div class="project-facts reveal"><span><b>Productions</b> Jatahy / Lupa / Koohestani</span><span><b>Travail</b> création / adaptation / installation / exploitation</span><span><b>Systèmes</b> caméras / routage / projection / mapping / surtitrage</span></div>
-</header>
+</header><section class="comedie-visual-intro reveal" data-comedie-official-gallery="">
+    <figure class="comedie-visual-intro__main">
+      <img src="https://festival-avignon.com/storage/image/62/76162_60e2fdac27430.jpeg" alt="Entre chien et loup de Christiane Jatahy au Festival d Avignon 2021" decoding="async" fetchpriority="high" referrerpolicy="no-referrer">
+      <figcaption><a href="https://festival-avignon.com/fr/edition-2021/programmation/entre-chien-et-loup-59236" target="_blank" rel="noreferrer">Entre chien et loup / Christiane Jatahy — Festival d’Avignon 2021 — © Christophe Raynaud de Lage / Festival d’Avignon ↗</a></figcaption>
+    </figure>
+    <div class="comedie-visual-intro__stack">
+      <figure>
+        <img src="https://cdn.artishoc.coop/b8491946-0301-4489-b3ce-b6e22d3cd19e/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1qRTFNVFF4IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--9446bdacd4d3a704546ff57f911244d3bbfb682e5aafa45602220f8e8604f167/9d4e9c845bfb/149181-20230509_plateau_emigrants_dougados_magali__e8a4963.jpg" alt="Les Emigrants de Krystian Lupa en creation a la Comedie de Geneve" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+        <figcaption><a href="https://www.comedie.ch/fr/jouer-avec-krystian-lupa" target="_blank" rel="noreferrer">Les Émigrants / création à la Comédie de Genève — © Magali Dougados ↗</a></figcaption>
+      </figure>
+      <figure>
+        <img src="https://festival-avignon.com/storage/image/96/218796_62c6aa2080515.jpeg" alt="En transit de Amir Reza Koohestani au Festival d Avignon 2022" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+        <figcaption><a href="https://festival-avignon.com/fr/edition-2022/programmation/en-transit-190913" target="_blank" rel="noreferrer">En transit / Amir Reza Koohestani — Festival d’Avignon 2022 — © Christophe Raynaud de Lage / Festival d’Avignon ↗</a></figcaption>
+      </figure>
+    </div>
+  </section>
 
 <div class="theatre-lead reveal"><figure><img src="assets/media/comedie/venue.jpg" alt="Stage at Comédie de Genève during video-system work"><figcaption>Comédie de Genève / contexte de création et systèmes vidéo</figcaption></figure></div>
 
