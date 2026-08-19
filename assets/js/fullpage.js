@@ -2,6 +2,7 @@
   const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
   const filename=location.pathname.endsWith('/')?'index.html':location.pathname.split('/').pop();
   if(filename==='about.html')return;
+  if(window.matchMedia('(max-width:820px), (pointer:coarse)').matches)return;
 
   const css=document.createElement('link');
   css.rel='stylesheet';
@@ -12,7 +13,7 @@
   const body=document.body;
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
   const desktopEligible=()=>window.matchMedia('(min-width:821px) and (pointer:fine)').matches&&!reduce.matches;
-  const touchEligible=()=>filename!=='comedie.html'&&window.matchMedia('(max-width:820px), (pointer:coarse)').matches&&!reduce.matches;
+  const touchEligible=()=>false;
 
   let panels=[];
   if(filename==='index.html'){
@@ -134,8 +135,6 @@
     event.preventDefault();if(event.repeat||animating)return;move(direction);
   });
 
-  // Touch keeps native scrolling inside tall panels. Comédie now uses a fully native
-  // mobile flow because each production is taller than a viewport once its gallery is visible.
   let touchTracking=false,touchStartY=0,touchStartX=0,touchStartScroll=0,touchStartPanel=0;
   const ignoreTouchTarget=target=>target instanceof Element&&Boolean(target.closest('.tech-tabs,.route,input,textarea,select,[contenteditable="true"]'));
   window.addEventListener('touchstart',event=>{
