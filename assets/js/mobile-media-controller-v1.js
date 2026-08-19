@@ -24,7 +24,10 @@
   let lastScrollAt = performance.now();
 
   const now = () => performance.now();
-  const isPreview = video => Boolean(video.closest('.archive-entry-media') || video.matches('[data-hover-preview-video],[data-work-preview-video]'));
+  const isPreview = video => Boolean(
+    video.closest('.archive-entry-media,.home-work-card-media') ||
+    video.matches('[data-hover-preview-video],[data-work-preview-video]')
+  );
   const isEligible = video => video instanceof HTMLVideoElement && !isPreview(video);
   const motionOff = () => reduced.matches || document.body.classList.contains('motion-off');
   const viewportDistance = video => {
@@ -155,9 +158,8 @@
     restoreSources(state);
     video.preload = constrainedNetwork ? 'metadata' : 'auto';
     prepareStartPosition(state);
-    const begin = () => {
+    const playNow = () => {
       if (!state.wantPlay || motionOff() || document.hidden) return;
-      prepareStartPosition(state);
       armFirstFrame(state);
       const promise = video.play();
       if (promise?.then) promise.then(() => {
@@ -165,6 +167,12 @@
         state.lastActive = now();
         armFirstFrame(state);
       }).catch(() => { state.playing = false; });
+    };
+    const begin = () => {
+      if (!state.wantPlay || motionOff() || document.hidden) return;
+      prepareStartPosition(state);
+      if (video.seeking) video.addEventListener('seeked', playNow, { once: true });
+      else playNow();
     };
     if (video.readyState >= HTMLMediaElement.HAVE_METADATA) begin();
     else video.addEventListener('loadedmetadata', begin, { once: true });
@@ -177,7 +185,7 @@
     }
     const stopThreshold = scrolling ? KINETIC_STOP_THRESHOLD : STOP_THRESHOLD;
     if (state.wantPlay) {
-      if (state.score <= stopThreshold && !state.inViewport) {
+      if (!state.inViewport || state.score <= stopThreshold) {
         pauseState(state);
         releaseLater(state);
       } else if (!state.playing && (!scrolling || state.score >= .72)) {
@@ -197,7 +205,7 @@
     const hot = [...managed.values()].filter(state => !state.detached && !state.playing && !state.wantPlay);
     if (hot.length <= HOT_LIMIT) return;
     hot.sort((a, b) => (viewportDistance(b.video) - viewportDistance(a.video)) || (a.lastActive - b.lastActive));
-    hot.slice(HOT_LIMIT).forEach(detachSources);
+    hot.slice(0, hot.length - HOT_LIMIT).forEach(detachSources);
   };
 
   const register = video => {
@@ -220,6 +228,9 @@
     };
     managed.set(video, state);
     video.dataset.dcMediaManaged = '1';
+    video.dataset.perfDetached = 'true';
+    video.setAttribute('data-stagger-video', '');
+    video.preload = 'none';
     if (!state.frameReady && !video.getAttribute('poster')) video.classList.add('dc-media-awaiting-frame');
     video.muted = true;
     video.defaultMuted = true;
@@ -234,9 +245,6 @@
     }, { passive: true });
     video.addEventListener('pause', () => { state.playing = false; }, { passive: true });
     video.addEventListener('loadedmetadata', () => prepareStartPosition(state), { passive: true });
-    video.addEventListener('emptied', () => {
-      if (!state.detached) state.positionPrepared = false;
-    }, { passive: true });
 
     warmObserver?.observe(video);
     playObserver?.observe(video);
@@ -257,6 +265,9 @@
       if (state.warm) {
         restoreSources(state);
         state.video.preload = 'metadata';
+        if (state.video.readyState === 0 && hasAttachedSource(state.video)) {
+          try { state.video.load(); } catch {}
+        }
         state.lastActive = now();
       } else if (!state.wantPlay) {
         releaseLater(state);
