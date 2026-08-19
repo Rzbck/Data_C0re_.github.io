@@ -8,62 +8,140 @@ const files = [
   'es/projects/comedie.html'
 ];
 
-const images = {
-  entre: 'https://festival-avignon.com/storage/image/62/76162_60e2fdac27430.jpeg',
-  emigrants: 'https://cdn.artishoc.coop/b8491946-0301-4489-b3ce-b6e22d3cd19e/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1qRTFNVFF4IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--9446bdacd4d3a704546ff57f911244d3bbfb682e5aafa45602220f8e8604f167/9d4e9c845bfb/149181-20230509_plateau_emigrants_dougados_magali__e8a4963.jpg',
-  transit: 'https://festival-avignon.com/storage/image/96/218796_62c6aa2080515.jpeg'
-};
-
-const sourceLinks = {
-  entre: 'https://festival-avignon.com/fr/edition-2021/programmation/entre-chien-et-loup-59236',
-  emigrants: 'https://www.comedie.ch/fr/jouer-avec-krystian-lupa',
-  transit: 'https://festival-avignon.com/fr/edition-2022/programmation/en-transit-190913'
+const shows = {
+  entre: {
+    source: 'https://www.piccoloteatro.org/en/2021-2022/entre-chien-et-loup',
+    credit: 'Magali Dougados / Piccolo Teatro',
+    images: [
+      'https://www.piccoloteatro.org/sites/default/files/styles/show_hero_i/public/imported-images/uploads/seasons/2021-2022/exhibitions/entre-chien-et-loup/it_entre-chien-et-loup-1000x750_original_11.jpg?itok=x502vh4f',
+      'https://www.piccoloteatro.org/sites/default/files/styles/galley_image/public/imported-images/uploads/seasons/2021-2022/exhibitions/entre-chien-et-loup/it_entre-chien-et-loup-1000x750_original_10.jpg?itok=_UGQ7ImB',
+      'https://www.piccoloteatro.org/sites/default/files/styles/galley_image/public/imported-images/uploads/seasons/2021-2022/exhibitions/entre-chien-et-loup/it_entre-chien-et-loup-01_original_3.jpg?itok=29D2jKtS'
+    ]
+  },
+  emigrants: {
+    source: 'https://www.theatre-odeon.eu/en/les-emigrants',
+    credit: 'Simon Gosselin / Odéon–Théâtre de l’Europe',
+    images: [
+      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UZzVNek0zIiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--018c40d3bcfa95a4cdf2728f1670fa4e686c883144f2499d3b08cc14c4f2ecc1/4a41df1e38dc/les-emigrants-11-01-24-simon-gosselin-2-62.jpg',
+      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UZzVNems1IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--a09558672e73c5e550e27845c61ab53e02ecfc7065307e11c230bf25ec20b56f/bca32ae5b6d6/les-emigrants-11-01-24-simon-gosselin-2-54.jpg',
+      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UZzVOREF3IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--b14b9a4c45162b50293407ba680a28476c069c80301eb0b85ee101d56a1dc486/b1a149f0cd2b/les-emigrants-11-01-24-simon-gosselin-1-32-1.jpg'
+    ]
+  },
+  transit: {
+    source: 'https://www.theatre-odeon.eu/fr/en-transit',
+    credit: 'Magali Dougados / Odéon–Théâtre de l’Europe',
+    images: [
+      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UTTRNREU1IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--f5b0720c9af9ad0782dd8ee9de1fe10a750bc072040033880a73adfba2eb7ef6/754ce36543cc/190408-22022022_en_transit_comedie_magali_dougados_e8a5076-min.jpg',
+      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UTTRNREl4IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--bf77427afcdd49ceffde99bfa63d1fdb3acf66c8bc4fa02c1415348f3c0040c5/c17632739dfa/190408-22022022_en_transit_comedie_magali_dougados_e8a5098-min.jpg',
+      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UTTRNREl6IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--b37b8fbc2f376424d336ca1aee67385440f9530d20cafb49d53e8fef2ba4a9f3/1c228908c1f7/190408-22022022_en_transit_comedie_magali_dougados_e8a5211-min.jpg'
+    ]
+  }
 };
 
 const copy = {
   en: {
-    entreAlt: 'Entre chien et loup by Christiane Jatahy, Festival d Avignon 2021',
-    entreCap: 'Entre chien et loup / Christiane Jatahy — Festival d’Avignon 2021 — © Christophe Raynaud de Lage / Festival d’Avignon',
-    emigrantsAlt: 'Les Emigrants by Krystian Lupa during creation at Comedie de Geneve',
-    emigrantsCap: 'Les Émigrants / creation at Comédie de Genève — © Magali Dougados',
-    transitAlt: 'En transit by Amir Reza Koohestani, Festival d Avignon 2022',
-    transitCap: 'En transit / Amir Reza Koohestani — Festival d’Avignon 2022 — © Christophe Raynaud de Lage / Festival d’Avignon'
+    context: 'Comédie de Genève / Video Systems / 2021—2023',
+    entre: 'Entre chien et loup / Christiane Jatahy',
+    emigrants: 'Les Émigrants / Krystian Lupa',
+    transit: 'En transit / Amir Reza Koohestani',
+    source: 'Official production photography'
   },
   fr: {
-    entreAlt: 'Entre chien et loup de Christiane Jatahy au Festival d Avignon 2021',
-    entreCap: 'Entre chien et loup / Christiane Jatahy — Festival d’Avignon 2021 — © Christophe Raynaud de Lage / Festival d’Avignon',
-    emigrantsAlt: 'Les Emigrants de Krystian Lupa en creation a la Comedie de Geneve',
-    emigrantsCap: 'Les Émigrants / création à la Comédie de Genève — © Magali Dougados',
-    transitAlt: 'En transit de Amir Reza Koohestani au Festival d Avignon 2022',
-    transitCap: 'En transit / Amir Reza Koohestani — Festival d’Avignon 2022 — © Christophe Raynaud de Lage / Festival d’Avignon'
+    context: 'Comédie de Genève / Systèmes vidéo / 2021—2023',
+    entre: 'Entre chien et loup / Christiane Jatahy',
+    emigrants: 'Les Émigrants / Krystian Lupa',
+    transit: 'En transit / Amir Reza Koohestani',
+    source: 'Photographies officielles de production'
   },
   es: {
-    entreAlt: 'Entre chien et loup de Christiane Jatahy en el Festival de Avignon 2021',
-    entreCap: 'Entre chien et loup / Christiane Jatahy — Festival d’Avignon 2021 — © Christophe Raynaud de Lage / Festival d’Avignon',
-    emigrantsAlt: 'Les Emigrants de Krystian Lupa durante la creacion en Comedie de Geneve',
-    emigrantsCap: 'Les Émigrants / creación en Comédie de Genève — © Magali Dougados',
-    transitAlt: 'En transit de Amir Reza Koohestani en el Festival de Avignon 2022',
-    transitCap: 'En transit / Amir Reza Koohestani — Festival d’Avignon 2022 — © Christophe Raynaud de Lage / Festival d’Avignon'
+    context: 'Comédie de Genève / Sistemas de vídeo / 2021—2023',
+    entre: 'Entre chien et loup / Christiane Jatahy',
+    emigrants: 'Les Émigrants / Krystian Lupa',
+    transit: 'En transit / Amir Reza Koohestani',
+    source: 'Fotografías oficiales de producción'
   }
 };
 
 const style = `
 <style data-comedie-official-media="">
-/* Comédie case study — official production imagery, using the shared DATA C0RE layout language. */
-body.comedie-page .project-hero{padding-top:clamp(96px,9vw,150px);padding-bottom:clamp(24px,3vw,42px)}
-body.comedie-page .project-hero-copy{align-items:end}
-body.comedie-page .project-facts{margin-bottom:0}
-.comedie-visual-intro{width:min(var(--max),100%);margin:0 auto;padding:0 var(--gutter) clamp(64px,8vw,118px);display:grid;grid-template-columns:minmax(0,1.6fr) minmax(290px,.64fr);gap:10px}
-.comedie-visual-intro figure{margin:0;min-width:0;background:#020202;overflow:hidden}
-.comedie-visual-intro__main,.comedie-visual-intro__stack{height:min(62vh,720px)}
-.comedie-visual-intro__stack{display:grid;grid-template-rows:1fr 1fr;gap:10px}
-.comedie-visual-intro__stack figure{min-height:0}
-.comedie-visual-intro img{display:block;width:100%;height:100%;object-fit:cover;background:#020202}
-.comedie-visual-intro figcaption{padding:9px 0 2px;color:var(--grey);font-size:9px;line-height:1.35;text-transform:uppercase;letter-spacing:.075em}
-.comedie-visual-intro figcaption a:hover{color:var(--acid)}
-body.comedie-page .theatre-lead{display:none}
-@media(max-width:900px){.comedie-visual-intro{grid-template-columns:1fr}.comedie-visual-intro__main{height:min(58vh,620px)}.comedie-visual-intro__stack{height:auto;grid-template-columns:1fr 1fr;grid-template-rows:none}.comedie-visual-intro__stack figure{height:42vw;min-height:260px;max-height:440px}}
-@media(max-width:620px){body.comedie-page .project-hero{padding-top:90px}.comedie-visual-intro{padding-inline:18px}.comedie-visual-intro__main{height:58vw;min-height:300px}.comedie-visual-intro__stack{grid-template-columns:1fr}.comedie-visual-intro__stack figure{height:58vw;min-height:260px}.comedie-visual-intro figcaption{font-size:8px}}
+/* Comédie case study — one magnetic screen per production. */
+body.comedie-page main article>.project-section{width:100%;max-width:none;padding:0;border-top:0}
+body.comedie-page .theatre-lead,[data-comedie-official-gallery]{display:none!important}
+body.comedie-page .project-hero.comedie-show-screen,
+body.comedie-page .production-block.comedie-show-screen{
+  box-sizing:border-box;
+  width:min(var(--max),100%);
+  margin:0 auto;
+  min-height:100svh;
+  padding:calc(var(--header) + clamp(24px,3.5vh,46px)) var(--gutter) clamp(22px,3vh,38px)!important;
+  border-top:1px solid var(--line);
+  display:flex!important;
+  flex-direction:column;
+  justify-content:center;
+  align-content:initial!important;
+}
+body.comedie-page .project-hero.comedie-show-screen{border-top:0}
+body.comedie-page .comedie-show-context{margin:0 0 clamp(14px,2vh,24px);color:var(--cyan);font-size:9px;font-weight:800;line-height:1;text-transform:uppercase;letter-spacing:.12em}
+body.comedie-page .production-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.78fr);gap:clamp(28px,4.5vw,72px);align-items:end}
+body.comedie-page .production-head h2{margin:0;font-size:clamp(42px,5vw,76px)!important;line-height:.9;letter-spacing:-.055em}
+body.comedie-page .production-role{display:block;margin-bottom:10px;color:var(--acid);font-size:8.5px;text-transform:uppercase;letter-spacing:.11em;font-weight:800}
+body.comedie-page .production-head p{margin:0;color:#bbb9b3;font-size:clamp(13px,1.05vw,16px);line-height:1.48}
+body.comedie-page .production-facts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:clamp(14px,2vh,22px) 0 12px!important}
+body.comedie-page .production-facts div{padding:10px 11px;border-right:1px solid var(--line)}
+body.comedie-page .production-facts div:first-child{padding-left:0}
+body.comedie-page .production-facts div:last-child{border-right:0}
+body.comedie-page .production-facts strong{display:block;font-size:clamp(16px,1.55vw,24px);line-height:1}
+body.comedie-page .production-facts span{display:block;margin-top:5px;color:var(--grey);font-size:7.8px;line-height:1.25;text-transform:uppercase;letter-spacing:.075em}
+.comedie-show-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:4px}
+.comedie-show-gallery figure{margin:0;min-width:0;background:#020202;overflow:hidden}
+.comedie-show-gallery img{display:block;width:100%;height:clamp(210px,27vh,330px);object-fit:cover;background:#020202}
+.comedie-show-gallery figcaption{padding:7px 0 0;color:var(--grey);font-size:7.8px;line-height:1.3;text-transform:uppercase;letter-spacing:.07em}
+.comedie-show-gallery figcaption a:hover{color:var(--acid)}
+body.comedie-page .route{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:12px!important}
+body.comedie-page .route div{padding:8px 9px;border-right:1px solid var(--line)}
+body.comedie-page .route div:last-child{border-right:0}
+body.comedie-page .route time{display:block;color:var(--acid);font-size:7.5px}
+body.comedie-page .route strong{display:block;margin-top:4px;font-size:9.5px}
+body.comedie-page .route span{display:block;margin-top:3px;color:var(--grey);font-size:7.4px;line-height:1.2}
+body.comedie-page .install-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px!important}
+body.comedie-page .install-steps div{border:1px solid var(--line);padding:9px 10px}
+body.comedie-page .install-steps b{display:block;color:var(--cyan);font-size:7.5px}
+body.comedie-page .install-steps strong{display:block;margin-top:5px;font-size:10px}
+body.comedie-page .install-steps span{display:block;margin-top:4px;color:var(--grey);font-size:7.8px;line-height:1.25}
+body.comedie-page .theatre-media{display:none!important}
+body.fullpage-comedie .project-hero.comedie-show-screen.fullpage-panel{
+  height:100svh!important;min-height:680px!important;display:flex!important;grid-template-rows:none!important;align-content:initial!important;
+}
+body.fullpage-comedie .production-block.comedie-show-screen.fullpage-panel{
+  height:100svh!important;min-height:680px!important;display:flex!important;align-content:initial!important;
+}
+@media(max-height:800px) and (min-width:821px){
+  body.comedie-page .project-hero.comedie-show-screen,body.comedie-page .production-block.comedie-show-screen{padding-top:calc(var(--header) + 14px)!important;padding-bottom:16px!important}
+  body.comedie-page .comedie-show-context{margin-bottom:10px}
+  body.comedie-page .production-head h2{font-size:clamp(34px,4.2vw,58px)!important}
+  body.comedie-page .production-head p{font-size:12px;line-height:1.4}
+  body.comedie-page .production-facts{margin:10px 0 8px!important}
+  .comedie-show-gallery img{height:clamp(170px,24vh,250px)}
+  body.comedie-page .route,body.comedie-page .install-steps{margin-top:8px!important}
+}
+@media(max-width:820px){
+  body.comedie-page .project-hero.comedie-show-screen,body.comedie-page .production-block.comedie-show-screen{min-height:auto;padding-top:calc(var(--header) + 34px)!important;padding-bottom:54px!important}
+  body.comedie-page .production-head{grid-template-columns:1fr;gap:18px}
+  body.comedie-page .production-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.comedie-page .production-facts div{border-top:1px solid var(--line)}
+  .comedie-show-gallery{grid-template-columns:1fr 1fr}
+  .comedie-show-gallery figure:first-child{grid-column:1/-1}
+  .comedie-show-gallery img{height:42vw;min-height:230px;max-height:430px}
+  body.comedie-page .route{display:flex;overflow-x:auto}
+  body.comedie-page .route div{min-width:58vw}
+  body.comedie-page .install-steps{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .comedie-show-gallery{grid-template-columns:1fr}
+  .comedie-show-gallery figure:first-child{grid-column:auto}
+  .comedie-show-gallery img{height:62vw;min-height:240px}
+  body.comedie-page .install-steps{grid-template-columns:1fr}
+}
 </style>`;
 
 function languageFor(file){
@@ -72,24 +150,13 @@ function languageFor(file){
   return 'en';
 }
 
-function gallery(lang){
+function gallery(key, lang){
+  const show = shows[key];
   const t = copy[lang];
-  return `<section class="comedie-visual-intro reveal" data-comedie-official-gallery="">
-    <figure class="comedie-visual-intro__main">
-      <img src="${images.entre}" alt="${t.entreAlt}" decoding="async" fetchpriority="high" referrerpolicy="no-referrer">
-      <figcaption><a href="${sourceLinks.entre}" target="_blank" rel="noreferrer">${t.entreCap} ↗</a></figcaption>
-    </figure>
-    <div class="comedie-visual-intro__stack">
-      <figure>
-        <img src="${images.emigrants}" alt="${t.emigrantsAlt}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
-        <figcaption><a href="${sourceLinks.emigrants}" target="_blank" rel="noreferrer">${t.emigrantsCap} ↗</a></figcaption>
-      </figure>
-      <figure>
-        <img src="${images.transit}" alt="${t.transitAlt}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
-        <figcaption><a href="${sourceLinks.transit}" target="_blank" rel="noreferrer">${t.transitCap} ↗</a></figcaption>
-      </figure>
-    </div>
-  </section>`;
+  const title = t[key];
+  return `<div class="comedie-show-gallery" data-comedie-show-gallery="${key}">
+    ${show.images.map((src,index)=>`<figure><img src="${src}" alt="${title} — ${index+1}" ${index ? 'loading="lazy"' : ''} decoding="async" referrerpolicy="no-referrer"><figcaption><a href="${show.source}" target="_blank" rel="noreferrer">${t.source} — © ${show.credit} ↗</a></figcaption></figure>`).join('')}
+  </div>`;
 }
 
 for(const file of files){
@@ -103,12 +170,43 @@ for(const file of files){
   $('head').append(style);
 
   $('link[data-comedie-preconnect]').remove();
-  $('head').append('\n<link rel="preconnect" href="https://festival-avignon.com" crossorigin data-comedie-preconnect="">\n<link rel="preconnect" href="https://cdn.artishoc.coop" crossorigin data-comedie-preconnect="">\n');
+  $('head').append('\n<link rel="preconnect" href="https://www.piccoloteatro.org" crossorigin data-comedie-preconnect="">\n<link rel="preconnect" href="https://cdn.artishoc.coop" crossorigin data-comedie-preconnect="">\n');
 
   $('[data-comedie-official-gallery]').remove();
+  $('.theatre-lead').remove();
+  $('.theatre-media').remove();
+  $('[data-comedie-show-gallery]').remove();
+
+  const blocks = $('.production-block').toArray();
+  if(blocks.length < 3) continue;
+  const keys = ['entre','emigrants','transit'];
+
+  blocks.slice(0,3).forEach((node,index)=>{
+    const key = keys[index];
+    const block = $(node);
+    block.addClass(`comedie-show-screen comedie-show-screen--${key}`).attr('data-comedie-show',key);
+    const facts = block.find('.production-facts').first();
+    if(facts.length) facts.after(gallery(key,lang));
+    else block.find('.production-head').first().after(gallery(key,lang));
+  });
+
+  const first = $(blocks[0]);
   const hero = $('header.project-hero').first();
-  if(hero.length) hero.after(gallery(lang));
+  if(hero.length){
+    const firstHead = first.find('.production-head').first().clone();
+    const firstFacts = first.find('.production-facts').first().clone();
+    const firstGallery = first.find('[data-comedie-show-gallery="entre"]').first().clone();
+    const firstRoute = first.find('.route').first().clone();
+    hero.empty();
+    hero.addClass('comedie-show-screen comedie-show-screen--entre').attr('data-comedie-show','entre');
+    hero.append(`<p class="comedie-show-context">${copy[lang].context}</p>`);
+    hero.append(firstHead);
+    hero.append(firstFacts);
+    hero.append(firstGallery);
+    if(firstRoute.length) hero.append(firstRoute);
+    first.remove();
+  }
 
   fs.writeFileSync(file,$.html());
-  console.log(`Applied official Comédie imagery: ${file}`);
+  console.log(`Rebuilt Comédie as one-screen-per-show: ${file}`);
 }
