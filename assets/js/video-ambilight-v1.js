@@ -27,18 +27,25 @@
     const min = Math.min(r, g, b);
     const light = (max + min) / 2;
     const span = max - min;
-    if (span > 8) {
-      const amount = 0.17;
+    if (span > 6) {
+      const amount = 0.42;
       r = clamp(r + (r - light) * amount, 0, 255);
       g = clamp(g + (g - light) * amount, 0, 255);
       b = clamp(b + (b - light) * amount, 0, 255);
     }
     const peak = Math.max(r, g, b);
-    if (peak < 46) {
-      const lift = 46 / Math.max(peak, 1);
+    if (peak < 72) {
+      const lift = 72 / Math.max(peak, 1);
       r *= lift;
       g *= lift;
       b *= lift;
+    }
+    const liftedPeak = Math.max(r, g, b);
+    if (liftedPeak > 0 && liftedPeak < 118) {
+      const lift = 118 / liftedPeak;
+      r = clamp(r * lift, 0, 255);
+      g = clamp(g * lift, 0, 255);
+      b = clamp(b * lift, 0, 255);
     }
     return [Math.round(r), Math.round(g), Math.round(b)];
   };
@@ -49,7 +56,8 @@
       const i = (y * canvas.width + x) * 4;
       const rr = data[i], gg = data[i + 1], bb = data[i + 2];
       const luminance = (rr * 0.2126 + gg * 0.7152 + bb * 0.0722) / 255;
-      const w = 0.35 + luminance * 0.65;
+      const saturation = (Math.max(rr, gg, bb) - Math.min(rr, gg, bb)) / 255;
+      const w = 0.28 + luminance * 0.48 + saturation * 0.6;
       r += rr * w;
       g += gg * w;
       b += bb * w;
@@ -108,11 +116,11 @@
       rafHandle: 0,
       lastPaint: 0,
       colors: {
-        top: [18, 18, 18],
-        right: [18, 18, 18],
-        bottom: [18, 18, 18],
-        left: [18, 18, 18],
-        all: [18, 18, 18]
+        top: [28, 28, 28],
+        right: [28, 28, 28],
+        bottom: [28, 28, 28],
+        left: [28, 28, 28],
+        all: [28, 28, 28]
       }
     };
     controllers.set(video, state);
@@ -158,7 +166,7 @@
           };
           for (const key of Object.keys(next)) {
             const prev = state.colors[key];
-            state.colors[key] = next[key].map((value, index) => Math.round(mix(prev[index], value, 0.32)));
+            state.colors[key] = next[key].map((value, index) => Math.round(mix(prev[index], value, 0.46)));
           }
           setColorVar(host, '--amb-top', state.colors.top);
           setColorVar(host, '--amb-right', state.colors.right);
