@@ -19,27 +19,27 @@ const shows = {
       'Magali Dougados / Piccolo Teatro'
     ],
     images: [
-      'https://www.piccoloteatro.org/sites/default/files/styles/show_hero_i/public/imported-images/uploads/seasons/2021-2022/exhibitions/entre-chien-et-loup/it_entre-chien-et-loup-1000x750_original_11.jpg?itok=x502vh4f',
-      'https://www.piccoloteatro.org/sites/default/files/styles/galley_image/public/imported-images/uploads/seasons/2021-2022/exhibitions/entre-chien-et-loup/it_backstage-entre-chien-et-loup-01_original_3.jpg?itok=E4pOkmW3',
-      'https://www.piccoloteatro.org/sites/default/files/styles/galley_image/public/imported-images/uploads/seasons/2021-2022/exhibitions/entre-chien-et-loup/it_entre-chien-et-loup-01_original_3.jpg?itok=29D2jKtS'
+      'assets/media/comedie/entre/official-01.jpg',
+      'assets/media/comedie/entre/official-02.jpg',
+      'assets/media/comedie/entre/official-03.jpg'
     ]
   },
   emigrants: {
     source: 'https://www.theatre-odeon.eu/en/les-emigrants',
     credit: 'Simon Gosselin / Odéon–Théâtre de l’Europe',
     images: [
-      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UZzVNek0zIiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--018c40d3bcfa95a4cdf2728f1670fa4e686c883144f2499d3b08cc14c4f2ecc1/4a41df1e38dc/les-emigrants-11-01-24-simon-gosselin-2-62.jpg',
-      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UZzVNems1IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--a09558672e73c5e550e27845c61ab53e02ecfc7065307e11c230bf25ec20b56f/bca32ae5b6d6/les-emigrants-11-01-24-simon-gosselin-2-54.jpg',
-      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UZzVOREF3IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--b14b9a4c45162b50293407ba680a28476c069c80301eb0b85ee101d56a1dc486/b1a149f0cd2b/les-emigrants-11-01-24-simon-gosselin-1-32-1.jpg'
+      'assets/media/comedie/emigrants/official-01.jpg',
+      'assets/media/comedie/emigrants/official-02.jpg',
+      'assets/media/comedie/emigrants/official-03.jpg'
     ]
   },
   transit: {
     source: 'https://www.theatre-odeon.eu/fr/en-transit',
     credit: 'Magali Dougados / Odéon–Théâtre de l’Europe',
     images: [
-      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UTTRNREU1IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--f5b0720c9af9ad0782dd8ee9de1fe10a750bc072040033880a73adfba2eb7ef6/754ce36543cc/190408-22022022_en_transit_comedie_magali_dougados_e8a5076-min.jpg',
-      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UTTRNREl4IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--bf77427afcdd49ceffde99bfa63d1fdb3acf66c8bc4fa02c1415348f3c0040c5/c17632739dfa/190408-22022022_en_transit_comedie_magali_dougados_e8a5098-min.jpg',
-      'https://cdn.artishoc.coop/e54aa670-7d3a-4933-82b0-fb79918de9b8/v1/medias/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UTTRNREl6IiwiZXhwIjpudWxsLCJwdXIiOiJtZWRpYS9tZWRpYV9pZCJ9fQ%3D%3D--b37b8fbc2f376424d336ca1aee67385440f9530d20cafb49d53e8fef2ba4a9f3/1c228908c1f7/190408-22022022_en_transit_comedie_magali_dougados_e8a5211-min.jpg'
+      'assets/media/comedie/transit/official-01.jpg',
+      'assets/media/comedie/transit/official-02.jpg',
+      'assets/media/comedie/transit/official-03.jpg'
     ]
   }
 };
@@ -217,7 +217,7 @@ for(const file of files){
   $('head').append(style);
 
   $('link[data-comedie-preconnect]').remove();
-  $('head').append('\n<link rel="preconnect" href="https://www.piccoloteatro.org" crossorigin data-comedie-preconnect="">\n<link rel="preconnect" href="https://cdn.artishoc.coop" crossorigin data-comedie-preconnect="">\n');
+  $('head').append('\n\n\n');
 
   $('[data-comedie-official-gallery]').remove();
   $('.theatre-lead').remove();
