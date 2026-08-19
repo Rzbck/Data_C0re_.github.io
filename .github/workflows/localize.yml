@@ -101,6 +101,9 @@ jobs:
       - name: Synchronize Archive hover videos
         run: node scripts/archive-video-autolink.mjs
 
+      - name: Compose compact one-page CV
+        run: node scripts/cv-one-page-v1.mjs
+
       - name: Enforce Archive indexability
         run: node scripts/archive-indexability-guard.mjs
 
