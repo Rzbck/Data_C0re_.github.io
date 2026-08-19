@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import * as cheerio from 'cheerio';
 
+// Editorial CV v2 — rebuilt after the compact experiment.
 const files=['cv.html','en/cv.html','fr/cv.html','es/cv.html'];
 
 const esc=value=>String(value??'')
