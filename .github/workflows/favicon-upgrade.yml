@@ -1,0 +1,83 @@
+name: Upgrade favicon assets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/favicon-upgrade.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Add high-resolution favicon assets
+        shell: bash
+        run: |
+          mkdir -p assets/img
+          cat > /tmp/favicon180.b64 <<'EOF'
+          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
+          EOF
+          tr -d '[:space:]' < /tmp/favicon180.b64 | base64 -d > assets/img/favicon-180.png
+          cp assets/img/favicon-180.png apple-touch-icon.png
+      - name: Standardize favicon markup site-wide
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          const path=require('path');
+          const skip=new Set(['node_modules','.git']);
+          const files=[];
+          function walk(dir='.'){
+            for(const ent of fs.readdirSync(dir,{withFileTypes:true})){
+              if(skip.has(ent.name)) continue;
+              const p=path.join(dir,ent.name);
+              if(ent.isDirectory()) walk(p);
+              else if(ent.name.endsWith('.html')) files.push(p);
+            }
+          }
+          walk();
+          const block='<link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" sizes="any"><link rel="icon" href="assets/img/favicon-180.png" type="image/png" sizes="180x180"><link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">';
+          let changed=0;
+          for(const file of files){
+            let html=fs.readFileSync(file,'utf8');
+            const before=html;
+            const pair=/<link rel="icon"[^>]*href="(?:\.\/)?favicon\.ico"[^>]*>\s*<link rel="icon"[^>]*href="(?:\.\/)?assets\/img\/favicon\.svg"[^>]*>/i;
+            if(pair.test(html)) html=html.replace(pair,block);
+            else if(!/favicon-180\.png/i.test(html)) html=html.replace('</head>',`${block}\n</head>`);
+            if(html!==before){fs.writeFileSync(file,html);changed++;}
+          }
+          console.log(`favicon markup updated in ${changed} HTML files`);
+          NODE
+      - name: Upgrade web manifest
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          const p='site.webmanifest';
+          const m=JSON.parse(fs.readFileSync(p,'utf8'));
+          m.icons=[
+            {src:'./assets/img/favicon.svg',sizes:'any',type:'image/svg+xml',purpose:'any'},
+            {src:'./assets/img/favicon-180.png',sizes:'180x180',type:'image/png',purpose:'any'}
+          ];
+          fs.writeFileSync(p,JSON.stringify(m,null,2)+'\n');
+          NODE
+      - name: Validate assets
+        run: |
+          test -s assets/img/favicon-180.png
+          test -s apple-touch-icon.png
+          grep -q 'favicon-180.png' index.html
+          grep -q 'apple-touch-icon' index.html
+          grep -q 'favicon-180.png' site.webmanifest
+      - name: Commit favicon upgrade
+        run: |
+          rm -f .github/workflows/favicon-upgrade.yml
+          git config user.name 'Data_C0re_'
+          git config user.email '10966796+Rzbck@users.noreply.github.com'
+          git add -A
+          git commit -m 'Harden favicons for browser tabs and Google Search'
+          git push
