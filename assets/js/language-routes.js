@@ -4,6 +4,24 @@
   const storage='data-c0re-lang-v1';
   const repoSegment=location.hostname.endsWith('github.io')&&location.pathname.startsWith('/Data_C0re_.github.io')?'/Data_C0re_.github.io':'';
 
+  /* Mobile preflight runs before main.js: remove stale LUMINA observer targets,
+     mark normal page videos so legacy autoplay observers ignore them, and let the
+     shared controller become the sole playback authority. */
+  const mobileMedia=matchMedia('(max-width:820px), (pointer:coarse)').matches;
+  if(mobileMedia){
+    const luminaSection=document.querySelector('[data-lumina-experience-section]');
+    if(luminaSection){
+      const legacy=[...luminaSection.querySelectorAll('video[data-lumina-experience]'),...document.querySelectorAll('[data-fabrication-grid] video[data-stagger-video]')];
+      [...new Set(legacy)].forEach(video=>video.replaceWith(video.cloneNode(true)));
+      luminaSection.removeAttribute('data-lumina-experience-section');
+    }
+    document.querySelectorAll('video').forEach(video=>{
+      if(video.matches('[data-hover-preview-video],[data-work-preview-video]'))return;
+      video.setAttribute('data-stagger-video','');
+      video.dataset.perfDetached='true';
+    });
+  }
+
   /* Load shared interaction guards on every route, including generated locales. */
   const ensureCss=(path,attr)=>{
     const href=new URL(path,document.baseURI).href;
@@ -31,6 +49,7 @@
   ensureCss('assets/css/home-gate-trail.css?v=20260816-3','data-home-gate-trail');
   ensureCss('assets/css/video-ambilight-v1.css?v=20260819-20','data-video-ambilight');
   ensureScript('assets/js/menu-card-trail.js?v=20260816-1','data-menu-card-trail');
+  ensureScript('assets/js/mobile-media-controller-v1.js?v=20260819-mobile2','data-mobile-media-controller');
   ensureScript('assets/js/video-ambilight-v1.js?v=20260819-20','data-video-ambilight');
   if(document.querySelector('[data-archive-interactive]'))ensureScript('assets/js/archive-ambient-bridge-v1.js?v=20260819-1','data-archive-ambient-bridge');
 
