@@ -1,4 +1,4 @@
-/* DATA C0RE ambient runtime v16 — chroma-only light with neutral/white suppression. */
+/* DATA C0RE ambient runtime v17 — white-safe chroma recovery with stronger coloured light. */
 (() => {
   'use strict';
 
@@ -41,15 +41,15 @@
     let max = Math.max(r,g,b), min = Math.min(r,g,b);
     if (max <= 0) return [0,0,0];
     const mid = (max + min) * .5;
-    const boost = .92;
+    const boost = 1.12;
     r = clamp(r + (r-mid)*boost, 0, 255);
     g = clamp(g + (g-mid)*boost, 0, 255);
     b = clamp(b + (b-mid)*boost, 0, 255);
     max = Math.max(r,g,b);
-    if (max > 148) {
-      const s = 148 / max; r*=s; g*=s; b*=s;
-    } else if (max < 84) {
-      const s = 84 / Math.max(max,1); r*=s; g*=s; b*=s;
+    if (max > 176) {
+      const s = 176 / max; r*=s; g*=s; b*=s;
+    } else if (max < 94) {
+      const s = 94 / Math.max(max,1); r*=s; g*=s; b*=s;
     }
     return [Math.round(r),Math.round(g),Math.round(b)];
   };
@@ -66,19 +66,20 @@
       const sat=max>0?span/max:0;
       const lum=(rr*.2126+gg*.7152+bb*.0722)/255;
 
-      const paleNeutral = lum>.48 && sat<.32;
-      const lowChroma = sat<.18 || span<18;
-      const veryBrightWeakColour = lum>.78 && sat<.40;
-      const neutral = paleNeutral || lowChroma || veryBrightWeakColour;
+      const nearWhite = lum>.72 && sat<.16;
+      const paleNeutral = lum>.56 && sat<.14;
+      const lowChroma = sat<.11 || span<11;
+      const veryBrightWeakColour = lum>.84 && sat<.24;
+      const neutral = nearWhite || paleNeutral || lowChroma || veryBrightWeakColour;
       if (neutral) neutralCount++;
 
       const chromatic = !neutral && (
-        (sat>=.24 && span>=22) ||
-        (lum<.42 && sat>=.18 && span>=18)
+        (sat>=.16 && span>=14) ||
+        (lum<.48 && sat>=.12 && span>=12)
       );
 
       if (chromatic) {
-        const cw=.35 + sat*2.65 + Math.min(lum,.68)*.30;
+        const cw=.46 + sat*3.05 + Math.min(lum,.72)*.38;
         chromaR+=rr*cw; chromaG+=gg*cw; chromaB+=bb*cw; chromaW+=cw;
         chromaCount++;
         chromaSat+=sat;
@@ -90,15 +91,15 @@
     const neutralRatio=neutralCount/total;
     const avgChroma=chromaCount?chromaSat/chromaCount:0;
 
-    if (!chromaW || chromaRatio < .035) {
+    if (!chromaW || chromaRatio < .02) {
       return { colour:[0,0,0], energy:0, neutral:true };
     }
 
     const colour=[chromaR/chromaW,chromaG/chromaW,chromaB/chromaW];
-    let energy=(Math.max(0,avgChroma-.14)*.66) + Math.sqrt(chromaRatio)*.48;
-    energy*=clamp(1-neutralRatio*.48,.42,1);
-    if (chromaRatio<.10 && avgChroma<.48) energy*=.55;
-    energy=clamp(energy,.06,.86);
+    let energy=(Math.max(0,avgChroma-.08)*.88) + Math.sqrt(chromaRatio)*.68;
+    energy*=clamp(1-neutralRatio*.20,.72,1);
+    if (chromaRatio<.055 && avgChroma<.30) energy*=.78;
+    energy=clamp(energy,.11,1);
 
     return { colour:toneChromatic(colour), energy, neutral:false };
   };
@@ -153,10 +154,10 @@
     const visibleW=Math.max(0,Math.min(rect.right,innerWidth)-Math.max(rect.left,0));
     const visibleH=Math.max(0,Math.min(rect.bottom,innerHeight)-Math.max(rect.top,0));
     const viewportShare=(visibleW*visibleH)/Math.max(innerWidth*innerHeight,1);
-    const crowdFactor=activeCount>=5?.58:activeCount===4?.65:activeCount===3?.74:activeCount===2?.88:1;
-    const colourStrength=clamp(.18+state.energy*.92,.16,.82);
-    const base=state.kind==='image'?.50:.62;
-    const strength=clamp((base+state.ratio*.14+Math.min(viewportShare,.52)*.20)*crowdFactor*colourStrength,.04,.76);
+    const crowdFactor=activeCount>=5?.70:activeCount===4?.77:activeCount===3?.85:activeCount===2?.94:1;
+    const colourStrength=clamp(.30+state.energy*1.02,.26,1.04);
+    const base=state.kind==='image'?.58:.70;
+    const strength=clamp((base+state.ratio*.17+Math.min(viewportShare,.52)*.23)*crowdFactor*colourStrength,.05,.90);
     setNumber(state.emitter,'--amb-strength',strength);
   };
 
@@ -173,6 +174,7 @@
       const data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
       const next={left:analyseEdge(data,pointSets.left),right:analyseEdge(data,pointSets.right),top:analyseEdge(data,pointSets.top),bottom:analyseEdge(data,pointSets.bottom)};
       let energy=0;
+      let activeEdges=0;
       for(const key of Object.keys(next)){
         if(next[key].neutral||next[key].energy===0){
           state.edgeEnergy[key]=0;
@@ -181,16 +183,17 @@
           setNumber(state.emitter,`--amb-energy-${key}`,0);
           continue;
         }
-        const amount=state.kind==='image'?.62:.38;
+        const amount=state.kind==='image'?.68:.42;
         state.colours[key]=next[key].colour.map((v,n)=>Math.round(mix(state.colours[key][n],v,amount)));
-        state.edgeEnergy[key]=mix(state.edgeEnergy[key],next[key].energy,state.kind==='image'?.76:.46);
+        state.edgeEnergy[key]=mix(state.edgeEnergy[key],next[key].energy,state.kind==='image'?.80:.52);
         energy+=state.edgeEnergy[key];
-        const edgeScale=clamp(.70+state.edgeEnergy[key]*.24,.70,.94);
+        activeEdges++;
+        const edgeScale=clamp(.82+state.edgeEnergy[key]*.26,.82,1.08);
         const displayColour=state.colours[key].map(v=>Math.round(clamp(v*edgeScale,0,255)));
         setColour(state.emitter,`--page-amb-${key}`,displayColour);
         setNumber(state.emitter,`--amb-energy-${key}`,state.edgeEnergy[key]);
       }
-      state.energy=energy/4;
+      state.energy=activeEdges?energy/activeEdges:0;
       state.emitter.classList.toggle('is-active',state.energy>.008);
       return true;
     }catch{
