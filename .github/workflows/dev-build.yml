@@ -109,6 +109,9 @@ jobs:
       - name: Retire hidden GLSL simulation state after fade
         run: node scripts/ascii-cursor-retire-state.mjs
 
+      - name: Compose compact one-page CV
+        run: node scripts/cv-one-page-v1.mjs
+
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
