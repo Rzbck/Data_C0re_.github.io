@@ -1,4 +1,4 @@
-/* DATA C0RE ambient runtime v18 — perceptual chroma light: neutral/white and muted warm wash suppression. */
+/* DATA C0RE ambient runtime v19 — hard warm/white wash rejection, strong true chroma, reliable tab resume. */
 (() => {
   'use strict';
 
@@ -52,38 +52,32 @@
     let [r,g,b] = input;
     let max = Math.max(r,g,b), min = Math.min(r,g,b);
     if (max <= 0) return [0,0,0];
-
     const mid = (max + min) * .5;
-    const boost = 1.34;
+    const boost = 1.42;
     r = clamp(r + (r-mid)*boost, 0, 255);
     g = clamp(g + (g-mid)*boost, 0, 255);
     b = clamp(b + (b-mid)*boost, 0, 255);
 
-    max=Math.max(r,g,b); min=Math.min(r,g,b);
-    const sat=max>0?(max-min)/max:0;
-    const hue=rgbHue(r,g,b);
-    const warm=hue>=12&&hue<=62;
-
-    if (max < 92) {
-      const s=92/Math.max(max,1); r*=s; g*=s; b*=s;
+    max=Math.max(r,g,b);
+    if (max < 96) {
+      const s=96/Math.max(max,1); r*=s; g*=s; b*=s;
     }
 
     const luma=r*.2126+g*.7152+b*.0722;
-    const lumaCap=warm && sat<.72 ? 61 : 82;
-    if (luma>lumaCap) {
-      const s=lumaCap/luma; r*=s; g*=s; b*=s;
+    if (luma>92) {
+      const s=92/luma; r*=s; g*=s; b*=s;
     }
 
     max=Math.max(r,g,b);
-    if (max>176) {
-      const s=176/max; r*=s; g*=s; b*=s;
+    if (max>190) {
+      const s=190/max; r*=s; g*=s; b*=s;
     }
     return [Math.round(r),Math.round(g),Math.round(b)];
   };
 
   const analyseEdge = (data, points) => {
     let chromaR=0, chromaG=0, chromaB=0, chromaW=0;
-    let chromaCount=0, chromaSat=0, neutralCount=0, warmMutedCount=0, vividCount=0;
+    let chromaCount=0, chromaSat=0, vividCount=0;
 
     for (const [x,y] of points) {
       const i=(y*canvas.width+x)*4;
@@ -93,26 +87,28 @@
       const sat=max>0?span/max:0;
       const lum=(rr*.2126+gg*.7152+bb*.0722)/255;
       const hue=span>0?rgbHue(rr,gg,bb):0;
-      const warm=hue>=12&&hue<=62;
 
-      const nearWhite = lum>.68 && sat<.20;
-      const paleNeutral = lum>.48 && sat<.13;
-      const lowChroma = sat<.10 || span<12;
-      const veryBrightWeakColour = lum>.80 && sat<.30;
-      const mutedWarm = warm && lum>.20 && sat<.44 && span<70;
+      /* White/grey/cream never emits. Skin, wood, beige and bright orange workshop
+         material are also rejected instead of being allowed to build a page-wide wash.
+         Deep saturated orange can still survive; reds, yellow, green, cyan, blue,
+         violet and magenta are unaffected by this warm-material gate. */
+      const nearWhite = lum>.62 && sat<.24;
+      const paleNeutral = lum>.44 && sat<.15;
+      const lowChroma = sat<.11 || span<13;
+      const veryBrightWeakColour = lum>.78 && sat<.34;
       const neutral = nearWhite || paleNeutral || lowChroma || veryBrightWeakColour;
-      if (neutral) neutralCount++;
-      if (!neutral && mutedWarm) warmMutedCount++;
 
-      const chromatic = !neutral && (
-        (sat>=.18 && span>=16) ||
-        (lum<.46 && sat>=.14 && span>=14)
+      const warmMaterialHue = hue>=10 && hue<=50;
+      const warmMaterial = !neutral && warmMaterialHue && lum>.16 && (sat<.92 || lum>.32);
+
+      const chromatic = !neutral && !warmMaterial && (
+        (sat>=.16 && span>=15) ||
+        (lum<.46 && sat>=.13 && span>=13)
       );
 
       if (chromatic) {
-        const vivid=sat>=.42 || span>=58;
-        const warmPenalty=mutedWarm&&!vivid?.34:1;
-        const cw=(.42 + sat*3.25 + Math.min(lum,.70)*.34) * warmPenalty * (vivid?1.18:1);
+        const vivid=sat>=.40 || span>=54;
+        const cw=(.48 + sat*3.35 + Math.min(lum,.70)*.34) * (vivid?1.18:1);
         chromaR+=rr*cw; chromaG+=gg*cw; chromaB+=bb*cw; chromaW+=cw;
         chromaCount++;
         chromaSat+=sat;
@@ -122,8 +118,6 @@
 
     const total=Math.max(points.length,1);
     const chromaRatio=chromaCount/total;
-    const neutralRatio=neutralCount/total;
-    const warmMutedRatio=warmMutedCount/total;
     const vividRatio=vividCount/total;
     const avgChroma=chromaCount?chromaSat/chromaCount:0;
 
@@ -133,17 +127,19 @@
 
     const colour=[chromaR/chromaW,chromaG/chromaW,chromaB/chromaW];
     const outputHue=rgbHue(colour[0],colour[1],colour[2]);
-    const outputWarm=outputHue>=12&&outputHue<=62;
+    const outputMax=Math.max(...colour), outputMin=Math.min(...colour);
+    const outputSat=outputMax>0?(outputMax-outputMin)/outputMax:0;
+    const outputLum=(colour[0]*.2126+colour[1]*.7152+colour[2]*.0722)/255;
 
-    let energy=(Math.max(0,avgChroma-.09)*.96) + Math.sqrt(chromaRatio)*.72 + Math.sqrt(vividRatio)*.30;
+    /* Second hard gate at the averaged edge level. This prevents a handful of
+       orange/skin pixels from recreating the brown-white veil seen in LUMINA fabrication. */
+    if (outputHue>=10 && outputHue<=50 && (outputSat<.94 || outputLum>.30)) {
+      return { colour:[0,0,0], energy:0, neutral:true };
+    }
 
-    if (outputWarm && warmMutedRatio>.34 && vividRatio<.11) energy*=.16;
-    else if (outputWarm && warmMutedRatio>.20 && vividRatio<.16) energy*=.34;
-    else if (outputWarm && avgChroma<.40 && vividRatio<.10) energy*=.46;
-
-    energy*=clamp(1-neutralRatio*.08,.90,1);
-    if (chromaRatio<.05 && avgChroma<.30) energy*=.72;
-    energy=clamp(energy,.05,1.06);
+    let energy=(Math.max(0,avgChroma-.07)*1.02) + Math.sqrt(chromaRatio)*.76 + Math.sqrt(vividRatio)*.28;
+    if (chromaRatio<.045 && avgChroma<.30) energy*=.72;
+    energy=clamp(energy,.08,1.08);
 
     return { colour:toneChromatic(colour), energy, neutral:false };
   };
@@ -198,10 +194,10 @@
     const visibleW=Math.max(0,Math.min(rect.right,innerWidth)-Math.max(rect.left,0));
     const visibleH=Math.max(0,Math.min(rect.bottom,innerHeight)-Math.max(rect.top,0));
     const viewportShare=(visibleW*visibleH)/Math.max(innerWidth*innerHeight,1);
-    const crowdFactor=activeCount>=5?.66:activeCount===4?.73:activeCount===3?.82:activeCount===2?.93:1;
-    const colourStrength=clamp(.26+state.energy*1.08,.22,1.02);
-    const base=state.kind==='image'?.58:.70;
-    const strength=clamp((base+state.ratio*.17+Math.min(viewportShare,.52)*.23)*crowdFactor*colourStrength,.035,.86);
+    const crowdFactor=activeCount>=5?.70:activeCount===4?.77:activeCount===3?.86:activeCount===2?.94:1;
+    const colourStrength=clamp(.30+state.energy*1.08,.24,1.05);
+    const base=state.kind==='image'?.60:.72;
+    const strength=clamp((base+state.ratio*.17+Math.min(viewportShare,.52)*.23)*crowdFactor*colourStrength,.035,.90);
     setNumber(state.emitter,'--amb-strength',strength);
   };
 
@@ -232,7 +228,7 @@
         state.edgeEnergy[key]=mix(state.edgeEnergy[key],next[key].energy,state.kind==='image'?.80:.52);
         energy+=state.edgeEnergy[key];
         activeEdges++;
-        const edgeScale=clamp(.88+state.edgeEnergy[key]*.19,.88,1.04);
+        const edgeScale=clamp(.90+state.edgeEnergy[key]*.20,.90,1.08);
         const displayColour=state.colours[key].map(v=>Math.round(clamp(v*edgeScale,0,255)));
         setColour(state.emitter,`--page-amb-${key}`,displayColour);
         setNumber(state.emitter,`--amb-energy-${key}`,state.edgeEnergy[key]);
@@ -269,19 +265,39 @@
   };
   const wake=()=>schedule(0);
 
+  const previewSelector='[data-hover-preview-video],[data-work-preview-video],.archive-entry-media video';
   const shouldAutoResume=video=>{
     if(!video.muted||video.dataset.perfDetached==='true')return false;
-    if(video.matches('[data-hover-preview-video],[data-work-preview-video],.archive-entry-media video'))return false;
+    if(video.matches(previewSelector))return false;
     return video.loop||video.autoplay||video.matches('[data-stagger-video],[data-lumina-experience],[data-lazy-video]');
   };
+  const hoveredPreview=video=>{
+    if(!video.matches(previewSelector))return false;
+    const host=video.closest('.archive-entry,[data-archive-project],[data-work-card],[data-project-card],a');
+    try{return Boolean(host&&host.matches(':hover'))}catch{return false}
+  };
   const resumeVideo=(video,state)=>{
-    if(document.hidden||!state.visible||!shouldAutoResume(video))return;
+    const force=Boolean(state.resumeAfterVisibility||hoveredPreview(video));
+    const allowed=force||shouldAutoResume(video);
+    if(document.hidden||!state.visible||!allowed)return;
     const before=video.currentTime;
-    video.play().catch(()=>{});
+    Promise.resolve(video.play()).then(()=>{
+      state.lastKnownPlaying=true;
+      state.lastPlayingAt=performance.now();
+      state.resumeAfterVisibility=false;
+      wake();
+    }).catch(()=>{});
     setTimeout(()=>{
-      if(document.hidden||!state.visible||video.paused||!shouldAutoResume(video))return;
+      const stillAllowed=state.resumeAfterVisibility||hoveredPreview(video)||shouldAutoResume(video);
+      if(document.hidden||!state.visible||video.paused||!stillAllowed)return;
       if(Math.abs(video.currentTime-before)>.025)return;
-      video.pause();requestAnimationFrame(()=>video.play().catch(()=>{}));
+      video.pause();
+      requestAnimationFrame(()=>video.play().then(()=>{
+        state.lastKnownPlaying=true;
+        state.lastPlayingAt=performance.now();
+        state.resumeAfterVisibility=false;
+        wake();
+      }).catch(()=>{}));
     },420);
   };
   const resumeVisibleVideos=()=>{
@@ -300,7 +316,13 @@
     }
     ensureLayer().appendChild(emitter);return emitter;
   };
-  const makeState=(kind,emitter)=>({kind,visible:false,ratio:0,unavailable:false,emitter,lastSample:kind==='image'?-Infinity:0,energy:0,colours:{left:[0,0,0],right:[0,0,0],top:[0,0,0],bottom:[0,0,0]},edgeEnergy:{left:0,right:0,top:0,bottom:0}});
+  const makeState=(kind,emitter)=>({
+    kind,visible:false,ratio:0,unavailable:false,emitter,
+    lastSample:kind==='image'?-Infinity:0,energy:0,
+    lastKnownPlaying:false,lastPlayingAt:0,resumeAfterVisibility:false,
+    colours:{left:[0,0,0],right:[0,0,0],top:[0,0,0],bottom:[0,0,0]},
+    edgeEnergy:{left:0,right:0,top:0,bottom:0}
+  });
 
   const attachVideo=video=>{
     if(!(video instanceof HTMLVideoElement)||states.has(video))return;
@@ -310,7 +332,12 @@
       if(state.visible&&!document.hidden&&video.paused&&shouldAutoResume(video))video.play().catch(()=>{});wake();
     },{rootMargin:'100px 0px',threshold:[0,.015,.1,.25,.5,.75,1]});
     observer.observe(video);
-    ['playing','play','pause','ended','emptied','loadeddata'].forEach(type=>video.addEventListener(type,wake,{passive:true}));
+    video.addEventListener('play',()=>{state.lastKnownPlaying=true;state.lastPlayingAt=performance.now();wake()},{passive:true});
+    video.addEventListener('playing',()=>{state.lastKnownPlaying=true;state.lastPlayingAt=performance.now();wake()},{passive:true});
+    video.addEventListener('timeupdate',()=>{if(!video.paused){state.lastKnownPlaying=true;state.lastPlayingAt=performance.now()}},{passive:true});
+    video.addEventListener('pause',()=>{if(!document.hidden&&!state.resumeAfterVisibility)state.lastKnownPlaying=false;wake()},{passive:true});
+    video.addEventListener('ended',()=>{state.lastKnownPlaying=false;state.resumeAfterVisibility=false;wake()},{passive:true});
+    ['emptied','loadeddata'].forEach(type=>video.addEventListener(type,wake,{passive:true}));
   };
 
   const imageRejected=img=>{
@@ -341,7 +368,14 @@
     addEventListener('resize',wake,{passive:true});addEventListener('scroll',wake,{passive:true});
     addEventListener('focus',()=>setTimeout(resumeVisibleVideos,40),{passive:true});addEventListener('pageshow',()=>setTimeout(resumeVisibleVideos,40),{passive:true});
     document.addEventListener('visibilitychange',()=>{
-      if(document.hidden){if(timer)clearTimeout(timer);timer=0;return}
+      if(document.hidden){
+        const now=performance.now();
+        for(const [media,state] of states){
+          if(state.kind!=='video')continue;
+          state.resumeAfterVisibility=Boolean(state.visible&&(state.lastKnownPlaying||!media.paused||(now-state.lastPlayingAt)<1600));
+        }
+        if(timer)clearTimeout(timer);timer=0;return;
+      }
       requestAnimationFrame(resumeVisibleVideos);setTimeout(resumeVisibleVideos,180);
     });
     wake();
