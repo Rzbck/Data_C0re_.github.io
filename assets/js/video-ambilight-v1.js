@@ -21,7 +21,11 @@
   let activeVideo = null;
   let lastSample = 0;
   const colours = {
-    a: [22, 22, 22], b: [22, 22, 22], c: [22, 22, 22], d: [22, 22, 22], all: [22, 22, 22]
+    left: [22, 22, 22],
+    right: [22, 22, 22],
+    top: [22, 22, 22],
+    bottom: [22, 22, 22],
+    all: [22, 22, 22]
   };
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -34,33 +38,35 @@
     const mid = (max + min) * .5;
     const span = max - min;
     if (span > 5) {
-      const saturation = .52;
+      const saturation = .48;
       r = clamp(r + (r - mid) * saturation, 0, 255);
       g = clamp(g + (g - mid) * saturation, 0, 255);
       b = clamp(b + (b - mid) * saturation, 0, 255);
     }
     const peak = Math.max(r, g, b);
-    if (peak < 92) {
-      const lift = 92 / Math.max(peak, 1);
-      r *= lift; g *= lift; b *= lift;
+    if (peak < 88) {
+      const lift = 88 / Math.max(peak, 1);
+      r *= lift;
+      g *= lift;
+      b *= lift;
     }
     return [Math.round(clamp(r, 0, 255)), Math.round(clamp(g, 0, 255)), Math.round(clamp(b, 0, 255))];
   };
 
   const pointSets = (() => {
     const w = canvas.width, h = canvas.height;
-    const a = [], b = [], c = [], d = [], all = [];
+    const left = [], right = [], top = [], bottom = [], all = [];
     for (let y = 1; y < h - 1; y += 2) {
       for (let x = 1; x < w - 1; x += 2) {
         const p = [x, y];
         all.push(p);
-        if (x < w / 2 && y < h / 2) a.push(p);
-        else if (x >= w / 2 && y < h / 2) b.push(p);
-        else if (x >= w / 2) c.push(p);
-        else d.push(p);
+        if (x <= Math.floor(w * .34)) left.push(p);
+        if (x >= Math.ceil(w * .66)) right.push(p);
+        if (y <= Math.floor(h * .34)) top.push(p);
+        if (y >= Math.ceil(h * .66)) bottom.push(p);
       }
     }
-    return { a, b, c, d, all };
+    return { left, right, top, bottom, all };
   })();
 
   const average = (data, points) => {
@@ -71,13 +77,35 @@
       const max = Math.max(rr, gg, bb), min = Math.min(rr, gg, bb);
       const saturation = (max - min) / 255;
       const luminance = (rr * .2126 + gg * .7152 + bb * .0722) / 255;
-      const w = .24 + luminance * .42 + saturation * .72;
-      r += rr * w; g += gg * w; b += bb * w; weight += w;
+      const w = .24 + luminance * .42 + saturation * .68;
+      r += rr * w;
+      g += gg * w;
+      b += bb * w;
+      weight += w;
     }
     return weight ? boost([r / weight, g / weight, b / weight]) : [20, 20, 20];
   };
 
-  const setVar = (name, colour) => root.style.setProperty(name, `${colour[0]} ${colour[1]} ${colour[2]}`);
+  const setColourVar = (name, colour) => root.style.setProperty(name, `${colour[0]} ${colour[1]} ${colour[2]}`);
+  const setPositionVar = (name, value) => root.style.setProperty(name, `${Math.round(value)}px`);
+
+  const updateGeometry = video => {
+    const rect = video.getBoundingClientRect();
+    const left = clamp(rect.left, 0, innerWidth);
+    const right = clamp(rect.right, 0, innerWidth);
+    const top = clamp(rect.top, 0, innerHeight);
+    const bottom = clamp(rect.bottom, 0, innerHeight);
+    const width = Math.max(1, right - left);
+    const height = Math.max(1, bottom - top);
+
+    /* Light sources sit visibly inside the current video image, then diffuse into the page. */
+    setPositionVar('--amb-source-left', left + width * .14);
+    setPositionVar('--amb-source-right', right - width * .14);
+    setPositionVar('--amb-source-top', top + height * .18);
+    setPositionVar('--amb-source-bottom', bottom - height * .18);
+    setPositionVar('--amb-source-x', left + width * .5);
+    setPositionVar('--amb-source-y', top + height * .5);
+  };
 
   const score = (video, state) => {
     if (!state.visible || state.unavailable || video.paused || video.ended || video.readyState < 2) return -1;
@@ -93,7 +121,10 @@
     let bestScore = -1;
     for (const [video, state] of states) {
       const s = score(video, state);
-      if (s > bestScore) { best = video; bestScore = s; }
+      if (s > bestScore) {
+        best = video;
+        bestScore = s;
+      }
     }
     if (activeVideo && states.has(activeVideo)) {
       const currentScore = score(activeVideo, states.get(activeVideo));
@@ -109,20 +140,21 @@
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
       const next = {
-        a: average(data, pointSets.a),
-        b: average(data, pointSets.b),
-        c: average(data, pointSets.c),
-        d: average(data, pointSets.d),
+        left: average(data, pointSets.left),
+        right: average(data, pointSets.right),
+        top: average(data, pointSets.top),
+        bottom: average(data, pointSets.bottom),
         all: average(data, pointSets.all)
       };
       for (const key of Object.keys(next)) {
-        colours[key] = next[key].map((value, index) => Math.round(mix(colours[key][index], value, .24)));
+        colours[key] = next[key].map((value, index) => Math.round(mix(colours[key][index], value, .28)));
       }
-      setVar('--page-amb-a', colours.a);
-      setVar('--page-amb-b', colours.b);
-      setVar('--page-amb-c', colours.c);
-      setVar('--page-amb-d', colours.d);
-      setVar('--page-amb-all', colours.all);
+      setColourVar('--page-amb-left', colours.left);
+      setColourVar('--page-amb-right', colours.right);
+      setColourVar('--page-amb-top', colours.top);
+      setColourVar('--page-amb-bottom', colours.bottom);
+      setColourVar('--page-amb-all', colours.all);
+      updateGeometry(video);
       document.body?.classList.add('video-page-ambient', 'video-page-ambient-active');
       return true;
     } catch {
@@ -190,6 +222,8 @@
         if (node instanceof Element) scan(node);
       });
     }).observe(document.documentElement, { childList: true, subtree: true });
+    addEventListener('resize', wake, { passive: true });
+    addEventListener('scroll', wake, { passive: true });
     wake();
   };
 
