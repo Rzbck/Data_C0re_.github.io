@@ -12,7 +12,7 @@
   const body=document.body;
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
   const desktopEligible=()=>window.matchMedia('(min-width:821px) and (pointer:fine)').matches&&!reduce.matches;
-  const touchEligible=()=>window.matchMedia('(max-width:820px), (pointer:coarse)').matches&&!reduce.matches;
+  const touchEligible=()=>filename!=='comedie.html'&&window.matchMedia('(max-width:820px), (pointer:coarse)').matches&&!reduce.matches;
 
   let panels=[];
   if(filename==='index.html'){
@@ -73,7 +73,8 @@
     panels.forEach((panel,i)=>panel.classList.toggle('is-fullpage-active',i===current));
   };
   const easeInOut=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-  const goTo=(index,duration=880)=>{
+  const defaultDuration=filename==='comedie.html'?620:880;
+  const goTo=(index,duration=defaultDuration)=>{
     index=clampIndex(index);
     if(animating)return;
     const start=window.scrollY,target=panelTop(panels[index]),distance=target-start;
@@ -133,9 +134,8 @@
     event.preventDefault();if(event.repeat||animating)return;move(direction);
   });
 
-  // Touch keeps native scrolling inside tall panels. A vertical swipe only
-  // magnetises when the touched panel fits the viewport, or when its edge
-  // has actually been reached. Horizontal UI stays fully native.
+  // Touch keeps native scrolling inside tall panels. Comédie now uses a fully native
+  // mobile flow because each production is taller than a viewport once its gallery is visible.
   let touchTracking=false,touchStartY=0,touchStartX=0,touchStartScroll=0,touchStartPanel=0;
   const ignoreTouchTarget=target=>target instanceof Element&&Boolean(target.closest('.tech-tabs,.route,input,textarea,select,[contenteditable="true"]'));
   window.addEventListener('touchstart',event=>{
