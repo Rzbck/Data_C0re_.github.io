@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import * as cheerio from 'cheerio';
 
-// Editorial CV v3 — first desktop viewport is reserved for the full professional path.
+// Editorial CV v4 — first desktop viewport is reserved for the full professional path.
 const files=['cv.html','en/cv.html','fr/cv.html','es/cv.html'];
 
 const esc=value=>String(value??'')
@@ -38,6 +38,11 @@ function genevaRow(lang){
   return `<article class="cv-row cv-row--current"><time>2025—27</time><div class="cv-title"><strong>${esc(g.name)}</strong><span class="cv-status">${esc(g.role)}</span></div><div class="cv-detail"><p>${esc(g.detail)}</p></div></article>`;
 }
 
+function jumpButton(lang){
+  const label=esc(genevaLux[lang].jump);
+  return `<button class="cv-jump" type="button" data-cv-jump aria-label="${label}" onclick="const t=document.getElementById('cv-details');if(t)t.scrollIntoView({behavior:'smooth',block:'start'});"><span>${label}</span><b aria-hidden="true">↓</b></button>`;
+}
+
 function ensureCurrentLayout($,file){
   const main=$('main.cv-one-page').first();
   if(!main.length)return false;
@@ -52,7 +57,7 @@ function ensureCurrentLayout($,file){
     if(current.length)current.addClass('cv-row--current');
 
     experience.find('.cv-jump').remove();
-    experience.append(`<a class="cv-jump" href="#cv-details" aria-label="${esc(genevaLux[lang].jump)}"><span>${esc(genevaLux[lang].jump)}</span><b aria-hidden="true">↓</b></a>`);
+    experience.append(jumpButton(lang));
   }
 
   const lower=main.find('.cv-one-page__aside,.cv-one-page__lower').first();
@@ -60,7 +65,7 @@ function ensureCurrentLayout($,file){
 
   $('link[data-cv-one-page]').remove();
   const prefix=file.includes('/')?'../':'';
-  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-3" data-cv-one-page="">\n`);
+  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-4" data-cv-one-page="">\n`);
   $('body').addClass('cv-one-page-ready');
 
   fs.writeFileSync(file,$.html());
@@ -125,7 +130,7 @@ for(const file of files){
     <section class="cv-one-page__section cv-one-page__experience reveal">
       ${sectionHead(0)}
       ${outer(experienceNode)}
-      <a class="cv-jump" href="#cv-details" aria-label="${esc(genevaLux[lang].jump)}"><span>${esc(genevaLux[lang].jump)}</span><b aria-hidden="true">↓</b></a>
+      ${jumpButton(lang)}
     </section>
     <aside class="cv-one-page__aside" id="cv-details">
       <section class="cv-one-page__aside-section reveal">${sectionHead(1)}${stack}</section>
@@ -139,7 +144,7 @@ for(const file of files){
   $('body').addClass('cv-one-page-ready');
   $('link[data-cv-one-page]').remove();
   const prefix=file.includes('/')?'../':'';
-  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-3" data-cv-one-page="">\n`);
+  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-4" data-cv-one-page="">\n`);
 
   fs.writeFileSync(file,$.html());
   console.log(`Composed viewport CV: ${file}`);
