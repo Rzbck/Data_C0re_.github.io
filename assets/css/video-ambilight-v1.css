@@ -1,12 +1,18 @@
 :root{
-  --page-amb-a:18 18 18;
-  --page-amb-b:18 18 18;
-  --page-amb-c:18 18 18;
-  --page-amb-d:18 18 18;
+  --page-amb-left:18 18 18;
+  --page-amb-right:18 18 18;
+  --page-amb-top:18 18 18;
+  --page-amb-bottom:18 18 18;
   --page-amb-all:18 18 18;
+  --amb-source-left:35vw;
+  --amb-source-right:65vw;
+  --amb-source-top:40vh;
+  --amb-source-bottom:60vh;
+  --amb-source-x:50vw;
+  --amb-source-y:50vh;
 }
 
-/* DEV experiment: the video no longer glows locally. Its colour energy lights the whole page. */
+/* DEV experiment: no glow stuck to the video frame. The page is lit from inside the active video and diffuses outward. */
 [data-video-ambilight-host],
 [data-video-ambilight-host].video-ambilight-active{
   box-shadow:none!important;
@@ -20,25 +26,25 @@ body.video-page-ambient{
 body.video-page-ambient::before{
   content:"";
   position:fixed;
-  inset:-18vh -14vw;
+  inset:0;
   z-index:-1;
   pointer-events:none;
   opacity:0;
   background:
-    radial-gradient(ellipse 72% 68% at 8% 18%, rgb(var(--page-amb-a) / .62) 0%, rgb(var(--page-amb-a) / .24) 30%, transparent 67%),
-    radial-gradient(ellipse 70% 72% at 88% 14%, rgb(var(--page-amb-b) / .54) 0%, rgb(var(--page-amb-b) / .19) 31%, transparent 69%),
-    radial-gradient(ellipse 78% 74% at 86% 88%, rgb(var(--page-amb-c) / .48) 0%, rgb(var(--page-amb-c) / .17) 32%, transparent 70%),
-    radial-gradient(ellipse 74% 70% at 14% 86%, rgb(var(--page-amb-d) / .46) 0%, rgb(var(--page-amb-d) / .16) 34%, transparent 71%),
-    linear-gradient(115deg, rgb(var(--page-amb-all) / .18), transparent 38%, rgb(var(--page-amb-all) / .10) 72%, transparent);
-  transform:translateZ(0) scale(1.02);
-  transition:opacity 420ms ease;
+    radial-gradient(ellipse 54vw 82vh at var(--amb-source-left) var(--amb-source-y), rgb(var(--page-amb-left) / .62) 0%, rgb(var(--page-amb-left) / .34) 20%, rgb(var(--page-amb-left) / .13) 43%, transparent 72%),
+    radial-gradient(ellipse 54vw 82vh at var(--amb-source-right) var(--amb-source-y), rgb(var(--page-amb-right) / .62) 0%, rgb(var(--page-amb-right) / .34) 20%, rgb(var(--page-amb-right) / .13) 43%, transparent 72%),
+    radial-gradient(ellipse 42vw 52vh at var(--amb-source-x) var(--amb-source-top), rgb(var(--page-amb-top) / .30) 0%, rgb(var(--page-amb-top) / .13) 34%, transparent 73%),
+    radial-gradient(ellipse 42vw 52vh at var(--amb-source-x) var(--amb-source-bottom), rgb(var(--page-amb-bottom) / .27) 0%, rgb(var(--page-amb-bottom) / .11) 35%, transparent 74%),
+    radial-gradient(ellipse 64vw 74vh at var(--amb-source-x) var(--amb-source-y), rgb(var(--page-amb-all) / .16) 0%, rgb(var(--page-amb-all) / .07) 40%, transparent 76%);
+  transform:translateZ(0);
+  transition:opacity 360ms ease;
 }
 
 body.video-page-ambient.video-page-ambient-active::before{
-  opacity:.92;
+  opacity:.96;
 }
 
-/* Keep the black DATA C0RE base, but let the ambient field tint the negative space. */
+/* Keep the DATA C0RE black base while allowing the light field to tint negative space. */
 body.video-page-ambient main,
 body.video-page-ambient .project-section,
 body.video-page-ambient .page-section,
@@ -50,15 +56,14 @@ body.video-page-ambient .archive-shell{
 
 @media(max-width:820px),(pointer:coarse){
   body.video-page-ambient::before{
-    inset:-12vh -20vw;
     background:
-      radial-gradient(ellipse 82% 64% at 4% 18%, rgb(var(--page-amb-a) / .48) 0%, transparent 68%),
-      radial-gradient(ellipse 80% 66% at 96% 28%, rgb(var(--page-amb-b) / .42) 0%, transparent 70%),
-      radial-gradient(ellipse 84% 70% at 78% 92%, rgb(var(--page-amb-c) / .34) 0%, transparent 72%),
-      radial-gradient(ellipse 80% 68% at 12% 88%, rgb(var(--page-amb-d) / .32) 0%, transparent 73%),
-      linear-gradient(145deg, rgb(var(--page-amb-all) / .13), transparent 58%);
+      radial-gradient(ellipse 72vw 68vh at var(--amb-source-left) var(--amb-source-y), rgb(var(--page-amb-left) / .46) 0%, rgb(var(--page-amb-left) / .22) 27%, transparent 73%),
+      radial-gradient(ellipse 72vw 68vh at var(--amb-source-right) var(--amb-source-y), rgb(var(--page-amb-right) / .46) 0%, rgb(var(--page-amb-right) / .22) 27%, transparent 73%),
+      radial-gradient(ellipse 58vw 44vh at var(--amb-source-x) var(--amb-source-top), rgb(var(--page-amb-top) / .20) 0%, transparent 72%),
+      radial-gradient(ellipse 58vw 44vh at var(--amb-source-x) var(--amb-source-bottom), rgb(var(--page-amb-bottom) / .18) 0%, transparent 73%),
+      radial-gradient(ellipse 82vw 66vh at var(--amb-source-x) var(--amb-source-y), rgb(var(--page-amb-all) / .10) 0%, transparent 76%);
   }
-  body.video-page-ambient.video-page-ambient-active::before{opacity:.74}
+  body.video-page-ambient.video-page-ambient-active::before{opacity:.82}
 }
 
 @media(prefers-reduced-motion:reduce){
