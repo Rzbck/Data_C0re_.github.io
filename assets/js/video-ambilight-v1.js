@@ -39,15 +39,15 @@
     let [r,g,b] = input;
     let max = Math.max(r,g,b), min = Math.min(r,g,b);
     const mid = (max + min) * .5;
-    const boost = .62;
+    const boost = .56;
     r = clamp(r + (r-mid)*boost, 0, 255);
     g = clamp(g + (g-mid)*boost, 0, 255);
     b = clamp(b + (b-mid)*boost, 0, 255);
     max = Math.max(r,g,b);
-    if (max > 196) {
-      const s = 196 / max; r*=s; g*=s; b*=s;
-    } else if (max < 94) {
-      const s = 94 / Math.max(max,1); r*=s; g*=s; b*=s;
+    if (max > 188) {
+      const s = 188 / max; r*=s; g*=s; b*=s;
+    } else if (max < 92) {
+      const s = 92 / Math.max(max,1); r*=s; g*=s; b*=s;
     }
     return [Math.round(r),Math.round(g),Math.round(b)];
   };
@@ -56,18 +56,18 @@
     let [r,g,b] = input;
     const max = Math.max(r,g,b), min = Math.min(r,g,b);
     const span = max-min;
-    if (span < 7) return [12,12,14];
-    const cap = max > 46 ? 46 / max : 1;
+    if (span < 5) return [18,18,20];
+    const cap = max > 58 ? 58 / max : 1;
     r*=cap; g*=cap; b*=cap;
-    return [Math.round(mix(10,r,.42)),Math.round(mix(10,g,.42)),Math.round(mix(12,b,.42))];
+    return [Math.round(mix(16,r,.48)),Math.round(mix(16,g,.48)),Math.round(mix(18,b,.48))];
   };
 
-  /* White, grey and low-saturation beige are never allowed to become the page
-     light. If real colour exists on the edge, that colour wins instead. */
+  /* Bright white / grey / cream pixels are not allowed to become page light.
+     If there is real colour in the same edge, that colour is preserved instead. */
   const analyseEdge = (data, points) => {
     let allR=0, allG=0, allB=0, allW=0;
     let chromaR=0, chromaG=0, chromaB=0, chromaW=0;
-    let chromaCount=0, chromaSat=0, whiteCount=0, warmNeutralCount=0, darkCount=0;
+    let chromaCount=0, chromaSat=0, whiteCount=0, darkCount=0;
 
     for (const [x,y] of points) {
       const i=(y*canvas.width+x)*4;
@@ -76,22 +76,19 @@
       const span=max-min;
       const sat=max>0?span/max:0;
       const lum=(rr*.2126+gg*.7152+bb*.0722)/255;
-      const nearWhite=lum>.70 && sat<.12;
-      const warmNeutral=lum>.30 && sat<.24 && span<55 && rr>=gg && gg>=bb;
-      const chromatic=sat>=.14 && span>=16 && !nearWhite && !warmNeutral;
+      const nearWhite=lum>.64 && sat<.20;
+      const chromatic=sat>=.11 && span>=12 && !nearWhite;
       const dark=lum<.16;
 
       if (nearWhite) whiteCount++;
-      if (warmNeutral) warmNeutralCount++;
       if (dark) darkCount++;
 
-      let w=.15 + Math.min(lum,.76)*.52 + sat*.78;
-      if (nearWhite) w*=.025;
-      else if (warmNeutral) w*=.08;
+      let w=.18 + Math.min(lum,.78)*.62 + sat*.72;
+      if (nearWhite) w*=.03;
       allR+=rr*w; allG+=gg*w; allB+=bb*w; allW+=w;
 
       if (chromatic) {
-        const cw=.40 + sat*2.85 + Math.min(lum,.72)*.50;
+        const cw=.28 + sat*2.35 + Math.min(lum,.72)*.44;
         chromaR+=rr*cw; chromaG+=gg*cw; chromaB+=bb*cw; chromaW+=cw;
         chromaCount++;
         chromaSat+=sat;
@@ -100,25 +97,23 @@
 
     const total=Math.max(points.length,1);
     const whiteRatio=whiteCount/total;
-    const warmNeutralRatio=warmNeutralCount/total;
-    const neutralRatio=clamp(whiteRatio+warmNeutralRatio,0,1);
     const chromaRatio=chromaCount/total;
     const avgChroma=chromaCount?chromaSat/chromaCount:0;
 
     if (chromaW>0) {
       const chromaColour=[chromaR/chromaW,chromaG/chromaW,chromaB/chromaW];
       const allColour=allW?[allR/allW,allG/allW,allB/allW]:chromaColour;
-      const preferChroma=clamp(.72 + neutralRatio*.30, .72, .985);
+      const preferChroma=clamp(.62 + whiteRatio*.36, .62, .97);
       const chosen=chromaColour.map((v,n)=>mix(allColour[n],v,preferChroma));
-      const energy=clamp(.62 + avgChroma*.80 + Math.sqrt(chromaRatio)*.62, .64, 1);
+      const energy=clamp(.46 + avgChroma*.72 + Math.sqrt(chromaRatio)*.55, .48, 1);
       return { colour:toneChromatic(chosen), energy, neutral:false };
     }
 
-    const neutral=allW?[allR/allW,allG/allW,allB/allW]:[12,12,14];
-    if (neutralRatio>.24) return { colour:toneNeutral(neutral), energy:0, neutral:true };
+    const neutral=allW?[allR/allW,allG/allW,allB/allW]:[18,18,20];
+    if (whiteRatio>.20) return { colour:toneNeutral(neutral), energy:0, neutral:true };
 
     const darkRatio=darkCount/total;
-    const energy=clamp(.015 + darkRatio*.055, .01, .06);
+    const energy=clamp(.04 + darkRatio*.08, .025, .11);
     return { colour:toneNeutral(neutral), energy, neutral:true };
   };
 
@@ -172,10 +167,10 @@
     const visibleW=Math.max(0,Math.min(rect.right,innerWidth)-Math.max(rect.left,0));
     const visibleH=Math.max(0,Math.min(rect.bottom,innerHeight)-Math.max(rect.top,0));
     const viewportShare=(visibleW*visibleH)/Math.max(innerWidth*innerHeight,1);
-    const crowdFactor=activeCount>=5?.76:activeCount===4?.82:activeCount===3?.90:activeCount===2?.95:1;
-    const colourStrength=clamp(.22+state.energy*1.05,.22,1.06);
-    const base=state.kind==='image'?.66:.78;
-    const strength=clamp((base+state.ratio*.18+Math.min(viewportShare,.52)*.30)*crowdFactor*colourStrength,.06,1);
+    const crowdFactor=activeCount>=5?.68:activeCount===4?.74:activeCount===3?.82:activeCount===2?.91:1;
+    const colourStrength=clamp(.34+state.energy*.86,.36,1);
+    const base=state.kind==='image'?.57:.70;
+    const strength=clamp((base+state.ratio*.18+Math.min(viewportShare,.52)*.28)*crowdFactor*colourStrength,.08,.96);
     setNumber(state.emitter,'--amb-strength',strength);
   };
 
@@ -193,13 +188,14 @@
       const next={left:analyseEdge(data,pointSets.left),right:analyseEdge(data,pointSets.right),top:analyseEdge(data,pointSets.top),bottom:analyseEdge(data,pointSets.bottom)};
       let energy=0;
       for(const key of Object.keys(next)){
-        const amount=state.kind==='image'?.62:.38;
+        const amount=state.kind==='image'?.58:.34;
         state.colours[key]=next[key].colour.map((v,n)=>Math.round(mix(state.colours[key][n],v,amount)));
-        const energyAmount=next[key].neutral?.72:(state.kind==='image'?.74:.46);
+        const energyAmount=next[key].neutral?.82:(state.kind==='image'?.72:.42);
         state.edgeEnergy[key]=mix(state.edgeEnergy[key],next[key].energy,energyAmount);
+        if (next[key].neutral && next[key].energy===0 && state.edgeEnergy[key]<.025) state.edgeEnergy[key]=0;
         energy+=state.edgeEnergy[key];
-        const edgeScale=next[key].neutral ? .20 : clamp(.86+state.edgeEnergy[key]*.18,.86,1.04);
-        const displayColour=state.colours[key].map(v=>Math.round(clamp(v*edgeScale,0,255)));
+        const edgeScale=next[key].neutral ? .34 : .46+state.edgeEnergy[key]*.54;
+        const displayColour=state.colours[key].map(v=>Math.round(v*edgeScale));
         setColour(state.emitter,`--page-amb-${key}`,displayColour);
         setNumber(state.emitter,`--amb-energy-${key}`,state.edgeEnergy[key]);
       }
@@ -266,7 +262,7 @@
     }
     ensureLayer().appendChild(emitter);return emitter;
   };
-  const makeState=(kind,emitter)=>({kind,visible:false,ratio:0,unavailable:false,emitter,lastSample:kind==='image'?-Infinity:0,energy:.45,colours:{left:[24,24,27],right:[24,24,27],top:[24,24,27],bottom:[24,24,27]},edgeEnergy:{left:.28,right:.28,top:.28,bottom:.28}});
+  const makeState=(kind,emitter)=>({kind,visible:false,ratio:0,unavailable:false,emitter,lastSample:kind==='image'?-Infinity:0,energy:.30,colours:{left:[18,18,20],right:[18,18,20],top:[18,18,20],bottom:[18,18,20]},edgeEnergy:{left:0,right:0,top:0,bottom:0}});
 
   const attachVideo=video=>{
     if(!(video instanceof HTMLVideoElement)||states.has(video))return;
