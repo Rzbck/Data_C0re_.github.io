@@ -1,0 +1,47 @@
+name: Archive rollover v3 cache-bust
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/archive-rollover-v3-cachebust.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Bump archive runtime and remove temporary workflow
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          files = [Path('archive.html'), Path('en/archive.html'), Path('fr/archive.html'), Path('es/archive.html')]
+          pattern = re.compile(r'archive-interactions\.js\?v=[^"\']+')
+          replacement = 'archive-interactions.js?v=20260819-solid2'
+
+          for path in files:
+              text = path.read_text(encoding='utf-8')
+              updated, count = pattern.subn(replacement, text)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected one archive runtime reference, got {count}')
+              path.write_text(updated, encoding='utf-8')
+
+          Path('.github/workflows/archive-rollover-v3-cachebust.yml').unlink()
+          PY
+
+      - name: Commit cache-bust
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add archive.html en/archive.html fr/archive.html es/archive.html .github/workflows/archive-rollover-v3-cachebust.yml
+          git commit -m "Cache-bust responsive archive video rollovers"
+          git push origin main
