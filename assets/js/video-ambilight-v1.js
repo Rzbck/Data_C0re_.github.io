@@ -1,4 +1,4 @@
-/* DATA C0RE ambient runtime v19 — hard warm/white wash rejection, strong true chroma, reliable tab resume. */
+/* DATA C0RE ambient runtime v20 — contour chroma, cross-origin safe, archive-aware, LUMINA workshop-safe. */
 (() => {
   'use strict';
 
@@ -11,137 +11,93 @@
   const videoInterval = saveData ? 320 : coarse ? 190 : 120;
   const imageInterval = saveData ? 12000 : 5000;
   const canvas = document.createElement('canvas');
-  canvas.width = 30;
-  canvas.height = 18;
+  const CANVAS_W = 30;
+  const CANVAS_H = 18;
+  canvas.width = CANVAS_W;
+  canvas.height = CANVAS_H;
   const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: true });
   if (!ctx) return;
 
   const states = new Map();
   let layer = null;
   let timer = 0;
-  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
-  const mix = (a, b, t) => a + (b - a) * t;
+  const clamp = (v,min,max)=>Math.min(max,Math.max(min,v));
+  const mix = (a,b,t)=>a+(b-a)*t;
 
-  const pointSets = (() => {
-    const w = canvas.width, h = canvas.height;
-    const left = [], right = [], top = [], bottom = [];
-    for (let y = 1; y < h - 1; y++) {
-      left.push([0,y],[0,y],[1,y],[2,y]);
-      right.push([w-1,y],[w-1,y],[w-2,y],[w-3,y]);
-    }
-    for (let x = 1; x < w - 1; x++) {
-      top.push([x,0],[x,0],[x,1],[x,2]);
-      bottom.push([x,h-1],[x,h-1],[x,h-2],[x,h-3]);
-    }
-    return { left, right, top, bottom };
-  })();
-
-  const rgbHue = (r,g,b) => {
-    r/=255; g/=255; b/=255;
-    const max=Math.max(r,g,b), min=Math.min(r,g,b), d=max-min;
-    if (!d) return 0;
-    let h;
-    if (max===r) h=((g-b)/d)%6;
-    else if (max===g) h=(b-r)/d+2;
-    else h=(r-g)/d+4;
-    h*=60;
-    return h<0?h+360:h;
+  const resetCanvas = () => {
+    canvas.width = CANVAS_W;
+    canvas.height = CANVAS_H;
   };
 
+  const pointSets = (() => {
+    const left=[],right=[],top=[],bottom=[];
+    for(let y=1;y<CANVAS_H-1;y++){
+      left.push([0,y],[0,y],[1,y],[2,y]);
+      right.push([CANVAS_W-1,y],[CANVAS_W-1,y],[CANVAS_W-2,y],[CANVAS_W-3,y]);
+    }
+    for(let x=1;x<CANVAS_W-1;x++){
+      top.push([x,0],[x,0],[x,1],[x,2]);
+      bottom.push([x,CANVAS_H-1],[x,CANVAS_H-1],[x,CANVAS_H-2],[x,CANVAS_H-3]);
+    }
+    return {left,right,top,bottom};
+  })();
+
   const toneChromatic = input => {
-    let [r,g,b] = input;
-    let max = Math.max(r,g,b), min = Math.min(r,g,b);
-    if (max <= 0) return [0,0,0];
-    const mid = (max + min) * .5;
-    const boost = 1.42;
-    r = clamp(r + (r-mid)*boost, 0, 255);
-    g = clamp(g + (g-mid)*boost, 0, 255);
-    b = clamp(b + (b-mid)*boost, 0, 255);
+    let [r,g,b]=input;
+    let max=Math.max(r,g,b),min=Math.min(r,g,b);
+    if(max<=0)return [0,0,0];
+    const mid=(max+min)*.5;
+    const boost=1.36;
+    r=clamp(r+(r-mid)*boost,0,255);
+    g=clamp(g+(g-mid)*boost,0,255);
+    b=clamp(b+(b-mid)*boost,0,255);
 
     max=Math.max(r,g,b);
-    if (max < 96) {
-      const s=96/Math.max(max,1); r*=s; g*=s; b*=s;
-    }
-
+    if(max<96){const s=96/Math.max(max,1);r*=s;g*=s;b*=s}
     const luma=r*.2126+g*.7152+b*.0722;
-    if (luma>92) {
-      const s=92/luma; r*=s; g*=s; b*=s;
-    }
-
+    if(luma>94){const s=94/luma;r*=s;g*=s;b*=s}
     max=Math.max(r,g,b);
-    if (max>190) {
-      const s=190/max; r*=s; g*=s; b*=s;
-    }
+    if(max>190){const s=190/max;r*=s;g*=s;b*=s}
     return [Math.round(r),Math.round(g),Math.round(b)];
   };
 
-  const analyseEdge = (data, points) => {
-    let chromaR=0, chromaG=0, chromaB=0, chromaW=0;
-    let chromaCount=0, chromaSat=0, vividCount=0;
+  const analyseEdge = (data,points) => {
+    let chromaR=0,chromaG=0,chromaB=0,chromaW=0;
+    let chromaCount=0,chromaSat=0,vividCount=0;
 
-    for (const [x,y] of points) {
-      const i=(y*canvas.width+x)*4;
-      const rr=data[i], gg=data[i+1], bb=data[i+2];
-      const max=Math.max(rr,gg,bb), min=Math.min(rr,gg,bb);
+    for(const [x,y] of points){
+      const i=(y*CANVAS_W+x)*4;
+      const rr=data[i],gg=data[i+1],bb=data[i+2];
+      const max=Math.max(rr,gg,bb),min=Math.min(rr,gg,bb);
       const span=max-min;
       const sat=max>0?span/max:0;
       const lum=(rr*.2126+gg*.7152+bb*.0722)/255;
-      const hue=span>0?rgbHue(rr,gg,bb):0;
 
-      /* White/grey/cream never emits. Skin, wood, beige and bright orange workshop
-         material are also rejected instead of being allowed to build a page-wide wash.
-         Deep saturated orange can still survive; reds, yellow, green, cyan, blue,
-         violet and magenta are unaffected by this warm-material gate. */
-      const nearWhite = lum>.62 && sat<.24;
-      const paleNeutral = lum>.44 && sat<.15;
-      const lowChroma = sat<.11 || span<13;
-      const veryBrightWeakColour = lum>.78 && sat<.34;
-      const neutral = nearWhite || paleNeutral || lowChroma || veryBrightWeakColour;
+      const nearWhite=lum>.62&&sat<.25;
+      const paleNeutral=lum>.46&&sat<.14;
+      const lowChroma=sat<.11||span<13;
+      const brightWeak=lum>.80&&sat<.34;
+      const neutral=nearWhite||paleNeutral||lowChroma||brightWeak;
+      const chromatic=!neutral&&((sat>=.16&&span>=15)||(lum<.46&&sat>=.13&&span>=13));
+      if(!chromatic)continue;
 
-      const warmMaterialHue = hue>=10 && hue<=50;
-      const warmMaterial = !neutral && warmMaterialHue && lum>.16 && (sat<.92 || lum>.32);
-
-      const chromatic = !neutral && !warmMaterial && (
-        (sat>=.16 && span>=15) ||
-        (lum<.46 && sat>=.13 && span>=13)
-      );
-
-      if (chromatic) {
-        const vivid=sat>=.40 || span>=54;
-        const cw=(.48 + sat*3.35 + Math.min(lum,.70)*.34) * (vivid?1.18:1);
-        chromaR+=rr*cw; chromaG+=gg*cw; chromaB+=bb*cw; chromaW+=cw;
-        chromaCount++;
-        chromaSat+=sat;
-        if (vivid) vividCount++;
-      }
+      const vivid=sat>=.42||span>=56;
+      const w=(.48+sat*3.3+Math.min(lum,.70)*.34)*(vivid?1.2:1);
+      chromaR+=rr*w;chromaG+=gg*w;chromaB+=bb*w;chromaW+=w;
+      chromaCount++;chromaSat+=sat;if(vivid)vividCount++;
     }
 
     const total=Math.max(points.length,1);
     const chromaRatio=chromaCount/total;
     const vividRatio=vividCount/total;
     const avgChroma=chromaCount?chromaSat/chromaCount:0;
-
-    if (!chromaW || chromaRatio < .018) {
-      return { colour:[0,0,0], energy:0, neutral:true };
-    }
+    if(!chromaW||chromaRatio<.018)return {colour:[0,0,0],energy:0,neutral:true};
 
     const colour=[chromaR/chromaW,chromaG/chromaW,chromaB/chromaW];
-    const outputHue=rgbHue(colour[0],colour[1],colour[2]);
-    const outputMax=Math.max(...colour), outputMin=Math.min(...colour);
-    const outputSat=outputMax>0?(outputMax-outputMin)/outputMax:0;
-    const outputLum=(colour[0]*.2126+colour[1]*.7152+colour[2]*.0722)/255;
-
-    /* Second hard gate at the averaged edge level. This prevents a handful of
-       orange/skin pixels from recreating the brown-white veil seen in LUMINA fabrication. */
-    if (outputHue>=10 && outputHue<=50 && (outputSat<.94 || outputLum>.30)) {
-      return { colour:[0,0,0], energy:0, neutral:true };
-    }
-
-    let energy=(Math.max(0,avgChroma-.07)*1.02) + Math.sqrt(chromaRatio)*.76 + Math.sqrt(vividRatio)*.28;
-    if (chromaRatio<.045 && avgChroma<.30) energy*=.72;
+    let energy=(Math.max(0,avgChroma-.07)*1.02)+Math.sqrt(chromaRatio)*.78+Math.sqrt(vividRatio)*.28;
+    if(chromaRatio<.045&&avgChroma<.30)energy*=.72;
     energy=clamp(energy,.08,1.08);
-
-    return { colour:toneChromatic(colour), energy, neutral:false };
+    return {colour:toneChromatic(colour),energy,neutral:false};
   };
 
   const ensureLayer=()=>{
@@ -157,19 +113,50 @@
   const setPosition=(emitter,name,v)=>emitter.style.setProperty(name,`${Math.round(v)}px`);
   const intrinsicSize=media=>media instanceof HTMLVideoElement?[media.videoWidth,media.videoHeight]:[media.naturalWidth,media.naturalHeight];
 
+  const mediaSource=media=>media instanceof HTMLVideoElement?(media.currentSrc||media.src||''):(media.currentSrc||media.src||'');
+  const sourceIsSampleSafe=media=>{
+    const src=mediaSource(media);
+    if(!src)return true;
+    try{
+      const url=new URL(src,document.baseURI);
+      return url.protocol==='data:'||url.protocol==='blob:'||url.origin===location.origin;
+    }catch{return false}
+  };
+
+  const mediaRejected=media=>{
+    const src=`${mediaSource(media)}`.toLowerCase();
+    if(/\.(svg)(?:\?|$)/.test(src))return true;
+    if(/(logo|favicon|icon|sprite|avatar|qr|og-cover)/.test(src))return true;
+    if(media.closest('.site-header,.site-menu,.lumina-tech-grid,.lumina-plan-modal,.tech-viewer,[data-lumina-plan-card]'))return true;
+    /* These three workshop clips are intentionally excluded: their dominant skin/wood/white
+       content produces exactly the cream page wash that conflicts with the white typography. */
+    if(media.closest('.lumina-workshop .fabrication-grid,[data-fabrication-grid]'))return true;
+    if(/assets\/media\/lumina\/fabrication-(profile|led|wiring)\./.test(src))return true;
+    return false;
+  };
+
+  const archiveMediaActive=media=>{
+    const entry=media.closest('.archive-entry');
+    if(!entry)return true;
+    if(!entry.classList.contains('is-media-active'))return false;
+    if(media instanceof HTMLVideoElement)return entry.classList.contains('has-archive-video');
+    return !entry.classList.contains('has-archive-video');
+  };
+
   const mediaRect=media=>{
     const rect=media.getBoundingClientRect();
     const [iw,ih]=intrinsicSize(media);
     if(!rect.width||!rect.height||!iw||!ih)return rect;
     const fit=getComputedStyle(media).objectFit||'fill';
     if(fit==='cover'||fit==='fill')return rect;
-    const sourceRatio=iw/ih, boxRatio=rect.width/rect.height;
+    const sourceRatio=iw/ih,boxRatio=rect.width/rect.height;
     let width=rect.width,height=rect.height;
     if(sourceRatio>boxRatio)height=width/sourceRatio;else width=height*sourceRatio;
     return {left:rect.left+(rect.width-width)*.5,right:rect.left+(rect.width+width)*.5,top:rect.top+(rect.height-height)*.5,bottom:rect.top+(rect.height+height)*.5,width,height};
   };
 
   const drawVisibleFrame=media=>{
+    resetCanvas();
     const [iw,ih]=intrinsicSize(media);
     const rect=media.getBoundingClientRect();
     const fit=getComputedStyle(media).objectFit||'fill';
@@ -178,7 +165,7 @@
       const sourceRatio=iw/ih,boxRatio=rect.width/rect.height;
       if(sourceRatio>boxRatio){sw=ih*boxRatio;sx=(iw-sw)*.5}else{sh=iw/boxRatio;sy=(ih-sh)*.5}
     }
-    ctx.drawImage(media,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
+    ctx.drawImage(media,sx,sy,sw,sh,0,0,CANVAS_W,CANVAS_H);
   };
 
   const updateGeometry=(media,state,activeCount)=>{
@@ -194,31 +181,46 @@
     const visibleW=Math.max(0,Math.min(rect.right,innerWidth)-Math.max(rect.left,0));
     const visibleH=Math.max(0,Math.min(rect.bottom,innerHeight)-Math.max(rect.top,0));
     const viewportShare=(visibleW*visibleH)/Math.max(innerWidth*innerHeight,1);
-    const crowdFactor=activeCount>=5?.70:activeCount===4?.77:activeCount===3?.86:activeCount===2?.94:1;
-    const colourStrength=clamp(.30+state.energy*1.08,.24,1.05);
+    const crowdFactor=activeCount>=5?.70:activeCount===4?.78:activeCount===3?.87:activeCount===2?.95:1;
+    const colourStrength=clamp(.31+state.energy*1.08,.24,1.05);
     const base=state.kind==='image'?.60:.72;
     const strength=clamp((base+state.ratio*.17+Math.min(viewportShare,.52)*.23)*crowdFactor*colourStrength,.035,.90);
     setNumber(state.emitter,'--amb-strength',strength);
   };
 
-  const videoIsActive=(video,state)=>Boolean(state.visible&&!state.unavailable&&!video.paused&&!video.ended&&video.readyState>=2&&video.videoWidth&&video.videoHeight);
+  const videoIsActive=(video,state)=>Boolean(
+    state.visible&&!state.unavailable&&!mediaRejected(video)&&archiveMediaActive(video)&&sourceIsSampleSafe(video)&&
+    !video.paused&&!video.ended&&video.readyState>=2&&video.videoWidth&&video.videoHeight
+  );
+
   const imageIsActive=(img,state)=>{
-    if(!state.visible||state.unavailable||!img.complete||!img.naturalWidth||!img.naturalHeight)return false;
+    if(!state.visible||state.unavailable||mediaRejected(img)||!archiveMediaActive(img)||!sourceIsSampleSafe(img)||!img.complete||!img.naturalWidth||!img.naturalHeight)return false;
+    const style=getComputedStyle(img);
+    if(style.display==='none'||style.visibility==='hidden'||Number(style.opacity||1)<.04)return false;
     const rect=img.getBoundingClientRect();
     return rect.width>=110&&rect.height>=75&&rect.width*rect.height>=18000;
   };
 
+  const clearEmitter=state=>{
+    state.energy=0;
+    for(const key of ['left','right','top','bottom']){
+      state.edgeEnergy[key]=0;state.colours[key]=[0,0,0];
+      setColour(state.emitter,`--page-amb-${key}`,[0,0,0]);
+      setNumber(state.emitter,`--amb-energy-${key}`,0);
+    }
+    state.emitter.classList.remove('is-active');
+  };
+
   const sample=(media,state)=>{
+    if(!sourceIsSampleSafe(media)||mediaRejected(media)||!archiveMediaActive(media)){clearEmitter(state);return false}
     try{
       drawVisibleFrame(media);
-      const data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+      const data=ctx.getImageData(0,0,CANVAS_W,CANVAS_H).data;
       const next={left:analyseEdge(data,pointSets.left),right:analyseEdge(data,pointSets.right),top:analyseEdge(data,pointSets.top),bottom:analyseEdge(data,pointSets.bottom)};
-      let energy=0;
-      let activeEdges=0;
+      let energy=0,activeEdges=0;
       for(const key of Object.keys(next)){
         if(next[key].neutral||next[key].energy===0){
-          state.edgeEnergy[key]=0;
-          state.colours[key]=[0,0,0];
+          state.edgeEnergy[key]=0;state.colours[key]=[0,0,0];
           setColour(state.emitter,`--page-amb-${key}`,[0,0,0]);
           setNumber(state.emitter,`--amb-energy-${key}`,0);
           continue;
@@ -226,8 +228,7 @@
         const amount=state.kind==='image'?.68:.42;
         state.colours[key]=next[key].colour.map((v,n)=>Math.round(mix(state.colours[key][n],v,amount)));
         state.edgeEnergy[key]=mix(state.edgeEnergy[key],next[key].energy,state.kind==='image'?.80:.52);
-        energy+=state.edgeEnergy[key];
-        activeEdges++;
+        energy+=state.edgeEnergy[key];activeEdges++;
         const edgeScale=clamp(.90+state.edgeEnergy[key]*.20,.90,1.08);
         const displayColour=state.colours[key].map(v=>Math.round(clamp(v*edgeScale,0,255)));
         setColour(state.emitter,`--page-amb-${key}`,displayColour);
@@ -237,8 +238,10 @@
       state.emitter.classList.toggle('is-active',state.energy>.008);
       return true;
     }catch{
-      state.unavailable=true;
-      state.emitter.classList.remove('is-active');
+      /* A foreign image must never poison the shared sampler for everything below it.
+         Resetting the canvas restores origin-clean state and we retry other media normally. */
+      resetCanvas();
+      clearEmitter(state);
       return false;
     }
   };
@@ -247,6 +250,7 @@
     if(timer||document.hidden)return;
     timer=setTimeout(()=>{timer=0;requestAnimationFrame(tick)},delay);
   };
+
   const tick=now=>{
     if(document.hidden)return;
     const active=[];
@@ -267,7 +271,7 @@
 
   const previewSelector='[data-hover-preview-video],[data-work-preview-video],.archive-entry-media video';
   const shouldAutoResume=video=>{
-    if(!video.muted||video.dataset.perfDetached==='true')return false;
+    if(!video.muted||video.dataset.perfDetached==='true'||mediaRejected(video))return false;
     if(video.matches(previewSelector))return false;
     return video.loop||video.autoplay||video.matches('[data-stagger-video],[data-lumina-experience],[data-lazy-video]');
   };
@@ -281,23 +285,12 @@
     const allowed=force||shouldAutoResume(video);
     if(document.hidden||!state.visible||!allowed)return;
     const before=video.currentTime;
-    Promise.resolve(video.play()).then(()=>{
-      state.lastKnownPlaying=true;
-      state.lastPlayingAt=performance.now();
-      state.resumeAfterVisibility=false;
-      wake();
-    }).catch(()=>{});
+    Promise.resolve(video.play()).then(()=>{state.lastKnownPlaying=true;state.lastPlayingAt=performance.now();state.resumeAfterVisibility=false;wake()}).catch(()=>{});
     setTimeout(()=>{
       const stillAllowed=state.resumeAfterVisibility||hoveredPreview(video)||shouldAutoResume(video);
       if(document.hidden||!state.visible||video.paused||!stillAllowed)return;
       if(Math.abs(video.currentTime-before)>.025)return;
-      video.pause();
-      requestAnimationFrame(()=>video.play().then(()=>{
-        state.lastKnownPlaying=true;
-        state.lastPlayingAt=performance.now();
-        state.resumeAfterVisibility=false;
-        wake();
-      }).catch(()=>{}));
+      video.pause();requestAnimationFrame(()=>video.play().then(()=>{state.lastKnownPlaying=true;state.lastPlayingAt=performance.now();state.resumeAfterVisibility=false;wake()}).catch(()=>{}));
     },420);
   };
   const resumeVisibleVideos=()=>{
@@ -316,16 +309,10 @@
     }
     ensureLayer().appendChild(emitter);return emitter;
   };
-  const makeState=(kind,emitter)=>({
-    kind,visible:false,ratio:0,unavailable:false,emitter,
-    lastSample:kind==='image'?-Infinity:0,energy:0,
-    lastKnownPlaying:false,lastPlayingAt:0,resumeAfterVisibility:false,
-    colours:{left:[0,0,0],right:[0,0,0],top:[0,0,0],bottom:[0,0,0]},
-    edgeEnergy:{left:0,right:0,top:0,bottom:0}
-  });
+  const makeState=(kind,emitter)=>({kind,visible:false,ratio:0,unavailable:false,emitter,lastSample:kind==='image'?-Infinity:0,energy:0,lastKnownPlaying:false,lastPlayingAt:0,resumeAfterVisibility:false,colours:{left:[0,0,0],right:[0,0,0],top:[0,0,0],bottom:[0,0,0]},edgeEnergy:{left:0,right:0,top:0,bottom:0}});
 
   const attachVideo=video=>{
-    if(!(video instanceof HTMLVideoElement)||states.has(video))return;
+    if(!(video instanceof HTMLVideoElement)||states.has(video)||mediaRejected(video))return;
     const state=makeState('video',makeEmitter('video'));states.set(video,state);
     const observer=new IntersectionObserver(entries=>{
       const entry=entries[0];state.visible=Boolean(entry?.isIntersecting&&entry.intersectionRatio>.015);state.ratio=entry?.intersectionRatio||0;
@@ -337,18 +324,11 @@
     video.addEventListener('timeupdate',()=>{if(!video.paused){state.lastKnownPlaying=true;state.lastPlayingAt=performance.now()}},{passive:true});
     video.addEventListener('pause',()=>{if(!document.hidden&&!state.resumeAfterVisibility)state.lastKnownPlaying=false;wake()},{passive:true});
     video.addEventListener('ended',()=>{state.lastKnownPlaying=false;state.resumeAfterVisibility=false;wake()},{passive:true});
-    ['emptied','loadeddata'].forEach(type=>video.addEventListener(type,wake,{passive:true}));
+    ['emptied','loadeddata'].forEach(type=>video.addEventListener(type,()=>{state.unavailable=false;wake()},{passive:true}));
   };
 
-  const imageRejected=img=>{
-    const src=`${img.currentSrc||img.src||''}`.toLowerCase();
-    if(/\.(svg)(?:\?|$)/.test(src))return true;
-    if(/(logo|favicon|icon|sprite|avatar|qr|og-cover)/.test(src))return true;
-    if(img.closest('.site-header,.site-menu,.lumina-tech-grid,.lumina-plan-modal,.tech-viewer,[data-lumina-plan-card]'))return true;
-    return false;
-  };
   const attachImage=img=>{
-    if(!(img instanceof HTMLImageElement)||states.has(img)||imageRejected(img))return;
+    if(!(img instanceof HTMLImageElement)||states.has(img)||mediaRejected(img))return;
     const state=makeState('image',makeEmitter('image'));states.set(img,state);
     const observer=new IntersectionObserver(entries=>{
       const entry=entries[0];state.visible=Boolean(entry?.isIntersecting&&entry.intersectionRatio>.025);state.ratio=entry?.intersectionRatio||0;
@@ -362,6 +342,7 @@
     if(rootNode instanceof HTMLVideoElement)attachVideo(rootNode);else if(rootNode instanceof HTMLImageElement)attachImage(rootNode);
     rootNode.querySelectorAll?.('video').forEach(attachVideo);rootNode.querySelectorAll?.('img').forEach(attachImage);
   };
+
   const boot=()=>{
     document.body?.classList.add('video-page-ambient');ensureLayer();scan(document);
     new MutationObserver(mutations=>{for(const mutation of mutations)mutation.addedNodes.forEach(node=>{if(node instanceof Element)scan(node)})}).observe(document.documentElement,{childList:true,subtree:true});
@@ -370,13 +351,10 @@
     document.addEventListener('visibilitychange',()=>{
       if(document.hidden){
         const now=performance.now();
-        for(const [media,state] of states){
-          if(state.kind!=='video')continue;
-          state.resumeAfterVisibility=Boolean(state.visible&&(state.lastKnownPlaying||!media.paused||(now-state.lastPlayingAt)<1600));
-        }
+        for(const [media,state] of states){if(state.kind==='video')state.resumeAfterVisibility=Boolean(state.visible&&(state.lastKnownPlaying||!media.paused||(now-state.lastPlayingAt)<1600))}
         if(timer)clearTimeout(timer);timer=0;return;
       }
-      requestAnimationFrame(resumeVisibleVideos);setTimeout(resumeVisibleVideos,180);
+      resetCanvas();requestAnimationFrame(resumeVisibleVideos);setTimeout(resumeVisibleVideos,180);
     });
     wake();
   };
