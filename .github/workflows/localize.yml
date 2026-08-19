@@ -101,6 +101,9 @@ jobs:
       - name: Synchronize Archive hover videos
         run: node scripts/archive-video-autolink.mjs
 
+      - name: Enforce Archive indexability
+        run: node scripts/archive-indexability-guard.mjs
+
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
