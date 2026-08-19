@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import * as cheerio from 'cheerio';
 
-// Editorial CV v4 — first desktop viewport is reserved for the full professional path.
+// Editorial CV v5 — first desktop viewport is reserved for the full professional path.
 const files=['cv.html','en/cv.html','fr/cv.html','es/cv.html'];
 
 const esc=value=>String(value??'')
@@ -65,7 +65,7 @@ function ensureCurrentLayout($,file){
 
   $('link[data-cv-one-page]').remove();
   const prefix=file.includes('/')?'../':'';
-  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-4" data-cv-one-page="">\n`);
+  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-5" data-cv-one-page="">\n`);
   $('body').addClass('cv-one-page-ready');
 
   fs.writeFileSync(file,$.html());
@@ -144,7 +144,7 @@ for(const file of files){
   $('body').addClass('cv-one-page-ready');
   $('link[data-cv-one-page]').remove();
   const prefix=file.includes('/')?'../':'';
-  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-4" data-cv-one-page="">\n`);
+  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-5" data-cv-one-page="">\n`);
 
   fs.writeFileSync(file,$.html());
   console.log(`Composed viewport CV: ${file}`);
