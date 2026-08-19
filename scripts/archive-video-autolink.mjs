@@ -9,6 +9,7 @@ const videoPattern = /\.(mp4|webm|m4v)(?:[?#].*)?$/i;
 const imagePattern = /\.(avif|webp|png|jpe?g|gif)(?:[?#].*)?$/i;
 const imageRejectPattern = /(?:favicon|(?:^|[\/_-])icon(?:[\/_-]|\.)|logo|og-cover|avatar|sprite|placeholder)/i;
 const maxArchiveImages = 4;
+const archiveRuntimeVersion = '20260819-media2';
 
 const cleanSource = value => (value || '').trim();
 const sourceKey = value => cleanSource(value).split(/[?#]/, 1)[0];
@@ -138,6 +139,14 @@ for (const archiveFile of archiveFiles) {
     entry.attr('data-archive-media-kind', videos.length ? 'video' : 'image');
     changed = true;
   });
+
+  const runtime = $('script[data-archive-interactions]').first();
+  if (runtime.length) {
+    const current = runtime.attr('src') || 'assets/js/archive-interactions.js';
+    const base = current.split(/[?#]/, 1)[0];
+    runtime.attr('src', `${base}?v=${archiveRuntimeVersion}`);
+    changed = true;
+  }
 
   if (changed) {
     fs.writeFileSync(archiveFile, $.html());
