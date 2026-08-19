@@ -215,7 +215,9 @@
         state.colours[key] = target.map((value, index) => Math.round(mix(state.colours[key][index], value, amount)));
         state.edgeEnergy[key] = mix(state.edgeEnergy[key], next[key].energy, state.kind === 'image' ? .72 : .42);
         energy += state.edgeEnergy[key];
-        setColour(state.emitter, `--page-amb-${key}`, state.colours[key]);
+        const edgeScale = .12 + state.edgeEnergy[key] * .88;
+        const displayColour = state.colours[key].map(value => Math.round(value * edgeScale));
+        setColour(state.emitter, `--page-amb-${key}`, displayColour);
         setNumber(state.emitter, `--amb-energy-${key}`, state.edgeEnergy[key]);
       }
       state.energy = energy / 4;
