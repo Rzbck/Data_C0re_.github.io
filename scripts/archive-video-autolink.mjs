@@ -2,14 +2,15 @@ import fs from 'node:fs';
 import * as cheerio from 'cheerio';
 
 // Archive hover media is derived from the current project page at build time.
-// Priority: video when available; otherwise a small representative image pool.
+// Videos and a small representative image pool are both exposed to the runtime;
+// one medium is selected per rollover and remains locked until pointer exit.
 // Runtime discovery remains as a fallback, but the archive should normally ship pre-linked.
 const archiveFiles = ['archive.html', 'en/archive.html', 'fr/archive.html', 'es/archive.html'];
 const videoPattern = /\.(mp4|webm|m4v)(?:[?#].*)?$/i;
 const imagePattern = /\.(avif|webp|png|jpe?g|gif)(?:[?#].*)?$/i;
 const imageRejectPattern = /(?:favicon|(?:^|[\/_-])icon(?:[\/_-]|\.)|logo|og-cover|avatar|sprite|placeholder)/i;
 const maxArchiveImages = 4;
-const archiveRuntimeVersion = '20260819-media2';
+const archiveRuntimeVersion = '20260819-media3';
 
 const cleanSource = value => (value || '').trim();
 const sourceKey = value => cleanSource(value).split(/[?#]/, 1)[0];
