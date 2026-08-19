@@ -89,6 +89,12 @@ jobs:
       - name: Stabilize language switcher before first paint
         run: node scripts/static-language-links.mjs
 
+      - name: Apply official production imagery to Comédie case study
+        run: node scripts/comedie-official-media-v1.mjs
+
+      - name: Optimize Comédie media scheduling
+        run: node scripts/comedie-performance-v1.mjs
+
       - name: Localize The Last Low-Bandwidth Message
         run: node scripts/localize-low-bandwidth-project.mjs
 
