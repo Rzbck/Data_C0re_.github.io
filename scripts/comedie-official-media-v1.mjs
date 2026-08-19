@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import * as cheerio from 'cheerio';
 
+// v2: preserve the validated desktop composition, remove the duplicate Entre chien et loup image, and force a native mobile flow.
 const files = [
   'projects/comedie.html',
   'en/projects/comedie.html',
