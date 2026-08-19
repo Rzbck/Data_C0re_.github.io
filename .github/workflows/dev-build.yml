@@ -106,6 +106,9 @@ jobs:
       - name: Apply official production imagery to Comédie case study
         run: node scripts/comedie-official-media-v1.mjs
 
+      - name: Optimize Comédie media scheduling
+        run: node scripts/comedie-performance-v1.mjs
+
       - name: Auto-link project videos to archive hover previews
         run: node scripts/archive-video-autolink.mjs
 
