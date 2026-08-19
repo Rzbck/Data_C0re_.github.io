@@ -14,20 +14,17 @@ const genevaLux={
   en:{
     name:'Geneva Lux / LUMINA',
     role:'Creative technologist / realtime systems + integration — ongoing',
-    detail:'Fusion 360 structure and fabrication drawings, network planning, addressable LED integration, TouchDesigner programming, Art-Net architecture, workshop coordination and technical integration on site.',
-    jump:'Technical range + background'
+    detail:'Fusion 360 structure and fabrication drawings, network planning, addressable LED integration, TouchDesigner programming, Art-Net architecture, workshop coordination and technical integration on site.'
   },
   fr:{
     name:'Geneva Lux / LUMINA',
     role:'Creative technologist / systèmes temps réel + intégration — en cours',
-    detail:'Structure et plans de fabrication sous Fusion 360, planification réseau, intégration LED adressable, programmation TouchDesigner, architecture Art-Net, coordination atelier et intégration technique sur site.',
-    jump:'Compétences + parcours'
+    detail:'Structure et plans de fabrication sous Fusion 360, planification réseau, intégration LED adressable, programmation TouchDesigner, architecture Art-Net, coordination atelier et intégration technique sur site.'
   },
   es:{
     name:'Geneva Lux / LUMINA',
     role:'Creative technologist / sistemas en tiempo real + integración — en curso',
-    detail:'Estructura y planos de fabricación en Fusion 360, planificación de red, integración LED direccionable, programación TouchDesigner, arquitectura Art-Net, coordinación de taller e integración técnica in situ.',
-    jump:'Herramientas + trayectoria'
+    detail:'Estructura y planos de fabricación en Fusion 360, planificación de red, integración LED direccionable, programación TouchDesigner, arquitectura Art-Net, coordinación de taller e integración técnica in situ.'
   }
 };
 
@@ -36,11 +33,6 @@ const languageFor=file=>file.startsWith('fr/')?'fr':file.startsWith('es/')?'es':
 function genevaRow(lang){
   const g=genevaLux[lang];
   return `<article class="cv-row cv-row--current"><time>2025—27</time><div class="cv-title"><strong>${esc(g.name)}</strong><span class="cv-status">${esc(g.role)}</span></div><div class="cv-detail"><p>${esc(g.detail)}</p></div></article>`;
-}
-
-function jumpButton(lang){
-  const label=esc(genevaLux[lang].jump);
-  return `<button class="cv-jump" type="button" data-cv-jump aria-label="${label}" onclick="const t=document.getElementById('cv-details');if(t)t.scrollIntoView({behavior:'smooth',block:'start'});"><span>${label}</span><b aria-hidden="true">↓</b></button>`;
 }
 
 function ensureCurrentLayout($,file){
@@ -57,7 +49,6 @@ function ensureCurrentLayout($,file){
     if(current.length)current.addClass('cv-row--current');
 
     experience.find('.cv-jump').remove();
-    experience.append(jumpButton(lang));
   }
 
   const lower=main.find('.cv-one-page__aside,.cv-one-page__lower').first();
@@ -65,7 +56,7 @@ function ensureCurrentLayout($,file){
 
   $('link[data-cv-one-page]').remove();
   const prefix=file.includes('/')?'../':'';
-  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-5" data-cv-one-page="">\n`);
+  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-6" data-cv-one-page="">\n`);
   $('body').addClass('cv-one-page-ready');
 
   fs.writeFileSync(file,$.html());
@@ -78,7 +69,7 @@ for(const file of files){
   const html=fs.readFileSync(file,'utf8');
   const $=cheerio.load(html,{decodeEntities:false});
 
-  // Most dev builds already contain the composed CV. Patch that representation directly.
+  // Most builds already contain the composed CV. Patch that representation directly.
   if(ensureCurrentLayout($,file))continue;
 
   // Fallback for a fresh source build that still contains the original four CV sections.
@@ -130,7 +121,6 @@ for(const file of files){
     <section class="cv-one-page__section cv-one-page__experience reveal">
       ${sectionHead(0)}
       ${outer(experienceNode)}
-      ${jumpButton(lang)}
     </section>
     <aside class="cv-one-page__aside" id="cv-details">
       <section class="cv-one-page__aside-section reveal">${sectionHead(1)}${stack}</section>
@@ -144,7 +134,7 @@ for(const file of files){
   $('body').addClass('cv-one-page-ready');
   $('link[data-cv-one-page]').remove();
   const prefix=file.includes('/')?'../':'';
-  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-5" data-cv-one-page="">\n`);
+  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-6" data-cv-one-page="">\n`);
 
   fs.writeFileSync(file,$.html());
   console.log(`Composed viewport CV: ${file}`);
