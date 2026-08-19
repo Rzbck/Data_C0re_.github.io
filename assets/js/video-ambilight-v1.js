@@ -8,25 +8,16 @@
 
   const coarse = matchMedia('(pointer: coarse)').matches;
   const saveData = Boolean(navigator.connection && navigator.connection.saveData);
-  const interval = saveData ? 280 : coarse ? 170 : 110;
+  const interval = saveData ? 300 : coarse ? 180 : 115;
   const canvas = document.createElement('canvas');
   canvas.width = 24;
   canvas.height = 14;
   const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: true });
   if (!ctx) return;
 
-  const root = document.documentElement;
   const states = new Map();
+  let layer = null;
   let timer = 0;
-  let activeVideo = null;
-  let lastSample = 0;
-  const colours = {
-    left: [22, 22, 22],
-    right: [22, 22, 22],
-    top: [22, 22, 22],
-    bottom: [22, 22, 22],
-    all: [22, 22, 22]
-  };
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const mix = (a, b, amount) => a + (b - a) * amount;
@@ -86,11 +77,67 @@
     return weight ? boost([r / weight, g / weight, b / weight]) : [20, 20, 20];
   };
 
-  const setColourVar = (name, colour) => root.style.setProperty(name, `${colour[0]} ${colour[1]} ${colour[2]}`);
-  const setPositionVar = (name, value) => root.style.setProperty(name, `${Math.round(value)}px`);
+  const ensureLayer = () => {
+    if (layer?.isConnected) return layer;
+    layer = document.createElement('div');
+    layer.className = 'video-ambient-field';
+    layer.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(layer);
+    return layer;
+  };
 
-  const updateGeometry = video => {
+  const setColour = (emitter, name, colour) => {
+    emitter.style.setProperty(name, `${colour[0]} ${colour[1]} ${colour[2]}`);
+  };
+  const setPosition = (emitter, name, value) => {
+    emitter.style.setProperty(name, `${Math.round(value)}px`);
+  };
+
+  const mediaRect = video => {
     const rect = video.getBoundingClientRect();
+    if (!rect.width || !rect.height || !video.videoWidth || !video.videoHeight) return rect;
+    const fit = getComputedStyle(video).objectFit || 'fill';
+    if (fit === 'cover' || fit === 'fill') return rect;
+
+    const sourceRatio = video.videoWidth / video.videoHeight;
+    const boxRatio = rect.width / rect.height;
+    let width = rect.width;
+    let height = rect.height;
+    if (sourceRatio > boxRatio) height = width / sourceRatio;
+    else width = height * sourceRatio;
+    return {
+      left: rect.left + (rect.width - width) * .5,
+      right: rect.left + (rect.width + width) * .5,
+      top: rect.top + (rect.height - height) * .5,
+      bottom: rect.top + (rect.height + height) * .5,
+      width,
+      height
+    };
+  };
+
+  const drawVisibleFrame = video => {
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+    const rect = video.getBoundingClientRect();
+    const fit = getComputedStyle(video).objectFit || 'fill';
+    let sx = 0, sy = 0, sw = vw, sh = vh;
+
+    if (fit === 'cover' && rect.width > 0 && rect.height > 0) {
+      const sourceRatio = vw / vh;
+      const boxRatio = rect.width / rect.height;
+      if (sourceRatio > boxRatio) {
+        sw = vh * boxRatio;
+        sx = (vw - sw) * .5;
+      } else {
+        sh = vw / boxRatio;
+        sy = (vh - sh) * .5;
+      }
+    }
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+  };
+
+  const updateGeometry = (video, state, activeCount) => {
+    const rect = mediaRect(video);
     const left = clamp(rect.left, 0, innerWidth);
     const right = clamp(rect.right, 0, innerWidth);
     const top = clamp(rect.top, 0, innerHeight);
@@ -98,46 +145,35 @@
     const width = Math.max(1, right - left);
     const height = Math.max(1, bottom - top);
 
-    /* Light sources sit visibly inside the current video image, then diffuse into the page. */
-    setPositionVar('--amb-source-left', left + width * .14);
-    setPositionVar('--amb-source-right', right - width * .14);
-    setPositionVar('--amb-source-top', top + height * .18);
-    setPositionVar('--amb-source-bottom', bottom - height * .18);
-    setPositionVar('--amb-source-x', left + width * .5);
-    setPositionVar('--amb-source-y', top + height * .5);
-  };
+    /* Every visible video becomes its own light source. Sources stay just inside the image edges. */
+    setPosition(state.emitter, '--amb-source-left', left + width * .12);
+    setPosition(state.emitter, '--amb-source-right', right - width * .12);
+    setPosition(state.emitter, '--amb-source-top', top + height * .15);
+    setPosition(state.emitter, '--amb-source-bottom', bottom - height * .15);
+    setPosition(state.emitter, '--amb-source-x', left + width * .5);
+    setPosition(state.emitter, '--amb-source-y', top + height * .5);
 
-  const score = (video, state) => {
-    if (!state.visible || state.unavailable || video.paused || video.ended || video.readyState < 2) return -1;
-    const rect = video.getBoundingClientRect();
     const visibleW = Math.max(0, Math.min(rect.right, innerWidth) - Math.max(rect.left, 0));
     const visibleH = Math.max(0, Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0));
     const viewportShare = (visibleW * visibleH) / Math.max(innerWidth * innerHeight, 1);
-    return state.ratio * .62 + Math.min(viewportShare, 1) * .38;
+    const crowdFactor = activeCount > 1 ? .78 : 1;
+    const strength = clamp((.38 + state.ratio * .36 + Math.min(viewportShare, .55) * .45) * crowdFactor, .28, .92);
+    state.emitter.style.setProperty('--amb-strength', strength.toFixed(3));
   };
 
-  const chooseVideo = () => {
-    let best = null;
-    let bestScore = -1;
-    for (const [video, state] of states) {
-      const s = score(video, state);
-      if (s > bestScore) {
-        best = video;
-        bestScore = s;
-      }
-    }
-    if (activeVideo && states.has(activeVideo)) {
-      const currentScore = score(activeVideo, states.get(activeVideo));
-      if (currentScore >= 0 && currentScore >= bestScore * .84) return activeVideo;
-    }
-    return best;
-  };
+  const isActive = (video, state) => Boolean(
+    state.visible &&
+    !state.unavailable &&
+    !video.paused &&
+    !video.ended &&
+    video.readyState >= 2 &&
+    video.videoWidth &&
+    video.videoHeight
+  );
 
-  const sample = video => {
-    const state = states.get(video);
-    if (!state) return false;
+  const sample = (video, state) => {
     try {
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      drawVisibleFrame(video);
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
       const next = {
         left: average(data, pointSets.left),
@@ -147,18 +183,18 @@
         all: average(data, pointSets.all)
       };
       for (const key of Object.keys(next)) {
-        colours[key] = next[key].map((value, index) => Math.round(mix(colours[key][index], value, .28)));
+        state.colours[key] = next[key].map((value, index) => Math.round(mix(state.colours[key][index], value, .30)));
       }
-      setColourVar('--page-amb-left', colours.left);
-      setColourVar('--page-amb-right', colours.right);
-      setColourVar('--page-amb-top', colours.top);
-      setColourVar('--page-amb-bottom', colours.bottom);
-      setColourVar('--page-amb-all', colours.all);
-      updateGeometry(video);
-      document.body?.classList.add('video-page-ambient', 'video-page-ambient-active');
+      setColour(state.emitter, '--page-amb-left', state.colours.left);
+      setColour(state.emitter, '--page-amb-right', state.colours.right);
+      setColour(state.emitter, '--page-amb-top', state.colours.top);
+      setColour(state.emitter, '--page-amb-bottom', state.colours.bottom);
+      setColour(state.emitter, '--page-amb-all', state.colours.all);
+      state.emitter.classList.add('is-active');
       return true;
     } catch {
       state.unavailable = true;
+      state.emitter.classList.remove('is-active');
       return false;
     }
   };
@@ -172,17 +208,24 @@
   };
 
   const tick = now => {
-    const nextVideo = chooseVideo();
-    if (!nextVideo) {
-      activeVideo = null;
-      document.body?.classList.add('video-page-ambient');
+    const active = [];
+    for (const [video, state] of states) {
+      if (isActive(video, state)) active.push([video, state]);
+      else state.emitter.classList.remove('is-active');
+    }
+
+    if (!active.length) {
       document.body?.classList.remove('video-page-ambient-active');
       return;
     }
-    activeVideo = nextVideo;
-    if (now - lastSample >= interval) {
-      lastSample = now;
-      if (!sample(activeVideo)) activeVideo = null;
+
+    document.body?.classList.add('video-page-ambient', 'video-page-ambient-active');
+    for (const [video, state] of active) {
+      updateGeometry(video, state, active.length);
+      if (now - state.lastSample >= interval) {
+        state.lastSample = now;
+        sample(video, state);
+      }
     }
     schedule();
   };
@@ -191,7 +234,24 @@
 
   const attach = video => {
     if (!(video instanceof HTMLVideoElement) || states.has(video)) return;
-    const state = { visible: false, ratio: 0, unavailable: false };
+    const emitter = document.createElement('div');
+    emitter.className = 'video-ambient-emitter';
+    ensureLayer().appendChild(emitter);
+
+    const state = {
+      visible: false,
+      ratio: 0,
+      unavailable: false,
+      emitter,
+      lastSample: 0,
+      colours: {
+        left: [22, 22, 22],
+        right: [22, 22, 22],
+        top: [22, 22, 22],
+        bottom: [22, 22, 22],
+        all: [22, 22, 22]
+      }
+    };
     states.set(video, state);
 
     const observer = new IntersectionObserver(entries => {
@@ -199,7 +259,7 @@
       state.visible = Boolean(entry?.isIntersecting && entry.intersectionRatio > .015);
       state.ratio = entry?.intersectionRatio || 0;
       wake();
-    }, { rootMargin: '100px 0px', threshold: [0, .015, .1, .25, .5, .75, 1] });
+    }, { rootMargin: '80px 0px', threshold: [0, .015, .1, .25, .5, .75, 1] });
     observer.observe(video);
 
     video.addEventListener('playing', wake, { passive: true });
@@ -216,6 +276,7 @@
 
   const boot = () => {
     document.body?.classList.add('video-page-ambient');
+    ensureLayer();
     scan(document);
     new MutationObserver(mutations => {
       for (const mutation of mutations) mutation.addedNodes.forEach(node => {
