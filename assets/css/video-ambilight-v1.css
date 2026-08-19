@@ -16,10 +16,10 @@ body.video-page-ambient{isolation:isolate}
 }
 
 .video-ambient-emitter{
-  --page-amb-left:24 24 27;
-  --page-amb-right:24 24 27;
-  --page-amb-top:24 24 27;
-  --page-amb-bottom:24 24 27;
+  --page-amb-left:18 18 20;
+  --page-amb-right:18 18 20;
+  --page-amb-top:18 18 20;
+  --page-amb-bottom:18 18 20;
   --amb-energy-left:0;
   --amb-energy-right:0;
   --amb-energy-top:0;
@@ -35,14 +35,14 @@ body.video-page-ambient{isolation:isolate}
   inset:0;
   opacity:0;
   mix-blend-mode:screen;
-  filter:saturate(1.24);
+  filter:saturate(1.12);
   background:
-    radial-gradient(ellipse 88vw 112vh at var(--amb-source-left) var(--amb-source-y), rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .72)) 0%, rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .42)) 18%, rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .20)) 43%, rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .075)) 66%, transparent 90%),
-    radial-gradient(ellipse 88vw 112vh at var(--amb-source-right) var(--amb-source-y), rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .72)) 0%, rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .42)) 18%, rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .20)) 43%, rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .075)) 66%, transparent 90%),
-    radial-gradient(ellipse 108vw 72vh at var(--amb-source-x) var(--amb-source-top), rgb(var(--page-amb-top) / calc(var(--amb-energy-top) * .46)) 0%, rgb(var(--page-amb-top) / calc(var(--amb-energy-top) * .22)) 30%, rgb(var(--page-amb-top) / calc(var(--amb-energy-top) * .075)) 62%, transparent 89%),
-    radial-gradient(ellipse 108vw 72vh at var(--amb-source-x) var(--amb-source-bottom), rgb(var(--page-amb-bottom) / calc(var(--amb-energy-bottom) * .43)) 0%, rgb(var(--page-amb-bottom) / calc(var(--amb-energy-bottom) * .21)) 31%, rgb(var(--page-amb-bottom) / calc(var(--amb-energy-bottom) * .07)) 63%, transparent 90%);
+    radial-gradient(ellipse 88vw 112vh at var(--amb-source-left) var(--amb-source-y), rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .56)) 0%, rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .31)) 18%, rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .14)) 43%, rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .05)) 66%, transparent 90%),
+    radial-gradient(ellipse 88vw 112vh at var(--amb-source-right) var(--amb-source-y), rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .56)) 0%, rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .31)) 18%, rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .14)) 43%, rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .05)) 66%, transparent 90%),
+    radial-gradient(ellipse 108vw 72vh at var(--amb-source-x) var(--amb-source-top), rgb(var(--page-amb-top) / calc(var(--amb-energy-top) * .31)) 0%, rgb(var(--page-amb-top) / calc(var(--amb-energy-top) * .14)) 30%, rgb(var(--page-amb-top) / calc(var(--amb-energy-top) * .045)) 62%, transparent 89%),
+    radial-gradient(ellipse 108vw 72vh at var(--amb-source-x) var(--amb-source-bottom), rgb(var(--page-amb-bottom) / calc(var(--amb-energy-bottom) * .29)) 0%, rgb(var(--page-amb-bottom) / calc(var(--amb-energy-bottom) * .13)) 31%, rgb(var(--page-amb-bottom) / calc(var(--amb-energy-bottom) * .042)) 63%, transparent 90%);
   transform:translateZ(0);
-  transition:opacity 320ms ease;
+  transition:opacity 340ms ease;
 }
 
 .video-ambient-emitter.is-active{opacity:var(--amb-strength)}
@@ -70,12 +70,12 @@ body.video-page-ambient .archive-shell{
 
 @media(max-width:820px),(pointer:coarse){
   .video-ambient-emitter{
-    filter:saturate(1.18);
+    filter:saturate(1.10);
     background:
-      radial-gradient(ellipse 104vw 92vh at var(--amb-source-left) var(--amb-source-y), rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .54)) 0%, rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .27)) 28%, rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .085)) 61%, transparent 90%),
-      radial-gradient(ellipse 104vw 92vh at var(--amb-source-right) var(--amb-source-y), rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .54)) 0%, rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .27)) 28%, rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .085)) 61%, transparent 90%),
-      radial-gradient(ellipse 118vw 62vh at var(--amb-source-x) var(--amb-source-top), rgb(var(--page-amb-top) / calc(var(--amb-energy-top) * .32)) 0%, rgb(var(--page-amb-top) / calc(var(--amb-energy-top) * .105)) 55%, transparent 89%),
-      radial-gradient(ellipse 118vw 62vh at var(--amb-source-x) var(--amb-source-bottom), rgb(var(--page-amb-bottom) / calc(var(--amb-energy-bottom) * .30)) 0%, rgb(var(--page-amb-bottom) / calc(var(--amb-energy-bottom) * .095)) 56%, transparent 90%);
+      radial-gradient(ellipse 104vw 92vh at var(--amb-source-left) var(--amb-source-y), rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .43)) 0%, rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .21)) 28%, rgb(var(--page-amb-left) / calc(var(--amb-energy-left) * .065)) 61%, transparent 90%),
+      radial-gradient(ellipse 104vw 92vh at var(--amb-source-right) var(--amb-source-y), rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .43)) 0%, rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .21)) 28%, rgb(var(--page-amb-right) / calc(var(--amb-energy-right) * .065)) 61%, transparent 90%),
+      radial-gradient(ellipse 118vw 62vh at var(--amb-source-x) var(--amb-source-top), rgb(var(--page-amb-top) / calc(var(--amb-energy-top) * .24)) 0%, rgb(var(--page-amb-top) / calc(var(--amb-energy-top) * .075)) 55%, transparent 89%),
+      radial-gradient(ellipse 118vw 62vh at var(--amb-source-x) var(--amb-source-bottom), rgb(var(--page-amb-bottom) / calc(var(--amb-energy-bottom) * .22)) 0%, rgb(var(--page-amb-bottom) / calc(var(--amb-energy-bottom) * .068)) 56%, transparent 90%);
   }
 }
 
