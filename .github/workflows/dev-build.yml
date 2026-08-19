@@ -103,6 +103,9 @@ jobs:
       - name: Integrate HQ SIGNAL simulation video
         run: node scripts/signal-video-feature.mjs
 
+      - name: Apply official production imagery to Comédie case study
+        run: node scripts/comedie-official-media-v1.mjs
+
       - name: Auto-link project videos to archive hover previews
         run: node scripts/archive-video-autolink.mjs
 
