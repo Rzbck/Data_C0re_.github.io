@@ -224,10 +224,40 @@ for(const file of files){
   $('.theatre-media').remove();
   $('[data-comedie-show-gallery]').remove();
 
+  const hero = $('header.project-hero').first();
   const blocks = $('.production-block').toArray();
-  if(blocks.length < 3) continue;
-  const keys = ['entre','emigrants','transit'];
 
+  // Re-running the dev build must refresh an already-composed Comédie page instead of silently skipping it.
+  if(hero.attr('data-comedie-show') === 'entre' && blocks.length >= 2){
+    hero.addClass('comedie-show-screen comedie-show-screen--entre').attr('data-comedie-show','entre');
+    const context = hero.find('.comedie-show-context').first();
+    if(context.length) context.text(copy[lang].context);
+    else hero.prepend(`<p class="comedie-show-context">${copy[lang].context}</p>`);
+    const heroFacts = hero.find('.production-facts').first();
+    if(heroFacts.length) heroFacts.after(gallery('entre',lang));
+    else hero.find('.production-head').first().after(gallery('entre',lang));
+
+    ['emigrants','transit'].forEach((key,index)=>{
+      const block = $(blocks[index]);
+      if(!block.length) return;
+      block.addClass(`comedie-show-screen comedie-show-screen--${key}`).attr('data-comedie-show',key);
+      const facts = block.find('.production-facts').first();
+      if(facts.length) facts.after(gallery(key,lang));
+      else block.find('.production-head').first().after(gallery(key,lang));
+    });
+
+    fs.writeFileSync(file,$.html());
+    console.log(`Refreshed existing Comédie one-screen layout: ${file}`);
+    continue;
+  }
+
+  if(blocks.length < 3){
+    fs.writeFileSync(file,$.html());
+    console.log(`Updated Comédie responsive shell: ${file}`);
+    continue;
+  }
+
+  const keys = ['entre','emigrants','transit'];
   blocks.slice(0,3).forEach((node,index)=>{
     const key = keys[index];
     const block = $(node);
@@ -238,7 +268,6 @@ for(const file of files){
   });
 
   const first = $(blocks[0]);
-  const hero = $('header.project-hero').first();
   if(hero.length){
     const firstHead = first.find('.production-head').first().clone();
     const firstFacts = first.find('.production-facts').first().clone();
