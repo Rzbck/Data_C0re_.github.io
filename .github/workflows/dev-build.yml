@@ -106,6 +106,9 @@ jobs:
       - name: Auto-link project videos to archive hover previews
         run: node scripts/archive-video-autolink.mjs
 
+      - name: Retire hidden GLSL simulation state after fade
+        run: node scripts/ascii-cursor-retire-state.mjs
+
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
@@ -135,7 +138,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A index.html work.html about.html services.html lab.html archive.html cv.html contact.html projects en fr es sitemap.xml robots.txt assets/js/seo.js assets/media/signal
+          git add -A index.html work.html about.html services.html lab.html archive.html cv.html contact.html projects en fr es sitemap.xml robots.txt assets/js/seo.js assets/js/ascii-cursor-glsl-v3.js assets/media/signal
           if git diff --cached --quiet; then
             echo "No development generation changes to commit."
           else
