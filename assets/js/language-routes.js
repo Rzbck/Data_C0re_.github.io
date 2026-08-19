@@ -29,7 +29,7 @@
   ensureCss('assets/css/home-work-immersive-fix.css?v=20260814-7','data-home-work-immersive-fix');
   ensureCss('assets/css/home-work-mobile-final.css?v=20260814-7','data-home-work-mobile-final');
   ensureCss('assets/css/home-gate-trail.css?v=20260816-3','data-home-gate-trail');
-  ensureCss('assets/css/video-ambilight-v1.css?v=20260819-8','data-video-ambilight');
+  ensureCss('assets/css/video-ambilight-v1.css?v=20260819-10','data-video-ambilight');
   ensureScript('assets/js/menu-card-trail.js?v=20260816-1','data-menu-card-trail');
   ensureScript('assets/js/video-ambilight-v1.js?v=20260819-9','data-video-ambilight');
 
