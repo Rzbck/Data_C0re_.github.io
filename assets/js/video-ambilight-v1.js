@@ -8,10 +8,11 @@
 
   const coarse = matchMedia('(pointer: coarse)').matches;
   const saveData = Boolean(navigator.connection && navigator.connection.saveData);
-  const interval = saveData ? 300 : coarse ? 180 : 115;
+  const videoInterval = saveData ? 320 : coarse ? 190 : 120;
+  const imageInterval = saveData ? 12000 : 5000;
   const canvas = document.createElement('canvas');
-  canvas.width = 28;
-  canvas.height = 16;
+  canvas.width = 30;
+  canvas.height = 18;
   const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: true });
   if (!ctx) return;
 
@@ -22,31 +23,6 @@
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const mix = (a, b, amount) => a + (b - a) * amount;
 
-  const boost = input => {
-    let [r, g, b] = input;
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    const mid = (max + min) * .5;
-    const span = max - min;
-    if (span > 4) {
-      const saturation = .58;
-      r = clamp(r + (r - mid) * saturation, 0, 255);
-      g = clamp(g + (g - mid) * saturation, 0, 255);
-      b = clamp(b + (b - mid) * saturation, 0, 255);
-    }
-    const peak = Math.max(r, g, b);
-    if (peak < 96) {
-      const lift = 96 / Math.max(peak, 1);
-      r *= lift;
-      g *= lift;
-      b *= lift;
-    }
-    return [Math.round(clamp(r, 0, 255)), Math.round(clamp(g, 0, 255)), Math.round(clamp(b, 0, 255))];
-  };
-
-  /* Only sample a shallow band around the actual image contour. The centre of
-     the image never contributes to the ambient field. The outermost row/column
-     is intentionally weighted twice so the colour feels emitted by the frame. */
   const pointSets = (() => {
     const w = canvas.width, h = canvas.height;
     const left = [], right = [], top = [], bottom = [];
@@ -55,27 +31,73 @@
       right.push([w - 1, y], [w - 1, y], [w - 2, y], [w - 3, y]);
     }
     for (let x = 1; x < w - 1; x++) {
-      top.push([x, 0], [x, 0], [x, 1]);
-      bottom.push([x, h - 1], [x, h - 1], [x, h - 2]);
+      top.push([x, 0], [x, 0], [x, 1], [x, 2]);
+      bottom.push([x, h - 1], [x, h - 1], [x, h - 2], [x, h - 3]);
     }
     return { left, right, top, bottom };
   })();
 
-  const average = (data, points) => {
+  const toneColour = input => {
+    let [r, g, b] = input;
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+    const span = max - min;
+
+    /* White / grey / beige fields must never become a large white wash. */
+    if (span < 11) return [24, 24, 27];
+
+    const mid = (max + min) * .5;
+    const saturationBoost = .48;
+    r = clamp(r + (r - mid) * saturationBoost, 0, 255);
+    g = clamp(g + (g - mid) * saturationBoost, 0, 255);
+    b = clamp(b + (b - mid) * saturationBoost, 0, 255);
+
+    max = Math.max(r, g, b);
+    if (max > 178) {
+      const scale = 178 / max;
+      r *= scale; g *= scale; b *= scale;
+    } else if (max < 72) {
+      const scale = 72 / Math.max(max, 1);
+      r *= scale; g *= scale; b *= scale;
+    }
+    return [Math.round(r), Math.round(g), Math.round(b)];
+  };
+
+  const analyseEdge = (data, points) => {
     let r = 0, g = 0, b = 0, weight = 0;
+    let chromaMass = 0;
+    let whiteMass = 0;
+
     for (const [x, y] of points) {
       const i = (y * canvas.width + x) * 4;
       const rr = data[i], gg = data[i + 1], bb = data[i + 2];
       const max = Math.max(rr, gg, bb), min = Math.min(rr, gg, bb);
-      const saturation = (max - min) / 255;
-      const luminance = (rr * .2126 + gg * .7152 + bb * .0722) / 255;
-      const w = .22 + luminance * .46 + saturation * .82;
+      const span = max - min;
+      const sat = max > 0 ? span / max : 0;
+      const lum = (rr * .2126 + gg * .7152 + bb * .0722) / 255;
+      const nearWhite = lum > .72 && sat < .14;
+      const neutral = sat < .09;
+
+      let w = .025 + Math.pow(sat, 1.35) * 2.15;
+      w *= .55 + Math.min(lum, .72) * .7;
+      if (neutral) w *= .18;
+      if (nearWhite) w *= .08;
+
       r += rr * w;
       g += gg * w;
       b += bb * w;
       weight += w;
+      chromaMass += sat * (.35 + Math.min(lum, .72) * .65);
+      if (nearWhite) whiteMass += 1;
     }
-    return weight ? boost([r / weight, g / weight, b / weight]) : [20, 20, 20];
+
+    if (!weight) return { colour: [24, 24, 27], energy: .025 };
+
+    const colour = toneColour([r / weight, g / weight, b / weight]);
+    const chroma = chromaMass / Math.max(points.length, 1);
+    const whiteRatio = whiteMass / Math.max(points.length, 1);
+    const energy = clamp((chroma - .035) * 2.35, .025, 1) * (1 - whiteRatio * .82);
+    return { colour, energy: clamp(energy, .02, 1) };
   };
 
   const ensureLayer = () => {
@@ -87,20 +109,22 @@
     return layer;
   };
 
-  const setColour = (emitter, name, colour) => {
-    emitter.style.setProperty(name, `${colour[0]} ${colour[1]} ${colour[2]}`);
-  };
-  const setPosition = (emitter, name, value) => {
-    emitter.style.setProperty(name, `${Math.round(value)}px`);
-  };
+  const setColour = (emitter, name, colour) => emitter.style.setProperty(name, `${colour[0]} ${colour[1]} ${colour[2]}`);
+  const setNumber = (emitter, name, value) => emitter.style.setProperty(name, Number(value).toFixed(3));
+  const setPosition = (emitter, name, value) => emitter.style.setProperty(name, `${Math.round(value)}px`);
 
-  const mediaRect = video => {
-    const rect = video.getBoundingClientRect();
-    if (!rect.width || !rect.height || !video.videoWidth || !video.videoHeight) return rect;
-    const fit = getComputedStyle(video).objectFit || 'fill';
+  const intrinsicSize = media => media instanceof HTMLVideoElement
+    ? [media.videoWidth, media.videoHeight]
+    : [media.naturalWidth, media.naturalHeight];
+
+  const mediaRect = media => {
+    const rect = media.getBoundingClientRect();
+    const [iw, ih] = intrinsicSize(media);
+    if (!rect.width || !rect.height || !iw || !ih) return rect;
+    const fit = getComputedStyle(media).objectFit || 'fill';
     if (fit === 'cover' || fit === 'fill') return rect;
 
-    const sourceRatio = video.videoWidth / video.videoHeight;
+    const sourceRatio = iw / ih;
     const boxRatio = rect.width / rect.height;
     let width = rect.width;
     let height = rect.height;
@@ -116,29 +140,28 @@
     };
   };
 
-  const drawVisibleFrame = video => {
-    const vw = video.videoWidth;
-    const vh = video.videoHeight;
-    const rect = video.getBoundingClientRect();
-    const fit = getComputedStyle(video).objectFit || 'fill';
-    let sx = 0, sy = 0, sw = vw, sh = vh;
+  const drawVisibleFrame = media => {
+    const [iw, ih] = intrinsicSize(media);
+    const rect = media.getBoundingClientRect();
+    const fit = getComputedStyle(media).objectFit || 'fill';
+    let sx = 0, sy = 0, sw = iw, sh = ih;
 
     if (fit === 'cover' && rect.width > 0 && rect.height > 0) {
-      const sourceRatio = vw / vh;
+      const sourceRatio = iw / ih;
       const boxRatio = rect.width / rect.height;
       if (sourceRatio > boxRatio) {
-        sw = vh * boxRatio;
-        sx = (vw - sw) * .5;
+        sw = ih * boxRatio;
+        sx = (iw - sw) * .5;
       } else {
-        sh = vw / boxRatio;
-        sy = (vh - sh) * .5;
+        sh = iw / boxRatio;
+        sy = (ih - sh) * .5;
       }
     }
-    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(media, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
   };
 
-  const updateGeometry = (video, state, activeCount) => {
-    const rect = mediaRect(video);
+  const updateGeometry = (media, state, activeCount) => {
+    const rect = mediaRect(media);
     const left = clamp(rect.left, 0, innerWidth);
     const right = clamp(rect.right, 0, innerWidth);
     const top = clamp(rect.top, 0, innerHeight);
@@ -146,7 +169,6 @@
     const width = Math.max(1, right - left);
     const height = Math.max(1, bottom - top);
 
-    /* The emitters sit on the actual contour, not in the centre of the video. */
     setPosition(state.emitter, '--amb-source-left', left + Math.min(3, width * .012));
     setPosition(state.emitter, '--amb-source-right', right - Math.min(3, width * .012));
     setPosition(state.emitter, '--amb-source-top', top + Math.min(3, height * .018));
@@ -157,38 +179,46 @@
     const visibleW = Math.max(0, Math.min(rect.right, innerWidth) - Math.max(rect.left, 0));
     const visibleH = Math.max(0, Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0));
     const viewportShare = (visibleW * visibleH) / Math.max(innerWidth * innerHeight, 1);
-    const crowdFactor = activeCount > 3 ? .90 : activeCount > 1 ? .96 : 1;
-    const strength = clamp((.66 + state.ratio * .22 + Math.min(viewportShare, .55) * .34) * crowdFactor, .58, 1);
-    state.emitter.style.setProperty('--amb-strength', strength.toFixed(3));
+    const crowdFactor = activeCount >= 5 ? .56 : activeCount === 4 ? .62 : activeCount === 3 ? .70 : activeCount === 2 ? .82 : 1;
+    const chromaStrength = clamp(state.energy * 1.18, .08, 1);
+    const base = state.kind === 'image' ? .55 : .66;
+    const strength = clamp((base + state.ratio * .18 + Math.min(viewportShare, .52) * .28) * crowdFactor * chromaStrength, .04, .92);
+    setNumber(state.emitter, '--amb-strength', strength);
   };
 
-  const isActive = (video, state) => Boolean(
-    state.visible &&
-    !state.unavailable &&
-    !video.paused &&
-    !video.ended &&
-    video.readyState >= 2 &&
-    video.videoWidth &&
-    video.videoHeight
+  const videoIsActive = (video, state) => Boolean(
+    state.visible && !state.unavailable && !video.paused && !video.ended &&
+    video.readyState >= 2 && video.videoWidth && video.videoHeight
   );
 
-  const sample = (video, state) => {
+  const imageIsActive = (img, state) => {
+    if (!state.visible || state.unavailable || !img.complete || !img.naturalWidth || !img.naturalHeight) return false;
+    const rect = img.getBoundingClientRect();
+    return rect.width >= 110 && rect.height >= 75 && rect.width * rect.height >= 18000;
+  };
+
+  const sample = (media, state) => {
     try {
-      drawVisibleFrame(video);
+      drawVisibleFrame(media);
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
       const next = {
-        left: average(data, pointSets.left),
-        right: average(data, pointSets.right),
-        top: average(data, pointSets.top),
-        bottom: average(data, pointSets.bottom)
+        left: analyseEdge(data, pointSets.left),
+        right: analyseEdge(data, pointSets.right),
+        top: analyseEdge(data, pointSets.top),
+        bottom: analyseEdge(data, pointSets.bottom)
       };
+
+      let energy = 0;
       for (const key of Object.keys(next)) {
-        state.colours[key] = next[key].map((value, index) => Math.round(mix(state.colours[key][index], value, .34)));
+        const target = next[key].colour;
+        const amount = state.kind === 'image' ? .58 : .34;
+        state.colours[key] = target.map((value, index) => Math.round(mix(state.colours[key][index], value, amount)));
+        state.edgeEnergy[key] = mix(state.edgeEnergy[key], next[key].energy, state.kind === 'image' ? .72 : .42);
+        energy += state.edgeEnergy[key];
+        setColour(state.emitter, `--page-amb-${key}`, state.colours[key]);
+        setNumber(state.emitter, `--amb-energy-${key}`, state.edgeEnergy[key]);
       }
-      setColour(state.emitter, '--page-amb-left', state.colours.left);
-      setColour(state.emitter, '--page-amb-right', state.colours.right);
-      setColour(state.emitter, '--page-amb-top', state.colours.top);
-      setColour(state.emitter, '--page-amb-bottom', state.colours.bottom);
+      state.energy = energy / 4;
       state.emitter.classList.add('is-active');
       return true;
     } catch {
@@ -198,7 +228,7 @@
     }
   };
 
-  const schedule = (delay = interval) => {
+  const schedule = (delay = videoInterval) => {
     if (timer || document.hidden) return;
     timer = window.setTimeout(() => {
       timer = 0;
@@ -209,8 +239,9 @@
   const tick = now => {
     if (document.hidden) return;
     const active = [];
-    for (const [video, state] of states) {
-      if (isActive(video, state)) active.push([video, state]);
+    for (const [media, state] of states) {
+      const on = state.kind === 'video' ? videoIsActive(media, state) : imageIsActive(media, state);
+      if (on) active.push([media, state]);
       else state.emitter.classList.remove('is-active');
     }
 
@@ -220,12 +251,13 @@
     }
 
     document.body?.classList.add('video-page-ambient', 'video-page-ambient-active');
-    for (const [video, state] of active) {
-      updateGeometry(video, state, active.length);
-      if (now - state.lastSample >= interval) {
+    for (const [media, state] of active) {
+      const due = state.kind === 'video' ? videoInterval : imageInterval;
+      if (now - state.lastSample >= due) {
         state.lastSample = now;
-        sample(video, state);
+        sample(media, state);
       }
+      updateGeometry(media, state, active.length);
     }
     schedule();
   };
@@ -245,9 +277,6 @@
     window.setTimeout(() => {
       if (document.hidden || !state.visible || video.paused || !shouldAutoResume(video)) return;
       if (Math.abs(video.currentTime - before) > .025) return;
-      /* Some browsers return from a background tab with a live play state but a
-         stalled decoder. A pause/play cycle reliably wakes that decoder without
-         reloading the source or losing the current timeline position. */
       video.pause();
       requestAnimationFrame(() => video.play().catch(() => {}));
     }, 420);
@@ -255,53 +284,86 @@
 
   const resumeVisibleVideos = () => {
     if (document.hidden) return;
-    for (const [video, state] of states) resumeVideo(video, state);
+    for (const [media, state] of states) if (state.kind === 'video') resumeVideo(media, state);
     wake();
     window.setTimeout(wake, 180);
   };
 
-  const attach = video => {
-    if (!(video instanceof HTMLVideoElement) || states.has(video)) return;
+  const makeEmitter = kind => {
     const emitter = document.createElement('div');
     emitter.className = 'video-ambient-emitter';
+    if (kind === 'image') {
+      emitter.dataset.static = 'true';
+      emitter.style.setProperty('--amb-drift-duration', `${16 + Math.random() * 10}s`);
+      emitter.style.setProperty('--amb-drift-delay', `${-Math.random() * 12}s`);
+    }
     ensureLayer().appendChild(emitter);
+    return emitter;
+  };
 
-    const state = {
-      visible: false,
-      ratio: 0,
-      unavailable: false,
-      emitter,
-      lastSample: 0,
-      colours: {
-        left: [22, 22, 22],
-        right: [22, 22, 22],
-        top: [22, 22, 22],
-        bottom: [22, 22, 22]
-      }
-    };
+  const makeState = (kind, emitter) => ({
+    kind,
+    visible: false,
+    ratio: 0,
+    unavailable: false,
+    emitter,
+    lastSample: kind === 'image' ? -Infinity : 0,
+    energy: .2,
+    colours: { left: [24, 24, 27], right: [24, 24, 27], top: [24, 24, 27], bottom: [24, 24, 27] },
+    edgeEnergy: { left: .08, right: .08, top: .08, bottom: .08 }
+  });
+
+  const attachVideo = video => {
+    if (!(video instanceof HTMLVideoElement) || states.has(video)) return;
+    const state = makeState('video', makeEmitter('video'));
     states.set(video, state);
 
     const observer = new IntersectionObserver(entries => {
       const entry = entries[0];
       state.visible = Boolean(entry?.isIntersecting && entry.intersectionRatio > .015);
       state.ratio = entry?.intersectionRatio || 0;
-      if (state.visible && !document.hidden && video.paused && shouldAutoResume(video)) {
-        video.play().catch(() => {});
-      }
+      if (state.visible && !document.hidden && video.paused && shouldAutoResume(video)) video.play().catch(() => {});
       wake();
-    }, { rootMargin: '90px 0px', threshold: [0, .015, .1, .25, .5, .75, 1] });
+    }, { rootMargin: '100px 0px', threshold: [0, .015, .1, .25, .5, .75, 1] });
     observer.observe(video);
 
-    video.addEventListener('playing', wake, { passive: true });
-    video.addEventListener('play', wake, { passive: true });
-    video.addEventListener('pause', wake, { passive: true });
-    video.addEventListener('ended', wake, { passive: true });
-    video.addEventListener('emptied', wake, { passive: true });
+    ['playing', 'play', 'pause', 'ended', 'emptied', 'loadeddata'].forEach(type => video.addEventListener(type, wake, { passive: true }));
+  };
+
+  const imageRejected = img => {
+    const src = `${img.currentSrc || img.src || ''}`.toLowerCase();
+    if (/\.(svg)(?:\?|$)/.test(src)) return true;
+    if (/(logo|favicon|icon|sprite|avatar|qr|og-cover)/.test(src)) return true;
+    if (img.closest('.site-header,.site-menu,.lumina-tech-grid,.lumina-plan-modal,.tech-viewer,[data-lumina-plan-card]')) return true;
+    return false;
+  };
+
+  const attachImage = img => {
+    if (!(img instanceof HTMLImageElement) || states.has(img) || imageRejected(img)) return;
+    const state = makeState('image', makeEmitter('image'));
+    states.set(img, state);
+
+    const observer = new IntersectionObserver(entries => {
+      const entry = entries[0];
+      state.visible = Boolean(entry?.isIntersecting && entry.intersectionRatio > .025);
+      state.ratio = entry?.intersectionRatio || 0;
+      if (state.visible) state.lastSample = -Infinity;
+      wake();
+    }, { rootMargin: '120px 0px', threshold: [0, .025, .1, .25, .5, .75, 1] });
+    observer.observe(img);
+
+    img.addEventListener('load', () => {
+      state.unavailable = false;
+      state.lastSample = -Infinity;
+      wake();
+    }, { passive: true });
   };
 
   const scan = rootNode => {
-    if (rootNode instanceof HTMLVideoElement) attach(rootNode);
-    rootNode.querySelectorAll?.('video').forEach(attach);
+    if (rootNode instanceof HTMLVideoElement) attachVideo(rootNode);
+    else if (rootNode instanceof HTMLImageElement) attachImage(rootNode);
+    rootNode.querySelectorAll?.('video').forEach(attachVideo);
+    rootNode.querySelectorAll?.('img').forEach(attachImage);
   };
 
   const boot = () => {
