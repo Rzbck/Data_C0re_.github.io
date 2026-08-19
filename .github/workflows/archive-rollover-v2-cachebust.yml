@@ -1,0 +1,48 @@
+name: Archive rollover v2 cache bust
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/archive-rollover-v2-cachebust.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Bump archive interaction runtime
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          files = [Path('archive.html'), Path('en/archive.html'), Path('fr/archive.html'), Path('es/archive.html')]
+          old = 'archive-interactions.js?v=20260819-media3'
+          new = 'archive-interactions.js?v=20260819-media4'
+          changed = 0
+          for path in files:
+              text = path.read_text(encoding='utf-8')
+              if old in text:
+                  path.write_text(text.replace(old, new), encoding='utf-8')
+                  changed += 1
+              elif new not in text:
+                  raise SystemExit(f'Expected archive interaction runtime not found in {path}')
+          print(f'Updated {changed} archive pages')
+          PY
+
+      - name: Commit cache-busted archive pages and remove one-shot workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/archive-rollover-v2-cachebust.yml
+          git add archive.html en/archive.html fr/archive.html es/archive.html
+          git commit -m "Load fast archive rollover runtime v2"
+          git push origin HEAD:main
