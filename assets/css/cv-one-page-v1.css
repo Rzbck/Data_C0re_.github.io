@@ -71,3 +71,6 @@ body.cv-one-page-ready main.cv-one-page{box-sizing:border-box;padding:64px var(-
   .cv-one-page__aside{scroll-margin-top:64px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cv-jump{transition:none}.cv-jump b{transition:none}}
+
+/* Production cleanup: the first viewport no longer needs an explicit down cue. */
+.cv-jump{display:none!important}
