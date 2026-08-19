@@ -1,4 +1,4 @@
-/* DATA C0RE ambient runtime v17 — white-safe chroma recovery with stronger coloured light. */
+/* DATA C0RE ambient runtime v18 — perceptual chroma light: neutral/white and muted warm wash suppression. */
 (() => {
   'use strict';
 
@@ -36,27 +36,54 @@
     return { left, right, top, bottom };
   })();
 
+  const rgbHue = (r,g,b) => {
+    r/=255; g/=255; b/=255;
+    const max=Math.max(r,g,b), min=Math.min(r,g,b), d=max-min;
+    if (!d) return 0;
+    let h;
+    if (max===r) h=((g-b)/d)%6;
+    else if (max===g) h=(b-r)/d+2;
+    else h=(r-g)/d+4;
+    h*=60;
+    return h<0?h+360:h;
+  };
+
   const toneChromatic = input => {
     let [r,g,b] = input;
     let max = Math.max(r,g,b), min = Math.min(r,g,b);
     if (max <= 0) return [0,0,0];
+
     const mid = (max + min) * .5;
-    const boost = 1.12;
+    const boost = 1.34;
     r = clamp(r + (r-mid)*boost, 0, 255);
     g = clamp(g + (g-mid)*boost, 0, 255);
     b = clamp(b + (b-mid)*boost, 0, 255);
-    max = Math.max(r,g,b);
-    if (max > 176) {
-      const s = 176 / max; r*=s; g*=s; b*=s;
-    } else if (max < 94) {
-      const s = 94 / Math.max(max,1); r*=s; g*=s; b*=s;
+
+    max=Math.max(r,g,b); min=Math.min(r,g,b);
+    const sat=max>0?(max-min)/max:0;
+    const hue=rgbHue(r,g,b);
+    const warm=hue>=12&&hue<=62;
+
+    if (max < 92) {
+      const s=92/Math.max(max,1); r*=s; g*=s; b*=s;
+    }
+
+    const luma=r*.2126+g*.7152+b*.0722;
+    const lumaCap=warm && sat<.72 ? 61 : 82;
+    if (luma>lumaCap) {
+      const s=lumaCap/luma; r*=s; g*=s; b*=s;
+    }
+
+    max=Math.max(r,g,b);
+    if (max>176) {
+      const s=176/max; r*=s; g*=s; b*=s;
     }
     return [Math.round(r),Math.round(g),Math.round(b)];
   };
 
   const analyseEdge = (data, points) => {
     let chromaR=0, chromaG=0, chromaB=0, chromaW=0;
-    let chromaCount=0, chromaSat=0, neutralCount=0;
+    let chromaCount=0, chromaSat=0, neutralCount=0, warmMutedCount=0, vividCount=0;
 
     for (const [x,y] of points) {
       const i=(y*canvas.width+x)*4;
@@ -65,41 +92,58 @@
       const span=max-min;
       const sat=max>0?span/max:0;
       const lum=(rr*.2126+gg*.7152+bb*.0722)/255;
+      const hue=span>0?rgbHue(rr,gg,bb):0;
+      const warm=hue>=12&&hue<=62;
 
-      const nearWhite = lum>.72 && sat<.16;
-      const paleNeutral = lum>.56 && sat<.14;
-      const lowChroma = sat<.11 || span<11;
-      const veryBrightWeakColour = lum>.84 && sat<.24;
+      const nearWhite = lum>.68 && sat<.20;
+      const paleNeutral = lum>.48 && sat<.13;
+      const lowChroma = sat<.10 || span<12;
+      const veryBrightWeakColour = lum>.80 && sat<.30;
+      const mutedWarm = warm && lum>.20 && sat<.44 && span<70;
       const neutral = nearWhite || paleNeutral || lowChroma || veryBrightWeakColour;
       if (neutral) neutralCount++;
+      if (!neutral && mutedWarm) warmMutedCount++;
 
       const chromatic = !neutral && (
-        (sat>=.16 && span>=14) ||
-        (lum<.48 && sat>=.12 && span>=12)
+        (sat>=.18 && span>=16) ||
+        (lum<.46 && sat>=.14 && span>=14)
       );
 
       if (chromatic) {
-        const cw=.46 + sat*3.05 + Math.min(lum,.72)*.38;
+        const vivid=sat>=.42 || span>=58;
+        const warmPenalty=mutedWarm&&!vivid?.34:1;
+        const cw=(.42 + sat*3.25 + Math.min(lum,.70)*.34) * warmPenalty * (vivid?1.18:1);
         chromaR+=rr*cw; chromaG+=gg*cw; chromaB+=bb*cw; chromaW+=cw;
         chromaCount++;
         chromaSat+=sat;
+        if (vivid) vividCount++;
       }
     }
 
     const total=Math.max(points.length,1);
     const chromaRatio=chromaCount/total;
     const neutralRatio=neutralCount/total;
+    const warmMutedRatio=warmMutedCount/total;
+    const vividRatio=vividCount/total;
     const avgChroma=chromaCount?chromaSat/chromaCount:0;
 
-    if (!chromaW || chromaRatio < .02) {
+    if (!chromaW || chromaRatio < .018) {
       return { colour:[0,0,0], energy:0, neutral:true };
     }
 
     const colour=[chromaR/chromaW,chromaG/chromaW,chromaB/chromaW];
-    let energy=(Math.max(0,avgChroma-.08)*.88) + Math.sqrt(chromaRatio)*.68;
-    energy*=clamp(1-neutralRatio*.20,.72,1);
-    if (chromaRatio<.055 && avgChroma<.30) energy*=.78;
-    energy=clamp(energy,.11,1);
+    const outputHue=rgbHue(colour[0],colour[1],colour[2]);
+    const outputWarm=outputHue>=12&&outputHue<=62;
+
+    let energy=(Math.max(0,avgChroma-.09)*.96) + Math.sqrt(chromaRatio)*.72 + Math.sqrt(vividRatio)*.30;
+
+    if (outputWarm && warmMutedRatio>.34 && vividRatio<.11) energy*=.16;
+    else if (outputWarm && warmMutedRatio>.20 && vividRatio<.16) energy*=.34;
+    else if (outputWarm && avgChroma<.40 && vividRatio<.10) energy*=.46;
+
+    energy*=clamp(1-neutralRatio*.08,.90,1);
+    if (chromaRatio<.05 && avgChroma<.30) energy*=.72;
+    energy=clamp(energy,.05,1.06);
 
     return { colour:toneChromatic(colour), energy, neutral:false };
   };
@@ -154,10 +198,10 @@
     const visibleW=Math.max(0,Math.min(rect.right,innerWidth)-Math.max(rect.left,0));
     const visibleH=Math.max(0,Math.min(rect.bottom,innerHeight)-Math.max(rect.top,0));
     const viewportShare=(visibleW*visibleH)/Math.max(innerWidth*innerHeight,1);
-    const crowdFactor=activeCount>=5?.70:activeCount===4?.77:activeCount===3?.85:activeCount===2?.94:1;
-    const colourStrength=clamp(.30+state.energy*1.02,.26,1.04);
+    const crowdFactor=activeCount>=5?.66:activeCount===4?.73:activeCount===3?.82:activeCount===2?.93:1;
+    const colourStrength=clamp(.26+state.energy*1.08,.22,1.02);
     const base=state.kind==='image'?.58:.70;
-    const strength=clamp((base+state.ratio*.17+Math.min(viewportShare,.52)*.23)*crowdFactor*colourStrength,.05,.90);
+    const strength=clamp((base+state.ratio*.17+Math.min(viewportShare,.52)*.23)*crowdFactor*colourStrength,.035,.86);
     setNumber(state.emitter,'--amb-strength',strength);
   };
 
@@ -188,7 +232,7 @@
         state.edgeEnergy[key]=mix(state.edgeEnergy[key],next[key].energy,state.kind==='image'?.80:.52);
         energy+=state.edgeEnergy[key];
         activeEdges++;
-        const edgeScale=clamp(.82+state.edgeEnergy[key]*.26,.82,1.08);
+        const edgeScale=clamp(.88+state.edgeEnergy[key]*.19,.88,1.04);
         const displayColour=state.colours[key].map(v=>Math.round(clamp(v*edgeScale,0,255)));
         setColour(state.emitter,`--page-amb-${key}`,displayColour);
         setNumber(state.emitter,`--amb-energy-${key}`,state.edgeEnergy[key]);
