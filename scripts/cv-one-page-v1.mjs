@@ -9,6 +9,26 @@ const esc=value=>String(value??'')
   .replaceAll('>','&gt;')
   .replaceAll('"','&quot;');
 
+const genevaLux={
+  en:{
+    name:'Geneva Lux / LUMINA',
+    role:'Creative technologist / realtime systems + integration — ongoing',
+    detail:'Fusion 360 structure and fabrication drawings, network planning, addressable LED integration, TouchDesigner programming, Art-Net architecture, workshop coordination and technical integration on site.'
+  },
+  fr:{
+    name:'Geneva Lux / LUMINA',
+    role:'Creative technologist / systèmes temps réel + intégration — en cours',
+    detail:'Structure et plans de fabrication sous Fusion 360, planification réseau, intégration LED adressable, programmation TouchDesigner, architecture Art-Net, coordination atelier et intégration technique sur site.'
+  },
+  es:{
+    name:'Geneva Lux / LUMINA',
+    role:'Creative technologist / sistemas en tiempo real + integración — en curso',
+    detail:'Estructura y planos de fabricación en Fusion 360, planificación de red, integración LED direccionable, programación TouchDesigner, arquitectura Art-Net, coordinación de taller e integración técnica in situ.'
+  }
+};
+
+const languageFor=file=>file.startsWith('fr/')?'fr':file.startsWith('es/')?'es':'en';
+
 for(const file of files){
   if(!fs.existsSync(file))continue;
   const html=fs.readFileSync(file,'utf8');
@@ -31,46 +51,61 @@ for(const file of files){
     return `<div class="cv-one-page__section-head"><p>${esc(label)}</p><h2>${esc(title)}</h2></div>`;
   };
 
-  const experience=outer(sections.eq(0).find('.cv-list').first());
+  const experienceNode=sections.eq(0).find('.cv-list').first().clone();
+  const lang=languageFor(file);
+  const g=genevaLux[lang];
+  experienceNode.prepend(`<article class="cv-row cv-row--current"><time>2025—27</time><div class="cv-title"><strong>${esc(g.name)}</strong><span class="cv-status">${esc(g.role)}</span></div><div class="cv-detail"><p>${esc(g.detail)}</p></div></article>`);
+
   const stack=outer(sections.eq(1).find('.stack-grid').first());
   const meta=outer(sections.eq(2).find('.meta-grid').first());
-  const references=outer(sections.eq(3).find('.references').first());
-  const links=outer(sections.eq(3).find('.cv-links').first());
+  const referencesNode=sections.eq(3).find('.references').first().clone();
+  referencesNode.find('.references-label').each((_,el)=>{
+    const current=$(el).text();
+    $(el).text(current.replace(/^\s*06\s*\//,'04 /'));
+  });
+  const references=outer(referencesNode);
 
-  const compact=`
+  const labels={
+    en:{archive:'Archive ↗',contact:'Contact ↗'},
+    fr:{archive:'Archive ↗',contact:'Contact ↗'},
+    es:{archive:'Archivo ↗',contact:'Contacto ↗'}
+  }[lang];
+  const links=`<div class="cv-links reveal"><a href="archive.html">${labels.archive}</a><a href="contact.html">${labels.contact}</a><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div>`;
+
+  const composed=`
   <header class="cv-one-page__mast reveal">
     <div class="cv-one-page__identity">${introEyebrow}${introTitle}</div>
     <div class="cv-one-page__summary">${introCopy}${introMeta}</div>
   </header>
-  <div class="cv-one-page__layout">
-    <section class="cv-one-page__section cv-one-page__experience reveal">
-      ${sectionHead(0)}
-      ${experience}
+
+  <section class="cv-one-page__section cv-one-page__experience reveal">
+    ${sectionHead(0)}
+    ${outer(experienceNode)}
+  </section>
+
+  <div class="cv-one-page__lower">
+    <section class="cv-one-page__section cv-one-page__tools reveal">
+      ${sectionHead(1)}
+      ${stack}
     </section>
-    <aside class="cv-one-page__aside">
-      <section class="cv-one-page__aside-section reveal">
-        ${sectionHead(1)}
-        ${stack}
-      </section>
-      <section class="cv-one-page__aside-section reveal">
-        ${sectionHead(2)}
-        ${meta}
-      </section>
-      <section class="cv-one-page__references reveal">
-        ${references}
-        ${links}
-      </section>
-    </aside>
+    <section class="cv-one-page__section cv-one-page__background reveal">
+      ${sectionHead(2)}
+      ${meta}
+    </section>
+    <section class="cv-one-page__section cv-one-page__references reveal">
+      ${references}
+      ${links}
+    </section>
   </div>`;
 
   main.attr('class','cv-one-page').attr('data-cv-one-page','');
-  main.html(compact);
+  main.html(composed);
   $('body').addClass('cv-one-page-ready');
 
   $('link[data-cv-one-page]').remove();
   const prefix=file.includes('/')?'../':'';
-  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-1" data-cv-one-page="">\n`);
+  $('head').append(`\n<link rel="stylesheet" href="${prefix}assets/css/cv-one-page-v1.css?v=20260819-2" data-cv-one-page="">\n`);
 
   fs.writeFileSync(file,$.html());
-  console.log(`Composed compact CV: ${file}`);
+  console.log(`Composed editorial CV: ${file}`);
 }
