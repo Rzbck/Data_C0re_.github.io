@@ -13,6 +13,8 @@ on:
       - 'fr/archive.html'
       - 'es/archive.html'
       - 'scripts/archive-video-autolink.mjs'
+      - 'scripts/vendor-external-photos.mjs'
+      - 'scripts/comedie-official-media-v1.mjs'
       - 'assets/js/archive-interactions.js'
       - '.github/workflows/archive-media-sync.yml'
   workflow_dispatch:
@@ -43,18 +45,21 @@ jobs:
       - name: Install lightweight parser
         run: npm install --no-save --package-lock=false cheerio@1.0.0
 
+      - name: Vendor external photo assets
+        run: node scripts/vendor-external-photos.mjs
+
       - name: Synchronize archive hover media
         run: node scripts/archive-video-autolink.mjs
 
-      - name: Commit synchronized archive pages
+      - name: Commit self-hosted photos and synchronized pages
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add archive.html en/archive.html fr/archive.html es/archive.html
+          git add -A
           if git diff --cached --quiet; then
-            echo "Archive hover media already synchronized."
+            echo "Photo assets and archive hover media already synchronized."
           else
-            git commit -m "Synchronize archive hover media"
+            git commit -m "Vendor external portfolio photos on GitHub"
             git push origin HEAD:main
           fi
