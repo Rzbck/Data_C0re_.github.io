@@ -12,9 +12,14 @@ const shows = {
   entre: {
     source: 'https://www.piccoloteatro.org/en/2021-2022/entre-chien-et-loup',
     credit: 'Magali Dougados / Piccolo Teatro',
+    imageCredits: [
+      'Magali Dougados / Piccolo Teatro',
+      'Masiar Pasquali / Piccolo Teatro',
+      'Magali Dougados / Piccolo Teatro'
+    ],
     images: [
       'https://www.piccoloteatro.org/sites/default/files/styles/show_hero_i/public/imported-images/uploads/seasons/2021-2022/exhibitions/entre-chien-et-loup/it_entre-chien-et-loup-1000x750_original_11.jpg?itok=x502vh4f',
-      'https://www.piccoloteatro.org/sites/default/files/styles/galley_image/public/imported-images/uploads/seasons/2021-2022/exhibitions/entre-chien-et-loup/it_entre-chien-et-loup-1000x750_original_10.jpg?itok=_UGQ7ImB',
+      'https://www.piccoloteatro.org/sites/default/files/styles/galley_image/public/imported-images/uploads/seasons/2021-2022/exhibitions/entre-chien-et-loup/it_backstage-entre-chien-et-loup-01_original_3.jpg?itok=E4pOkmW3',
       'https://www.piccoloteatro.org/sites/default/files/styles/galley_image/public/imported-images/uploads/seasons/2021-2022/exhibitions/entre-chien-et-loup/it_entre-chien-et-loup-01_original_3.jpg?itok=29D2jKtS'
     ]
   },
@@ -125,21 +130,59 @@ body.fullpage-comedie .production-block.comedie-show-screen.fullpage-panel{
   body.comedie-page .route,body.comedie-page .install-steps{margin-top:8px!important}
 }
 @media(max-width:820px){
-  body.comedie-page .project-hero.comedie-show-screen,body.comedie-page .production-block.comedie-show-screen{min-height:auto;padding-top:calc(var(--header) + 34px)!important;padding-bottom:54px!important}
-  body.comedie-page .production-head{grid-template-columns:1fr;gap:18px}
-  body.comedie-page .production-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
-  body.comedie-page .production-facts div{border-top:1px solid var(--line)}
-  .comedie-show-gallery{grid-template-columns:1fr 1fr}
-  .comedie-show-gallery figure:first-child{grid-column:1/-1}
-  .comedie-show-gallery img{height:42vw;min-height:230px;max-height:430px}
-  body.comedie-page .route{display:flex;overflow-x:auto}
-  body.comedie-page .route div{min-width:58vw}
-  body.comedie-page .install-steps{grid-template-columns:1fr 1fr}
+  html.fullpage-mode body.comedie-page{overflow-x:hidden}
+  body.fullpage-comedie .project-hero.comedie-show-screen.fullpage-panel,
+  body.fullpage-comedie .production-block.comedie-show-screen.fullpage-panel,
+  body.comedie-page .project-hero.comedie-show-screen,
+  body.comedie-page .production-block.comedie-show-screen{
+    height:auto!important;
+    min-height:auto!important;
+    width:100%!important;
+    max-width:100%!important;
+    display:block!important;
+    overflow:visible!important;
+    padding:calc(var(--header) + 28px) max(18px,var(--gutter)) 48px!important;
+  }
+  body.comedie-page .comedie-show-context{margin-bottom:16px;font-size:8px;line-height:1.35}
+  body.comedie-page .production-head{display:block!important}
+  body.comedie-page .production-head>div{min-width:0}
+  body.comedie-page .production-head h2{font-size:clamp(38px,11vw,58px)!important;line-height:.92!important;letter-spacing:-.052em;overflow-wrap:normal;word-break:normal}
+  body.comedie-page .production-role{font-size:8px;line-height:1.35;margin-bottom:9px}
+  body.comedie-page .production-head p{margin-top:18px;font-size:15px;line-height:1.5;max-width:none}
+  body.comedie-page .production-facts{grid-template-columns:repeat(2,minmax(0,1fr));margin:24px 0 18px!important}
+  body.comedie-page .production-facts div{min-width:0;padding:12px 10px;border-top:1px solid var(--line);border-right:1px solid var(--line)}
+  body.comedie-page .production-facts div:nth-child(even){border-right:0}
+  body.comedie-page .production-facts div:first-child{padding-left:10px}
+  body.comedie-page .production-facts strong{font-size:20px;line-height:1.05;overflow-wrap:anywhere}
+  body.comedie-page .production-facts span{font-size:8px;line-height:1.35}
+  .comedie-show-gallery{grid-template-columns:1fr;gap:18px;margin-top:0}
+  .comedie-show-gallery figure,.comedie-show-gallery figure:first-child{grid-column:auto;overflow:visible}
+  .comedie-show-gallery img{height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:4/3;object-fit:cover}
+  .comedie-show-gallery figcaption{padding-top:7px;font-size:8px;line-height:1.4;overflow-wrap:anywhere}
+  body.comedie-page .route{display:grid!important;grid-template-columns:1fr 1fr!important;overflow:visible!important;margin-top:22px!important}
+  body.comedie-page .route div{min-width:0!important;padding:11px 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  body.comedie-page .route div:nth-child(even){border-right:0}
+  body.comedie-page .route time{font-size:8px}
+  body.comedie-page .route strong{font-size:11px}
+  body.comedie-page .route span{font-size:8px}
+  body.comedie-page .install-steps{grid-template-columns:1fr 1fr;margin-top:20px!important}
+  body.comedie-page .install-steps div{padding:13px}
+  body.comedie-page .install-steps b{font-size:8px}
+  body.comedie-page .install-steps strong{font-size:12px}
+  body.comedie-page .install-steps span{font-size:9px;line-height:1.4}
 }
-@media(max-width:560px){
-  .comedie-show-gallery{grid-template-columns:1fr}
-  .comedie-show-gallery figure:first-child{grid-column:auto}
-  .comedie-show-gallery img{height:62vw;min-height:240px}
+@media(max-width:520px){
+  body.fullpage-comedie .project-hero.comedie-show-screen.fullpage-panel,
+  body.fullpage-comedie .production-block.comedie-show-screen.fullpage-panel,
+  body.comedie-page .project-hero.comedie-show-screen,
+  body.comedie-page .production-block.comedie-show-screen{padding-left:18px!important;padding-right:18px!important;padding-bottom:42px!important}
+  body.comedie-page .production-head h2{font-size:clamp(35px,12.5vw,50px)!important}
+  body.comedie-page .production-head p{font-size:14px}
+  body.comedie-page .production-facts{grid-template-columns:1fr}
+  body.comedie-page .production-facts div,body.comedie-page .production-facts div:nth-child(even){border-right:0}
+  .comedie-show-gallery img{aspect-ratio:3/2}
+  body.comedie-page .route{grid-template-columns:1fr!important}
+  body.comedie-page .route div,body.comedie-page .route div:nth-child(even){border-right:0}
   body.comedie-page .install-steps{grid-template-columns:1fr}
 }
 </style>`;
@@ -155,7 +198,10 @@ function gallery(key, lang){
   const t = copy[lang];
   const title = t[key];
   return `<div class="comedie-show-gallery" data-comedie-show-gallery="${key}">
-    ${show.images.map((src,index)=>`<figure><img src="${src}" alt="${title} — ${index+1}" ${index ? 'loading="lazy"' : ''} decoding="async" referrerpolicy="no-referrer"><figcaption><a href="${show.source}" target="_blank" rel="noreferrer">${t.source} — © ${show.credit} ↗</a></figcaption></figure>`).join('')}
+    ${show.images.map((src,index)=>{
+      const credit = show.imageCredits?.[index] || show.credit;
+      return `<figure><img src="${src}" alt="${title} — ${index+1}" ${index ? 'loading="lazy"' : ''} decoding="async" referrerpolicy="no-referrer"><figcaption><a href="${show.source}" target="_blank" rel="noreferrer">${t.source} — © ${credit} ↗</a></figcaption></figure>`;
+    }).join('')}
   </div>`;
 }
 
