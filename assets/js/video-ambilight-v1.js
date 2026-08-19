@@ -1,4 +1,4 @@
-/* DATA C0RE ambient runtime v20 — contour chroma, cross-origin safe, archive-aware, LUMINA workshop-safe. */
+/* DATA C0RE ambient runtime v21 — contour chroma, cross-origin safe, archive-aware, mobile-controller passive. */
 (() => {
   'use strict';
 
@@ -238,8 +238,6 @@
       state.emitter.classList.toggle('is-active',state.energy>.008);
       return true;
     }catch{
-      /* A foreign image must never poison the shared sampler for everything below it.
-         Resetting the canvas restores origin-clean state and we retry other media normally. */
       resetCanvas();
       clearEmitter(state);
       return false;
@@ -260,6 +258,11 @@
     }
     if(!active.length){document.body?.classList.remove('video-page-ambient-active');return}
     document.body?.classList.add('video-page-ambient','video-page-ambient-active');
+    if(document.documentElement.hasAttribute('data-dc-media-scrolling')){
+      for(const [media,state] of active)updateGeometry(media,state,active.length);
+      schedule(coarse?260:180);
+      return;
+    }
     for(const [media,state] of active){
       const due=state.kind==='video'?videoInterval:imageInterval;
       if(now-state.lastSample>=due){state.lastSample=now;sample(media,state)}
@@ -271,6 +274,7 @@
 
   const previewSelector='[data-hover-preview-video],[data-work-preview-video],.archive-entry-media video';
   const shouldAutoResume=video=>{
+    if(window.DATA_C0RE_MEDIA_CONTROLLER?.owns?.(video))return false;
     if(!video.muted||video.dataset.perfDetached==='true'||mediaRejected(video))return false;
     if(video.matches(previewSelector))return false;
     return video.loop||video.autoplay||video.matches('[data-stagger-video],[data-lumina-experience],[data-lazy-video]');
@@ -281,6 +285,7 @@
     try{return Boolean(host&&host.matches(':hover'))}catch{return false}
   };
   const resumeVideo=(video,state)=>{
+    if(window.DATA_C0RE_MEDIA_CONTROLLER?.owns?.(video))return;
     const force=Boolean(state.resumeAfterVisibility||hoveredPreview(video));
     const allowed=force||shouldAutoResume(video);
     if(document.hidden||!state.visible||!allowed)return;
