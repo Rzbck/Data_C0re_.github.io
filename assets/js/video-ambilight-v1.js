@@ -1,3 +1,4 @@
+/* DATA C0RE ambient runtime v15 — balanced chromatic diffusion with hard white cutoff. */
 (() => {
   'use strict';
 
