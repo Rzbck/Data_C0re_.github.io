@@ -1,8 +1,8 @@
 <!DOCTYPE html><html lang="en"><head><script data-static-lang="">try{localStorage.setItem('data-c0re-lang-v1','en')}catch{}</script>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../../">
-  <title>SIGNAL — Spatial Tracking &amp; Realtime LED System Simulation — DATA C0RE</title>
-  <meta name="description" content="Anonymized technical simulation for a spatial interaction system: Godot, mmWave tracking model, WebSocket data, TouchDesigner architecture and distributed LED behaviour.">
-  <meta name="theme-color" content="#070707"><meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"><link rel="canonical" href="https://datac0re.is-a.dev/en/projects/signal.html"><meta property="og:type" content="article"><meta property="og:site_name" content="DATA C0RE"><meta property="og:title" content="SIGNAL — Spatial Tracking &amp; Realtime LED System Simulation — DATA C0RE"><meta property="og:description" content="Anonymized technical simulation for a spatial interaction system: Godot, mmWave tracking model, WebSocket data, TouchDesigner architecture and distributed LED behaviour."><meta property="og:url" content="https://datac0re.is-a.dev/en/projects/signal.html"><meta property="og:image" content="https://datac0re.is-a.dev/assets/img/og-cover.jpg"><meta name="twitter:card" content="summary_large_image">
+  <title>SIGNAL — Simulation, Spatial Tracking &amp; Realtime LED Systems — DATA C0RE</title>
+  <meta name="description" content="SIGNAL is an audiovisual installation project in active development: a Godot digital twin for spatial tracking, crowd simulation, modular radar sensing and realtime LED behaviour.">
+  <meta name="theme-color" content="#070707"><meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"><link rel="canonical" href="https://datac0re.is-a.dev/en/projects/signal.html"><meta property="og:type" content="article"><meta property="og:site_name" content="DATA C0RE"><meta property="og:title" content="SIGNAL — Simulation, Spatial Tracking &amp; Realtime LED Systems — DATA C0RE"><meta property="og:description" content="SIGNAL is an audiovisual installation project in active development: a Godot digital twin for spatial tracking, crowd simulation, modular radar sensing and realtime LED behaviour."><meta property="og:url" content="https://datac0re.is-a.dev/en/projects/signal.html"><meta property="og:image" content="https://datac0re.is-a.dev/assets/img/og-cover.jpg"><meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" sizes="any"><link rel="icon" href="assets/img/favicon-180.png" type="image/png" sizes="180x180"><link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180"><link rel="stylesheet" href="assets/css/styles.css">
 <link rel="stylesheet" href="assets/css/v2-interface-20260815.css" data-v2-interface="">
 <link rel="stylesheet" href="assets/css/archive.css" data-archive-layout="">
@@ -13,7 +13,7 @@
 
 <script src="assets/js/language-routes.js" defer="" data-language-routes=""></script>
 <!-- DATA C0RE LANGUAGE ROUTES END -->
-<meta name="twitter:title" content="SIGNAL — Spatial Tracking &amp; Realtime LED System Simulation — DATA C0RE"><meta name="twitter:description" content="Anonymized technical simulation for a spatial interaction system: Godot, mmWave tracking model, WebSocket data, TouchDesigner architecture and distributed LED behaviour."><link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/signal.html" data-i18n-alt=""><link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/signal.html" data-i18n-alt=""><link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/signal.html" data-i18n-alt=""><link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/signal.html" data-i18n-alt=""><link rel="stylesheet" href="assets/css/menu-two-column.css" data-menu-layout="">
+<meta name="twitter:title" content="SIGNAL — Simulation, Spatial Tracking &amp; Realtime LED Systems — DATA C0RE"><meta name="twitter:description" content="SIGNAL is an audiovisual installation project in active development: a Godot digital twin for spatial tracking, crowd simulation, modular radar sensing and realtime LED behaviour."><link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/signal.html" data-i18n-alt=""><link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/signal.html" data-i18n-alt=""><link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/signal.html" data-i18n-alt=""><link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/signal.html" data-i18n-alt=""><link rel="stylesheet" href="assets/css/menu-two-column.css" data-menu-layout="">
 <link rel="stylesheet" href="assets/css/menu-eight-card.css" data-menu-eight-card="">
 <link rel="stylesheet" href="assets/css/layout-balance.css" data-layout-balance="">
 <style data-language-switcher-critical="">
@@ -27,17 +27,126 @@ html{overflow-y:scroll;scrollbar-gutter:stable}
 @media(max-width:900px){.site-header .lang-switcher>a{min-width:23px;height:32px;padding:8px 4px;font-size:8px;letter-spacing:.04em}}
 @media(max-width:620px){.site-header .lang-switcher>a{min-width:20px;height:30px;padding:7px 3px;font-size:7.5px}}
 @media(max-width:380px){.site-header .lang-switcher>a{min-width:18px;padding-left:2px;padding-right:2px;font-size:7px}}
+</style>
+<style data-signal-hero-v2="">
+.signal-page .signal-hero--v2{min-height:100svh;display:flex;flex-direction:column;padding-top:clamp(112px,12vh,154px);padding-bottom:clamp(28px,4vh,48px)}
+.signal-page .signal-hero--v2 .project-hero-copy{grid-template-columns:minmax(0,1.32fr) minmax(420px,.68fr);gap:clamp(54px,7vw,124px);align-items:end}
+.signal-page .signal-hero--v2 .project-hero-copy>div{min-width:0}
+.signal-page .signal-hero--v2 .eyebrow{margin-bottom:16px;font-size:clamp(10px,.7vw,12px)}
+.signal-page .signal-hero--v2 h1{font-size:clamp(112px,11.4vw,218px);line-height:.74;letter-spacing:-.085em}
+.signal-page .signal-hero--v2 .project-intent{max-width:700px;margin:0 0 10px;font-size:clamp(21px,1.42vw,30px);line-height:1.34;color:#d7d5cf}
+.signal-page .signal-hero--v2 .project-facts{margin:clamp(28px,3.2vh,42px) 0 0}
+.signal-page .signal-hero--v2 .project-facts span{padding-top:13px;padding-bottom:13px;font-size:clamp(9.5px,.62vw,11px)}
+.signal-page .signal-hero-overview{flex:1;min-height:330px;margin-top:clamp(30px,4vh,52px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto 1fr;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.signal-page .signal-overview-head{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:28px;padding:12px 0;border-bottom:1px solid var(--line);font-size:10px;font-weight:800;line-height:1;text-transform:uppercase;letter-spacing:.1em;color:var(--grey)}
+.signal-page .signal-overview-head span:first-child{color:var(--acid)}
+.signal-page .signal-step{position:relative;min-width:0;padding:clamp(22px,2vw,34px);border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;background:#080808}
+.signal-page .signal-step:last-child{border-right:0}
+.signal-page .signal-step:nth-child(3){background:#0a0a0a}
+.signal-page .signal-step::after{content:attr(data-step);position:absolute;right:clamp(12px,1.4vw,24px);bottom:-.18em;font-size:clamp(100px,9vw,174px);font-weight:900;line-height:1;letter-spacing:-.08em;color:rgba(243,241,235,.035);pointer-events:none}
+.signal-page .signal-step small{position:relative;z-index:1;color:var(--grey);font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}
+.signal-page .signal-step h2{position:relative;z-index:1;margin:24px 0 auto;font-size:clamp(58px,5.8vw,112px);font-weight:850;line-height:.78;letter-spacing:-.07em}
+.signal-page .signal-step p{position:relative;z-index:1;max-width:360px;margin:28px 0 0;color:#aaa8a2;font-size:clamp(12px,.82vw,15px);line-height:1.42;text-transform:uppercase;letter-spacing:.045em}
+.signal-page .signal-step:nth-child(2) h2{color:var(--acid)}
+@media(max-width:1100px){
+  .signal-page .signal-hero--v2{min-height:auto;padding-top:120px}
+  .signal-page .signal-hero--v2 .project-hero-copy{grid-template-columns:1fr;gap:32px}
+  .signal-page .signal-hero--v2 .project-intent{max-width:850px}
+  .signal-page .signal-hero-overview{min-height:520px}
+  .signal-page .signal-step h2{font-size:clamp(52px,7vw,86px)}
+}
+@media(max-width:760px){
+  .signal-page .signal-hero--v2{padding-top:104px;padding-bottom:28px}
+  .signal-page .signal-hero--v2 h1{font-size:clamp(82px,24vw,150px)}
+  .signal-page .signal-hero--v2 .project-intent{font-size:20px}
+  .signal-page .signal-hero--v2 .project-facts{grid-template-columns:1fr}
+  .signal-page .signal-hero--v2 .project-facts span{border-right:0;border-bottom:1px solid var(--line);padding-left:0}
+  .signal-page .signal-hero--v2 .project-facts span:last-child{border-bottom:0}
+  .signal-page .signal-hero-overview{display:block;min-height:0;margin-top:34px}
+  .signal-page .signal-overview-head{display:flex;padding:13px 0}
+  .signal-page .signal-overview-head span:last-child{display:none}
+  .signal-page .signal-step{min-height:260px;border-right:0;border-bottom:1px solid var(--line);padding:24px 0}
+  .signal-page .signal-step:last-child{border-bottom:0}
+  .signal-page .signal-step::after{right:0}
+  .signal-page .signal-step h2{font-size:clamp(62px,19vw,104px)}
+}
+</style>
+<style data-signal-video-feature="">
+.signal-page .signal-simulation-feature{padding-top:clamp(88px,9vw,148px);padding-bottom:clamp(88px,9vw,148px);border-top:1px solid var(--line)}
+.signal-page .signal-simulation-grid{display:grid;grid-template-columns:minmax(0,1.72fr) minmax(270px,.52fr);gap:clamp(34px,5.5vw,94px);align-items:end}
+.signal-page .signal-simulation-media{position:relative;margin:0;min-width:0;background:#020202;border:1px solid var(--line);overflow:hidden}
+.signal-page .signal-simulation-media::before{content:'SIM / LIVE MODEL';position:absolute;z-index:2;left:14px;top:13px;padding:6px 8px;background:rgba(7,7,7,.78);border:1px solid rgba(243,241,235,.18);color:var(--acid);font-size:8.5px;font-weight:800;line-height:1;letter-spacing:.11em;text-transform:uppercase;pointer-events:none}
+.signal-page .signal-simulation-media video{display:block;width:100%;aspect-ratio:16/9;height:auto;object-fit:cover;background:#020202}
+.signal-page .signal-simulation-caption{max-width:390px;padding-bottom:4px}
+.signal-page .signal-simulation-caption .eyebrow{margin-bottom:17px}
+.signal-page .signal-simulation-caption>p:not(.eyebrow){margin:0;color:#c6c4be;font-size:clamp(16px,1.12vw,20px);line-height:1.48}
+.signal-page .signal-simulation-caption small{display:block;margin-top:clamp(24px,3vw,42px);padding-top:13px;border-top:1px solid var(--line);color:var(--grey);font-size:9px;line-height:1.45;letter-spacing:.09em;text-transform:uppercase}
+@media(max-width:980px){
+  .signal-page .signal-simulation-grid{grid-template-columns:1fr;gap:28px}
+  .signal-page .signal-simulation-caption{max-width:720px;display:grid;grid-template-columns:minmax(0,1fr) minmax(210px,.45fr);column-gap:34px;align-items:start}
+  .signal-page .signal-simulation-caption .eyebrow{grid-column:1/-1}
+  .signal-page .signal-simulation-caption small{margin-top:0}
+}
+@media(max-width:620px){
+  .signal-page .signal-simulation-feature{padding-top:68px;padding-bottom:72px}
+  .signal-page .signal-simulation-grid{gap:22px}
+  .signal-page .signal-simulation-media{margin-left:calc(var(--gutter) * -.18);margin-right:calc(var(--gutter) * -.18)}
+  .signal-page .signal-simulation-media::before{left:10px;top:10px;font-size:7.5px}
+  .signal-page .signal-simulation-media video{aspect-ratio:16/10;object-fit:cover}
+  .signal-page .signal-simulation-caption{display:block;max-width:none}
+  .signal-page .signal-simulation-caption>p:not(.eyebrow){font-size:16px;line-height:1.5}
+  .signal-page .signal-simulation-caption small{margin-top:20px}
+}
+@media(max-width:380px){
+  .signal-page .signal-simulation-feature{padding-top:58px;padding-bottom:62px}
+  .signal-page .signal-simulation-media video{aspect-ratio:4/3}
+}
 </style></head>
 <body class="signal-page">
 <header class="site-header" data-header=""><a class="brand" href="en/">DATA C0RE</a><div class="header-actions"><a class="nav-text nav-primary nav-primary--home" href="en/" data-v2-primary="home">Home</a><a class="nav-text nav-primary nav-primary--archive" href="en/archive.html" data-v2-primary="archive">Archive</a><a class="nav-text nav-primary nav-primary--cv" href="en/cv.html" data-v2-primary="cv">CV</a><a class="nav-text nav-primary nav-primary--contact" href="en/contact.html" data-v2-primary="contact">Contact</a><div class="lang-switcher" role="group" aria-label="Language / Langue / Idioma" data-static-language-switcher=""><a href="en/projects/signal.html" data-lang="en" aria-current="page">EN</a><a href="fr/projects/signal.html" data-lang="fr">FR</a><a href="es/projects/signal.html" data-lang="es">ES</a></div><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle="">index ↗</button></div></header>
 <nav class="site-menu" id="site-menu" aria-hidden="true" data-menu=""><div class="menu-shell"><p class="menu-label">DATA C0RE / INDEX</p><div class="menu-links" data-menu-grid=""><a class="menu-card menu-card--archive" href="en/archive.html" aria-label="Archive"><span class="menu-card-meta" aria-hidden="true"><b>01 / Projects</b><small>Work / R&amp;D / studies</small></span><span class="menu-card-title">Archive</span><span class="menu-card-arrow" aria-hidden="true">↗</span></a><a class="menu-card menu-card--cv" href="en/cv.html" aria-label="CV"><span class="menu-card-meta" aria-hidden="true"><b>02 / Experience</b><small>Career / tools</small></span><span class="menu-card-title">CV</span><span class="menu-card-arrow" aria-hidden="true">↗</span></a><a class="menu-card menu-card--contact" href="en/contact.html" aria-label="Contact" data-contact-nav="1"><span class="menu-card-meta" aria-hidden="true"><b>03 / Contact</b><small>Projects / collaborations</small></span><span class="menu-card-title">Contact</span><span class="menu-card-arrow" aria-hidden="true">↗</span></a></div><div class="menu-small"><a href="https://www.instagram.com/data_c0re_/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://github.com/Rzbck" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></nav>
 <main><article>
-<header class="project-hero signal-hero"><div class="project-hero-copy reveal"><div><p class="eyebrow accent-acid">Simulation / R&amp;D / 2026</p><h1>SIGNAL<br>Spatial System</h1></div><p class="project-intent">A technical simulation for a spatial interaction system in which human movement becomes realtime data, then behaviour distributed across LED surfaces.</p></div><div class="project-facts reveal"><span><b>Status</b> simulation only / not installed</span><span><b>Role</b> system design / simulator / realtime architecture</span><span><b>Tools</b> Godot / GDScript / mmWave / WebSocket / TouchDesigner / Art-Net</span></div><figure class="project-hero-media signal-hero-system reveal" aria-label="Target realtime pipeline"><div class="signal-node"><b>01</b><span>mmWave<br>tracking</span></div><i>→</i><div class="signal-node"><b>02</b><span>network<br>bridge</span></div><i>→</i><div class="signal-node"><b>03</b><span>spatial<br>data</span></div><i>→</i><div class="signal-node"><b>04</b><span>TouchDesigner<br>behaviour</span></div><i>→</i><div class="signal-node"><b>05</b><span>LED<br>output</span></div></figure></header>
-<section class="project-section"><div class="section-kicker reveal"><span>A</span><p>System idea</p></div><div class="project-grid reveal"><article><h2>Movement becomes signal.</h2><p>The system is conceived around people moving through a physical zone. Radar observations describe position and motion without relying on a camera image. Those measurements are turned into a shared realtime state that can influence text, motion, intensity and other behaviours across multiple outputs.</p></article><article><h3>Readable at two levels</h3><p>For a visitor, the idea is simple: movement changes the environment. Technically, the work is a distributed sensing, networking and realtime-rendering pipeline.</p></article></div></section>
-<section class="project-section signal-simulation"><div class="section-kicker reveal"><span>B</span><p>Simulation layer</p></div><div class="project-grid reveal"><article><h2>Godot as a design instrument.</h2><p>The current project is a simulator, not a documentation of an installed work. It models people, sensor coverage, spatial sectors and distributed LED surfaces so interaction logic can be tested before hardware deployment.</p></article><article><h3>What is already testable</h3><p>Multi-target movement, overlapping sensing zones, screen influence, crowd states, network packets, project configurations and runtime performance can all be explored inside the simulation.</p></article></div></section>
-<section class="project-section"><div class="section-kicker reveal"><span>C</span><p>Target realtime pipeline</p></div><div class="signal-tech-grid reveal"><article><b>SENSING</b><h3>mmWave radar</h3><p>Multiple 24 GHz tracking modules provide position and movement observations at sensor rate.</p></article><article><b>EDGE / NETWORK</b><h3>ESP32 + Ethernet target</h3><p>A network bridge is planned to collect sensor data and expose a stable stream. Exact hardware remains part of the implementation phase.</p></article><article><b>DATA</b><h3>WebSocket / JSON</h3><p>The simulator already defines a network contract separating raw observations, spatial tracks and output states.</p></article><article><b>REALTIME</b><h3>TouchDesigner</h3><p>TouchDesigner remains the intended final realtime layer for behaviour, rendering, mapping and system monitoring.</p></article><article><b>OUTPUT</b><h3>Art-Net / LED</h3><p>The target output is a set of distributed LED surfaces addressed through a final pixel-mapping and Art-Net stage.</p></article></div></section>
-<section class="project-section signal-status"><div class="section-kicker reveal"><span>D</span><p>Current state</p></div><div class="project-grid reveal"><article><h2>Simulation first.</h2><p>No physical installation is claimed here. The current value of SIGNAL is the system model: interaction logic, sensing assumptions, data architecture, visualisation and performance testing are being developed before an eventual in-situ implementation.</p></article><article><h3>Portfolio status</h3><p>R&amp;D / technical simulation. Client, venue and deployment details are intentionally absent.</p></article></div></section>
-<nav class="project-next"><a href="en/lab.html"><span>Back</span><b>Lab / R&amp;D</b></a><a href="en/archive.html"><span>Archive</span><b>All projects</b></a></nav>
+<header class="project-hero signal-hero signal-hero--v2">
+  <div class="project-hero-copy reveal"><div><p class="eyebrow accent-acid">Digital twin / spatial tracking / LED system / 2026</p><h1>SIGNAL</h1></div><p class="project-intent">SIGNAL is a digital twin for a future interactive LED installation. People are tracked with mmWave radar; their movement is simulated in Godot, then sent to TouchDesigner to drive distributed LED surfaces.</p></div>
+  <div class="project-facts reveal"><span><b>Status</b> in development / simulation</span><span><b>Role</b> system design / digital twin / realtime architecture</span><span><b>System</b> Godot 4.7.1 / LD2450 / ESP32 / WebSocket / TouchDesigner / Art-Net</span></div>
+
+  <section class="signal-hero-overview reveal" aria-label="How SIGNAL works: tracking, digital twin and LED output">
+    <div class="signal-overview-head"><span>How SIGNAL works</span><span>Human movement → realtime light</span></div>
+    <article class="signal-step" data-step="01">
+      <small>01 / SENSING</small>
+      <h2>TRACK</h2>
+      <p>mmWave radar / presence / position / movement</p>
+    </article>
+    <article class="signal-step" data-step="02">
+      <small>02 / DIGITAL TWIN</small>
+      <h2>TWIN</h2>
+      <p>Godot / CAD + 3D / crowd / sensor fusion</p>
+    </article>
+    <article class="signal-step" data-step="03">
+      <small>03 / REALTIME OUTPUT</small>
+      <h2>DRIVE</h2>
+      <p>TouchDesigner / pixel mapping / LED / Art-Net</p>
+    </article>
+  </section></header>
+<section class="project-section signal-simulation-feature" aria-label="Current SIGNAL crowd-flow and sensor-coverage simulation">
+  <div class="signal-simulation-grid reveal">
+    <figure class="signal-simulation-media">
+      <video muted="" loop="" playsinline="" preload="none" data-lazy-video="" data-signal-simulation-video="" aria-label="Current SIGNAL crowd-flow and sensor-coverage simulation">
+        <source data-src="assets/media/signal/simulation-loop.mp4?v=20260817-hq2" type="video/mp4">
+      </video>
+    </figure>
+    <div class="signal-simulation-caption">
+      <p class="eyebrow accent-acid">Current simulation / crowd flow</p>
+      <p>Crowd movement crosses the current sensor-coverage model inside the Godot digital twin. This is a working simulation used to test presence, trajectories and spatial response before the physical installation exists.</p>
+      <small>Godot / crowd simulation / sensor coverage / work in progress</small>
+    </div>
+  </div>
+</section>
+<section class="project-section project-section--split"><div class="section-kicker reveal"><span>01</span><p>Project</p></div><div class="prose-large reveal"><h2>A digital twin for an installation that reacts to presence.</h2><p>SIGNAL is being designed as a modular spatial system in which people moving through an architecture are tracked with mmWave radar rather than a camera image. Their positions become a shared realtime state that can drive text, light, motion and other behaviour across distributed LED surfaces. The current phase focuses on designing and testing the system before an in-situ build.</p></div></section>
+<section class="project-section"><div class="section-head reveal"><div><p class="eyebrow">System development</p><h2>Design. Simulate.<br>Track. Map.</h2></div></div><div class="system-flow reveal"><span>CAD / spatial layout</span><b>→</b><span>crowd simulation</span><b>→</b><span>mmWave radar model</span><b>→</b><span>network / fusion</span><b>→</b><span>TouchDesigner</span><b>→</b><span>LED / Art-Net</span></div><div class="prose reveal" style="margin-top:clamp(34px,4vw,64px)"><p>Godot is used as a design, simulation and diagnostic environment: installation geometry, walls and pedestrian flows, radar coverage, screens, crowd movement and shared device parameters can be tested inside one project. The target hardware remains modular, with radar pods feeding Ethernet gateways before the tracking state reaches TouchDesigner and the final LED mapping layer.</p></div></section>
+<section class="project-section project-section--split"><div class="section-kicker reveal"><span>02</span><p>Current state</p></div><div class="prose-large reveal"><h2>Built as a system before it becomes an installation.</h2><p>No finished installation or final visual documentation is presented yet. SIGNAL is under active development. The current prototype already combines the CAD / 3D workspace, crowd and flow simulation, radar / fusion model, shared device inspector and project configuration. Physical multi-wall LED implementation and in-situ hardware integration remain part of the next phase.</p></div></section>
+<section class="project-section"><div class="section-head reveal"><div><p class="eyebrow accent-acid">Visual documentation</p><h2>COMING WITH<br>THE BUILD.</h2></div></div><div class="prose reveal"><p>Simulator captures, hardware tests and installation documentation will be added as the project moves from digital twin to physical prototype.</p></div></section>
+<nav class="project-next"><a href="lab.html"><span>Back</span><b>Lab / R&amp;D</b></a><a href="archive.html"><span>Archive</span><b>All projects</b></a></nav>
 </article></main>
 <script src="assets/js/main.js" defer=""></script>
 
