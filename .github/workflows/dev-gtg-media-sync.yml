@@ -1,0 +1,48 @@
+name: Vendor GTG media on dev
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'scripts/vendor-gtg-media.mjs'
+      - '.github/workflows/dev-gtg-media-sync.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gtg-media-dev
+  cancel-in-progress: true
+
+jobs:
+  vendor:
+    if: github.ref == 'refs/heads/dev' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download official GTG media
+        run: node scripts/vendor-gtg-media.mjs
+
+      - name: Commit vendored images
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/media/grand-theatre
+          if git diff --cached --quiet; then
+            echo "GTG media already present."
+          else
+            git commit -m "Vendor official GTG production images"
+            git push origin HEAD:dev
+          fi
