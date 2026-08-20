@@ -1,7 +1,7 @@
 (() => {
   const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
   const filename=location.pathname.endsWith('/')?'index.html':location.pathname.split('/').pop();
-  if(filename==='about.html')return;
+  if(filename==='about.html'||filename==='grand-theatre.html')return;
   if(window.matchMedia('(max-width:820px), (pointer:coarse)').matches)return;
 
   const css=document.createElement('link');
