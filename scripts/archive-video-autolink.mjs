@@ -11,6 +11,7 @@ const imagePattern = /\.(avif|webp|png|jpe?g|gif)(?:[?#].*)?$/i;
 const imageRejectPattern = /(?:favicon|(?:^|[\/_-])icon(?:[\/_-]|\.)|logo|og-cover|avatar|sprite|placeholder)/i;
 const maxArchiveImages = 4;
 const archiveRuntimeVersion = '20260819-media3';
+const archiveCycleVersion = '20260820-1';
 
 const cleanSource = value => (value || '').trim();
 const sourceKey = value => cleanSource(value).split(/[?#]/, 1)[0];
@@ -146,6 +147,17 @@ for (const archiveFile of archiveFiles) {
     const current = runtime.attr('src') || 'assets/js/archive-interactions.js';
     const base = current.split(/[?#]/, 1)[0];
     runtime.attr('src', `${base}?v=${archiveRuntimeVersion}`);
+    changed = true;
+  }
+
+  let cycle = $('script[data-archive-media-cycle]').first();
+  const cycleSrc = `assets/js/archive-media-cycle-v1.js?v=${archiveCycleVersion}`;
+  if (!cycle.length && runtime.length) {
+    runtime.after(`<script src="${cycleSrc}" defer data-archive-media-cycle></script>`);
+    cycle = $('script[data-archive-media-cycle]').first();
+    changed = true;
+  } else if (cycle.length && cycle.attr('src') !== cycleSrc) {
+    cycle.attr('src', cycleSrc);
     changed = true;
   }
 
