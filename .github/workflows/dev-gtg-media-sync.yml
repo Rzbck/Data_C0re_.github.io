@@ -1,10 +1,11 @@
-name: Vendor GTG media on dev
+name: Build GTG case study on dev
 
 on:
   push:
     branches: [dev]
     paths:
       - 'scripts/vendor-gtg-media.mjs'
+      - 'scripts/gtg-case-study-v1.mjs'
       - '.github/workflows/dev-gtg-media-sync.yml'
   workflow_dispatch:
 
@@ -12,11 +13,11 @@ permissions:
   contents: write
 
 concurrency:
-  group: gtg-media-dev
+  group: gtg-case-study-dev
   cancel-in-progress: true
 
 jobs:
-  vendor:
+  build:
     if: github.ref == 'refs/heads/dev' && github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
@@ -34,15 +35,18 @@ jobs:
       - name: Download official GTG media
         run: node scripts/vendor-gtg-media.mjs
 
-      - name: Commit vendored images
+      - name: Build selected-systems case study
+        run: node scripts/gtg-case-study-v1.mjs
+
+      - name: Commit GTG case study
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/media/grand-theatre
+          git add assets/media/grand-theatre projects/grand-theatre.html en/projects/grand-theatre.html fr/projects/grand-theatre.html es/projects/grand-theatre.html
           if git diff --cached --quiet; then
-            echo "GTG media already present."
+            echo "GTG case study already synchronized."
           else
-            git commit -m "Vendor official GTG production images"
+            git commit -m "Build GTG selected-systems case study"
             git push origin HEAD:dev
           fi
