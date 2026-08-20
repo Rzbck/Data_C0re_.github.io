@@ -232,7 +232,8 @@
     entry.classList.remove('is-media-image', 'is-media-ready', 'is-video-ready');
     entry.classList.add('is-media-video', 'has-archive-video');
 
-    if (state.videoSrc !== selected.src || video.currentSrc !== new URL(selected.src, document.baseURI).href) {
+    const targetSrc = new URL(selected.src, document.baseURI).href;
+    if (state.videoSrc !== selected.src || video.src !== targetSrc) {
       state.videoSrc = selected.src;
       video.pause();
       video.src = selected.src;
