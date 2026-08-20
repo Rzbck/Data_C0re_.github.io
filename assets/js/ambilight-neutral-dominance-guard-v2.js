@@ -1,7 +1,6 @@
-/* DATA C0RE DEV experiment — post-process neutral-dominance veto.
-   The production Ambilight renderer remains untouched. This layer only scales an
-   emitter when the whole visible frame is overwhelmingly muted/neutral. No hue
-   is blacklisted, so real orange/red/yellow media remain valid. */
+/* DATA C0RE DEV experiment — image-only post-process neutral-dominance veto.
+   Video emitters are never touched: flashes, whites and neutral frames in moving
+   images keep the production Ambilight behaviour exactly as before. */
 (() => {
   'use strict';
   if (window.__DATA_C0RE_AMBILIGHT_NEUTRAL_DOMINANCE_GUARD_V2__) return;
@@ -143,7 +142,7 @@
     if(prev!==scale&&scale<1)console.info('[DATA C0RE Ambilight whole-frame neutral guard]',{src:srcOf(media),scale,metrics});
   };
 
-  const eligibleMedia=()=>[...document.querySelectorAll('video,img')].filter(media=>!mediaRejected(media));
+  const eligibleMedia=()=>[...document.querySelectorAll('img')].filter(media=>!mediaRejected(media));
 
   const syncPairs=()=>{
     ensureStyle();
@@ -162,9 +161,7 @@
 
   const samplePair=(media,emitter)=>{
     if(!media.isConnected||!emitter.isConnected||!sourceSafe(media)||!nearViewport(media))return;
-    if(media instanceof HTMLVideoElement){
-      if(media.readyState<2||!media.videoWidth||!media.videoHeight)return;
-    }else if(!media.complete||!media.naturalWidth||!media.naturalHeight)return;
+    if(!(media instanceof HTMLImageElement)||!media.complete||!media.naturalWidth||!media.naturalHeight)return;
     try{
       if(!drawFrame(media))return;
       const data=ctx.getImageData(0,0,W,H).data;
