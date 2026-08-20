@@ -1,4 +1,4 @@
-/* DATA C0RE ambient runtime v22 — contour chroma, cross-origin safe, archive-aware, mobile-controller passive, LUMINA carry. */
+/* DATA C0RE ambient runtime v23-dev — production Ambilight unchanged unless an ultra-conservative neutral edge veto fires. */
 (() => {
   'use strict';
 
@@ -19,6 +19,7 @@
   if (!ctx) return;
 
   const states = new Map();
+  const guardRecords = new Map();
   let layer = null;
   let timer = 0;
   const clamp = (v,min,max)=>Math.min(max,Math.max(min,v));
@@ -100,6 +101,62 @@
     return {colour:toneChromatic(colour),energy,neutral:false};
   };
 
+  /* DEV guard experiment: this is only a veto in front of the existing renderer.
+     If confidence is not extremely high, the production analyser above runs 100% unchanged.
+     No hue is ever blacklisted: orange/red/yellow remain valid if they carry real chroma. */
+  const srgbLinear=v=>{
+    v/=255;
+    return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4);
+  };
+  const oklabLC=(r8,g8,b8)=>{
+    const r=srgbLinear(r8),g=srgbLinear(g8),b=srgbLinear(b8);
+    const l=.4122214708*r+.5363325363*g+.0514459929*b;
+    const m=.2119034982*r+.6806995451*g+.1073969566*b;
+    const s=.0883024619*r+.2817188376*g+.6299787005*b;
+    const ll=Math.cbrt(Math.max(0,l)),mm=Math.cbrt(Math.max(0,m)),ss=Math.cbrt(Math.max(0,s));
+    const L=.2104542553*ll+.793617785*mm-.0040720468*ss;
+    const a=1.9779984951*ll-2.428592205*mm+.4505937099*ss;
+    const bb=.0259040371*ll+.7827717662*mm-.808675766*ss;
+    return [L,Math.hypot(a,bb)];
+  };
+  const quantile=(sorted,q)=>{
+    if(!sorted.length)return 0;
+    const pos=(sorted.length-1)*q,lo=Math.floor(pos),hi=Math.ceil(pos);
+    return lo===hi?sorted[lo]:mix(sorted[lo],sorted[hi],pos-lo);
+  };
+  const neutralGuardEdge=(data,points)=>{
+    const chroma=[],light=[];
+    let nearNeutral=0,soft=0,vivid=0,brightNeutral=0;
+    for(const [x,y] of points){
+      const i=(y*CANVAS_W+x)*4;
+      const [L,C]=oklabLC(data[i],data[i+1],data[i+2]);
+      chroma.push(C);light.push(L);
+      if(C<.045)nearNeutral++;
+      if(C<.085)soft++;
+      if(C>=.13)vivid++;
+      if(L>=.72&&C<.085)brightNeutral++;
+    }
+    chroma.sort((a,b)=>a-b);light.sort((a,b)=>a-b);
+    const total=Math.max(points.length,1);
+    const metrics={
+      c75:quantile(chroma,.75),
+      c90:quantile(chroma,.90),
+      l75:quantile(light,.75),
+      nearNeutral:nearNeutral/total,
+      soft:soft/total,
+      vivid:vivid/total,
+      brightNeutral:brightNeutral/total
+    };
+    metrics.veto=Boolean(
+      metrics.vivid<.035 &&
+      metrics.c90<.115 &&
+      metrics.nearNeutral>.46 &&
+      metrics.soft>.78 &&
+      (metrics.brightNeutral>.40 || (metrics.nearNeutral>.62&&metrics.l75>.52))
+    );
+    return metrics;
+  };
+
   const ensureLayer=()=>{
     if(layer?.isConnected)return layer;
     layer=document.createElement('div');
@@ -128,10 +185,6 @@
     if(/\.(svg)(?:\?|$)/.test(src))return true;
     if(/(logo|favicon|icon|sprite|avatar|qr|og-cover)/.test(src))return true;
     if(media.closest('.site-header,.site-menu,.lumina-tech-grid,.lumina-plan-modal,.tech-viewer,[data-lumina-plan-card]'))return true;
-    /* These three workshop clips are intentionally excluded: their dominant skin/wood/white
-       content produces exactly the cream page wash that conflicts with the white typography. */
-    if(media.closest('.lumina-workshop .fabrication-grid,[data-fabrication-grid]'))return true;
-    if(/assets\/media\/lumina\/fabrication-(profile|led|wiring)\./.test(src))return true;
     return false;
   };
 
@@ -201,10 +254,6 @@
     return rect.width>=110&&rect.height>=75&&rect.width*rect.height>=18000;
   };
 
-  /* LUMINA continuity: fabrication media remain excluded, but the last valid
-     chromatic state from the Experience videos keeps spilling from the top edge
-     while the immediately following contribution panel is on screen. This is
-     intentionally a spatial carry, not a new sample from the fabrication clips. */
   const luminaCarryActive=(video,state)=>{
     if(!(video instanceof HTMLVideoElement)||state.energy<=.008||state.unavailable||mediaRejected(video)||!sourceIsSampleSafe(video))return false;
     if(!video.closest('.lumina-experience-panel'))return false;
@@ -231,7 +280,24 @@
     try{
       drawVisibleFrame(media);
       const data=ctx.getImageData(0,0,CANVAS_W,CANVAS_H).data;
+      const guard={
+        left:neutralGuardEdge(data,pointSets.left),
+        right:neutralGuardEdge(data,pointSets.right),
+        top:neutralGuardEdge(data,pointSets.top),
+        bottom:neutralGuardEdge(data,pointSets.bottom)
+      };
+      const vetoed=Object.keys(guard).filter(key=>guard[key].veto);
+      const record={src:mediaSource(media),kind:state.kind,vetoedEdges:vetoed,edges:guard,at:performance.now()};
+      guardRecords.set(media,record);
+      const vetoKey=vetoed.join(',');
+      if(state.guardVetoKey!==vetoKey){
+        state.guardVetoKey=vetoKey;
+        if(vetoed.length)console.info('[DATA C0RE Ambilight neutral guard]',record);
+      }
+
       const next={left:analyseEdge(data,pointSets.left),right:analyseEdge(data,pointSets.right),top:analyseEdge(data,pointSets.top),bottom:analyseEdge(data,pointSets.bottom)};
+      for(const key of vetoed)next[key]={colour:[0,0,0],energy:0,neutral:true};
+
       let energy=0,activeEdges=0;
       for(const key of Object.keys(next)){
         if(next[key].neutral||next[key].energy===0){
@@ -333,7 +399,7 @@
     }
     ensureLayer().appendChild(emitter);return emitter;
   };
-  const makeState=(kind,emitter)=>({kind,visible:false,ratio:0,unavailable:false,emitter,lastSample:kind==='image'?-Infinity:0,energy:0,lastKnownPlaying:false,lastPlayingAt:0,resumeAfterVisibility:false,colours:{left:[0,0,0],right:[0,0,0],top:[0,0,0],bottom:[0,0,0]},edgeEnergy:{left:0,right:0,top:0,bottom:0}});
+  const makeState=(kind,emitter)=>({kind,visible:false,ratio:0,unavailable:false,emitter,lastSample:kind==='image'?-Infinity:0,energy:0,lastKnownPlaying:false,lastPlayingAt:0,resumeAfterVisibility:false,guardVetoKey:'',colours:{left:[0,0,0],right:[0,0,0],top:[0,0,0],bottom:[0,0,0]},edgeEnergy:{left:0,right:0,top:0,bottom:0}});
 
   const attachVideo=video=>{
     if(!(video instanceof HTMLVideoElement)||states.has(video)||mediaRejected(video))return;
@@ -366,6 +432,13 @@
     if(rootNode instanceof HTMLVideoElement)attachVideo(rootNode);else if(rootNode instanceof HTMLImageElement)attachImage(rootNode);
     rootNode.querySelectorAll?.('video').forEach(attachVideo);rootNode.querySelectorAll?.('img').forEach(attachImage);
   };
+
+  window.DATA_C0RE_AMBILIGHT_GUARD_STATUS=()=>[...guardRecords.entries()].map(([media,record])=>({
+    media:mediaSource(media),
+    kind:record.kind,
+    vetoedEdges:[...record.vetoedEdges],
+    edges:record.edges
+  }));
 
   const boot=()=>{
     document.body?.classList.add('video-page-ambient');ensureLayer();scan(document);
