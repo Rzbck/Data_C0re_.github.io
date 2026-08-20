@@ -1,34 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://datac0re.is-a.dev/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/fr/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/es/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
-  </url>
-  <url>
     <loc>https://datac0re.is-a.dev/archive.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/archive.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/archive.html"/>
@@ -55,6 +27,34 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/archive.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/archive.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/archive.html"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/en/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/fr/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/es/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/cv.html</loc>
@@ -85,32 +85,32 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/cv.html"/>
   </url>
   <url>
-    <loc>https://datac0re.is-a.dev/contact.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
+    <loc>https://datac0re.is-a.dev/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
   </url>
   <url>
-    <loc>https://datac0re.is-a.dev/en/contact.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
+    <loc>https://datac0re.is-a.dev/en/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
   </url>
   <url>
-    <loc>https://datac0re.is-a.dev/fr/contact.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
+    <loc>https://datac0re.is-a.dev/fr/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
   </url>
   <url>
-    <loc>https://datac0re.is-a.dev/es/contact.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
+    <loc>https://datac0re.is-a.dev/es/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/projects/ascii.html</loc>
