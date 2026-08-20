@@ -54,3 +54,5 @@ for (const [file,lang] of pages) {
   fs.writeFileSync(file,html);
   console.log(`Paged GTG: ${file}`);
 }
+
+// trigger workflow after workflow file exists on dev
