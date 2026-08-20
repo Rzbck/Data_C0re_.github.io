@@ -1,0 +1,56 @@
+name: Audit GTG photos on dev
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/dev-gtg-photo-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    if: github.ref == 'refs/heads/dev' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Download official production candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/media/grand-theatre/audit
+          UA='Mozilla/5.0'
+          dl(){ curl -L --fail --retry 2 -A "$UA" -o "assets/media/grand-theatre/audit/$1" "$2"; }
+          dl bolero-01.jpg 'https://www.gtg.ch/wp-content/uploads/2023/11/Bolero__c_FilipVanRoe__DSC6028_1200.jpg'
+          dl bolero-02.jpg 'https://www.gtg.ch/wp-content/uploads/2023/11/Bolero__c_FilipVanRoe__DSC5612_1200.jpg'
+          dl bolero-03.jpg 'https://www.gtg.ch/wp-content/uploads/2023/11/Bolero_20231116_BOLERO_PG_GTG_c_DOUGADOS_MAGALI_E8A0576.jpg'
+          dl bolero-04.jpg 'https://www.gtg.ch/wp-content/uploads/2023/11/Bolero_20231116_BOLERO_PG_GTG_c_DOUGADOS_MAGALI_E8A0402.jpg'
+          dl bolero-05.jpg 'https://www.gtg.ch/wp-content/uploads/2023/11/Bolero_20231116_BOLERO_PG_GTG_c_DOUGADOS_MAGALI_E8A0334.jpg'
+          dl bolero-06.jpg 'https://www.gtg.ch/wp-content/uploads/2023/11/Bolero_20231116_BOLERO_PG_GTG_c_DOUGADOS_MAGALI_E8A0389.jpg'
+          dl bolero-07.jpg 'https://www.gtg.ch/wp-content/uploads/2023/11/Bolero_20231116_BOLERO_PG_GTG_c_DOUGADOS_MAGALI_E8A0329.jpg'
+          dl don-01.jpg 'https://www.gtg.ch/wp-content/uploads/2023/09/20230911_PG_DON-CARLOS-GTG_c_DOUGADOS-MAGALI-8451.jpg'
+          dl don-02.jpg 'https://www.gtg.ch/wp-content/uploads/2023/09/20230913_G_DON-CARLOS_GTG_c_DOUGADOS_MAGALI0016.jpg'
+          dl don-03.jpg 'https://www.gtg.ch/wp-content/uploads/2023/09/20230911_PG_DON-CARLOS-GTG_c_DOUGADOS-MAGALI-8543.jpg'
+          dl don-04.jpg 'https://www.gtg.ch/wp-content/uploads/2023/09/20230913_G_DON-CARLOS_GTG_c_DOUGADOS_MAGALI0042.jpg'
+          dl don-05.jpg 'https://www.gtg.ch/wp-content/uploads/2023/09/20230911_PG_DON-CARLOS-GTG_c_DOUGADOS-MAGALI-9171.jpg'
+          dl don-06.jpg 'https://www.gtg.ch/wp-content/uploads/2023/09/20230913_G_DON-CARLOS_GTG_c_DOUGADOS_MAGALI0036.jpg'
+          dl aaip-01.jpeg 'https://www.gtg.ch/wp-content/uploads/2025/12/2026a030_un_americain_a_paris_gp_20251206_gtg-gregory_batardon_33_low.jpeg'
+          dl aaip-02.jpg 'https://www.gtg.ch/wp-content/uploads/2025/12/2026a030_un_americain_a_paris_gp_20251206_gtg-gregory_batardon_141_high.jpg'
+          dl aaip-03.jpg 'https://www.gtg.ch/wp-content/uploads/2025/12/2026a030_un_americain_a_paris_gp_20251206_gtg-gregory_batardon_139_retouch_high.jpg'
+          dl aaip-04.jpg 'https://www.gtg.ch/wp-content/uploads/2025/12/2026a030_un_americain_a_paris_gp_20251206_gtg-gregory_batardon_155_high.jpg'
+          dl aaip-05.jpg 'https://www.gtg.ch/wp-content/uploads/2025/12/2026A030_Un_Americain_a_Paris_G_20251211_GTG-Gregory_Batardon_101_preview.jpg'
+          dl aaip-06.jpg 'https://www.gtg.ch/wp-content/uploads/2025/12/2026a030_un_americain_a_paris_gp_20251206_gtg-gregory_batardon_186_high.jpg'
+          dl aaip-07.jpg 'https://www.gtg.ch/wp-content/uploads/2025/12/2026A030_Un_Americain_a_Paris_G_20251211_GTG-Gregory_Batardon_110_preview.jpg'
+      - name: Commit audit images
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/media/grand-theatre/audit
+          git commit -m 'Add GTG photo candidates for audit' || exit 0
+          git push origin HEAD:dev
