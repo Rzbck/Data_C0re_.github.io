@@ -1,4 +1,4 @@
-/* DATA C0RE ambient runtime v21 — contour chroma, cross-origin safe, archive-aware, mobile-controller passive. */
+/* DATA C0RE ambient runtime v22 — contour chroma, cross-origin safe, archive-aware, mobile-controller passive, LUMINA carry. */
 (() => {
   'use strict';
 
@@ -201,6 +201,21 @@
     return rect.width>=110&&rect.height>=75&&rect.width*rect.height>=18000;
   };
 
+  /* LUMINA continuity: fabrication media remain excluded, but the last valid
+     chromatic state from the Experience videos keeps spilling from the top edge
+     while the immediately following contribution panel is on screen. This is
+     intentionally a spatial carry, not a new sample from the fabrication clips. */
+  const luminaCarryActive=(video,state)=>{
+    if(!(video instanceof HTMLVideoElement)||state.energy<=.008||state.unavailable||mediaRejected(video)||!sourceIsSampleSafe(video))return false;
+    if(!video.closest('.lumina-experience-panel'))return false;
+    const panel=document.querySelector('.lumina-contribution-panel');
+    if(!panel)return false;
+    const panelRect=panel.getBoundingClientRect();
+    if(panelRect.bottom<=0||panelRect.top>=innerHeight)return false;
+    const videoRect=video.getBoundingClientRect();
+    return videoRect.bottom<=innerHeight*.22;
+  };
+
   const clearEmitter=state=>{
     state.energy=0;
     for(const key of ['left','right','top','bottom']){
@@ -254,7 +269,11 @@
     const active=[];
     for(const [media,state] of states){
       const on=state.kind==='video'?videoIsActive(media,state):imageIsActive(media,state);
-      if(on)active.push([media,state]);else state.emitter.classList.remove('is-active');
+      const carry=!on&&state.kind==='video'&&luminaCarryActive(media,state);
+      if(on||carry){
+        state.emitter.classList.toggle('is-active',state.energy>.008||on);
+        active.push([media,state,carry]);
+      }else state.emitter.classList.remove('is-active');
     }
     if(!active.length){document.body?.classList.remove('video-page-ambient-active');return}
     document.body?.classList.add('video-page-ambient','video-page-ambient-active');
@@ -263,9 +282,9 @@
       schedule(coarse?260:180);
       return;
     }
-    for(const [media,state] of active){
+    for(const [media,state,carry] of active){
       const due=state.kind==='video'?videoInterval:imageInterval;
-      if(now-state.lastSample>=due){state.lastSample=now;sample(media,state)}
+      if(!carry&&now-state.lastSample>=due){state.lastSample=now;sample(media,state)}
       updateGeometry(media,state,active.length);
     }
     schedule();
