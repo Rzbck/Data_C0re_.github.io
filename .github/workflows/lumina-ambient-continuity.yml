@@ -1,0 +1,79 @@
+name: LUMINA ambient continuity patch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/lumina-ambient-continuity.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch Ambilight continuity
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          js = Path('assets/js/video-ambilight-v1.js')
+          s = js.read_text()
+          s = s.replace(
+              '/* DATA C0RE ambient runtime v21 — contour chroma, cross-origin safe, archive-aware, mobile-controller passive. */',
+              '/* DATA C0RE ambient runtime v22 — contour chroma, cross-origin safe, archive-aware, mobile-controller passive, LUMINA carry. */'
+          )
+
+          anchor = """  const imageIsActive=(img,state)=>{\n    if(!state.visible||state.unavailable||mediaRejected(img)||!archiveMediaActive(img)||!sourceIsSampleSafe(img)||!img.complete||!img.naturalWidth||!img.naturalHeight)return false;\n    const style=getComputedStyle(img);\n    if(style.display==='none'||style.visibility==='hidden'||Number(style.opacity||1)<.04)return false;\n    const rect=img.getBoundingClientRect();\n    return rect.width>=110&&rect.height>=75&&rect.width*rect.height>=18000;\n  };\n"""
+          addition = anchor + """\n  /* LUMINA continuity: fabrication media remain excluded, but the last valid\n     chromatic state from the Experience videos keeps spilling from the top edge\n     while the immediately following contribution panel is on screen. This is\n     intentionally a spatial carry, not a new sample from the fabrication clips. */\n  const luminaCarryActive=(video,state)=>{\n    if(!(video instanceof HTMLVideoElement)||state.energy<=.008||state.unavailable||mediaRejected(video)||!sourceIsSampleSafe(video))return false;\n    if(!video.closest('.lumina-experience-panel'))return false;\n    const panel=document.querySelector('.lumina-contribution-panel');\n    if(!panel)return false;\n    const panelRect=panel.getBoundingClientRect();\n    if(panelRect.bottom<=0||panelRect.top>=innerHeight)return false;\n    const videoRect=video.getBoundingClientRect();\n    return videoRect.bottom<=innerHeight*.22;\n  };\n"""
+          if 'const luminaCarryActive=' not in s:
+              if anchor not in s:
+                  raise SystemExit('imageIsActive anchor not found')
+              s = s.replace(anchor, addition, 1)
+
+          old_loop = """    const active=[];\n    for(const [media,state] of states){\n      const on=state.kind==='video'?videoIsActive(media,state):imageIsActive(media,state);\n      if(on)active.push([media,state]);else state.emitter.classList.remove('is-active');\n    }\n"""
+          new_loop = """    const active=[];\n    for(const [media,state] of states){\n      const on=state.kind==='video'?videoIsActive(media,state):imageIsActive(media,state);\n      const carry=!on&&state.kind==='video'&&luminaCarryActive(media,state);\n      if(on||carry){\n        state.emitter.classList.toggle('is-active',state.energy>.008||on);\n        active.push([media,state,carry]);\n      }else state.emitter.classList.remove('is-active');\n    }\n"""
+          if old_loop not in s:
+              raise SystemExit('active loop anchor not found')
+          s = s.replace(old_loop, new_loop, 1)
+
+          s = s.replace(
+              '      for(const [media,state] of active)updateGeometry(media,state,active.length);',
+              '      for(const [media,state] of active)updateGeometry(media,state,active.length);',
+              1
+          )
+          old_render = """    for(const [media,state] of active){\n      const due=state.kind==='video'?videoInterval:imageInterval;\n      if(now-state.lastSample>=due){state.lastSample=now;sample(media,state)}\n      updateGeometry(media,state,active.length);\n    }\n"""
+          new_render = """    for(const [media,state,carry] of active){\n      const due=state.kind==='video'?videoInterval:imageInterval;\n      if(!carry&&now-state.lastSample>=due){state.lastSample=now;sample(media,state)}\n      updateGeometry(media,state,active.length);\n    }\n"""
+          if old_render not in s:
+              raise SystemExit('render loop anchor not found')
+          s = s.replace(old_render, new_render, 1)
+          js.write_text(s)
+
+          routes = Path('assets/js/language-routes.js')
+          r = routes.read_text()
+          r = r.replace("assets/js/video-ambilight-v1.js?v=20260819-21", "assets/js/video-ambilight-v1.js?v=20260820-22")
+          routes.write_text(r)
+          PY
+
+          node --check assets/js/video-ambilight-v1.js
+          node --check assets/js/language-routes.js
+          git config user.name 'Data_C0re_'
+          git config user.email '10966796+Rzbck@users.noreply.github.com'
+          git add assets/js/video-ambilight-v1.js assets/js/language-routes.js
+          git commit -m 'Keep LUMINA experience Ambilight spilling into contribution panel'
+          git push
+      - name: Remove temporary workflow
+        if: always()
+        shell: bash
+        run: |
+          git pull --rebase || true
+          git rm -f .github/workflows/lumina-ambient-continuity.yml || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'Remove temporary LUMINA ambient patch workflow'
+            git push
+          fi
