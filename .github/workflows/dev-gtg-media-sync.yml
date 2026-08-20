@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/vendor-gtg-media.mjs'
       - 'scripts/gtg-case-study-v1.mjs'
+      - 'scripts/gtg-final-cleanup.mjs'
       - '.github/workflows/dev-gtg-media-sync.yml'
   workflow_dispatch:
 
@@ -38,6 +39,9 @@ jobs:
       - name: Build selected-systems case study
         run: node scripts/gtg-case-study-v1.mjs
 
+      - name: Final page cleanup
+        run: node scripts/gtg-final-cleanup.mjs
+
       - name: Commit GTG case study
         shell: bash
         run: |
@@ -47,6 +51,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "GTG case study already synchronized."
           else
-            git commit -m "Build GTG selected-systems case study"
+            git commit -m "Finalize GTG selected-systems case study"
             git push origin HEAD:dev
           fi
