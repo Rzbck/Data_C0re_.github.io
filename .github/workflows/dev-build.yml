@@ -98,6 +98,9 @@ jobs:
       - name: Apply shared small-file video behavior
         run: node scripts/low-bandwidth-video-fix.mjs
 
+      - name: Compose canonical one-page CV
+        run: node scripts/cv-one-page-v1.mjs
+
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 

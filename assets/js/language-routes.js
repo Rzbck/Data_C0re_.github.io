@@ -74,6 +74,7 @@
   };
 
   const state=routeState();
+  if(state.route==='cv.html')ensureScript('assets/js/cv-content-canonical-v1.js?v=20260820-1','data-cv-content-canonical');
   if(state.pathLang){
     try{localStorage.setItem(storage,state.pathLang)}catch{}
     document.documentElement.lang=state.pathLang;
