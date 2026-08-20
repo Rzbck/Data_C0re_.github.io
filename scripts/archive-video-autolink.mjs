@@ -10,8 +10,7 @@ const videoPattern = /\.(mp4|webm|m4v)(?:[?#].*)?$/i;
 const imagePattern = /\.(avif|webp|png|jpe?g|gif)(?:[?#].*)?$/i;
 const imageRejectPattern = /(?:favicon|(?:^|[\/_-])icon(?:[\/_-]|\.)|logo|og-cover|avatar|sprite|placeholder)/i;
 const maxArchiveImages = 4;
-const archiveRuntimeVersion = '20260819-media3';
-const archiveCycleVersion = '20260820-1';
+const archiveRuntimeVersion = '20260820-media4';
 
 const cleanSource = value => (value || '').trim();
 const sourceKey = value => cleanSource(value).split(/[?#]/, 1)[0];
@@ -88,13 +87,13 @@ const collectImages = projectFile => {
 const ensureMediaLayer = ($, entry) => {
   let media = entry.children('.archive-entry-media').first();
   if (!media.length) {
-    entry.prepend('<span class="archive-entry-media" aria-hidden="true"><img alt="" loading="lazy" decoding="async" fetchpriority="low"><video muted loop playsinline preload="none"></video></span>');
+    entry.prepend('<span class="archive-entry-media" aria-hidden="true"><img alt="" loading="lazy" decoding="async" fetchpriority="low"><video data-stagger-video muted loop playsinline preload="none"></video></span>');
     media = entry.children('.archive-entry-media').first();
   }
   if (!media.find('img').length) media.prepend('<img alt="" loading="lazy" decoding="async" fetchpriority="low">');
-  if (!media.find('video').length) media.append('<video muted loop playsinline preload="none"></video>');
+  if (!media.find('video').length) media.append('<video data-stagger-video muted loop playsinline preload="none"></video>');
   media.find('img').first().attr({ alt: '', loading: 'lazy', decoding: 'async', fetchpriority: 'low' });
-  media.find('video').first().attr({ muted: '', loop: '', playsinline: '', preload: 'none' });
+  media.find('video').first().attr({ 'data-stagger-video': '', muted: '', loop: '', playsinline: '', preload: 'none' }).removeAttr('poster');
   return media;
 };
 
@@ -128,7 +127,7 @@ for (const archiveFile of archiveFiles) {
     entry.attr('data-archive-media-auto', 'true');
     entry.attr('data-archive-video-auto', 'true'); // backwards-compatible marker
 
-    // Clear stale media whenever the project no longer contains that media type.
+    // Keep canonical pools immutable at runtime; the rollover controller only reads them.
     syncPoolAttrs(entry, 'data-archive-video', 'data-archive-videos', videos);
     syncPoolAttrs(entry, 'data-archive-image', 'data-archive-images', images);
 
@@ -137,8 +136,8 @@ for (const archiveFile of archiveFiles) {
     else image.removeAttr('src');
 
     const video = media.find('video').first();
-    video.removeAttr('src').removeAttr('data-src');
-    entry.attr('data-archive-media-kind', videos.length ? 'video' : 'image');
+    video.removeAttr('src').removeAttr('data-src').removeAttr('poster');
+    entry.attr('data-archive-media-kind', videos.length && images.length ? 'mixed' : videos.length ? 'video' : 'image');
     changed = true;
   });
 
@@ -150,14 +149,11 @@ for (const archiveFile of archiveFiles) {
     changed = true;
   }
 
-  let cycle = $('script[data-archive-media-cycle]').first();
-  const cycleSrc = `assets/js/archive-media-cycle-v1.js?v=${archiveCycleVersion}`;
-  if (!cycle.length && runtime.length) {
-    runtime.after(`<script src="${cycleSrc}" defer data-archive-media-cycle></script>`);
-    cycle = $('script[data-archive-media-cycle]').first();
-    changed = true;
-  } else if (cycle.length && cycle.attr('src') !== cycleSrc) {
-    cycle.attr('src', cycleSrc);
+  // The rollover cycle is now integrated into archive-interactions.js.
+  // Remove the temporary overlay script so one pointer event has one media controller.
+  const cycle = $('script[data-archive-media-cycle]');
+  if (cycle.length) {
+    cycle.remove();
     changed = true;
   }
 
