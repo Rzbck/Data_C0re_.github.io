@@ -1,0 +1,61 @@
+name: Sync archive hover media on dev
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'projects/**'
+      - 'en/projects/**'
+      - 'fr/projects/**'
+      - 'es/projects/**'
+      - 'archive.html'
+      - 'en/archive.html'
+      - 'fr/archive.html'
+      - 'es/archive.html'
+      - 'scripts/archive-video-autolink.mjs'
+      - 'assets/js/archive-interactions.js'
+      - '.github/workflows/archive-media-sync-dev.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: archive-hover-media-dev
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    if: github.ref == 'refs/heads/dev' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install lightweight parser
+        run: npm install --no-save --package-lock=false cheerio@1.0.0
+
+      - name: Synchronize archive hover media
+        run: node scripts/archive-video-autolink.mjs
+
+      - name: Commit synchronized archive pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add archive.html en/archive.html fr/archive.html es/archive.html
+          if git diff --cached --quiet; then
+            echo 'Archive hover media already synchronized on dev.'
+          else
+            git commit -m 'Synchronize archive hover media on dev'
+            git push origin HEAD:dev
+          fi
