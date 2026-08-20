@@ -2,7 +2,8 @@
   'use strict';
 
   const root = document.querySelector('[data-archive-interactive]');
-  if (!root || window.__DATA_C0RE_ARCHIVE_ROLLOVER_V3__) return;
+  if (!root || window.__DATA_C0RE_ARCHIVE_ROLLOVER_V4__) return;
+  window.__DATA_C0RE_ARCHIVE_ROLLOVER_V4__ = true;
   window.__DATA_C0RE_ARCHIVE_ROLLOVER_V3__ = true;
   window.__DATA_C0RE_ARCHIVE_ROLLOVER_SOLID__ = true;
   window.__DATA_C0RE_ARCHIVE_ROLLOVER_V2__ = true;
@@ -68,21 +69,17 @@
     statusRow.appendChild(projectChip);
   };
 
-  /* CSS :hover is the zero-latency visual path. JS only decides which prepared
-     video should play and never blocks the appearance of the rollover. */
+  /* One rollover = one selected medium. Images and videos use the same ready gate:
+     the layer stays hidden until the selected medium itself is composited. */
   const style = document.createElement('style');
-  style.dataset.archiveRolloverV3 = '';
+  style.dataset.archiveRolloverV4 = '';
   style.textContent = `
     @media (min-width:901px) and (hover:hover) and (pointer:fine){
-      .archive-entry-media{pointer-events:none!important;contain:paint;will-change:opacity}
-      .archive-entry:hover .archive-entry-media,
-      .archive-entry:focus-visible .archive-entry-media,
-      .archive-entry.is-media-active .archive-entry-media{opacity:1!important}
-      .archive-entry-media>img,.archive-entry-media>video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}
-      .archive-entry-media>img{opacity:1;visibility:visible}
-      .archive-entry-media>video{opacity:0;visibility:visible}
-      .archive-entry.has-archive-video .archive-entry-media>img{opacity:.08!important}
-      .archive-entry.has-archive-video .archive-entry-media>video{opacity:1!important}
+      .archive-entry-media{pointer-events:none!important;contain:paint;will-change:opacity;opacity:0!important;transition:opacity .08s linear!important}
+      .archive-entry.is-media-ready .archive-entry-media{opacity:1!important}
+      .archive-entry-media>img,.archive-entry-media>video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;visibility:visible!important;opacity:0!important}
+      .archive-entry.is-media-ready.is-media-image .archive-entry-media>img{opacity:1!important}
+      .archive-entry.is-media-ready.is-media-video .archive-entry-media>video{opacity:1!important}
     }
   `;
   document.head.appendChild(style);
@@ -96,28 +93,26 @@
     const list = raw.split('|').map(item => item.trim()).filter(Boolean);
     return list.length ? [...new Set(list)] : fallback ? [fallback] : [];
   };
-  const getVideoPool = entry => parsePool(entry.dataset.archiveVideos || '', entry.dataset.archiveVideo || '');
-  const getImagePool = entry => parsePool(entry.dataset.archiveImages || '', entry.dataset.archiveImage || '');
 
-  const fallbackPosters = {
-    lumina: 'assets/media/lumina/human-scale.webp',
-    realtime: 'assets/media/realtime/game-of-life.webp',
-    'grand-theatre': 'assets/media/grand-theatre/hero.webp',
-    'stage-systems': 'assets/media/stage/funradio-wide.webp'
-  };
-
-  const svgData = svg => `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-  const placeholderFor = entry => {
-    const key = entry.dataset.archiveProject || 'data-c0re';
-    let hash = 2166136261;
-    for (let i = 0; i < key.length; i++) {
-      hash ^= key.charCodeAt(i);
-      hash = Math.imul(hash, 16777619);
+  const buildPool = entry => {
+    const images = parsePool(entry.dataset.archiveImages || '', entry.dataset.archiveImage || '');
+    const videos = parsePool(entry.dataset.archiveVideos || '', entry.dataset.archiveVideo || '');
+    const pool = [];
+    const seen = new Set();
+    const total = Math.max(images.length, videos.length);
+    for (let i = 0; i < total; i++) {
+      for (const item of [
+        images[i] ? { kind: 'image', src: images[i] } : null,
+        videos[i] ? { kind: 'video', src: videos[i] } : null
+      ]) {
+        if (!item) continue;
+        const key = `${item.kind}:${item.src}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        pool.push(item);
+      }
     }
-    const a = 18 + (Math.abs(hash) % 58);
-    const b = 22 + (Math.abs(hash >> 8) % 54);
-    const c = 24 + (Math.abs(hash >> 16) % 52);
-    return svgData(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"><rect width="1600" height="900" fill="#0a0b0b"/><g fill="none" stroke="#48e7ff" stroke-opacity=".32" stroke-width="2"><path d="M0 ${a * 9}H1600M${b * 14} 0V900"/><circle cx="${b * 14}" cy="${a * 9}" r="${90 + c}"/><circle cx="${b * 14}" cy="${a * 9}" r="${180 + a}" stroke-opacity=".16"/><path d="M0 900L${900 + a * 4} 0M${200 + c * 5} 900L1600 ${120 + b * 3}" stroke-opacity=".12"/></g><g fill="#dfff00"><rect x="${60 + a * 6}" y="${70 + b * 4}" width="10" height="10"/><rect x="${780 + c * 5}" y="${520 - a * 2}" width="7" height="7"/></g></svg>`);
+    return pool;
   };
 
   const ensureMediaLayer = entry => {
@@ -151,102 +146,173 @@
     video.setAttribute('muted', '');
     video.setAttribute('playsinline', '');
     video.setAttribute('aria-hidden', 'true');
+    video.setAttribute('data-stagger-video', '');
+    video.removeAttribute('poster');
     return { media, image, video };
   };
 
-  const posterState = new WeakMap();
-  const preparePoster = entry => {
-    if (posterState.has(entry)) return posterState.get(entry);
-    const { image, video } = ensureMediaLayer(entry);
-    const placeholder = placeholderFor(entry);
-    const configured = getImagePool(entry)[0] || fallbackPosters[entry.dataset.archiveProject] || '';
-    const state = { placeholder, configured, ready: false };
-    posterState.set(entry, state);
-
-    image.src = placeholder;
-    image.fetchPriority = 'low';
-    video.poster = placeholder;
-
-    if (configured) {
+  const imageCache = new Map();
+  const preloadImage = src => {
+    if (!src) return Promise.reject(new Error('missing image'));
+    if (imageCache.has(src)) return imageCache.get(src);
+    const promise = new Promise((resolve, reject) => {
       const loader = new Image();
       loader.decoding = 'async';
-      loader.onload = () => {
-        state.ready = true;
-        image.src = configured;
-        video.poster = configured;
-      };
-      loader.src = configured;
-    }
+      loader.onload = () => resolve(src);
+      loader.onerror = reject;
+      loader.src = src;
+    });
+    imageCache.set(src, promise);
+    return promise;
+  };
+
+  const mediaState = new WeakMap();
+  const stateFor = entry => {
+    let state = mediaState.get(entry);
+    if (state) return state;
+    state = { pool: buildPool(entry), index: -1, token: 0, selected: null, videoSrc: '' };
+    mediaState.set(entry, state);
     return state;
   };
 
-  const videoState = new WeakMap();
+  const nextMedium = entry => {
+    const state = stateFor(entry);
+    if (!state.pool.length) return null;
+    state.index = (state.index + 1) % state.pool.length;
+    state.selected = state.pool[state.index];
+    entry.dataset.archiveCycleIndex = String(state.index);
+    entry.dataset.archiveCycleKind = state.selected.kind;
+    return state.selected;
+  };
+
+  const peekNextMedium = entry => {
+    const state = stateFor(entry);
+    if (!state.pool.length) return null;
+    return state.pool[(state.index + 1) % state.pool.length];
+  };
+
   let activeEntry = null;
 
-  const markVideoVisible = (entry, video) => {
-    if (activeEntry !== entry || entry.dataset.archiveMediaWanted !== 'true' || video.paused) return;
-    entry.classList.add('has-archive-video', 'is-video-ready');
+  const stillCurrent = (entry, state, token, kind, src) => (
+    activeEntry === entry
+    && entry.dataset.archiveMediaWanted === 'true'
+    && state.token === token
+    && state.selected?.kind === kind
+    && state.selected?.src === src
+  );
+
+  const reveal = (entry, kind) => {
+    entry.classList.toggle('is-media-image', kind === 'image');
+    entry.classList.toggle('is-media-video', kind === 'video');
+    entry.classList.add('is-media-ready');
   };
 
-  const waitForCompositedFrame = (entry, video) => {
-    if ('requestVideoFrameCallback' in video) {
-      video.requestVideoFrameCallback(() => markVideoVisible(entry, video));
-      return;
-    }
-    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
-      requestAnimationFrame(() => markVideoVisible(entry, video));
-    }
+  const showImage = (entry, selected, state, token) => {
+    const { image, video } = ensureMediaLayer(entry);
+    video.pause();
+    entry.classList.remove('has-archive-video', 'is-video-ready', 'is-media-video', 'is-media-ready');
+    entry.classList.add('is-media-image');
+
+    preloadImage(selected.src).then(() => {
+      if (!stillCurrent(entry, state, token, 'image', selected.src)) return;
+      image.src = selected.src;
+      requestAnimationFrame(() => {
+        if (!stillCurrent(entry, state, token, 'image', selected.src)) return;
+        reveal(entry, 'image');
+      });
+    }).catch(() => {
+      if (stillCurrent(entry, state, token, 'image', selected.src)) {
+        entry.classList.remove('is-media-ready');
+      }
+    });
   };
 
-  const prepareVideo = (entry, aggressive = false) => {
-    const pool = getVideoPool(entry);
-    if (!pool.length) return null;
+  const showVideo = (entry, selected, state, token) => {
     const { video } = ensureMediaLayer(entry);
-    let state = videoState.get(entry);
+    entry.classList.remove('is-media-image', 'is-media-ready', 'is-video-ready');
+    entry.classList.add('is-media-video', 'has-archive-video');
 
-    if (!state) {
-      state = { src: '', index: 0, prepared: false, firstFrameSeen: false };
-      videoState.set(entry, state);
-
-      video.addEventListener('loadeddata', () => {
-        state.firstFrameSeen = true;
-        if (!video.paused) waitForCompositedFrame(entry, video);
-      });
-      video.addEventListener('playing', () => {
-        state.firstFrameSeen = true;
-        waitForCompositedFrame(entry, video);
-      });
-      video.addEventListener('error', () => {
-        entry.classList.remove('has-archive-video', 'is-video-ready');
-      });
-    }
-
-    const wanted = pool[state.index % pool.length] || pool[0];
-    if (state.src !== wanted) {
-      state.src = wanted;
-      state.firstFrameSeen = false;
-      video.src = wanted;
-      video.dataset.src = wanted;
-      video.preload = aggressive && !saveData ? 'auto' : 'metadata';
+    if (state.videoSrc !== selected.src || video.currentSrc !== new URL(selected.src, document.baseURI).href) {
+      state.videoSrc = selected.src;
+      video.pause();
+      video.src = selected.src;
+      video.dataset.src = selected.src;
+      video.preload = saveData ? 'metadata' : 'auto';
       try { video.load(); } catch {}
-      state.prepared = true;
-    } else if (aggressive && !saveData && video.preload !== 'auto') {
+    } else if (!saveData && video.preload !== 'auto') {
       video.preload = 'auto';
       try { video.load(); } catch {}
     }
-    return { video, state, pool };
+
+    let revealed = false;
+    const revealFrame = () => {
+      if (revealed || !stillCurrent(entry, state, token, 'video', selected.src) || video.paused) return;
+      revealed = true;
+      entry.classList.add('is-video-ready');
+      reveal(entry, 'video');
+    };
+
+    const waitForFrame = () => {
+      if (!stillCurrent(entry, state, token, 'video', selected.src)) return;
+      if ('requestVideoFrameCallback' in video) {
+        video.requestVideoFrameCallback(revealFrame);
+      } else if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+        requestAnimationFrame(revealFrame);
+      } else {
+        video.addEventListener('loadeddata', () => requestAnimationFrame(revealFrame), { once: true });
+      }
+    };
+
+    waitForFrame();
+    const play = video.play();
+    if (play?.then) {
+      play.then(waitForFrame).catch(() => {
+        if (stillCurrent(entry, state, token, 'video', selected.src)) {
+          entry.classList.remove('is-media-ready', 'is-video-ready');
+        }
+      });
+    } else if (!video.paused) {
+      waitForFrame();
+    }
+  };
+
+  const prewarmNext = (entry, aggressive = false) => {
+    if (!entry || entry.hidden || !desktop() || motionOff()) return;
+    const next = peekNextMedium(entry);
+    if (!next) return;
+
+    if (next.kind === 'image') {
+      preloadImage(next.src).catch(() => {});
+      return;
+    }
+
+    if (saveData || activeEntry === entry) return;
+    const state = stateFor(entry);
+    const { video } = ensureMediaLayer(entry);
+    if (state.videoSrc === next.src && video.src) return;
+    state.videoSrc = next.src;
+    video.pause();
+    video.src = next.src;
+    video.dataset.src = next.src;
+    video.preload = aggressive ? 'auto' : 'metadata';
+    try { video.load(); } catch {}
   };
 
   entries.forEach(entry => {
     entry.dataset.archiveMediaWanted = 'false';
-    preparePoster(entry);
+    ensureMediaLayer(entry);
+    stateFor(entry);
   });
 
   const warmObserver = 'IntersectionObserver' in window
     ? new IntersectionObserver(items => {
         items.forEach(item => {
           if (!item.isIntersecting || !desktop() || motionOff()) return;
-          prepareVideo(item.target, !saveData);
+          const state = stateFor(item.target);
+          const images = state.pool.filter(media => media.kind === 'image');
+          const preloadSet = saveData ? images.slice(0, 1) : images;
+          preloadSet.forEach(media => preloadImage(media.src).catch(() => {}));
+          prewarmNext(item.target, !saveData);
         });
       }, { rootMargin: saveData ? '350px 0px' : '1500px 0px', threshold: 0 })
     : null;
@@ -257,33 +323,31 @@
     if (entry === activeEntry && entry.dataset.archiveMediaWanted === 'true') return;
 
     if (activeEntry && activeEntry !== entry) deactivateMedia(activeEntry);
+    const state = stateFor(entry);
+    const selected = nextMedium(entry);
+    if (!selected) return;
+
     activeEntry = entry;
+    state.token += 1;
+    const token = state.token;
     entry.dataset.archiveMediaWanted = 'true';
     entry.classList.add('is-media-active');
-    entry.classList.remove('has-archive-video', 'is-video-ready');
-    preparePoster(entry);
+    entry.classList.remove('is-media-ready', 'is-media-image', 'is-media-video', 'has-archive-video', 'is-video-ready');
 
-    const prepared = prepareVideo(entry, true);
-    if (!prepared) return;
-    const { video } = prepared;
-
-    const play = video.play();
-    if (play?.then) {
-      play.then(() => waitForCompositedFrame(entry, video)).catch(() => {
-        if (activeEntry === entry) entry.classList.remove('has-archive-video', 'is-video-ready');
-      });
-    } else if (!video.paused) {
-      waitForCompositedFrame(entry, video);
-    }
+    if (selected.kind === 'image') showImage(entry, selected, state, token);
+    else showVideo(entry, selected, state, token);
   };
 
   function deactivateMedia(entry) {
     if (!entry) return;
+    const state = stateFor(entry);
+    state.token += 1;
     entry.dataset.archiveMediaWanted = 'false';
-    entry.classList.remove('is-media-active', 'has-archive-video', 'is-video-ready');
+    entry.classList.remove('is-media-active', 'is-media-ready', 'is-media-image', 'is-media-video', 'has-archive-video', 'is-video-ready');
     const video = entry.querySelector('.archive-entry-media video');
     if (video && !video.paused) video.pause();
     if (activeEntry === entry) activeEntry = null;
+    prewarmNext(entry, !saveData);
   }
 
   let keyboardEntry = null;
@@ -321,8 +385,8 @@
     reconcileRAF = requestAnimationFrame(reconcile);
   };
 
-  /* Direct pointer delegation is the fastest JS path. Scroll/resize use one
-     batched hit-test per painted frame; there is no permanent RAF loop. */
+  /* Direct pointer delegation stays the fastest path. Scroll/resize only use one
+     hit-test per painted frame; there is still no permanent RAF loop. */
   root.addEventListener('pointerover', event => {
     rememberPointer(event);
     const entry = event.target instanceof Element ? event.target.closest('.archive-entry') : null;
