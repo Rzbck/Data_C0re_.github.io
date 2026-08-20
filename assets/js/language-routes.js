@@ -52,6 +52,7 @@
   ensureScript('assets/js/mobile-media-controller-v1.js?v=20260819-mobile3','data-mobile-media-controller');
   ensureScript('assets/js/video-ambilight-v1.js?v=20260820-23guarddev','data-video-ambilight');
   ensureScript('assets/js/ambilight-interpolator-v1.js?v=20260820-1','data-ambilight-interpolator');
+  ensureScript('assets/js/ambilight-neutral-dominance-guard-v2.js?v=20260820-2','data-ambilight-neutral-dominance-guard');
   if(document.querySelector('[data-archive-interactive]'))ensureScript('assets/js/archive-ambient-bridge-v1.js?v=20260819-1','data-archive-ambient-bridge');
 
   const routeState=()=>{
