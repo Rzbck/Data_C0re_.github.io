@@ -1,13 +1,13 @@
-/* DATA C0RE DEV experiment — image-only post-process neutral-dominance veto.
-   Video emitters are never touched: flashes, whites and neutral frames in moving
-   images keep the production Ambilight behaviour exactly as before. */
+/* DATA C0RE DEV experiment — conservative image-only white-dominance veto.
+   This never touches video emitters. It only attenuates static-image Ambilight
+   when a large majority of the visible image is genuinely bright + low-chroma. */
 (() => {
   'use strict';
   if (window.__DATA_C0RE_AMBILIGHT_NEUTRAL_DOMINANCE_GUARD_V2__) return;
   window.__DATA_C0RE_AMBILIGHT_NEUTRAL_DOMINANCE_GUARD_V2__ = true;
 
   const coarse = matchMedia('(pointer: coarse)').matches;
-  const interval = coarse ? 420 : 300;
+  const interval = coarse ? 520 : 380;
   const W = 24, H = 14;
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
@@ -22,13 +22,17 @@
   const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
   const mix=(a,b,t)=>a+(b-a)*t;
   const srcOf=media=>media.currentSrc||media.src||'';
-  const intrinsic=media=>media instanceof HTMLVideoElement?[media.videoWidth,media.videoHeight]:[media.naturalWidth,media.naturalHeight];
+  const intrinsic=media=>[media.naturalWidth,media.naturalHeight];
 
   const mediaRejected=media=>{
     const src=`${srcOf(media)}`.toLowerCase();
     if(/\.(svg)(?:\?|$)/.test(src))return true;
     if(/(logo|favicon|icon|sprite|avatar|qr|og-cover)/.test(src))return true;
-    return Boolean(media.closest('.site-header,.site-menu,.lumina-tech-grid,.lumina-plan-modal,.tech-viewer,[data-lumina-plan-card]'));
+    if(media.closest('.site-header,.site-menu,.lumina-tech-grid,.lumina-plan-modal,.tech-viewer,[data-lumina-plan-card]'))return true;
+    /* Keep the guard's accepted-image order identical to the main Ambilight runtime. */
+    if(media.closest('.lumina-workshop .fabrication-grid,[data-fabrication-grid]'))return true;
+    if(/assets\/media\/lumina\/fabrication-(profile|led|wiring)\./.test(src))return true;
+    return false;
   };
 
   const sourceSafe=media=>{
@@ -89,38 +93,36 @@
     return true;
   };
 
+  /* Important: this is deliberately NOT a generic "low chroma" detector.
+     Dark/black/grey areas must not suppress colourful stage/project images.
+     We require high lightness AND low chroma over most of the whole frame. */
   const classify=data=>{
     const chroma=[],light=[];
-    let verySoft=0,muted=0,strong=0,vivid=0,brightMuted=0;
+    let whiteCore=0,whiteSoft=0,bright=0,vivid=0;
     const total=W*H;
     for(let p=0;p<total;p++){
       const i=p*4;
       const [L,C]=oklabLC(data[i],data[i+1],data[i+2]);
       chroma.push(C); light.push(L);
-      if(C<.065)verySoft++;
-      if(C<.12)muted++;
-      if(C>=.16)strong++;
-      if(C>=.20)vivid++;
-      if(L>=.50&&C<.115)brightMuted++;
+      if(L>=.80&&C<.080)whiteCore++;
+      if(L>=.70&&C<.105)whiteSoft++;
+      if(L>=.72)bright++;
+      if(C>=.18)vivid++;
     }
     chroma.sort((a,b)=>a-b); light.sort((a,b)=>a-b);
     const metrics={
       c50:quantile(chroma,.50),
       c75:quantile(chroma,.75),
-      c90:quantile(chroma,.90),
       l50:quantile(light,.50),
       l75:quantile(light,.75),
-      verySoft:verySoft/total,
-      muted:muted/total,
-      strong:strong/total,
-      vivid:vivid/total,
-      brightMuted:brightMuted/total
+      whiteCore:whiteCore/total,
+      whiteSoft:whiteSoft/total,
+      bright:bright/total,
+      vivid:vivid/total
     };
 
-    const definite = metrics.muted>.70 && metrics.strong<.11 && metrics.vivid<.065 && metrics.c75<.115 &&
-      (metrics.brightMuted>.30 || (metrics.verySoft>.46&&metrics.c50<.072));
-    const probable = !definite && metrics.muted>.60 && metrics.strong<.15 && metrics.vivid<.09 && metrics.c75<.13 &&
-      (metrics.brightMuted>.22 || (metrics.verySoft>.36&&metrics.c50<.085));
+    const definite = metrics.l50>.74 && metrics.whiteCore>.50 && metrics.whiteSoft>.66 && metrics.vivid<.10 && metrics.c75<.105;
+    const probable = !definite && metrics.l50>.67 && metrics.whiteCore>.38 && metrics.whiteSoft>.56 && metrics.bright>.62 && metrics.vivid<.13 && metrics.c75<.12;
 
     metrics.scale=definite?0:probable?.10:1;
     metrics.definite=definite;
@@ -139,7 +141,7 @@
       emitter.setAttribute('data-neutral-dominance-guard','1');
       emitter.style.setProperty('--amb-neutral-guard-scale',String(clamp(scale,0,1)));
     }
-    if(prev!==scale&&scale<1)console.info('[DATA C0RE Ambilight whole-frame neutral guard]',{src:srcOf(media),scale,metrics});
+    if(prev!==scale)console.info('[DATA C0RE Ambilight image white guard]',{src:srcOf(media),scale,metrics});
   };
 
   const eligibleMedia=()=>[...document.querySelectorAll('img')].filter(media=>!mediaRejected(media));
@@ -148,10 +150,9 @@
     ensureStyle();
     const media=eligibleMedia();
     const emitters=[...document.querySelectorAll('.video-ambient-field .video-ambient-emitter[data-static="true"]')];
-    if(!emitters.length)return;
     const n=Math.min(media.length,emitters.length);
+    pairs.clear();
     for(let i=0;i<n;i++)pairs.set(media[i],emitters[i]);
-    for(const key of [...pairs.keys()])if(!media.includes(key))pairs.delete(key);
   };
 
   const nearViewport=media=>{
@@ -161,7 +162,7 @@
 
   const samplePair=(media,emitter)=>{
     if(!media.isConnected||!emitter.isConnected||!sourceSafe(media)||!nearViewport(media))return;
-    if(!(media instanceof HTMLImageElement)||!media.complete||!media.naturalWidth||!media.naturalHeight)return;
+    if(!media.complete||!media.naturalWidth||!media.naturalHeight)return;
     try{
       if(!drawFrame(media))return;
       const data=ctx.getImageData(0,0,W,H).data;
