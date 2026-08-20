@@ -1,0 +1,183 @@
+name: Refine GTG galleries on dev
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/dev-gtg-gallery-v3.yml'
+      - 'scripts/gtg-gallery-v3.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gtg-gallery-v3-dev
+  cancel-in-progress: true
+
+jobs:
+  refine:
+    if: github.ref == 'refs/heads/dev' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download projection-led official GTG images
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/media/grand-theatre
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36'
+          dl(){
+            local out="$1" url="$2" referer="$3"
+            curl -L --fail --retry 3 --retry-delay 2 -A "$UA" -e "$referer" -o "$out" "$url"
+            test "$(wc -c < "$out")" -gt 20000
+          }
+
+          dl assets/media/grand-theatre/bolero-stage-01.jpg 'https://www.gtg.ch/wp-content/uploads/2023/11/Bolero__c_FilipVanRoe__DSC6028_1200.jpg' 'https://www.gtg.ch/saison-23-24/elements/'
+          dl assets/media/grand-theatre/bolero-stage-02.jpg 'https://www.gtg.ch/wp-content/uploads/2023/11/Bolero__c_FilipVanRoe__DSC5612_1200.jpg' 'https://www.gtg.ch/saison-23-24/elements/'
+          dl assets/media/grand-theatre/bolero-stage-03.jpg 'https://www.gtg.ch/wp-content/uploads/2023/11/Bolero_20231116_BOLERO_PG_GTG_c_DOUGADOS_MAGALI_E8A0402.jpg' 'https://www.gtg.ch/saison-23-24/elements/'
+
+          dl assets/media/grand-theatre/don-carlos-stage-02.jpg 'https://www.gtg.ch/wp-content/uploads/2023/09/20230911_PG_DON-CARLOS-GTG_c_DOUGADOS-MAGALI-8451.jpg' 'https://www.gtg.ch/saison-23-24/don-carlos/'
+          dl assets/media/grand-theatre/don-carlos-stage-03.jpg 'https://www.gtg.ch/wp-content/uploads/2023/09/20230913_G_DON-CARLOS_GTG_c_DOUGADOS_MAGALI0042.jpg' 'https://www.gtg.ch/saison-23-24/don-carlos/'
+
+          dl assets/media/grand-theatre/aaip-video-01.jpg 'https://www.gtg.ch/wp-content/uploads/2025/12/2026a030_un_americain_a_paris_gp_20251206_gtg-gregory_batardon_33_low.jpeg' 'https://www.gtg.ch/saison-25-26/un-americain-a-paris/'
+          dl assets/media/grand-theatre/aaip-video-02.jpg 'https://www.gtg.ch/wp-content/uploads/2025/12/uaap_trailer_1920x1080_02.jpg' 'https://www.gtg.ch/saison-25-26/un-americain-a-paris/'
+          dl assets/media/grand-theatre/aaip-video-03.jpg 'https://www.gtg.ch/wp-content/uploads/2025/12/2026a030_un_americain_a_paris_gp_20251206_gtg-gregory_batardon_139_retouch_high.jpg' 'https://www.gtg.ch/saison-25-26/un-americain-a-paris/'
+
+      - name: Optimize gallery images
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageOps
+
+          root=Path('assets/media/grand-theatre')
+          names=[
+            'bolero-stage-01.jpg','bolero-stage-02.jpg','bolero-stage-03.jpg',
+            'don-carlos-stage-02.jpg','don-carlos-stage-03.jpg',
+            'aaip-video-01.jpg','aaip-video-02.jpg','aaip-video-03.jpg'
+          ]
+          for name in names:
+              p=root/name
+              with Image.open(p) as im:
+                  im=ImageOps.exif_transpose(im).convert('RGB')
+                  if im.width>1600:
+                      h=round(im.height*1600/im.width)
+                      im=im.resize((1600,h),Image.Resampling.LANCZOS)
+                  im.save(p,'JPEG',quality=82,optimize=True,progressive=True)
+              print(name,p.stat().st_size)
+          PY
+
+      - name: Rebuild GTG localized pages
+        run: node scripts/gtg-gallery-v3.mjs
+
+      - name: Run responsive browser audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/gtg-audit
+          cd /tmp/gtg-audit
+          npm init -y >/dev/null 2>&1
+          npm install --silent playwright@1.55.0
+          npx playwright install --with-deps chromium >/dev/null
+          cd "$GITHUB_WORKSPACE"
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/gtg-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          sleep 2
+          cat >/tmp/gtg-audit/audit.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const sizes=[
+            {name:'mobile-375',width:375,height:812},
+            {name:'tablet-768',width:768,height:1024},
+            {name:'tablet-1024',width:1024,height:1366},
+            {name:'desktop-1440',width:1440,height:900}
+          ];
+          const paths=['/fr/projects/grand-theatre.html','/projects/grand-theatre.html'];
+          let failures=[];
+          for(const path of paths){
+            for(const s of sizes){
+              const page=await browser.newPage({viewport:{width:s.width,height:s.height},deviceScaleFactor:1});
+              const errors=[];
+              page.on('pageerror',e=>errors.push(`pageerror: ${e.message}`));
+              page.on('console',m=>{ if(m.type()==='error') errors.push(`console: ${m.text()}`); });
+              const response=await page.goto(`http://127.0.0.1:4173${path}`,{waitUntil:'networkidle'});
+              if(!response?.ok()) failures.push(`${path} ${s.name}: HTTP ${response?.status()}`);
+              await page.evaluate(async()=>{
+                const step=Math.max(240,Math.floor(innerHeight*.7));
+                for(let y=0;y<document.documentElement.scrollHeight;y+=step){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,35));}
+                window.scrollTo(0,0); await new Promise(r=>setTimeout(r,120));
+              });
+              const report=await page.evaluate(()=>{
+                const main=document.querySelector('main');
+                const cases=[...document.querySelectorAll('.gtg-case')];
+                const galleries=cases.map(c=>c.querySelectorAll('.gtg-gallery figure').length);
+                const allImgs=[...document.querySelectorAll('main img')];
+                const badImgs=allImgs.filter(i=>!i.complete||i.naturalWidth<50).map(i=>i.getAttribute('src'));
+                const srcs=allImgs.map(i=>i.getAttribute('src')).filter(Boolean);
+                const dupes=[...new Set(srcs.filter((v,i,a)=>a.indexOf(v)!==i))];
+                const nested=[...main.querySelectorAll('*')].filter(el=>{
+                  const cs=getComputedStyle(el); const oy=cs.overflowY;
+                  return (oy==='auto'||oy==='scroll') && el.scrollHeight>el.clientHeight+2;
+                }).map(el=>`${el.tagName}.${el.className}`);
+                return {
+                  bodyMarker:document.body.dataset.gtgGalleryV3,
+                  fullpage:document.documentElement.classList.contains('fullpage-mode')||document.body.classList.contains('fullpage-nav'),
+                  docOverflow:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)-innerWidth,
+                  mainOverflow:main.scrollWidth-main.clientWidth,
+                  videos:main.querySelectorAll('video').length,
+                  cases:cases.length,
+                  galleries,badImgs,dupes,nested,
+                  menuWidth:document.querySelector('.site-header')?.scrollWidth-innerWidth||0
+                };
+              });
+              const prefix=`${path} ${s.name}`;
+              if(report.bodyMarker!=='1') failures.push(`${prefix}: GTG v3 marker missing`);
+              if(report.fullpage) failures.push(`${prefix}: fullpage mode still active`);
+              if(report.docOverflow>2) failures.push(`${prefix}: document horizontal overflow ${report.docOverflow}px`);
+              if(report.mainOverflow>2) failures.push(`${prefix}: main horizontal overflow ${report.mainOverflow}px`);
+              if(report.menuWidth>2) failures.push(`${prefix}: header overflow ${report.menuWidth}px`);
+              if(report.videos!==0) failures.push(`${prefix}: ${report.videos} video/reel element(s) remain in main`);
+              if(report.cases!==3) failures.push(`${prefix}: expected 3 cases, got ${report.cases}`);
+              if(report.galleries.some(n=>n<3)) failures.push(`${prefix}: gallery visual counts ${report.galleries.join(',')}`);
+              if(report.badImgs.length) failures.push(`${prefix}: unloaded images ${report.badImgs.join(', ')}`);
+              if(report.dupes.length) failures.push(`${prefix}: repeated images ${report.dupes.join(', ')}`);
+              if(report.nested.length) failures.push(`${prefix}: nested vertical scroller(s) ${report.nested.join(', ')}`);
+              if(errors.length) failures.push(`${prefix}: browser errors ${errors.join(' | ')}`);
+              console.log(prefix,JSON.stringify(report));
+              await page.close();
+            }
+          }
+          await browser.close();
+          if(failures.length){console.error('\nRESPONSIVE AUDIT FAILED\n'+failures.join('\n'));process.exit(1)}
+          console.log('\nRESPONSIVE AUDIT PASSED: 375 / 768 / 1024 / 1440, FR + EN');
+          JS
+          node /tmp/gtg-audit/audit.mjs
+
+      - name: Remove one-shot build files
+        shell: bash
+        run: |
+          rm -f .github/workflows/dev-gtg-gallery-v3.yml scripts/gtg-gallery-v3.mjs
+
+      - name: Commit verified GTG gallery layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Refine GTG galleries and responsive layout'
+          git push origin HEAD:dev
