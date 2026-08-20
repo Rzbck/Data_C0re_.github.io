@@ -23,16 +23,18 @@ const copy = {
     boleroText: 'For the 2023 Geneva reprise, I integrated and calibrated the floor-projection system in SMODE. GTG plans document two 21K projectors in top-down position; the technical handover specified fixed 0.8 optics, fibre feeds and an overlap to be checked in SMODE. My role was the operational reprise, mapping and calibration — not the original video design.',
     boleroCap: 'Boléro / Éléments — floor projection and mirrored scenography. © GTG / Filip Van Roe.',
     boleroCredit: 'Original work credits: concept & choreography Damien Jalet / Sidi Larbi Cherkaoui; concept & set Marina Abramović; video reprise Anouar Brissel.',
+    boleroFacts: [['2 × 21K','Projectors'],['0.8','Optics'],['SMODE','Software'],['Fibre','Signal'],['2023','Year']],
     donRole: 'VIDEO SYSTEMS / MOVING-SCENE MAPPING',
     donText: 'During creation and rehearsals, I worked on mapping and cue integration for a four-projector video system, including projection onto the rotating stage structure. The initial brief lists 21K front and rear projectors plus a 10K laser projector onboard the turntable, linked over NDI. Later rehearsal cue sheets integrate front, onboard and upstage projection through more than fifty video states.',
     donCap: 'Don Carlos — video integrated into the production’s moving scenography. © GTG / Magali Dougados.',
     donCredit: 'Production credit: set design and videos Momme Hinrichs. My contribution was technical video integration, mapping, cue work and rehearsal-stage operation.',
+    donFacts: [['4 VP','System'],['21K + 21K','Front / rear'],['10K laser','Turntable'],['NDI','Transport'],['50+','Video states']],
     aaipRole: 'SYSTEM TAKEOVER / LARGE-SCALE MAPPING',
     aaipText: 'For the final December 2025 run, I took over an existing large-scale video system rather than redesigning it: understanding the inherited media/network architecture, restoring it to a reliable show state and operating a projection-heavy production with many outputs and substantial mapping. The handover included the production’s AAIP System Diagram shared by the GTG video team.',
     aaipCap: 'Un Américain à Paris — projection-led scenic environment. © GTG / Gregory Batardon.',
     aaipCredit: 'Production credits: video design 59 Studio; video collaborator Jon Lyle. My contribution was system takeover, troubleshooting, mapping and final-run operation.',
-    source: 'Official production source ↗',
-    labels: ['Projectors','Optics','Software','Reprise','System','Front / rear','Turntable','Transport','Cue states','Architecture','Outputs','Network','Run']
+    aaipFacts: [['Existing','Architecture'],['Multi-output','Outputs'],['Media / network','Network'],['Large-scale','Mapping'],['Dec. 2025','Run']],
+    source: 'Official production source ↗'
   },
   fr: {
     title: 'Grand Théâtre de Genève — Systèmes vidéo, mapping & SMODE — DATA C0RE',
@@ -49,16 +51,18 @@ const copy = {
     boleroText: 'Pour la reprise genevoise 2023, j’ai intégré et calibré le système de projection au sol dans SMODE. Les plans GTG documentent deux vidéoprojecteurs 21K en douche ; le passage technique précisait des optiques fixes 0.8, des liaisons fibre et un overlap à vérifier dans SMODE. Mon rôle concernait la reprise opérationnelle, le mapping et la calibration — pas la création vidéo originale.',
     boleroCap: 'Boléro / Éléments — projection au sol et scénographie miroir. © GTG / Filip Van Roe.',
     boleroCredit: 'Crédits de l’œuvre : concept & chorégraphie Damien Jalet / Sidi Larbi Cherkaoui ; concept & scénographie Marina Abramović ; reprise vidéo Anouar Brissel.',
+    boleroFacts: [['2 × 21K','Projecteurs'],['0.8','Optiques'],['SMODE','Logiciel'],['Fibre','Signal'],['2023','Année']],
     donRole: 'SYSTÈMES VIDÉO / MAPPING SCÉNOGRAPHIE MOBILE',
     donText: 'Pendant la création et les répétitions, j’ai travaillé sur le mapping et l’intégration des cues d’un système à quatre vidéoprojecteurs, dont une projection embarquée sur la tournette. Le brief initial mentionne un 21K face, un 21K rétro et un laser 10K embarqué sur la tournette, avec des liaisons NDI. Les conduites de répétition intègrent ensuite projection face, embarquée et lointain sur plus de cinquante états vidéo.',
     donCap: 'Don Carlos — vidéo intégrée à la scénographie mobile de la production. © GTG / Magali Dougados.',
     donCredit: 'Crédit production : scénographie et vidéos Momme Hinrichs. Ma contribution : intégration vidéo technique, mapping, cues et travail en répétition.',
+    donFacts: [['4 VP','Système'],['21K + 21K','Face / rétro'],['10K laser','Tournette'],['NDI','Transport'],['50+','États vidéo']],
     aaipRole: 'REPRISE SYSTÈME / MAPPING GRAND FORMAT',
     aaipText: 'Pour les dernières représentations de décembre 2025, j’ai repris un système vidéo grand format existant sans le redessiner : compréhension de l’architecture média/réseau héritée, remise en état de fonctionnement fiable et exploitation d’une production très projetée, avec de nombreuses sorties et un mapping conséquent. Le passage de relais comprenait le « AAIP System Diagram » transmis par l’équipe vidéo du GTG.',
     aaipCap: 'Un Américain à Paris — environnement scénique largement construit par la projection. © GTG / Gregory Batardon.',
     aaipCredit: 'Crédits production : création vidéo 59 Studio ; collaborateur vidéo Jon Lyle. Ma contribution : reprise système, dépannage, mapping et exploitation de fin de série.',
-    source: 'Source officielle de la production ↗',
-    labels: ['Projecteurs','Optiques','Logiciel','Reprise','Système','Face / rétro','Tournette','Transport','États vidéo','Architecture','Sorties','Réseau','Série']
+    aaipFacts: [['Existant','Architecture'],['Multi-sorties','Sorties'],['Média / réseau','Réseau'],['Grand format','Mapping'],['Déc. 2025','Série']],
+    source: 'Source officielle de la production ↗'
   },
   es: {
     title: 'Grand Théâtre de Genève — Sistemas de vídeo, mapping y SMODE — DATA C0RE',
@@ -75,16 +79,18 @@ const copy = {
     boleroText: 'Para la reposición de Ginebra de 2023 integré y calibré en SMODE el sistema de proyección sobre el suelo. Los planos del GTG documentan dos proyectores 21K en posición cenital; el traspaso técnico especificaba ópticas fijas 0.8, enlaces por fibra y un solape que debía verificarse en SMODE. Mi función fue la reposición operativa, el mapping y la calibración, no el diseño de vídeo original.',
     boleroCap: 'Boléro / Éléments — proyección sobre suelo y escenografía con espejo. © GTG / Filip Van Roe.',
     boleroCredit: 'Créditos de la obra: concepto y coreografía Damien Jalet / Sidi Larbi Cherkaoui; concepto y escenografía Marina Abramović; reposición de vídeo Anouar Brissel.',
+    boleroFacts: [['2 × 21K','Proyectores'],['0.8','Ópticas'],['SMODE','Software'],['Fibra','Señal'],['2023','Año']],
     donRole: 'SISTEMAS DE VÍDEO / MAPPING DE ESCENOGRAFÍA MÓVIL',
     donText: 'Durante la creación y los ensayos trabajé en el mapping y la integración de cues de un sistema de cuatro proyectores, incluida una proyección embarcada sobre la plataforma giratoria. El brief inicial cita un 21K frontal, un 21K trasero y un láser 10K embarcado en la giratoria, enlazados por NDI. Las conducciones de ensayo integran después proyección frontal, embarcada y de fondo en más de cincuenta estados de vídeo.',
     donCap: 'Don Carlos — vídeo integrado en la escenografía móvil de la producción. © GTG / Magali Dougados.',
     donCredit: 'Crédito de producción: escenografía y vídeos Momme Hinrichs. Mi contribución: integración técnica de vídeo, mapping, cues y trabajo durante ensayos.',
+    donFacts: [['4 VP','Sistema'],['21K + 21K','Frontal / trasero'],['10K láser','Giratoria'],['NDI','Transporte'],['50+','Estados vídeo']],
     aaipRole: 'SYSTEM TAKEOVER / MAPPING A GRAN ESCALA',
     aaipText: 'Para las últimas funciones de diciembre de 2025 tomé el control de un sistema de vídeo a gran escala ya existente, sin rediseñarlo: comprensión de la arquitectura multimedia/red heredada, recuperación de un estado de show fiable y operación de una producción muy basada en proyección, con numerosas salidas y un mapping importante. El traspaso incluía el « AAIP System Diagram » compartido por el equipo de vídeo del GTG.',
     aaipCap: 'Un Américain à Paris — entorno escénico construido en gran parte mediante proyección. © GTG / Gregory Batardon.',
     aaipCredit: 'Créditos de producción: diseño de vídeo 59 Studio; colaborador de vídeo Jon Lyle. Mi contribución: toma de control del sistema, troubleshooting, mapping y operación de las últimas funciones.',
-    source: 'Fuente oficial de la producción ↗',
-    labels: ['Proyectores','Ópticas','Software','Reposición','Sistema','Frontal / trasero','Giratoria','Transporte','Estados vídeo','Arquitectura','Salidas','Red','Funciones']
+    aaipFacts: [['Existente','Arquitectura'],['Multi-salida','Salidas'],['Media / red','Red'],['Gran escala','Mapping'],['Dic. 2025','Funciones']],
+    source: 'Fuente oficial de la producción ↗'
   }
 };
 
@@ -116,9 +122,7 @@ body.gtg-page .credit-note strong{color:var(--paper)}
 @media(max-width:680px){body.gtg-page .gtg-process{padding-inline:18px}body.gtg-page .production-head h2{font-size:40px}body.gtg-page .gtg-show-media img{height:auto;aspect-ratio:4/3}body.gtg-page .production-facts{grid-template-columns:1fr 1fr}}
 </style>`;
 
-function facts(items, labels){
-  return `<div class="production-facts reveal">${items.map((item,i)=>`<div><strong>${item}</strong><span>${labels[i]}</span></div>`).join('')}</div>`;
-}
+const facts = entries => `<div class="production-facts reveal">${entries.map(([value,label])=>`<div><strong>${value}</strong><span>${label}</span></div>`).join('')}</div>`;
 
 function body(c){
   return `
@@ -129,13 +133,13 @@ function body(c){
 
 <div class="gtg-process reveal"><figure><video muted loop playsinline poster="assets/media/grand-theatre/hero.webp" data-lazy-video><source data-src="assets/media/grand-theatre/loop.mp4" type="video/mp4"></video><figcaption>${c.process}</figcaption></figure></div>
 
-<section class="project-section project-section--split gtg-intro"><div class="section-kicker reveal"><span>01</span><p>${c.selected}</p></div><div class="prose-large reveal"><h2>${c.selected}</h2><p>${c.selectedText}</p></div></section>
+<section class="project-section project-section--split gtg-intro"><div class="section-kicker reveal"><span>GTG</span><p>${c.selected}</p></div><div class="prose-large reveal"><h2>${c.selected}</h2><p>${c.selectedText}</p></div></section>
 
 <section class="project-section">
   <article class="production-block" id="bolero">
     <p class="production-index reveal">01 / 2023</p>
     <div class="production-head reveal"><div><span class="production-role">${c.boleroRole}</span><h2>Boléro / Éléments</h2></div><p>${c.boleroText}</p></div>
-    ${facts(['2 × 21K','0.8','SMODE','Fibre','2023'], c.labels.slice(0,5))}
+    ${facts(c.boleroFacts)}
     <div class="gtg-show-media reveal"><figure><img src="assets/media/grand-theatre/bolero-filip-van-roe.jpg" alt="Boléro at Grand Théâtre de Genève with large-scale floor projection" loading="lazy"><figcaption>${c.boleroCap} <a href="https://www.gtg.ch/saison-23-24/elements/" target="_blank" rel="noreferrer">${c.source}</a></figcaption></figure></div>
     <p class="credit-note reveal">${c.boleroCredit}</p>
   </article>
@@ -143,7 +147,7 @@ function body(c){
   <article class="production-block" id="don-carlos">
     <p class="production-index reveal">02 / 2023</p>
     <div class="production-head reveal"><div><span class="production-role">${c.donRole}</span><h2>Don Carlos</h2></div><p>${c.donText}</p></div>
-    ${facts(['4 VP','21K + 21K','10K laser','NDI','50+'], c.labels.slice(4,9))}
+    ${facts(c.donFacts)}
     <div class="gtg-show-media reveal"><figure><img src="assets/media/grand-theatre/don-carlos-gtg.jpg" alt="Don Carlos at Grand Théâtre de Genève with video integrated into the stage scenography" loading="lazy"><figcaption>${c.donCap} <a href="https://www.gtg.ch/saison-23-24/don-carlos/" target="_blank" rel="noreferrer">${c.source}</a></figcaption></figure></div>
     <p class="credit-note reveal">${c.donCredit}</p>
   </article>
@@ -151,7 +155,7 @@ function body(c){
   <article class="production-block" id="aaip">
     <p class="production-index reveal">03 / 2025</p>
     <div class="production-head reveal"><div><span class="production-role">${c.aaipRole}</span><h2>Un Américain<br>à Paris</h2></div><p>${c.aaipText}</p></div>
-    ${facts(['Existing','Multi-output','Media / network','Large-scale','Dec. 2025'], c.labels.slice(9,14))}
+    ${facts(c.aaipFacts)}
     <div class="gtg-show-media reveal"><figure><img src="assets/media/grand-theatre/aaip-gregory-batardon.jpg" alt="Un Américain à Paris at Grand Théâtre de Genève with projection-led scenic environment" loading="lazy"><figcaption>${c.aaipCap} <a href="https://www.gtg.ch/saison-25-26/un-americain-a-paris/" target="_blank" rel="noreferrer">${c.source}</a></figcaption></figure></div>
     <p class="credit-note reveal">${c.aaipCredit}</p>
   </article>
@@ -165,6 +169,9 @@ for (const [file, lang] of pages) {
   let html = fs.readFileSync(file, 'utf8');
   html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${c.title}</title>`);
   html = html.replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${c.description}">`);
+  html = html.replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${c.title}">`);
+  html = html.replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${c.description}">`);
+  html = html.replace(/<meta property="og:image" content="[^"]*">/, '<meta property="og:image" content="https://datac0re.is-a.dev/assets/media/grand-theatre/bolero-filip-van-roe.jpg">');
   html = html.replace(/<body(?:\s+class="[^"]*")?([^>]*)>/, (_m, rest) => `<body class="gtg-page" data-gtg-case-study-v1="1"${rest}>`);
   html = html.replace(/\n?<style data-gtg-case-study-v1="">[\s\S]*?<\/style>/, '');
   html = html.replace('</head>', `${css}\n</head>`);
