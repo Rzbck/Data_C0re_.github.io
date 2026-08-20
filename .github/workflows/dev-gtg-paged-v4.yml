@@ -1,0 +1,173 @@
+name: Rebuild GTG as paged case study on dev
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/dev-gtg-paged-v4.yml'
+      - 'scripts/gtg-paged-v4.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gtg-paged-v4-dev
+  cancel-in-progress: true
+
+jobs:
+  rebuild:
+    if: github.ref == 'refs/heads/dev' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download alternate Don Carlos production views
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36'
+          REF='https://www.gtg.ch/saison-23-24/don-carlos/'
+          curl -L --fail --retry 3 --retry-delay 2 -A "$UA" -e "$REF" -o assets/media/grand-theatre/don-carlos-stage-04.jpg 'https://www.gtg.ch/wp-content/uploads/2023/09/20230911_PG_DON-CARLOS-GTG_c_DOUGADOS-MAGALI-9171.jpg'
+          curl -L --fail --retry 3 --retry-delay 2 -A "$UA" -e "$REF" -o assets/media/grand-theatre/don-carlos-stage-05.jpg 'https://www.gtg.ch/wp-content/uploads/2023/09/20230913_G_DON-CARLOS_GTG_c_DOUGADOS_MAGALI0036.jpg'
+          test "$(wc -c < assets/media/grand-theatre/don-carlos-stage-04.jpg)" -gt 20000
+          test "$(wc -c < assets/media/grand-theatre/don-carlos-stage-05.jpg)" -gt 20000
+
+      - name: Optimize new Don Carlos images
+        shell: bash
+        run: |
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageOps
+          for name in ['don-carlos-stage-04.jpg','don-carlos-stage-05.jpg']:
+              p=Path('assets/media/grand-theatre')/name
+              with Image.open(p) as im:
+                  im=ImageOps.exif_transpose(im).convert('RGB')
+                  if im.width>1600:
+                      h=round(im.height*1600/im.width)
+                      im=im.resize((1600,h),Image.Resampling.LANCZOS)
+                  im.save(p,'JPEG',quality=82,optimize=True,progressive=True)
+              print(name,p.stat().st_size)
+          PY
+
+      - name: Rebuild four GTG panels
+        run: node scripts/gtg-paged-v4.mjs
+
+      - name: Remove superseded dev-only GTG images
+        shell: bash
+        run: |
+          rm -f assets/media/grand-theatre/aaip-projection.jpg
+          rm -f assets/media/grand-theatre/bolero-projection.jpg
+          rm -f assets/media/grand-theatre/don-carlos-stage-02.jpg
+          rm -f assets/media/grand-theatre/don-carlos-stage-03.jpg
+
+      - name: Browser audit desktop tablet mobile
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/gtg-paged-audit
+          cd /tmp/gtg-paged-audit
+          npm init -y >/dev/null 2>&1
+          npm install --silent playwright@1.55.0
+          npx playwright install --with-deps chromium >/dev/null
+          cd "$GITHUB_WORKSPACE"
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/gtg-paged-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          sleep 2
+          cat >/tmp/gtg-paged-audit/audit.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const sizes=[
+            {name:'phone-small',width:360,height:740},
+            {name:'phone',width:390,height:844},
+            {name:'tablet-portrait',width:768,height:1024},
+            {name:'tablet-large',width:1024,height:1366},
+            {name:'desktop',width:1440,height:900}
+          ];
+          const paths=['/fr/projects/grand-theatre.html','/projects/grand-theatre.html'];
+          const failures=[];
+          for(const path of paths){
+            for(const s of sizes){
+              const page=await browser.newPage({viewport:{width:s.width,height:s.height},deviceScaleFactor:1});
+              const errors=[];
+              page.on('pageerror',e=>errors.push(e.message));
+              page.on('console',m=>{if(m.type()==='error') errors.push(m.text())});
+              const res=await page.goto(`http://127.0.0.1:4173${path}`,{waitUntil:'networkidle'});
+              const report=await page.evaluate(async()=>{
+                const panels=[document.querySelector('.project-hero'),...document.querySelectorAll('.gtg-case')].filter(Boolean);
+                const imgs=[...document.querySelectorAll('main img')];
+                const sources=imgs.map(i=>i.getAttribute('src')||'');
+                const nested=[...document.querySelectorAll('main *')].filter(el=>{
+                  const cs=getComputedStyle(el);return ['auto','scroll'].includes(cs.overflowY)&&el.scrollHeight>el.clientHeight+2;
+                }).map(el=>`${el.tagName}.${el.className}`);
+                const heights=panels.map(p=>Math.round(p.getBoundingClientRect().height));
+                const galleries=[...document.querySelectorAll('.gtg-case')].map(c=>c.querySelectorAll('.gtg-gallery figure').length);
+                for(const p of panels){p.scrollIntoView({block:'start'});await new Promise(r=>setTimeout(r,120));}
+                return {
+                  marker:document.body.dataset.gtgPagedV4,
+                  snap:getComputedStyle(document.documentElement).scrollSnapType,
+                  heroLinks:document.querySelectorAll('.project-hero a').length,
+                  overview:document.querySelectorAll('.gtg-overview').length,
+                  panels:panels.length,
+                  heights,
+                  galleries,
+                  videos:document.querySelectorAll('main video').length,
+                  reel:sources.some(s=>s.includes('geometry.webp')),
+                  oldDon:sources.some(s=>s.includes('don-carlos-stage-02')||s.includes('don-carlos-stage-03')),
+                  badImgs:imgs.filter(i=>!i.complete||i.naturalWidth<50).map(i=>i.getAttribute('src')),
+                  docOverflow:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)-innerWidth,
+                  mainOverflow:document.querySelector('main').scrollWidth-document.querySelector('main').clientWidth,
+                  nested
+                };
+              });
+              const prefix=`${path} ${s.name}`;
+              if(!res?.ok()) failures.push(`${prefix}: HTTP ${res?.status()}`);
+              if(report.marker!=='1') failures.push(`${prefix}: v4 marker missing`);
+              if(!report.snap.includes('y')) failures.push(`${prefix}: page scroll snap missing (${report.snap})`);
+              if(report.heroLinks!==0) failures.push(`${prefix}: hero contains ${report.heroLinks} link(s)`);
+              if(report.overview!==0) failures.push(`${prefix}: old project-link overview remains`);
+              if(report.panels!==4) failures.push(`${prefix}: expected 4 panels, got ${report.panels}`);
+              if(report.galleries.some(n=>n!==3)) failures.push(`${prefix}: gallery counts ${report.galleries.join(',')}`);
+              if(report.heights.some(h=>h>s.height+6)) failures.push(`${prefix}: panel exceeds viewport (${report.heights.join(',')} vs ${s.height})`);
+              if(report.videos!==0) failures.push(`${prefix}: ${report.videos} video element(s) remain`);
+              if(report.reel) failures.push(`${prefix}: reel/geometry image remains`);
+              if(report.oldDon) failures.push(`${prefix}: rejected Don Carlos image remains`);
+              if(report.badImgs.length) failures.push(`${prefix}: unloaded images ${report.badImgs.join(',')}`);
+              if(report.docOverflow>2||report.mainOverflow>2) failures.push(`${prefix}: horizontal overflow doc=${report.docOverflow} main=${report.mainOverflow}`);
+              if(report.nested.length) failures.push(`${prefix}: nested vertical scroller ${report.nested.join(',')}`);
+              if(errors.length) failures.push(`${prefix}: browser errors ${errors.join(' | ')}`);
+              console.log(prefix,JSON.stringify(report));
+              await page.close();
+            }
+          }
+          await browser.close();
+          if(failures.length){console.error('\nGTG PAGED AUDIT FAILED\n'+failures.join('\n'));process.exit(1)}
+          console.log('\nGTG PAGED AUDIT PASSED — 4 viewport panels / mobile / tablet / desktop');
+          JS
+          node /tmp/gtg-paged-audit/audit.mjs
+
+      - name: Remove one-shot builder
+        shell: bash
+        run: |
+          rm -f .github/workflows/dev-gtg-paged-v4.yml scripts/gtg-paged-v4.mjs
+
+      - name: Commit verified paged GTG layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Rebuild GTG as four responsive viewport panels'
+          git push origin HEAD:dev
