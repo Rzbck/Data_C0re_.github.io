@@ -147,7 +147,7 @@
   const syncPairs=()=>{
     ensureStyle();
     const media=eligibleMedia();
-    const emitters=[...document.querySelectorAll('.video-ambient-field .video-ambient-emitter')];
+    const emitters=[...document.querySelectorAll('.video-ambient-field .video-ambient-emitter[data-static="true"]')];
     if(!emitters.length)return;
     const n=Math.min(media.length,emitters.length);
     for(let i=0;i<n;i++)pairs.set(media[i],emitters[i]);
