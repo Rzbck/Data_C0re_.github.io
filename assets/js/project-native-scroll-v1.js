@@ -54,7 +54,7 @@
       html.project-native-scroll .project-native-panel{scroll-snap-align:start}
       body.project-native-scroll-body{overscroll-behavior-y:auto!important}
       body.fullpage-project .project-section.fullpage-panel,
-      body.fullpage-comedie .production-block.fullpage-panel,
+      body.fullpage-comedie .production-block.comedie-show-screen.fullpage-panel,
       body.fullpage-stage-systems .stage-study.fullpage-panel{
         height:auto!important;
         min-height:100svh!important;
