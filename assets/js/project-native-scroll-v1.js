@@ -172,10 +172,17 @@
 
   let wheelLocked = false;
   let unlockTimer = 0;
+  let snapIndex = nearestTargetIndex();
+  const atDocumentEnd = () => Math.abs((document.documentElement.scrollHeight - innerHeight) - scrollY) < 3;
+  const currentTargetIndex = () => {
+    if (footer && atDocumentEnd()) return snapTargets.length - 1;
+    return wheelLocked ? snapIndex : nearestTargetIndex();
+  };
   const unlockWheel = () => {
     wheelLocked = false;
     clearTimeout(unlockTimer);
     unlockTimer = 0;
+    snapIndex = footer && atDocumentEnd() ? snapTargets.length - 1 : nearestTargetIndex();
   };
   const lockUntilScrollEnds = () => {
     wheelLocked = true;
@@ -204,7 +211,7 @@
       return;
     }
 
-    const current = nearestTargetIndex();
+    const current = currentTargetIndex();
     const currentTarget = snapTargets[current];
     if (shouldAllowInsideTallPanel(currentTarget, direction)) return;
 
@@ -216,6 +223,7 @@
     const panelIndex = panels.indexOf(nextTarget);
     if (panelIndex >= 0) warmAround(panelIndex);
     else if (direction > 0) warmPanel(panels[panels.length - 1]);
+    snapIndex = next;
     lockUntilScrollEnds();
     nextTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, { passive: false });
