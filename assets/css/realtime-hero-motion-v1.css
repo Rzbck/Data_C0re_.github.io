@@ -1,0 +1,15 @@
+/* DATA C0RE — Realtime Studies hero motion override.
+   Reuses the existing optimized AV-install loop as a visual hero only. */
+.realtime-page .realtime-hero-still::after{display:none!important}
+.realtime-page .realtime-hero-still video{
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:0;
+  object-fit:cover;
+  object-position:center;
+  background:#020202;
+}
+@media(max-width:900px){
+  .realtime-page .realtime-hero-still video{height:100%;min-height:100%}
+}
