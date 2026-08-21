@@ -1,15 +1,43 @@
 /* DATA C0RE — Realtime Studies hero motion override.
-   Reuses the existing optimized AV-install loop as a visual hero only. */
+   Reuses the existing optimized AV-install loop as a visual hero only.
+   Hero media is deliberately landscape on desktop, tablet and mobile. */
+.realtime-page .realtime-hero-grid{
+  grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);
+  align-items:center;
+}
+.realtime-page .realtime-hero-still{
+  width:100%;
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:16/9;
+  align-self:center;
+  border-left:1px solid var(--line);
+}
 .realtime-page .realtime-hero-still::after{display:none!important}
 .realtime-page .realtime-hero-still video{
   display:block;
   width:100%;
-  height:100%;
-  min-height:0;
+  height:100%!important;
+  min-height:0!important;
+  aspect-ratio:16/9;
   object-fit:cover;
   object-position:center;
   background:#020202;
 }
+
 @media(max-width:900px){
-  .realtime-page .realtime-hero-still video{height:100%;min-height:100%}
+  .realtime-page .realtime-hero-grid{grid-template-columns:1fr;align-items:start}
+  .realtime-page .realtime-hero-still{
+    width:100%;
+    height:auto!important;
+    max-height:none!important;
+    aspect-ratio:16/9;
+    border-left:0;
+  }
+  .realtime-page .realtime-hero-still video{
+    width:100%;
+    height:100%!important;
+    min-height:0!important;
+    aspect-ratio:16/9;
+  }
 }
