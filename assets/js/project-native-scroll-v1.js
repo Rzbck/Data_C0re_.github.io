@@ -42,6 +42,10 @@
     html.project-native-scroll{scroll-behavior:auto!important}
     html.project-native-scroll .project-native-panel{scroll-snap-stop:normal!important}
     html.project-native-scroll .project-next{scroll-snap-align:none!important;scroll-snap-stop:normal!important}
+    body.comedie-page .production-block.comedie-show-screen{
+      content-visibility:visible!important;
+      contain-intrinsic-size:none!important;
+    }
     @media(max-width:820px),(pointer:coarse),(prefers-reduced-motion:reduce){
       html.project-native-scroll{scroll-snap-type:none!important}
     }
@@ -59,18 +63,31 @@
   `;
   document.head.appendChild(style);
 
-  if (fineDesktop.matches && !reduce.matches && !isGrandTheatre) {
-    if (!document.querySelector('link[data-project-native-fullpage-css]')) {
-      const css = document.createElement('link');
-      css.rel = 'stylesheet';
-      css.href = new URL('assets/css/fullpage.css?v=20260815-2', document.baseURI).href;
-      css.dataset.projectNativeFullpageCss = 'true';
-      document.head.appendChild(css);
+  const ensureFullpageCss = () => {
+    if (isGrandTheatre || document.querySelector('link[data-project-native-fullpage-css]')) return;
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = new URL('assets/css/fullpage.css?v=20260815-2', document.baseURI).href;
+    css.dataset.projectNativeFullpageCss = 'true';
+    document.head.appendChild(css);
+  };
+
+  const applyDesktopLayout = () => {
+    if (isGrandTheatre) return;
+    const desktop = fineDesktop.matches && !reduce.matches;
+    if (desktop) {
+      ensureFullpageCss();
+      body.classList.add('fullpage-project', `fullpage-${pageClass}`, 'fullpage-nav');
+      root.classList.add('fullpage-mode');
+      panels.forEach(panel => panel.classList.add('fullpage-panel'));
+    } else {
+      body.classList.remove('fullpage-project', `fullpage-${pageClass}`, 'fullpage-nav');
+      root.classList.remove('fullpage-mode');
+      panels.forEach(panel => panel.classList.remove('fullpage-panel'));
     }
-    body.classList.add('fullpage-project', `fullpage-${pageClass}`, 'fullpage-nav');
-    root.classList.add('fullpage-mode');
-    panels.forEach(panel => panel.classList.add('fullpage-panel'));
-  }
+  };
+
+  applyDesktopLayout();
 
   const warmImage = image => {
     if (!(image instanceof HTMLImageElement) || image.dataset.projectWarm === 'true') return;
@@ -136,20 +153,6 @@
     panels.slice(0, 2).forEach(warmPanel);
   }
 
-  const syncMode = () => {
-    const desktop = fineDesktop.matches && !reduce.matches;
-    if (isGrandTheatre) return;
-    if (desktop) {
-      body.classList.add('fullpage-project', `fullpage-${pageClass}`, 'fullpage-nav');
-      root.classList.add('fullpage-mode');
-      panels.forEach(panel => panel.classList.add('fullpage-panel'));
-    } else {
-      body.classList.remove('fullpage-project', `fullpage-${pageClass}`, 'fullpage-nav');
-      root.classList.remove('fullpage-mode');
-      panels.forEach(panel => panel.classList.remove('fullpage-panel'));
-    }
-  };
-
-  fineDesktop.addEventListener?.('change', syncMode);
-  reduce.addEventListener?.('change', syncMode);
+  fineDesktop.addEventListener?.('change', applyDesktopLayout);
+  reduce.addEventListener?.('change', applyDesktopLayout);
 })();
