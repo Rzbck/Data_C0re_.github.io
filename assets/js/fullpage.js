@@ -1,7 +1,17 @@
 (() => {
   const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
   const filename=location.pathname.endsWith('/')?'index.html':location.pathname.split('/').pop();
-  if(filename==='about.html'||filename==='grand-theatre.html')return;
+  if(location.pathname.includes('/projects/')){
+    if(!document.querySelector('script[data-project-native-scroll]')){
+      const script=document.createElement('script');
+      script.src=new URL('assets/js/project-native-scroll-v1.js?v=20260821-1',document.baseURI).href;
+      script.defer=true;
+      script.dataset.projectNativeScroll='true';
+      document.body.appendChild(script);
+    }
+    return;
+  }
+  if(filename==='about.html')return;
   if(window.matchMedia('(max-width:820px), (pointer:coarse)').matches)return;
 
   const css=document.createElement('link');
@@ -29,17 +39,6 @@
   }else if(filename==='cv.html'){
     body.classList.add('fullpage-cv');
     panels=qa('main > .page-intro,main > .cv-section');
-  }else if(location.pathname.includes('/projects/')){
-    body.classList.add('fullpage-project',`fullpage-${pageClass}`);
-    if(filename==='comedie.html'){
-      panels=[q('.project-hero'),q('.theatre-lead'),...qa('.production-block')].filter(Boolean);
-    }else if(filename==='stage-systems.html'){
-      panels=[q('.project-hero'),q('.stage-main-media'),...qa('.stage-study')].filter(Boolean);
-    }else if(filename==='grand-theatre.html'){
-      panels=[q('.project-hero'),q('.pro-main-media'),...qa('.project-section')].filter(Boolean);
-    }else{
-      panels=[q('.project-hero'),...qa('.project-section')].filter(Boolean);
-    }
   }
 
   if(panels.length<2)return;
@@ -74,7 +73,7 @@
     panels.forEach((panel,i)=>panel.classList.toggle('is-fullpage-active',i===current));
   };
   const easeInOut=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-  const defaultDuration=filename==='comedie.html'?620:880;
+  const defaultDuration=880;
   const goTo=(index,duration=defaultDuration)=>{
     index=clampIndex(index);
     if(animating)return;
