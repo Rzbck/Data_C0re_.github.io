@@ -56,12 +56,12 @@
   if(!archiveInteractive)ensureScript('assets/js/ambilight-white-image-guard-v1.js?v=20260820-1','data-ambilight-white-image-guard');
   if(archiveInteractive)ensureScript('assets/js/archive-ambient-bridge-v1.js?v=20260819-1','data-archive-ambient-bridge');
 
-  /* Dev-branch, console-only performance probe. It never changes rendering quality;
-     it only measures the browser/frame budget so adaptive thresholds can be tuned
-     safely before the controller is allowed to touch the GLSL simulation. */
+  /* Dev-branch adaptive test HUD. Visible only on the Vercel dev branch preview.
+     It measures real frame pressure and can reduce only the ASCII shader cadence;
+     production/main is untouched. */
   const perfProbeHost=location.hostname.includes('datac0re-dev-preview-git-dev-');
   const perfProbeEnabled=perfProbeHost||new URLSearchParams(location.search).get('perfprobe')==='1';
-  if(perfProbeEnabled)ensureScript('assets/js/glsl-adaptive-probe-v1.js?v=20260826-1','data-glsl-adaptive-probe');
+  if(perfProbeEnabled)ensureScript('assets/js/glsl-adaptive-probe-v1.js?v=20260826-2','data-glsl-adaptive-probe');
 
   const routeState=()=>{
     let rel=location.pathname.slice(repoSegment.length).replace(/^\/+|\/+$/g,'');
