@@ -5,7 +5,6 @@
 
   const PREFIX='[DATA C0RE ADAPT]';
   const nativeRAF=window.requestAnimationFrame.bind(window);
-  const nativeCAF=window.cancelAnimationFrame.bind(window);
   const REPORT_MS=1000;
   const BASELINE_SAMPLES=72;
   const MAX_HISTORY=90;
@@ -113,14 +112,15 @@
     return match;
   };
 
-  let lastShaderRunAt=0;
+  let shaderPhase=1;
   window.requestAnimationFrame=function(callback){
     if(!isAsciiFrame(callback))return nativeRAF(callback);
     const run=now=>{
-      const target=effectiveTarget();
-      const interval=Math.max(0,1000/target-1.25);
-      if(!lastShaderRunAt||now-lastShaderRunAt>=interval){
-        lastShaderRunAt=now;
+      const display=Math.max(20,refreshHz());
+      const target=Math.min(effectiveTarget(),display);
+      shaderPhase+=target/display;
+      if(shaderPhase>=1){
+        shaderPhase-=1;
         shaderRuns+=1;
         callback(now);
       }else{
@@ -135,6 +135,7 @@
     if(next===autoLevel)return;
     const before=LEVELS[autoLevel].name;
     autoLevel=next;
+    shaderPhase=Math.min(shaderPhase,1);
     lastLevelChange=performance.now();
     lastLevelReason=reason;
     stressStreak=0;
@@ -225,6 +226,7 @@
         lastLevelChange=performance.now();
       }else{
         forcedLevel=Number(value);
+        shaderPhase=1;
         lastLevelReason=`manual dev force: ${LEVELS[forcedLevel].name}`;
         lastLevelChange=performance.now();
       }
@@ -344,6 +346,7 @@
       const found=LEVELS.find(level=>level.name===String(name).toUpperCase());
       if(!found)return false;
       forcedLevel=found.id;
+      shaderPhase=1;
       lastLevelReason=`manual dev force: ${found.name}`;
       renderHud();
       return true;
