@@ -1,19 +1,21 @@
 (() => {
   'use strict';
-  if (window.__DATA_C0RE_ADAPTIVE_DEV_V2__) return;
-  window.__DATA_C0RE_ADAPTIVE_DEV_V2__ = true;
+  if (window.__DATA_C0RE_ADAPTIVE_DEV_V3__) return;
+  window.__DATA_C0RE_ADAPTIVE_DEV_V3__ = true;
 
   const PREFIX='[DATA C0RE ADAPT]';
   const nativeRAF=window.requestAnimationFrame.bind(window);
+  const nativeSetTimeout=window.setTimeout.bind(window);
   const REPORT_MS=1000;
   const BASELINE_SAMPLES=72;
-  const MAX_HISTORY=90;
+  const MAX_HISTORY=120;
   const LEVELS=[
-    {id:0,name:'SAFE',target:20},
-    {id:1,name:'LOW',target:30},
-    {id:2,name:'BALANCED',target:40},
-    {id:3,name:'HIGH',target:50},
-    {id:4,name:'MAX',target:60}
+    {id:0,name:'OFF',target:0,collisionFactor:12},
+    {id:1,name:'SAFE',target:15,collisionFactor:3.8},
+    {id:2,name:'LOW',target:24,collisionFactor:2.7},
+    {id:3,name:'BALANCED',target:34,collisionFactor:1.9},
+    {id:4,name:'HIGH',target:48,collisionFactor:1.35},
+    {id:5,name:'MAX',target:60,collisionFactor:1}
   ];
 
   const coarse=matchMedia('(pointer:coarse)');
@@ -65,22 +67,24 @@
   };
 
   const initialLevel=()=>{
-    let level=coarse.matches?3:4;
+    let level=coarse.matches?4:5;
     if(cores!==null&&cores<=4)level-=1;
     if(cores!==null&&cores<=2)level-=1;
     if(memory!==null&&memory<=4)level-=1;
     if(memory!==null&&memory<=2)level-=1;
     if(devicePixelRatio>2.5)level-=1;
-    return Math.max(1,Math.min(4,level));
+    return Math.max(1,Math.min(5,level));
   };
 
   let autoLevel=initialLevel();
   let forcedLevel=null;
-  let lastLevelChange=performance.now();
   let lastLevelReason='initial device hints';
-  let stressStreak=0;
+  let lastDownAt=-Infinity;
+  let stressedStreak=0;
   let headroomStreak=0;
-  let activeStreak=0;
+  let criticalEvents=0;
+  let downEvents=0;
+  let upEvents=0;
   let baselineMs=0;
   let baselineReady=false;
   let baselineSamples=[];
@@ -92,114 +96,168 @@
   let shaderRuns=0;
   let shaderRunsPrev=0;
   let lastSnapshot=null;
+  let lastCollisionRAF=-Infinity;
   const history=[];
 
   const currentLevel=()=>forcedLevel===null?autoLevel:forcedLevel;
   const currentProfile=()=>LEVELS[currentLevel()];
   const refreshHz=()=>baselineReady?Math.max(20,Math.min(240,1000/baselineMs)):60;
-  const effectiveTarget=()=>Math.max(15,Math.min(currentProfile().target,refreshHz()));
+  const effectiveTarget=()=>{
+    const target=currentProfile().target;
+    return target<=0?0:Math.max(10,Math.min(target,refreshHz()));
+  };
+
+  const adaptiveState={level:currentProfile().name,targetHz:effectiveTarget(),collisionFactor:currentProfile().collisionFactor,disabled:false};
+  window.__DATA_C0RE_ADAPT_CONFIG__=adaptiveState;
+
+  const offStyle=document.createElement('style');
+  offStyle.dataset.glslAdaptiveOff='dev-v3';
+  offStyle.textContent='html[data-glsl-adapt-level="OFF"] canvas[data-ascii-cursor]{opacity:0!important}';
+  document.head.appendChild(offStyle);
+
+  const syncAdaptiveState=reason=>{
+    const profile=currentProfile();
+    adaptiveState.level=profile.name;
+    adaptiveState.targetHz=effectiveTarget();
+    adaptiveState.collisionFactor=profile.collisionFactor;
+    adaptiveState.disabled=profile.id===0;
+    document.documentElement.dataset.glslAdaptLevel=profile.name;
+    document.dispatchEvent(new CustomEvent('data-c0re-adapt-levelchange',{detail:{...adaptiveState,reason}}));
+  };
 
   const callbackCache=new WeakMap();
-  const isAsciiFrame=callback=>{
-    if(typeof callback!=='function')return false;
+  const callbackKind=callback=>{
+    if(typeof callback!=='function')return 'other';
     if(callbackCache.has(callback))return callbackCache.get(callback);
-    let match=false;
+    let kind='other';
     try{
       const source=Function.prototype.toString.call(callback);
-      match=source.includes('simulationPass')&&source.includes('displayPass')&&source.includes('pointer.px');
+      if(source.includes('simulationPass')&&source.includes('displayPass')&&source.includes('pointer.px'))kind='ascii';
+      else if(source.includes('updateCollision'))kind='collision';
     }catch{}
-    callbackCache.set(callback,match);
-    return match;
+    callbackCache.set(callback,kind);
+    return kind;
   };
 
   let shaderPhase=1;
   window.requestAnimationFrame=function(callback){
-    if(!isAsciiFrame(callback))return nativeRAF(callback);
+    const kind=callbackKind(callback);
+    if(kind==='other')return nativeRAF(callback);
+
+    if(kind==='collision'){
+      const run=now=>{
+        const profile=currentProfile();
+        const minGap=Math.min(900,Math.max(0,38*(profile.collisionFactor||1)));
+        if(now-lastCollisionRAF>=minGap){
+          lastCollisionRAF=now;
+          callback(now);
+        }else nativeRAF(run);
+      };
+      return nativeRAF(run);
+    }
+
     const run=now=>{
+      const target=effectiveTarget();
+      if(target<=0){
+        nativeRAF(run);
+        return;
+      }
       const display=Math.max(20,refreshHz());
-      const target=Math.min(effectiveTarget(),display);
-      shaderPhase+=target/display;
+      shaderPhase+=Math.min(target,display)/display;
       if(shaderPhase>=1){
         shaderPhase-=1;
         shaderRuns+=1;
         callback(now);
-      }else{
-        nativeRAF(run);
-      }
+      }else nativeRAF(run);
     };
     return nativeRAF(run);
   };
 
-  const setAutoLevel=(next,reason)=>{
-    next=Math.max(0,Math.min(4,next));
-    if(next===autoLevel)return;
+  window.setTimeout=function(callback,delay,...args){
+    if(callbackKind(callback)!=='collision')return nativeSetTimeout(callback,delay,...args);
+    const profile=currentProfile();
+    const base=Number.isFinite(Number(delay))?Number(delay):0;
+    const scaled=Math.min(1200,Math.max(base,base*(profile.collisionFactor||1)));
+    return nativeSetTimeout(callback,scaled,...args);
+  };
+
+  const setAutoLevel=(next,reason,direction='down')=>{
+    next=Math.max(0,Math.min(5,next));
+    if(next===autoLevel)return false;
     const before=LEVELS[autoLevel].name;
     autoLevel=next;
     shaderPhase=Math.min(shaderPhase,1);
-    lastLevelChange=performance.now();
     lastLevelReason=reason;
-    stressStreak=0;
+    stressedStreak=0;
     headroomStreak=0;
+    if(direction==='down'){
+      downEvents+=1;
+      lastDownAt=performance.now();
+    }else upEvents+=1;
+    syncAdaptiveState(reason);
     console.info(`${PREFIX} ${before} -> ${LEVELS[autoLevel].name} | ${reason}`);
+    return true;
   };
 
-  const classify=(active,p95,jank,longMs)=>{
-    if(!active)return 'IDLE';
+  const classify=(p95,jank,longMs)=>{
     const budget=baselineMs||16.67;
-    if(p95>budget*2.35||jank>.38||longMs>180)return 'CRITICAL';
-    if(p95>budget*1.65||jank>.18||longMs>90)return 'STRESSED';
-    if(p95<=budget*1.28&&jank<=.05&&longMs<35)return 'HEADROOM';
+    if(p95>budget*2.15||jank>.30||longMs>140)return 'CRITICAL';
+    if(p95>budget*1.55||jank>.15||longMs>75)return 'STRESSED';
+    if(p95<=budget*1.24&&jank<=.04&&longMs<25)return 'HEADROOM';
     return 'STABLE';
   };
 
   const maybeAdapt=(status,now)=>{
-    if(forcedLevel!==null)return;
-    if(!shaderActive()){
-      stressStreak=0;
-      headroomStreak=0;
-      activeStreak=0;
-      return;
-    }
-    activeStreak+=1;
-    if(activeStreak<2)return;
-    if(now-lastLevelChange<3500)return;
+    if(forcedLevel!==null||!baselineReady)return;
 
     if(status==='CRITICAL'){
-      stressStreak+=2;
+      criticalEvents+=1;
+      stressedStreak=0;
       headroomStreak=0;
-    }else if(status==='STRESSED'){
-      stressStreak+=1;
-      headroomStreak=0;
-    }else if(status==='HEADROOM'){
-      headroomStreak+=1;
-      stressStreak=Math.max(0,stressStreak-1);
-    }else{
-      stressStreak=Math.max(0,stressStreak-1);
-      headroomStreak=0;
-    }
-
-    if(stressStreak>=2&&autoLevel>0){
-      const step=status==='CRITICAL'&&autoLevel>=2?2:1;
-      setAutoLevel(autoLevel-step,`${status.toLowerCase()} frame budget`);
+      if(autoLevel>0)setAutoLevel(autoLevel-1,`critical #${criticalEvents}: immediate -1`,'down');
+      else lastLevelReason=`critical #${criticalEvents}: already OFF`;
       return;
     }
-    if(headroomStreak>=10&&autoLevel<4){
-      setAutoLevel(autoLevel+1,'sustained headroom');
+
+    if(status==='STRESSED'){
+      stressedStreak+=1;
+      headroomStreak=0;
+      if(stressedStreak>=2&&autoLevel>0&&now-lastDownAt>1200){
+        setAutoLevel(autoLevel-1,'2 stressed windows: -1','down');
+      }
+      return;
     }
+
+    if(status==='HEADROOM'){
+      stressedStreak=0;
+      if(now-lastDownAt<8000){
+        headroomStreak=0;
+        return;
+      }
+      headroomStreak+=1;
+      const needed=autoLevel===0?12:10;
+      if(headroomStreak>=needed&&autoLevel<5){
+        setAutoLevel(autoLevel+1,`${needed}s continuous headroom: +1`,'up');
+      }
+      return;
+    }
+
+    stressedStreak=Math.max(0,stressedStreak-1);
+    headroomStreak=0;
   };
 
   const hud=document.createElement('aside');
   hud.id='data-c0re-adaptive-dev-hud';
   hud.setAttribute('aria-label','DATA C0RE adaptive GLSL development monitor');
   Object.assign(hud.style,{
-    position:'fixed',left:'10px',bottom:'10px',zIndex:'2147483647',width:'min(360px,calc(100vw - 20px))',
+    position:'fixed',left:'10px',bottom:'10px',zIndex:'2147483647',width:'min(390px,calc(100vw - 20px))',
     boxSizing:'border-box',padding:'10px 11px',background:'rgba(5,5,5,.92)',color:'#f3f1eb',
     border:'1px solid rgba(223,255,0,.58)',font:'600 10px/1.38 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace',
     letterSpacing:'.015em',boxShadow:'0 8px 30px rgba(0,0,0,.38)',backdropFilter:'blur(7px)'
   });
   hud.innerHTML=`
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px">
-      <strong style="color:#dfff00;font-size:10px;letter-spacing:.08em">DEV / GLSL ADAPT V2</strong>
+      <strong style="color:#dfff00;font-size:10px;letter-spacing:.08em">DEV / ADAPTIVE GOVERNOR V3</strong>
       <button type="button" data-adapt-close style="all:unset;cursor:pointer;color:#999;padding:2px 4px">hide</button>
     </div>
     <div data-adapt-main style="white-space:pre-wrap"></div>
@@ -223,13 +281,15 @@
       if(value==='auto'){
         forcedLevel=null;
         lastLevelReason='AUTO resumed';
-        lastLevelChange=performance.now();
+        lastDownAt=performance.now();
+        headroomStreak=0;
+        stressedStreak=0;
       }else{
         forcedLevel=Number(value);
         shaderPhase=1;
         lastLevelReason=`manual dev force: ${LEVELS[forcedLevel].name}`;
-        lastLevelChange=performance.now();
       }
+      syncAdaptiveState(lastLevelReason);
       renderHud();
     });
     buttonsEl.appendChild(button);
@@ -248,7 +308,8 @@
     const target=Number(effectiveTarget().toFixed(0));
     const hw=`${cores??'?'}c / ${memory??'?'}GB / DPR ${Number((devicePixelRatio||1).toFixed(2))}`;
     const perf=snap?`${snap.fps.toFixed(1)} fps UI | shader ${snap.shaderHz.toFixed(1)} Hz\np95 ${snap.p95Ms.toFixed(1)} ms | jank ${snap.jankPct.toFixed(1)}% | long ${snap.longTaskMs.toFixed(0)} ms`:'calibrating frame budget…';
-    mainEl.textContent=`${mode}  ${profile.name}  target ${target}Hz\nshader ${shader} | display ${displayHz?displayHz.toFixed(0)+'Hz':'calibrating'}\n${perf}\n${hw} | WebGL2 ${capabilities.webgl2} | GPU timer ${capabilities.gpuTimerQuery}`;
+    const recovery=forcedLevel!==null?'manual':profile.id===5?'max':`${headroomStreak}/${profile.id===0?12:10} clean seconds`;
+    mainEl.textContent=`${mode}  ${profile.name}  target ${target}Hz | collision x${profile.collisionFactor}\nshader ${shader} | display ${displayHz?displayHz.toFixed(0)+'Hz':'calibrating'}\n${perf}\ncritical ${criticalEvents} | down ${downEvents} | up ${upEvents} | recovery ${recovery}\n${hw} | WebGL2 ${capabilities.webgl2} | GPU timer ${capabilities.gpuTimerQuery}`;
     eventEl.textContent=`${snap?.status||'CALIBRATING'} · ${lastLevelReason}`;
     buttonsEl.querySelectorAll('button').forEach(button=>{
       const active=button.dataset.level===(forcedLevel===null?'auto':String(forcedLevel));
@@ -279,6 +340,7 @@
     baselineReady=true;
     refreshWebGLInfo();
     lastLevelReason=`display calibrated ${(1000/baselineMs).toFixed(0)}Hz`;
+    syncAdaptiveState(lastLevelReason);
     console.info(`${PREFIX} display budget ${baselineMs.toFixed(2)} ms / ${(1000/baselineMs).toFixed(1)} Hz`);
   };
 
@@ -291,13 +353,14 @@
     const p95=percentile(samples,.95);
     const budget=baselineMs||median||16.67;
     const jank=samples.filter(ms=>ms>budget*1.5).length/samples.length;
-    const status=classify(shaderActive(),p95,jank,longTaskMs);
+    const status=classify(p95,jank,longTaskMs);
     const elapsed=Math.max(.25,(now-lastReport)/1000);
     const runs=shaderRuns-shaderRunsPrev;
     shaderRunsPrev=shaderRuns;
     const snapshot={
       at:new Date().toISOString(),
       status,
+      shaderState:shaderActive()?'ACTIVE':shaderCanvas()?'IDLE':'WAITING',
       fps:median?1000/median:0,
       p95Ms:p95,
       jankPct:jank*100,
@@ -341,20 +404,22 @@
     snapshot:()=>lastSnapshot,
     get level(){return currentProfile().name;},
     get mode(){return forcedLevel===null?'AUTO':'FORCED';},
-    auto:()=>{forcedLevel=null;lastLevelReason='AUTO resumed';renderHud();},
+    auto:()=>{forcedLevel=null;lastLevelReason='AUTO resumed';lastDownAt=performance.now();headroomStreak=0;stressedStreak=0;syncAdaptiveState(lastLevelReason);renderHud();},
     force:name=>{
       const found=LEVELS.find(level=>level.name===String(name).toUpperCase());
       if(!found)return false;
       forcedLevel=found.id;
       shaderPhase=1;
       lastLevelReason=`manual dev force: ${found.name}`;
+      syncAdaptiveState(lastLevelReason);
       renderHud();
       return true;
     },
     show:()=>{hud.style.display='block';renderHud();}
   };
 
-  console.info(`${PREFIX} dev adaptive controller active; use the on-page HUD — no console commands required.`);
+  console.info(`${PREFIX} V3 active: one CRITICAL = immediate -1; recovery is deliberately slow.`);
+  syncAdaptiveState('initial state');
   renderHud();
   nativeRAF(monitor);
 
