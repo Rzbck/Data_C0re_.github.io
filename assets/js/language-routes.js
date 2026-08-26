@@ -48,7 +48,6 @@
   ensureCss('assets/css/home-work-mobile-final.css?v=20260814-7','data-home-work-mobile-final');
   ensureCss('assets/css/home-gate-trail.css?v=20260816-3','data-home-gate-trail');
   ensureCss('assets/css/video-ambilight-v1.css?v=20260819-20','data-video-ambilight');
-  ensureScript('assets/js/adaptive-performance-v1.js?v=20260826-v5','data-adaptive-performance');
   ensureScript('assets/js/menu-card-trail.js?v=20260816-1','data-menu-card-trail');
   ensureScript('assets/js/mobile-media-controller-v1.js?v=20260824-media4','data-mobile-media-controller');
   ensureScript('assets/js/video-ambilight-v1.js?v=20260820-22','data-video-ambilight');
