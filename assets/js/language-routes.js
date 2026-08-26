@@ -61,7 +61,7 @@
      hide the effect at OFF. Production/main is untouched. */
   const perfProbeHost=location.hostname.includes('datac0re-dev-preview-git-dev-');
   const perfProbeEnabled=perfProbeHost||new URLSearchParams(location.search).get('perfprobe')==='1';
-  if(perfProbeEnabled)ensureScript('assets/js/glsl-adaptive-probe-v1.js?v=20260826-3','data-glsl-adaptive-probe');
+  if(perfProbeEnabled)ensureScript('assets/js/glsl-adaptive-probe-v1.js?v=20260826-4','data-glsl-adaptive-probe');
 
   const routeState=()=>{
     let rel=location.pathname.slice(repoSegment.length).replace(/^\/+|\/+$/g,'');
