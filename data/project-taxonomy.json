@@ -58,7 +58,7 @@
     "snake": ["research", "software", "interactive", "touchdesigner", "networked-media"],
     "signal": ["simulation", "interactive", "led", "touchdesigner", "mmwave-tracking", "esp32", "websocket", "json", "art-net", "networked-media", "software"],
     "ascii": ["study", "realtime-video", "touchdesigner", "image-processing"],
-    "realtime": ["research", "touchdesigner", "glsl", "audio-reactive", "realtime-video", "image-processing"],
+    "realtime": ["research", "touchdesigner", "resolume", "glsl", "audio-reactive", "realtime-video", "image-processing", "led"],
     "cloud": ["study", "realtime-video", "touchdesigner", "glsl", "image-processing"],
     "last-low-bandwidth-message": ["vancouver", "canada", "festival", "small-file", "low-bandwidth"]
   },
