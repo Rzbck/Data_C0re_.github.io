@@ -26,8 +26,19 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install generator dependency
         run: npm install --no-save --package-lock=false cheerio@1.0.0
+
+      - name: Install social card dependency
+        run: python -m pip install --disable-pip-version-check Pillow
+
+      - name: Generate social sharing card
+        run: python scripts/generate-social-card.py
 
       - name: Apply portfolio architecture
         run: node scripts/portfolio-architecture.mjs
@@ -101,6 +112,9 @@ jobs:
       - name: Compose canonical one-page CV
         run: node scripts/cv-one-page-v1.mjs
 
+      - name: Normalize Home social preview metadata
+        run: node scripts/social-card-metadata.mjs
+
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
@@ -109,7 +123,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A index.html work.html about.html services.html lab.html archive.html cv.html contact.html projects en fr es sitemap.xml robots.txt assets/js/seo.js
+          git add -A index.html work.html about.html services.html lab.html archive.html cv.html contact.html projects en fr es sitemap.xml robots.txt assets/js/seo.js assets/img/og-cover-v2.jpg
           if git diff --cached --quiet; then
             echo "No development generation changes to commit."
           else
