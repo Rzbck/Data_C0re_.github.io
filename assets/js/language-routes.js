@@ -56,15 +56,10 @@
   if(!archiveInteractive)ensureScript('assets/js/ambilight-white-image-guard-v1.js?v=20260820-1','data-ambilight-white-image-guard');
   if(archiveInteractive)ensureScript('assets/js/archive-ambient-bridge-v1.js?v=20260819-1','data-archive-ambient-bridge');
 
-  /* Dev-branch adaptive governor HUD. It reacts to page-wide frame pressure,
-     progressively throttles the ASCII shader/collision work and the Ambilight,
-     and can fully remove decorative effects under sustained load. Production/main is untouched. */
+  /* Dev-only V5 adaptive governor. Production/main stays free of the experiment. */
   const perfProbeHost=location.hostname.includes('datac0re-dev-preview-git-dev-');
   const perfProbeEnabled=perfProbeHost||new URLSearchParams(location.search).get('perfprobe')==='1';
-  if(perfProbeEnabled){
-    ensureScript('assets/js/glsl-adaptive-probe-v1.js?v=20260826-4','data-glsl-adaptive-probe');
-    ensureScript('assets/js/adaptive-ambilight-bridge-v1.js?v=20260826-1','data-adaptive-ambilight-bridge');
-  }
+  if(perfProbeEnabled)ensureScript('assets/js/adaptive-performance-v1.js?v=20260826-v5','data-adaptive-performance');
 
   const routeState=()=>{
     let rel=location.pathname.slice(repoSegment.length).replace(/^\/+|\/+$/g,'');
