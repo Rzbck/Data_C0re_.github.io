@@ -1,0 +1,56 @@
+name: Build corrected social card on dev
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/og-card-build-dev.yml'
+      - 'scripts/generate-social-card.py'
+      - 'scripts/social-card-metadata.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: og-card-dev
+  cancel-in-progress: true
+
+jobs:
+  build-social-card:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check Pillow
+
+      - name: Generate 1200x630 JPEG card
+        run: python scripts/generate-social-card.py
+
+      - name: Update Home social metadata
+        run: node scripts/social-card-metadata.mjs
+
+      - name: Commit generated card to dev
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/img/og-cover-v2.jpg index.html en/index.html fr/index.html es/index.html
+          if git diff --cached --quiet; then
+            echo "Social card is already current."
+          else
+            git commit -m "Fix homepage social preview image"
+            git push origin HEAD:dev
+          fi
