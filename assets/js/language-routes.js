@@ -59,7 +59,8 @@
   /* Dev-only, console-only performance probe. It never changes rendering quality;
      it only measures the browser/frame budget so adaptive thresholds can be tuned
      safely before the controller is allowed to touch the GLSL simulation. */
-  const perfProbeEnabled=location.hostname==='datac0re-dev-preview.vercel.app'||new URLSearchParams(location.search).get('perfprobe')==='1';
+  const perfProbeHost=location.hostname==='datac0re-dev-preview.vercel.app'||location.hostname.includes('datac0re-dev-preview-git-dev-');
+  const perfProbeEnabled=perfProbeHost||new URLSearchParams(location.search).get('perfprobe')==='1';
   if(perfProbeEnabled)ensureScript('assets/js/glsl-adaptive-probe-v1.js?v=20260826-1','data-glsl-adaptive-probe');
 
   const routeState=()=>{
