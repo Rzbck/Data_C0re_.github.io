@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
 import os
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import quote
 
@@ -11,6 +11,7 @@ from google.oauth2 import service_account
 
 SITE_URL = os.environ.get("GSC_SITE_URL", "https://datac0re.is-a.dev/")
 SECRET_NAME = "GSC_SERVICE_ACCOUNT_JSON"
+INCLUDE_QUERIES = os.environ.get("GSC_INCLUDE_QUERIES", "false").lower() == "true"
 OUTPUT_DIR = Path("output/search-console")
 SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
 INSPECTION_URLS = [
@@ -40,7 +41,7 @@ def get_credentials():
         info, scopes=[SCOPE]
     )
     credentials.refresh(Request())
-    return credentials, info.get("client_email", "")
+    return credentials
 
 
 def headers(credentials):
@@ -93,7 +94,7 @@ def inspect_url(credentials, inspection_url):
     }
     try:
         return {"url": inspection_url, "response": request_json("POST", endpoint, credentials, payload)}
-    except Exception as exc:  # Keep performance reporting usable if inspection permission is missing.
+    except Exception as exc:
         return {"url": inspection_url, "error": str(exc)}
 
 
@@ -141,22 +142,10 @@ def build_markdown(report):
         f"- CTR: **{fmt_pct(metrics['ctr'])}**",
         f"- Average position: **{fmt_position(metrics['position'])}**",
         "",
-        "## Top queries by impressions",
+        "## Top pages by impressions",
         "",
     ]
 
-    query_rows = report["search_analytics"]["query"].get("rows", [])[:10]
-    if query_rows:
-        for row in query_rows:
-            key = row.get("keys", ["(unknown)"])[0]
-            lines.append(
-                f"- `{key}` — {row.get('impressions', 0)} impressions / "
-                f"{row.get('clicks', 0)} clicks / pos. {fmt_position(row.get('position'))}"
-            )
-    else:
-        lines.append("- No query rows returned for this period.")
-
-    lines.extend(["", "## Top pages by impressions", ""])
     page_rows = report["search_analytics"]["page"].get("rows", [])[:10]
     if page_rows:
         for row in page_rows:
@@ -167,6 +156,28 @@ def build_markdown(report):
             )
     else:
         lines.append("- No page rows returned for this period.")
+
+    if "query" in report["search_analytics"]:
+        lines.extend(["", "## Top queries by impressions", ""])
+        query_rows = report["search_analytics"]["query"].get("rows", [])[:10]
+        if query_rows:
+            for row in query_rows:
+                key = row.get("keys", ["(unknown)"])[0]
+                lines.append(
+                    f"- `{key}` — {row.get('impressions', 0)} impressions / "
+                    f"{row.get('clicks', 0)} clicks / pos. {fmt_position(row.get('position'))}"
+                )
+        else:
+            lines.append("- No query rows returned for this period.")
+    else:
+        lines.extend(
+            [
+                "",
+                "## Search queries",
+                "",
+                "- Query terms are intentionally excluded from the public-repository artifact.",
+            ]
+        )
 
     lines.extend(["", "## Representative URL inspection", ""])
     for item in report["url_inspection"]:
@@ -184,7 +195,7 @@ def build_markdown(report):
     lines.extend(
         [
             "",
-            "The JSON artifact contains the full API rows and inspection responses used for this summary.",
+            "The JSON artifact contains the aggregate/page/device/country API rows and inspection responses used for this summary.",
             "",
         ]
     )
@@ -192,19 +203,22 @@ def build_markdown(report):
 
 
 def main():
-    credentials, client_email = get_credentials()
+    credentials = get_credentials()
     end_date = date.today() - timedelta(days=2)
     start_date = end_date - timedelta(days=27)
 
     aggregate = search_analytics(credentials, start_date, end_date, [])
     dimension_data = {}
-    for name, dimensions in {
+    dimensions_to_collect = {
         "date": ["date"],
-        "query": ["query"],
         "page": ["page"],
         "country": ["country"],
         "device": ["device"],
-    }.items():
+    }
+    if INCLUDE_QUERIES:
+        dimensions_to_collect["query"] = ["query"]
+
+    for name, dimensions in dimensions_to_collect.items():
         result = search_analytics(credentials, start_date, end_date, dimensions)
         if name != "date":
             result["rows"] = top_rows(result, limit=25000)
@@ -212,9 +226,8 @@ def main():
 
     inspections = [inspect_url(credentials, url) for url in INSPECTION_URLS]
     report = {
-        "generated_at_utc": f"{date.today().isoformat()}T00:00:00Z",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "site_url": SITE_URL,
-        "service_account": client_email,
         "window": {"start": start_date.isoformat(), "end": end_date.isoformat()},
         "metrics": metric_summary(aggregate),
         "search_analytics": dimension_data,
