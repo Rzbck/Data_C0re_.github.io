@@ -106,6 +106,9 @@ jobs:
       - name: Normalize Archive context and locations
         run: node scripts/archive-location-context-fix.mjs
 
+      - name: Integrate FJM Atlas prototype on DEV
+        run: node scripts/fjm-atlas-dev-integration.mjs
+
       - name: Apply shared small-file video behavior
         run: node scripts/low-bandwidth-video-fix.mjs
 
