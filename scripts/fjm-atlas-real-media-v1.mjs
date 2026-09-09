@@ -60,8 +60,20 @@ const copy = {
   },
 };
 
-const style = `<style data-fjm-real-media-v1="">
-.fjm-atlas-page .project-hero-media img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}.fjm-atlas-page .fjm-real-gallery{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(12px,1.5vw,24px);margin-top:clamp(34px,4vw,58px)}.fjm-atlas-page .fjm-real-shot{margin:0;border:1px solid var(--line);background:#070707;overflow:hidden}.fjm-atlas-page .fjm-real-shot img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}.fjm-atlas-page .fjm-real-shot figcaption,.fjm-atlas-page .fjm-system-schematic figcaption{padding:10px 2px 0;color:var(--grey);font-size:9px;line-height:1.5;letter-spacing:.07em;text-transform:uppercase}.fjm-atlas-page .fjm-system-schematic{margin:clamp(34px,4vw,64px) 0 0;padding-top:clamp(24px,3vw,42px);border-top:1px solid var(--line)}.fjm-atlas-page .fjm-system-schematic img{display:block;width:100%;height:auto;border:1px solid var(--line)}@media(max-width:760px){.fjm-atlas-page .fjm-real-gallery{grid-template-columns:1fr}}
+const style = `<style data-fjm-real-media-v2="">
+.fjm-atlas-page .project-hero-media img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.fjm-atlas-page .fjm-interface-head{margin-bottom:clamp(34px,4vw,62px)}
+.fjm-atlas-page .fjm-interface-head>.section-kicker{margin-bottom:clamp(22px,2.4vw,38px)}
+.fjm-atlas-page .fjm-interface-copy{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(320px,.82fr);gap:clamp(34px,5vw,90px);align-items:end}
+.fjm-atlas-page .fjm-interface-copy h2{margin:0;font-size:clamp(44px,5vw,84px);line-height:.92;letter-spacing:-.055em;max-width:980px}
+.fjm-atlas-page .fjm-interface-copy p{margin:0;max-width:720px;justify-self:end;color:#b9b7b1;font-size:clamp(17px,1.25vw,21px);line-height:1.5}
+.fjm-atlas-page .fjm-real-gallery{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:clamp(14px,1.5vw,24px);align-items:start}
+.fjm-atlas-page .fjm-real-shot{margin:0;min-width:0;background:transparent;overflow:visible}
+.fjm-atlas-page .fjm-real-shot img{display:block;width:100%;height:auto;object-fit:contain;background:#070707;border:1px solid var(--line)}
+.fjm-atlas-page .fjm-real-shot figcaption,.fjm-atlas-page .fjm-system-schematic figcaption{padding:10px 2px 0;color:var(--grey);font-size:9px;line-height:1.5;letter-spacing:.07em;text-transform:uppercase}
+.fjm-atlas-page .fjm-system-schematic{margin:clamp(34px,4vw,64px) 0 0;padding-top:clamp(24px,3vw,42px);border-top:1px solid var(--line)}
+.fjm-atlas-page .fjm-system-schematic img{display:block;width:100%;height:auto;border:1px solid var(--line)}
+@media(max-width:900px){.fjm-atlas-page .fjm-interface-copy{grid-template-columns:1fr;gap:18px}.fjm-atlas-page .fjm-interface-copy p{justify-self:start}.fjm-atlas-page .fjm-real-gallery{grid-template-columns:1fr}}
 </style>`;
 
 function read(rel) { return fs.readFileSync(path.join(ROOT, rel), 'utf8'); }
@@ -72,6 +84,7 @@ function patchProject(rel, lang) {
   let html = read(rel);
 
   html = html.replace(/<style data-fjm-real-media-v1="">[\s\S]*?<\/style>/g, '');
+  html = html.replace(/<style data-fjm-real-media-v2="">[\s\S]*?<\/style>/g, '');
   html = html.replace('</head>', `${style}</head>`);
   html = html.replace(/<meta property="og:image" content="[^"]*">/i, `<meta property="og:image" content="${OG}">`);
 
@@ -79,9 +92,10 @@ function patchProject(rel, lang) {
   html = html.replace(/<figure class="project-hero-media reveal"(?: data-fjm-real-hero="")?>[\s\S]*?<\/figure>/, hero);
 
   html = html.replace(/<section class="project-section fjm-real-interface-v1"[\s\S]*?<\/section>/g, '');
+  html = html.replace(/<section class="project-section fjm-real-interface-v2"[\s\S]*?<\/section>/g, '');
   const interactionMarker = `<section class="project-section project-section--split"><div class="section-kicker reveal"><span>03</span><p>${c.interaction}</p>`;
   const interactionMarkerV4 = `<section class="project-section project-section--split"><div class="section-kicker reveal"><span>04</span><p>${c.interaction}</p>`;
-  const gallery = `<section class="project-section fjm-real-interface-v1" data-fjm-real-media-v1=""><div class="fjm-brief-grid"><div class="section-kicker reveal"><span>03</span><p>${c.galleryKicker}</p></div><div><div class="prose-large reveal"><h2>${c.galleryTitle}</h2><p>${c.galleryText}</p></div><div class="fjm-real-gallery"><figure class="fjm-real-shot reveal"><img src="${CARTEL}" alt="${c.cartelAlt}" loading="lazy"><figcaption>${c.cartelCaption}</figcaption></figure><figure class="fjm-real-shot reveal"><img src="${SELECTED}" alt="${c.selectedAlt}" loading="lazy"><figcaption>${c.selectedCaption}</figcaption></figure></div></div></div></section>`;
+  const gallery = `<section class="project-section fjm-real-interface-v2" data-fjm-real-media-v2=""><div class="fjm-interface-head"><div class="section-kicker reveal"><span>03</span><p>${c.galleryKicker}</p></div><div class="fjm-interface-copy"><h2 class="reveal">${c.galleryTitle}</h2><p class="reveal">${c.galleryText}</p></div></div><div class="fjm-real-gallery"><figure class="fjm-real-shot reveal"><img src="${CARTEL}" alt="${c.cartelAlt}" loading="lazy"><figcaption>${c.cartelCaption}</figcaption></figure><figure class="fjm-real-shot reveal"><img src="${SELECTED}" alt="${c.selectedAlt}" loading="lazy"><figcaption>${c.selectedCaption}</figcaption></figure></div></section>`;
   if (html.includes(interactionMarker)) html = html.replace(interactionMarker, `${gallery}${interactionMarkerV4}`);
   else if (html.includes(interactionMarkerV4)) html = html.replace(interactionMarkerV4, `${gallery}${interactionMarkerV4}`);
   else throw new Error(`Interaction marker not found in ${rel}`);
@@ -104,4 +118,4 @@ for (const rel of ARCHIVES) {
   write(rel, html);
 }
 
-console.log('FJM Atlas real interface media applied to DEV pages and archives.');
+console.log('FJM Atlas real interface media V2 applied to DEV pages and archives.');
