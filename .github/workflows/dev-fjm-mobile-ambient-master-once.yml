@@ -1,0 +1,175 @@
+name: One-shot FJM mobile Ambilight master
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - '.github/workflows/dev-fjm-mobile-ambient-master-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout DEV
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Replace FJM mobile Ambilight handoff with one persistent master emitter
+        shell: bash
+        run: |
+          before_fr="$(sha256sum fr/projects/fjm-atlas.html | cut -d' ' -f1)"
+          before_script="$(sha256sum scripts/fjm-atlas-real-media-v1.mjs | cut -d' ' -f1)"
+
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          amb = Path('assets/js/video-ambilight-v1.js')
+          s = amb.read_text(encoding='utf-8')
+
+          pattern = re.compile(r"  /\* FJM Atlas mobile:[\s\S]*?\n  const wake=\(\)=>schedule\(0\);", re.M)
+          replacement = r'''  /* FJM Atlas mobile: all page captures share the same cyan visual language.
+     Use one persistent page-level emitter sampled from the hero map instead of handing Ambilight
+     between individual images while scrolling. This removes IntersectionObserver/scroll-state
+     opacity hand-offs entirely on FJM mobile; desktop and every other page keep the standard runtime. */
+  const fjmMobilePage=()=>coarse&&document.body?.classList.contains('fjm-atlas-page');
+  const fjmStaticMedia=(media,state)=>Boolean(fjmMobilePage()&&state.kind==='image'&&media.dataset.ambilightWhiteGuard==='off');
+  let fjmMasterStatic=null;
+
+  const setFjmViewportGeometry=state=>{
+    setPosition(state.emitter,'--amb-source-left',innerWidth*.08);
+    setPosition(state.emitter,'--amb-source-right',innerWidth*.92);
+    setPosition(state.emitter,'--amb-source-top',innerHeight*.12);
+    setPosition(state.emitter,'--amb-source-bottom',innerHeight*.88);
+    setPosition(state.emitter,'--amb-source-x',innerWidth*.50);
+    setPosition(state.emitter,'--amb-source-y',innerHeight*.50);
+    setNumber(state.emitter,'--amb-strength',clamp(.48+state.energy*.20,.46,.68));
+  };
+
+  const resolveFjmMaster=now=>{
+    if(!fjmMobilePage()){fjmMasterStatic=null;return null}
+    if(fjmMasterStatic&&states.has(fjmMasterStatic[0])&&fjmMasterStatic[1].energy>.008)return fjmMasterStatic;
+
+    let first=null,hero=null;
+    for(const [media,state] of states){
+      if(!fjmStaticMedia(media,state))continue;
+      if(!first)first=[media,state];
+      if(media.closest('.project-hero-media')){hero=[media,state];break}
+    }
+    const candidate=hero||first;
+    if(!candidate)return null;
+    const [media,state]=candidate;
+    if(state.energy<=.008&&media.complete&&media.naturalWidth&&media.naturalHeight){
+      state.lastSample=now;
+      sample(media,state);
+    }
+    if(state.energy>.008)fjmMasterStatic=candidate;
+    return fjmMasterStatic;
+  };
+
+  const schedule=(delay=videoInterval)=>{
+    if(timer||document.hidden)return;
+    timer=setTimeout(()=>{timer=0;requestAnimationFrame(tick)},delay);
+  };
+
+  const tick=now=>{
+    if(document.hidden)return;
+
+    if(fjmMobilePage()){
+      const master=resolveFjmMaster(now);
+      if(master){
+        const [,masterState]=master;
+        for(const [media,state] of states){
+          if(fjmStaticMedia(media,state))state.emitter.classList.toggle('is-active',state===masterState);
+          else state.emitter.classList.remove('is-active');
+        }
+        masterState.emitter.classList.add('is-active');
+        setFjmViewportGeometry(masterState);
+        document.body?.classList.add('video-page-ambient','video-page-ambient-active');
+        schedule(coarse?260:180);
+        return;
+      }
+    }else fjmMasterStatic=null;
+
+    const active=[];
+    for(const [media,state] of states){
+      const on=state.kind==='video'?videoIsActive(media,state):imageIsActive(media,state);
+      const carry=!on&&state.kind==='video'&&luminaCarryActive(media,state);
+      if(on||carry){
+        state.emitter.classList.toggle('is-active',state.energy>.008||on);
+        active.push([media,state,carry]);
+      }else state.emitter.classList.remove('is-active');
+    }
+    if(!active.length){document.body?.classList.remove('video-page-ambient-active');return}
+    document.body?.classList.add('video-page-ambient','video-page-ambient-active');
+    if(document.documentElement.hasAttribute('data-dc-media-scrolling')){
+      for(const [media,state] of active)updateGeometry(media,state,active.length);
+      schedule(coarse?260:180);
+      return;
+    }
+    for(const [media,state,carry] of active){
+      const due=state.kind==='video'?videoInterval:imageInterval;
+      if(!carry&&now-state.lastSample>=due){state.lastSample=now;sample(media,state)}
+      updateGeometry(media,state,active.length);
+    }
+    schedule();
+  };
+  const wake=()=>schedule(0);'''
+
+          s2, count = pattern.subn(replacement, s, count=1)
+          if count != 1:
+              raise SystemExit(f'Expected one FJM special runtime block, patched {count}')
+          amb.write_text(s2, encoding='utf-8')
+
+          routes = Path('assets/js/language-routes.js')
+          r = routes.read_text(encoding='utf-8')
+          old = "ensureScript('assets/js/video-ambilight-v1.js?v=20260909-fjm-mobile1','data-video-ambilight');"
+          new = "ensureScript('assets/js/video-ambilight-v1.js?v=20260909-fjm-mobile2','data-video-ambilight');"
+          if old in r:
+              r = r.replace(old, new, 1)
+          elif new not in r:
+              raise SystemExit('Expected FJM mobile1 Ambilight loader not found')
+          routes.write_text(r, encoding='utf-8')
+          PY
+
+          node --check assets/js/video-ambilight-v1.js
+          node --check assets/js/language-routes.js
+
+          after_fr="$(sha256sum fr/projects/fjm-atlas.html | cut -d' ' -f1)"
+          after_script="$(sha256sum scripts/fjm-atlas-real-media-v1.mjs | cut -d' ' -f1)"
+          test "$before_fr" = "$after_fr"
+          test "$before_script" = "$after_script"
+
+      - name: Verify stable FJM mobile master emitter only
+        shell: bash
+        run: |
+          grep -q "let fjmMasterStatic=null" assets/js/video-ambilight-v1.js
+          grep -q "const resolveFjmMaster=now=>" assets/js/video-ambilight-v1.js
+          grep -q "setFjmViewportGeometry(masterState)" assets/js/video-ambilight-v1.js
+          grep -q "video-ambilight-v1.js?v=20260909-fjm-mobile2" assets/js/language-routes.js
+          ! grep -q "fjmScrollCarry" assets/js/video-ambilight-v1.js
+          ! grep -q "freezeGeometry" assets/js/video-ambilight-v1.js
+          grep -q 'grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)' fr/projects/fjm-atlas.html
+          grep -q 'fjm-story-tech{grid-column:1 / -1;width:100%' fr/projects/fjm-atlas.html
+          test "$(grep -o 'data-ambilight-white-guard=\"off\"' fr/projects/fjm-atlas.html | wc -l)" -eq 4
+          git diff --check
+
+      - name: Commit DEV runtime fix
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/js/video-ambilight-v1.js assets/js/language-routes.js
+          if git diff --cached --quiet; then
+            echo "FJM mobile master Ambilight already applied."
+          else
+            git commit -m "Keep FJM Atlas mobile Ambilight continuously stable"
+            git push origin HEAD:dev
+          fi
