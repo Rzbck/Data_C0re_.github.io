@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "categories": {
     "location": {"en": "Location", "fr": "Lieu", "es": "Lugar"},
     "context": {"en": "Context", "fr": "Contexte", "es": "Contexto"},
@@ -24,12 +24,14 @@
     "simulation": {"category": "context", "en": "Simulation", "fr": "Simulation", "es": "Simulación"},
     "study": {"category": "context", "en": "Study", "fr": "Étude", "es": "Estudio"},
     "festival": {"category": "context", "en": "Festival", "fr": "Festival", "es": "Festival"},
+    "prototype": {"category": "context", "en": "Prototype", "fr": "Prototype", "es": "Prototipo"},
     "theatre-video": {"category": "discipline", "en": "Theatre video", "fr": "Vidéo théâtre", "es": "Vídeo teatral"},
     "projection": {"category": "discipline", "en": "Projection", "fr": "Projection", "es": "Proyección"},
     "realtime-video": {"category": "discipline", "en": "Realtime video", "fr": "Vidéo temps réel", "es": "Vídeo en tiempo real"},
     "lighting": {"category": "discipline", "en": "Lighting", "fr": "Lumière", "es": "Luz"},
     "led": {"category": "discipline", "en": "LED", "fr": "LED", "es": "LED"},
     "interactive": {"category": "discipline", "en": "Interactive", "fr": "Interactif", "es": "Interactivo"},
+    "interactive-map": {"category": "discipline", "en": "Interactive map", "fr": "Carte interactive", "es": "Mapa interactivo"},
     "image-processing": {"category": "discipline", "en": "Image processing", "fr": "Traitement d’image", "es": "Procesamiento de imagen"},
     "audio-reactive": {"category": "discipline", "en": "Audio reactive", "fr": "Audio-réactif", "es": "Audio-reactivo"},
     "small-file": {"category": "discipline", "en": "Small-file", "fr": "Small-file", "es": "Small-file"},
@@ -38,6 +40,9 @@
     "resolume": {"category": "tool", "en": "Resolume", "fr": "Resolume", "es": "Resolume"},
     "glsl": {"category": "tool", "en": "GLSL", "fr": "GLSL", "es": "GLSL"},
     "esp32": {"category": "tool", "en": "ESP32", "fr": "ESP32", "es": "ESP32"},
+    "electron": {"category": "tool", "en": "Electron", "fr": "Electron", "es": "Electron"},
+    "typescript": {"category": "tool", "en": "TypeScript", "fr": "TypeScript", "es": "TypeScript"},
+    "openseadragon": {"category": "tool", "en": "OpenSeadragon", "fr": "OpenSeadragon", "es": "OpenSeadragon"},
     "dmx": {"category": "protocol", "en": "DMX", "fr": "DMX", "es": "DMX"},
     "art-net": {"category": "protocol", "en": "Art-Net", "fr": "Art-Net", "es": "Art-Net"},
     "websocket": {"category": "protocol", "en": "WebSocket", "fr": "WebSocket", "es": "WebSocket"},
@@ -47,7 +52,9 @@
     "networked-media": {"category": "system", "en": "Networked media", "fr": "Média en réseau", "es": "Media en red"},
     "mmwave-tracking": {"category": "system", "en": "mmWave tracking", "fr": "Tracking mmWave", "es": "Tracking mmWave"},
     "software": {"category": "system", "en": "Software", "fr": "Logiciel", "es": "Software"},
-    "low-bandwidth": {"category": "system", "en": "Low bandwidth", "fr": "Faible bande passante", "es": "Bajo ancho de banda"}
+    "low-bandwidth": {"category": "system", "en": "Low bandwidth", "fr": "Faible bande passante", "es": "Bajo ancho de banda"},
+    "kiosk": {"category": "system", "en": "Kiosk", "fr": "Borne", "es": "Quiosco"},
+    "offline-first": {"category": "system", "en": "Offline-first", "fr": "Hors ligne", "es": "Offline-first"}
   },
   "projects": {
     "lumina": ["geneva", "switzerland", "installation", "lighting", "led", "interactive", "touchdesigner", "dmx", "art-net", "show-control", "networked-media"],
@@ -57,6 +64,7 @@
     "stage-systems": ["chambery", "stage", "live-av", "realtime-video", "lighting", "led", "touchdesigner", "resolume", "dmx"],
     "snake": ["research", "software", "interactive", "touchdesigner", "networked-media"],
     "signal": ["simulation", "interactive", "led", "touchdesigner", "mmwave-tracking", "esp32", "websocket", "json", "art-net", "networked-media", "software"],
+    "fjm-atlas": ["research", "prototype", "interactive", "interactive-map", "electron", "typescript", "openseadragon", "software", "kiosk", "offline-first"],
     "ascii": ["study", "realtime-video", "touchdesigner", "image-processing"],
     "realtime": ["research", "touchdesigner", "resolume", "glsl", "audio-reactive", "realtime-video", "image-processing", "led"],
     "cloud": ["study", "realtime-video", "touchdesigner", "glsl", "image-processing"],
