@@ -21,7 +21,7 @@ jobs:
           ref: dev
           fetch-depth: 0
 
-      - name: Replace FJM mobile Ambilight handoff with one persistent master emitter
+      - name: Replace FJM mobile Ambilight handoff with persistent master emitter
         shell: bash
         run: |
           before_fr="$(sha256sum fr/projects/fjm-atlas.html | cut -d' ' -f1)"
@@ -29,100 +29,12 @@ jobs:
 
           python - <<'PY'
           from pathlib import Path
-          import re
+          import re, base64
 
           amb = Path('assets/js/video-ambilight-v1.js')
           s = amb.read_text(encoding='utf-8')
-
           pattern = re.compile(r"  /\* FJM Atlas mobile:[\s\S]*?\n  const wake=\(\)=>schedule\(0\);", re.M)
-          replacement = r'''  /* FJM Atlas mobile: all page captures share the same cyan visual language.
-     Use one persistent page-level emitter sampled from the hero map instead of handing Ambilight
-     between individual images while scrolling. This removes IntersectionObserver/scroll-state
-     opacity hand-offs entirely on FJM mobile; desktop and every other page keep the standard runtime. */
-  const fjmMobilePage=()=>coarse&&document.body?.classList.contains('fjm-atlas-page');
-  const fjmStaticMedia=(media,state)=>Boolean(fjmMobilePage()&&state.kind==='image'&&media.dataset.ambilightWhiteGuard==='off');
-  let fjmMasterStatic=null;
-
-  const setFjmViewportGeometry=state=>{
-    setPosition(state.emitter,'--amb-source-left',innerWidth*.08);
-    setPosition(state.emitter,'--amb-source-right',innerWidth*.92);
-    setPosition(state.emitter,'--amb-source-top',innerHeight*.12);
-    setPosition(state.emitter,'--amb-source-bottom',innerHeight*.88);
-    setPosition(state.emitter,'--amb-source-x',innerWidth*.50);
-    setPosition(state.emitter,'--amb-source-y',innerHeight*.50);
-    setNumber(state.emitter,'--amb-strength',clamp(.48+state.energy*.20,.46,.68));
-  };
-
-  const resolveFjmMaster=now=>{
-    if(!fjmMobilePage()){fjmMasterStatic=null;return null}
-    if(fjmMasterStatic&&states.has(fjmMasterStatic[0])&&fjmMasterStatic[1].energy>.008)return fjmMasterStatic;
-
-    let first=null,hero=null;
-    for(const [media,state] of states){
-      if(!fjmStaticMedia(media,state))continue;
-      if(!first)first=[media,state];
-      if(media.closest('.project-hero-media')){hero=[media,state];break}
-    }
-    const candidate=hero||first;
-    if(!candidate)return null;
-    const [media,state]=candidate;
-    if(state.energy<=.008&&media.complete&&media.naturalWidth&&media.naturalHeight){
-      state.lastSample=now;
-      sample(media,state);
-    }
-    if(state.energy>.008)fjmMasterStatic=candidate;
-    return fjmMasterStatic;
-  };
-
-  const schedule=(delay=videoInterval)=>{
-    if(timer||document.hidden)return;
-    timer=setTimeout(()=>{timer=0;requestAnimationFrame(tick)},delay);
-  };
-
-  const tick=now=>{
-    if(document.hidden)return;
-
-    if(fjmMobilePage()){
-      const master=resolveFjmMaster(now);
-      if(master){
-        const [,masterState]=master;
-        for(const [media,state] of states){
-          if(fjmStaticMedia(media,state))state.emitter.classList.toggle('is-active',state===masterState);
-          else state.emitter.classList.remove('is-active');
-        }
-        masterState.emitter.classList.add('is-active');
-        setFjmViewportGeometry(masterState);
-        document.body?.classList.add('video-page-ambient','video-page-ambient-active');
-        schedule(coarse?260:180);
-        return;
-      }
-    }else fjmMasterStatic=null;
-
-    const active=[];
-    for(const [media,state] of states){
-      const on=state.kind==='video'?videoIsActive(media,state):imageIsActive(media,state);
-      const carry=!on&&state.kind==='video'&&luminaCarryActive(media,state);
-      if(on||carry){
-        state.emitter.classList.toggle('is-active',state.energy>.008||on);
-        active.push([media,state,carry]);
-      }else state.emitter.classList.remove('is-active');
-    }
-    if(!active.length){document.body?.classList.remove('video-page-ambient-active');return}
-    document.body?.classList.add('video-page-ambient','video-page-ambient-active');
-    if(document.documentElement.hasAttribute('data-dc-media-scrolling')){
-      for(const [media,state] of active)updateGeometry(media,state,active.length);
-      schedule(coarse?260:180);
-      return;
-    }
-    for(const [media,state,carry] of active){
-      const due=state.kind==='video'?videoInterval:imageInterval;
-      if(!carry&&now-state.lastSample>=due){state.lastSample=now;sample(media,state)}
-      updateGeometry(media,state,active.length);
-    }
-    schedule();
-  };
-  const wake=()=>schedule(0);'''
-
+          replacement = base64.b64decode("ICAvKiBGSk0gQXRsYXMgbW9iaWxlOiBhbGwgcGFnZSBjYXB0dXJlcyBzaGFyZSB0aGUgc2FtZSBjeWFuIHZpc3VhbCBsYW5ndWFnZS4KICAgICBVc2Ugb25lIHBlcnNpc3RlbnQgcGFnZS1sZXZlbCBlbWl0dGVyIHNhbXBsZWQgZnJvbSB0aGUgaGVybyBtYXAgaW5zdGVhZCBvZiBoYW5kaW5nIEFtYmlsaWdodAogICAgIGJldHdlZW4gaW5kaXZpZHVhbCBpbWFnZXMgd2hpbGUgc2Nyb2xsaW5nLiBUaGlzIHJlbW92ZXMgSW50ZXJzZWN0aW9uT2JzZXJ2ZXIvc2Nyb2xsLXN0YXRlCiAgICAgb3BhY2l0eSBoYW5kLW9mZnMgZW50aXJlbHkgb24gRkpNIG1vYmlsZTsgZGVza3RvcCBhbmQgZXZlcnkgb3RoZXIgcGFnZSBrZWVwIHRoZSBzdGFuZGFyZCBydW50aW1lLiAqLwogIGNvbnN0IGZqbU1vYmlsZVBhZ2U9KCk9PmNvYXJzZSYmZG9jdW1lbnQuYm9keT8uY2xhc3NMaXN0LmNvbnRhaW5zKCdmam0tYXRsYXMtcGFnZScpOwogIGNvbnN0IGZqbVN0YXRpY01lZGlhPShtZWRpYSxzdGF0ZSk9PkJvb2xlYW4oZmptTW9iaWxlUGFnZSgpJiZzdGF0ZS5raW5kPT09J2ltYWdlJyYmbWVkaWEuZGF0YXNldC5hbWJpbGlnaHRXaGl0ZUd1YXJkPT09J29mZicpOwogIGxldCBmam1NYXN0ZXJTdGF0aWM9bnVsbDsKCiAgY29uc3Qgc2V0RmptVmlld3BvcnRHZW9tZXRyeT1zdGF0ZT0+ewogICAgc2V0UG9zaXRpb24oc3RhdGUuZW1pdHRlciwnLS1hbWItc291cmNlLWxlZnQnLGlubmVyV2lkdGgqLjA4KTsKICAgIHNldFBvc2l0aW9uKHN0YXRlLmVtaXR0ZXIsJy0tYW1iLXNvdXJjZS1yaWdodCcsaW5uZXJXaWR0aCouOTIpOwogICAgc2V0UG9zaXRpb24oc3RhdGUuZW1pdHRlciwnLS1hbWItc291cmNlLXRvcCcsaW5uZXJIZWlnaHQqLjEyKTsKICAgIHNldFBvc2l0aW9uKHN0YXRlLmVtaXR0ZXIsJy0tYW1iLXNvdXJjZS1ib3R0b20nLGlubmVySGVpZ2h0Ki44OCk7CiAgICBzZXRQb3NpdGlvbihzdGF0ZS5lbWl0dGVyLCctLWFtYi1zb3VyY2UteCcsaW5uZXJXaWR0aCouNTApOwogICAgc2V0UG9zaXRpb24oc3RhdGUuZW1pdHRlciwnLS1hbWItc291cmNlLXknLGlubmVySGVpZ2h0Ki41MCk7CiAgICBzZXROdW1iZXIoc3RhdGUuZW1pdHRlciwnLS1hbWItc3RyZW5ndGgnLGNsYW1wKC40OCtzdGF0ZS5lbmVyZ3kqLjIwLC40NiwuNjgpKTsKICB9OwoKICBjb25zdCByZXNvbHZlRmptTWFzdGVyPW5vdz0+ewogICAgaWYoIWZqbU1vYmlsZVBhZ2UoKSl7ZmptTWFzdGVyU3RhdGljPW51bGw7cmV0dXJuIG51bGx9CiAgICBpZihmam1NYXN0ZXJTdGF0aWMmJnN0YXRlcy5oYXMoZmptTWFzdGVyU3RhdGljWzBdKSYmZmptTWFzdGVyU3RhdGljWzFdLmVuZXJneT4uMDA4KXJldHVybiBmam1NYXN0ZXJTdGF0aWM7CgogICAgbGV0IGZpcnN0PW51bGwsaGVybz1udWxsOwogICAgZm9yKGNvbnN0IFttZWRpYSxzdGF0ZV0gb2Ygc3RhdGVzKXsKICAgICAgaWYoIWZqbVN0YXRpY01lZGlhKG1lZGlhLHN0YXRlKSljb250aW51ZTsKICAgICAgaWYoIWZpcnN0KWZpcnN0PVttZWRpYSxzdGF0ZV07CiAgICAgIGlmKG1lZGlhLmNsb3Nlc3QoJy5wcm9qZWN0LWhlcm8tbWVkaWEnKSl7aGVybz1bbWVkaWEsc3RhdGVdO2JyZWFrfQogICAgfQogICAgY29uc3QgY2FuZGlkYXRlPWhlcm98fGZpcnN0OwogICAgaWYoIWNhbmRpZGF0ZSlyZXR1cm4gbnVsbDsKICAgIGNvbnN0IFttZWRpYSxzdGF0ZV09Y2FuZGlkYXRlOwogICAgaWYoc3RhdGUuZW5lcmd5PD0uMDA4JiZtZWRpYS5jb21wbGV0ZSYmbWVkaWEubmF0dXJhbFdpZHRoJiZtZWRpYS5uYXR1cmFsSGVpZ2h0KXsKICAgICAgc3RhdGUubGFzdFNhbXBsZT1ub3c7CiAgICAgIHNhbXBsZShtZWRpYSxzdGF0ZSk7CiAgICB9CiAgICBpZihzdGF0ZS5lbmVyZ3k+LjAwOClmam1NYXN0ZXJTdGF0aWM9Y2FuZGlkYXRlOwogICAgcmV0dXJuIGZqbU1hc3RlclN0YXRpYzsKICB9OwoKICBjb25zdCBzY2hlZHVsZT0oZGVsYXk9dmlkZW9JbnRlcnZhbCk9PnsKICAgIGlmKHRpbWVyfHxkb2N1bWVudC5oaWRkZW4pcmV0dXJuOwogICAgdGltZXI9c2V0VGltZW91dCgoKT0+e3RpbWVyPTA7cmVxdWVzdEFuaW1hdGlvbkZyYW1lKHRpY2spfSxkZWxheSk7CiAgfTsKCiAgY29uc3QgdGljaz1ub3c9PnsKICAgIGlmKGRvY3VtZW50LmhpZGRlbilucmV0dXJuOwoKICAgIGlmKGZqbU1vYmlsZVBhZ2UoKSl7CiAgICAgIGNvbnN0IG1hc3Rlcj1yZXNvbHZlRmptTWFzdGVyKG5vdyk7CiAgICAgIGlmKG1hc3Rlcil7CiAgICAgICAgY29uc3QgWyxtYXN0ZXJTdGF0ZV09bWFzdGVyOwogICAgICAgIGZvcihjb25zdCBbbWVkaWEsc3RhdGVdIG9mIHN0YXRlcyl7CiAgICAgICAgICBpZihmam1TdGF0aWNNZWRpYShtZWRpYSxzdGF0ZSkpc3RhdGUuZW1pdHRlci5jbGFzc0xpc3QudG9nZ2xlKCdpcy1hY3RpdmUnLHN0YXRlPT09bWFzdGVyU3RhdGUpOwogICAgICAgICAgZWxzZSBzdGF0ZS5lbWl0dGVyLmNsYXNzTGlzdC5yZW1vdmUoJ2lzLWFjdGl2ZScpOwogICAgICAgIH0KICAgICAgICBtYXN0ZXJTdGF0ZS5lbWl0dGVyLmNsYXNzTGlzdC5hZGQoJ2lzLWFjdGl2ZScpOwogICAgICAgIHNldEZqbVZpZXdwb3J0R2VvbWV0cnkobWFzdGVyU3RhdGUpOwogICAgICAgIGRvY3VtZW50LmJvZHk/LmNsYXNzTGlzdC5hZGQoJ3ZpZGVvLXBhZ2UtYW1iaWVudCcsJ3ZpZGVvLXBhZ2UtYW1iaWVudC1hY3RpdmUnKTsKICAgICAgICBzY2hlZHVsZShjb2Fyc2U/MjYwOjE4MCk7CiAgICAgICAgcmV0dXJuOwogICAgICB9CiAgICB9ZWxzZSBmam1NYXN0ZXJTdGF0aWM9bnVsbDsKCiAgICBjb25zdCBhY3RpdmU9W107CiAgICBmb3IoY29uc3QgW21lZGlhLHN0YXRlXSBvZiBzdGF0ZXMpewogICAgICBjb25zdCBvbj1zdGF0ZS5raW5kPT09J3ZpZGVvJz92aWRlb0lzQWN0aXZlKG1lZGlhLHN0YXRlKTppbWFnZUlzQWN0aXZlKG1lZGlhLHN0YXRlKTsKICAgICAgY29uc3QgY2Fycnk9IW9uJiZzdGF0ZS5raW5kPT09J3ZpZGVvJyYmbHVtaW5hQ2FycnlBY3RpdmUobWVkaWEsc3RhdGUpOwogICAgICBpZihvbnx8Y2FycnkpewogICAgICAgIHN0YXRlLmVtaXR0ZXIuY2xhc3NMaXN0LnRvZ2dsZSgnaXMtYWN0aXZlJyxzdGF0ZS5lbmVyZ3k+LjAwOHx8b24pOwogICAgICAgIGFjdGl2ZS5wdXNoKFttZWRpYSxzdGF0ZSxjYXJyeV0pOwogICAgICB9ZWxzZSBzdGF0ZS5lbWl0dGVyLmNsYXNzTGlzdC5yZW1vdmUoJ2lzLWFjdGl2ZScpOwogICAgfQogICAgaWYoIWFjdGl2ZS5sZW5ndGgpe2RvY3VtZW50LmJvZHk/LmNsYXNzTGlzdC5yZW1vdmUoJ3ZpZGVvLXBhZ2UtYW1iaWVudC1hY3RpdmUnKTtyZXR1cm59CiAgICBkb2N1bWVudC5ib2R5Py5jbGFzc0xpc3QuYWRkKCd2aWRlby1wYWdlLWFtYmllbnQnLCd2aWRlby1wYWdlLWFtYmllbnQtYWN0aXZlJyk7CiAgICBpZihkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQuaGFzQXR0cmlidXRlKCdkYXRhLWRjLW1lZGlhLXNjcm9sbGluZycpKXsKICAgICAgZm9yKGNvbnN0IFttZWRpYSxzdGF0ZV0gb2YgYWN0aXZlKXVwZGF0ZUdlb21ldHJ5KG1lZGlhLHN0YXRlLGFjdGl2ZS5sZW5ndGgpOwogICAgICBzY2hlZHVsZShjb2Fyc2U/MjYwOjE4MCk7CiAgICAgIHJldHVybjsKICAgIH0KICAgIGZvcihjb25zdCBbbWVkaWEsc3RhdGUsY2FycnldIG9mIGFjdGl2ZSl7CiAgICAgIGNvbnN0IGR1ZT1zdGF0ZS5raW5kPT09J3ZpZGVvJz92aWRlb0ludGVydmFsOmltYWdlSW50ZXJ2YWw7CiAgICAgIGlmKCFjYXJyeSYmbm93LXN0YXRlLmxhc3RTYW1wbGU+PWR1ZSl7c3RhdGUubGFzdFNhbXBsZT1ub3c7c2FtcGxlKG1lZGlhLHN0YXRlKX0KICAgICAgdXBkYXRlR2VvbWV0cnkobWVkaWEsc3RhdGUsYWN0aXZlLmxlbmd0aCk7CiAgICB9CiAgICBzY2hlZHVsZSgpOwogIH07CiAgY29uc3Qgd2FrZT0oKT0+c2NoZWR1bGUoMCk7").decode("utf-8")
           s2, count = pattern.subn(replacement, s, count=1)
           if count != 1:
               raise SystemExit(f'Expected one FJM special runtime block, patched {count}')
