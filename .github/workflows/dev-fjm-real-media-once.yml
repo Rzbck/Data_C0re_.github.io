@@ -20,28 +20,28 @@ jobs:
         with:
           ref: dev
           fetch-depth: 0
-      - name: Download temporary private export artifact
+      - name: Download temporary HD export artifact
         shell: bash
         run: |
-          curl --fail --location --retry 2 'https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-f5b8-8210-a9c6-4c88ce72e592/raw?se=2026-09-09T06%3A06%3A37Z&sp=r&sv=2026-02-06&sr=b&scid=21b5f07b-70b6-58ae-b7e4-3a9c2b20b75b&skoid=a3a8eefe-d4bd-4909-ab1d-2a75a2302fac&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-09T02%3A05%3A21Z&ske=2026-09-10T02%3A05%3A21Z&sks=b&skv=2026-02-06&sig=YokCtMcyBLPI869pxsohDHREFP6NykuyDx7j7nZ%2BG1I%3D' -o /tmp/fjm-atlas-portfolio-preview.zip
+          curl --fail --location --retry 2 'https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-fb1c-8210-a281-9aeab410b92b/raw?se=2026-09-09T06%3A08%3A53Z&sp=r&sv=2026-02-06&sr=b&scid=080faf61-fd81-537e-bfa1-cd12d20310c5&skoid=a3a8eefe-d4bd-4909-ab1d-2a75a2302fac&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-09T03%3A21%3A01Z&ske=2026-09-10T03%3A21%3A01Z&sks=b&skv=2026-02-06&sig=r9ks0pAbWHgHlFq3IeNtsnVXSB02MALAgNAscU2PWIw%3D' -o /tmp/fjm-atlas-portfolio-hd.zip
           rm -rf /tmp/fjm-atlas-media
           mkdir -p /tmp/fjm-atlas-media assets/media/fjm-atlas/real
-          unzip -q /tmp/fjm-atlas-portfolio-preview.zip -d /tmp/fjm-atlas-media
-          cp /tmp/fjm-atlas-media/02-map-overview.webp assets/media/fjm-atlas/real/
-          cp /tmp/fjm-atlas-media/04-editorial-cartel.webp assets/media/fjm-atlas/real/
-          cp /tmp/fjm-atlas-media/05-selected-location-map.webp assets/media/fjm-atlas/real/
-          test -s assets/media/fjm-atlas/real/02-map-overview.webp
-          test -s assets/media/fjm-atlas/real/04-editorial-cartel.webp
-          test -s assets/media/fjm-atlas/real/05-selected-location-map.webp
-      - name: Commit real media to DEV
+          unzip -q /tmp/fjm-atlas-portfolio-hd.zip -d /tmp/fjm-atlas-media
+          cp /tmp/fjm-atlas-media/02-map-overview.png assets/media/fjm-atlas/real/
+          cp /tmp/fjm-atlas-media/04-editorial-cartel.png assets/media/fjm-atlas/real/
+          cp /tmp/fjm-atlas-media/05-selected-location-map.png assets/media/fjm-atlas/real/
+          test -s assets/media/fjm-atlas/real/02-map-overview.png
+          test -s assets/media/fjm-atlas/real/04-editorial-cartel.png
+          test -s assets/media/fjm-atlas/real/05-selected-location-map.png
+      - name: Commit HD real media to DEV
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/media/fjm-atlas/real/*.webp
+          git add assets/media/fjm-atlas/real/*.png
           if git diff --cached --quiet; then
-            echo "Real media already present."
+            echo "HD real media already present."
           else
-            git commit -m "Add real FJM Atlas interface media on DEV"
+            git commit -m "Add HD FJM Atlas interface screenshots on DEV"
             git push origin HEAD:dev
           fi
