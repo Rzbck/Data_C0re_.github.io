@@ -115,6 +115,9 @@ jobs:
       - name: Apply FJM Atlas commissioned project context
         run: node scripts/fjm-atlas-context-v2.mjs
 
+      - name: Apply FJM Atlas real interface media
+        run: node scripts/fjm-atlas-real-media-v1.mjs
+
       - name: Apply shared small-file video behavior
         run: node scripts/low-bandwidth-video-fix.mjs
 
