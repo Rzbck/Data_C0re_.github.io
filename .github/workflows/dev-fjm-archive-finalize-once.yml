@@ -26,22 +26,6 @@ jobs:
           node --check scripts/fjm-atlas-production-ready-v1.mjs
           node scripts/fjm-atlas-production-ready-v1.mjs
 
-      - name: Persist finalizer in DEV build
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('.github/workflows/dev-build.yml')
-          s = p.read_text(encoding='utf-8')
-          needle = "      - name: Apply FJM Atlas real interface media\n        run: node scripts/fjm-atlas-real-media-v1.mjs\n"
-          block = needle + "\n      - name: Finalize FJM Atlas release metadata\n        run: node scripts/fjm-atlas-production-ready-v1.mjs\n"
-          if 'Finalize FJM Atlas release metadata' not in s:
-              if needle not in s:
-                  raise SystemExit('FJM real-media build step not found')
-              s = s.replace(needle, block, 1)
-          p.write_text(s, encoding='utf-8')
-          PY
-
       - name: Verify archive functionality and final wording
         shell: bash
         run: |
@@ -71,7 +55,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/project-taxonomy.json archive.html en/archive.html fr/archive.html es/archive.html projects/fjm-atlas.html en/projects/fjm-atlas.html fr/projects/fjm-atlas.html es/projects/fjm-atlas.html .github/workflows/dev-build.yml
+          git add data/project-taxonomy.json archive.html en/archive.html fr/archive.html es/archive.html projects/fjm-atlas.html en/projects/fjm-atlas.html fr/projects/fjm-atlas.html es/projects/fjm-atlas.html
           if git diff --cached --quiet; then
             echo "FJM Atlas archive already final-ready."
           else
