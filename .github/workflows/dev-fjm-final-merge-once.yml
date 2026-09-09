@@ -1,0 +1,75 @@
+name: One-shot FJM Atlas final merged case study
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - '.github/workflows/dev-fjm-final-merge-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout DEV
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Import invitation screenshot from the existing HD export
+        shell: bash
+        run: |
+          curl --fail --location --retry 2 'https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-fb1c-8210-a281-9aeab410b92b/raw?se=2026-09-09T06%3A08%3A53Z&sp=r&sv=2026-02-06&sr=b&scid=080faf61-fd81-537e-bfa1-cd12d20310c5&skoid=a3a8eefe-d4bd-4909-ab1d-2a75a2302fac&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-09T03%3A21%3A01Z&ske=2026-09-10T03%3A21%3A01Z&sks=b&skv=2026-02-06&sig=r9ks0pAbWHgHlFq3IeNtsnVXSB02MALAgNAscU2PWIw%3D' -o /tmp/fjm-atlas-portfolio-hd.zip
+          rm -rf /tmp/fjm-atlas-media
+          mkdir -p /tmp/fjm-atlas-media assets/media/fjm-atlas/real
+          unzip -q /tmp/fjm-atlas-portfolio-hd.zip -d /tmp/fjm-atlas-media
+          candidate="$(find /tmp/fjm-atlas-media -type f -name '01-invitation-hero.png' -print -quit)"
+          test -n "$candidate"
+          cp "$candidate" assets/media/fjm-atlas/real/01-invitation-hero.png
+          test -s assets/media/fjm-atlas/real/01-invitation-hero.png
+
+      - name: Apply merged FJM Atlas layout
+        run: |
+          node --check scripts/fjm-atlas-real-media-v1.mjs
+          node scripts/fjm-atlas-real-media-v1.mjs
+
+      - name: Verify final compact case study
+        shell: bash
+        run: |
+          for page in projects/fjm-atlas.html en/projects/fjm-atlas.html fr/projects/fjm-atlas.html es/projects/fjm-atlas.html; do
+            test "$(grep -o '<section class="project-section' "$page" | wc -l)" -eq 2
+            grep -q 'data-fjm-story' "$page"
+            grep -q '01-invitation-hero.png' "$page"
+            grep -q 'data-fjm-real-media-v2' "$page"
+            grep -q 'grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)' "$page"
+            grep -q '<span>03</span>' "$page"
+            ! grep -q 'data-fjm-compact-response' "$page"
+            ! grep -q 'interface-schematic.svg' "$page"
+            ! grep -q 'Current state' "$page"
+            ! grep -q 'État actuel' "$page"
+            ! grep -q 'Estado actual' "$page"
+          done
+          git diff --check
+
+      - name: Commit final FJM Atlas case study on DEV
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/media/fjm-atlas/real/01-invitation-hero.png projects/fjm-atlas.html en/projects/fjm-atlas.html fr/projects/fjm-atlas.html es/projects/fjm-atlas.html archive.html en/archive.html fr/archive.html es/archive.html
+          if git diff --cached --quiet; then
+            echo "Final FJM Atlas layout already applied."
+          else
+            git commit -m "Merge FJM Atlas brief response and invitation image on DEV"
+            git push origin HEAD:dev
+          fi
