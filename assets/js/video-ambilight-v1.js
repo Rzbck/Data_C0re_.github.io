@@ -259,6 +259,15 @@
     }
   };
 
+  /* FJM Atlas mobile: static captures share one cyan visual language. During kinetic
+     scrolling, freeze the last sampled static emitter instead of letting IntersectionObserver
+     hand-offs briefly drop the page Ambilight between large images. Desktop and every other
+     project keep the standard runtime. */
+  const fjmMobilePage=()=>coarse&&document.body?.classList.contains('fjm-atlas-page');
+  const fjmStaticMedia=(media,state)=>Boolean(fjmMobilePage()&&state.kind==='image'&&media.dataset.ambilightWhiteGuard==='off');
+  let fjmLastStatic=null;
+  let fjmScrollCarry=null;
+
   const schedule=(delay=videoInterval)=>{
     if(timer||document.hidden)return;
     timer=setTimeout(()=>{timer=0;requestAnimationFrame(tick)},delay);
@@ -266,19 +275,54 @@
 
   const tick=now=>{
     if(document.hidden)return;
+    const scrolling=document.documentElement.hasAttribute('data-dc-media-scrolling');
     const active=[];
+    const fjmVisible=[];
     for(const [media,state] of states){
       const on=state.kind==='video'?videoIsActive(media,state):imageIsActive(media,state);
       const carry=!on&&state.kind==='video'&&luminaCarryActive(media,state);
       if(on||carry){
         state.emitter.classList.toggle('is-active',state.energy>.008||on);
-        active.push([media,state,carry]);
+        active.push([media,state,carry,false]);
+        if(on&&fjmStaticMedia(media,state))fjmVisible.push([media,state]);
       }else state.emitter.classList.remove('is-active');
     }
+
+    if(fjmMobilePage()){
+      if(!scrolling){
+        if(fjmVisible.length){
+          fjmLastStatic=fjmVisible.reduce((best,row)=>row[1].ratio>best[1].ratio?row:best,fjmVisible[0]);
+        }
+        fjmScrollCarry=null;
+      }else{
+        if(!fjmScrollCarry){
+          const best=fjmVisible.length?fjmVisible.reduce((winner,row)=>row[1].ratio>winner[1].ratio?row:winner,fjmVisible[0]):null;
+          fjmScrollCarry=(fjmLastStatic&&fjmLastStatic[1].energy>.008)?fjmLastStatic:best;
+        }
+        if(fjmScrollCarry){
+          const [carryMedia,carryState]=fjmScrollCarry;
+          if(carryState.energy<=.008&&imageIsActive(carryMedia,carryState)){
+            carryState.lastSample=now;
+            sample(carryMedia,carryState);
+          }
+          for(const [media,state] of states){
+            if(fjmStaticMedia(media,state))state.emitter.classList.toggle('is-active',state===carryState&&carryState.energy>.008);
+          }
+          for(let i=active.length-1;i>=0;i--){
+            if(fjmStaticMedia(active[i][0],active[i][1]))active.splice(i,1);
+          }
+          if(carryState.energy>.008)active.push([carryMedia,carryState,false,true]);
+        }
+      }
+    }else{
+      fjmLastStatic=null;
+      fjmScrollCarry=null;
+    }
+
     if(!active.length){document.body?.classList.remove('video-page-ambient-active');return}
     document.body?.classList.add('video-page-ambient','video-page-ambient-active');
-    if(document.documentElement.hasAttribute('data-dc-media-scrolling')){
-      for(const [media,state] of active)updateGeometry(media,state,active.length);
+    if(scrolling){
+      for(const [media,state,,freezeGeometry] of active)if(!freezeGeometry)updateGeometry(media,state,active.length);
       schedule(coarse?260:180);
       return;
     }
