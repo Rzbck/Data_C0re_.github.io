@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">FJM Atlas interactive map interface schematic</title>
+  <desc id="desc">Portfolio schematic showing a dark high-resolution map, touch locations and an editorial panel. This is not a final client interface.</desc>
+  <rect width="1600" height="900" fill="#070707"/>
+  <g font-family="Arial, Helvetica, sans-serif" letter-spacing="3">
+    <text x="56" y="64" fill="#dfff00" font-size="18" font-weight="700">PROTOTYPE / TOUCH MAP / OFFLINE</text>
+    <text x="1544" y="64" fill="#8f8d87" font-size="14" text-anchor="end">SCHEMATIC / NOT FINAL UI</text>
+  </g>
+  <rect x="56" y="104" width="1010" height="710" fill="#0c0c0c" stroke="#32322f"/>
+  <g fill="#1b1b19" stroke="#373733" stroke-width="2">
+    <path d="M135 345c69-101 152-145 254-147 65-1 123 22 157 71 23 34 54 49 97 57 74 14 124 55 142 111 15 48-5 87-55 119-47 30-74 77-113 108-44 35-105 43-155 17-48-26-87-68-145-73-77-8-153-31-178-99-19-54-1-110 36-164z"/>
+    <path d="M667 208c59-44 126-54 188-22 55 28 90 85 143 114 28 15 42 44 23 72-26 37-76 47-104 83-34 44-30 108-77 141-41 29-101 29-144 4-47-28-55-82-88-123-28-35-66-65-70-111-5-61 70-119 129-158z"/>
+    <path d="M764 628c35-29 74-33 111-11 31 19 50 57 37 91-11 29-42 47-68 62-31 18-76 16-98-13-28-36-16-94 18-129z"/>
+  </g>
+  <g fill="#dfff00">
+    <circle cx="307" cy="356" r="7"/><circle cx="388" cy="468" r="7"/><circle cx="502" cy="291" r="7"/><circle cx="570" cy="547" r="7"/>
+    <circle cx="704" cy="318" r="7"/><circle cx="766" cy="423" r="7"/><circle cx="875" cy="357" r="7"/><circle cx="932" cy="476" r="7"/>
+    <circle cx="817" cy="682" r="7"/>
+  </g>
+  <g fill="#f3f1eb">
+    <circle cx="222" cy="493" r="4"/><circle cx="448" cy="575" r="4"/><circle cx="641" cy="377" r="4"/><circle cx="839" cy="254" r="4"/><circle cx="980" cy="343" r="4"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="82" y="146" fill="#77756f" font-size="13" letter-spacing="2">HIGH-RESOLUTION MAP / TOUCH NAVIGATION</text>
+    <text x="882" y="790" fill="#77756f" font-size="13" text-anchor="end" letter-spacing="2">PAN / PINCH / SELECT / RETURN</text>
+  </g>
+  <rect x="1098" y="104" width="446" height="710" fill="#f3f1eb"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="1140" y="158" fill="#171715" font-size="15" font-weight="700" letter-spacing="2">LOCATION / EDITORIAL</text>
+    <text x="1140" y="225" fill="#090909" font-size="52" font-weight="700" letter-spacing="-2">ATLAS</text>
+    <line x1="1140" y1="252" x2="1502" y2="252" stroke="#9b9993"/>
+    <rect x="1140" y="292" width="302" height="12" fill="#242422"/>
+    <rect x="1140" y="321" width="352" height="8" fill="#aaa7a0"/>
+    <rect x="1140" y="344" width="336" height="8" fill="#aaa7a0"/>
+    <rect x="1140" y="367" width="355" height="8" fill="#aaa7a0"/>
+    <rect x="1140" y="390" width="278" height="8" fill="#aaa7a0"/>
+    <rect x="1140" y="445" width="228" height="10" fill="#242422"/>
+    <rect x="1140" y="476" width="354" height="8" fill="#aaa7a0"/>
+    <rect x="1140" y="499" width="326" height="8" fill="#aaa7a0"/>
+    <rect x="1140" y="522" width="344" height="8" fill="#aaa7a0"/>
+    <rect x="1140" y="545" width="265" height="8" fill="#aaa7a0"/>
+    <line x1="1140" y1="621" x2="1502" y2="621" stroke="#c5c2bb"/>
+    <text x="1140" y="660" fill="#55534f" font-size="13" letter-spacing="2">STRUCTURED CONTENT</text>
+    <text x="1140" y="695" fill="#55534f" font-size="13" letter-spacing="2">OFFLINE RUNTIME</text>
+    <text x="1140" y="730" fill="#55534f" font-size="13" letter-spacing="2">KIOSK RESET</text>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="2">
+    <text x="56" y="862" fill="#f3f1eb">MAP</text>
+    <text x="180" y="862" fill="#8f8d87">→</text>
+    <text x="230" y="862" fill="#f3f1eb">TOUCH</text>
+    <text x="390" y="862" fill="#8f8d87">→</text>
+    <text x="440" y="862" fill="#f3f1eb">LOCATION STATE</text>
+    <text x="705" y="862" fill="#8f8d87">→</text>
+    <text x="755" y="862" fill="#f3f1eb">CONTENT</text>
+    <text x="925" y="862" fill="#8f8d87">→</text>
+    <text x="975" y="862" fill="#f3f1eb">KIOSK</text>
+  </g>
+</svg>
