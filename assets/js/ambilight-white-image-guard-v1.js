@@ -1,6 +1,8 @@
 /* DATA C0RE — conservative white-dominance guard for static images only.
    It never touches video emitters. Dark/grey/low-chroma images are left alone;
-   suppression only happens when the rendered image is genuinely bright/white-dominant. */
+   suppression only happens when the rendered image is genuinely bright/white-dominant.
+   Images may explicitly opt out with data-ambilight-white-guard="off" when the
+   base edge sampler is the correct authority for intentionally bright chromatic UI. */
 (() => {
   'use strict';
   if (window.__DATA_C0RE_AMBILIGHT_WHITE_IMAGE_GUARD__) return;
@@ -19,6 +21,7 @@
   const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
   const mix=(a,b,t)=>a+(b-a)*t;
   const srcOf=img=>img.currentSrc||img.src||'';
+  const whiteGuardDisabled=img=>img.dataset.ambilightWhiteGuard==='off';
 
   const mediaRejected=img=>{
     const src=`${srcOf(img)}`.toLowerCase();
@@ -169,6 +172,14 @@
 
     for(let i=0;i<images.length;i++){
       const img=images[i],emitter=emitters[i];
+      /* Keep the image in the same DOM-order mapping as the base Ambilight, but
+         let explicitly opted-out media bypass only this whole-image white guard.
+         Base contour/chroma analysis still runs normally. */
+      if(whiteGuardDisabled(img)){
+        clearGuard(emitter);
+        records.set(img,{src:srcOf(img),scale:1,metrics:{override:'off'},at:performance.now()});
+        continue;
+      }
       if(!img.complete||!img.naturalWidth||!img.naturalHeight||!sourceSafe(img)||!nearViewport(img))continue;
       try{
         if(!drawVisibleImage(img))continue;
