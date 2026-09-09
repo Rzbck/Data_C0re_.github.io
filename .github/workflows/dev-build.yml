@@ -109,6 +109,9 @@ jobs:
       - name: Integrate FJM Atlas prototype on DEV
         run: node scripts/fjm-atlas-dev-integration.mjs
 
+      - name: Normalize FJM Atlas navigation copy
+        run: node scripts/fjm-atlas-copy-fix.mjs
+
       - name: Apply shared small-file video behavior
         run: node scripts/low-bandwidth-video-fix.mjs
 
