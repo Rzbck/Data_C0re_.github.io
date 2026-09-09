@@ -10,6 +10,7 @@ const PROJECTS = [
 ];
 const ARCHIVES = ['archive.html', 'en/archive.html', 'fr/archive.html', 'es/archive.html'];
 const OVERVIEW = 'assets/media/fjm-atlas/real/02-map-overview.png';
+const INVITATION = 'assets/media/fjm-atlas/real/01-invitation-hero.png';
 const CARTEL = 'assets/media/fjm-atlas/real/04-editorial-cartel.png';
 const SELECTED = 'assets/media/fjm-atlas/real/05-selected-location-map.png';
 const OLD_SCHEMATIC = 'assets/media/fjm-atlas/interface-schematic.svg';
@@ -19,14 +20,14 @@ const copy = {
   en: {
     heroAlt: 'FJM Atlas interactive map overview',
     heroCaption: 'Current interface / map overview — development capture',
-    contextKicker: 'Context + brief',
-    contextTitle: 'Make a “world-novel” explorable without reducing it to a conventional map.',
-    contextText: 'The exhibition investigates Jean Potocki’s The Manuscript Found in Saragossa and the circulation of its nested stories across places and periods. The device must let visitors explore those locations, understand their links to stories and characters, and move between them without losing either reading continuity or the documentary nature of the exhibition.',
-    responseKicker: 'Response + system',
-    responseTitle: 'A museum interface built around the map, not around menus.',
-    responseText: 'I designed and developed the atlas as a dedicated offline kiosk application. The high-resolution tiled map remains the main object; touch navigation, location selection, editorial reading, related places and idle behaviour form one continuous system. Cartography, interaction logic and editorial content remain separated so the map, gestures and texts can evolve independently.',
+    storyKicker: 'Context + brief + response',
+    storyTitle: 'Turn a “world-novel” into a tactile atlas for exhibition.',
+    briefText: 'For the exhibition Manuscript Found in Saragossa | investigation of a world-novel, the brief is to make Jean Potocki’s geography explorable while preserving the links between places, stories, characters and documentary sources.',
+    responseText: 'I designed and developed a dedicated offline touch-kiosk application built around a high-resolution tiled map. The map remains the main object: touch navigation, location selection, editorial reading, related places and idle behaviour form one continuous museum interface.',
     flow: ['high-resolution map','touch navigation','interactive locations','editorial cartels','related places','offline kiosk'],
     tech: 'Electron / TypeScript / OpenSeadragon / tiled-map pipeline / pan + pinch + double-tap / structured editorial content / attract mode / inactivity reset / kiosk packaging / telemetry + remote maintenance',
+    invitationAlt: 'FJM Atlas idle touch-map view with the invitation to touch the map',
+    invitationCaption: 'Idle invitation state / touch-first entry point — development capture',
     galleryKicker: 'Interface',
     galleryTitle: 'From world map to editorial reading.',
     galleryText: 'A location selection keeps the map in view while opening its editorial material. The interface is designed so exploration can move between geography, text and related places without breaking the visitor’s spatial context.',
@@ -38,14 +39,14 @@ const copy = {
   fr: {
     heroAlt: 'Vue générale de la carte interactive FJM Atlas',
     heroCaption: 'Interface actuelle / vue générale de la carte — capture de développement',
-    contextKicker: 'Contexte + demande',
-    contextTitle: 'Rendre un « roman-monde » explorable sans le réduire à une carte classique.',
-    contextText: 'L’exposition met en scène l’enquête littéraire autour du Manuscrit trouvé à Saragosse de Jean Potocki et la circulation de ses récits enchâssés à travers les lieux et les époques. Le dispositif doit permettre aux visiteurs d’explorer ces lieux, de comprendre leurs liens avec les histoires et les personnages, et de passer de l’un à l’autre sans perdre la continuité de lecture ni le caractère documentaire de l’exposition.',
-    responseKicker: 'Ma réponse + système',
-    responseTitle: 'Une interface muséale construite autour de la carte, pas autour de menus.',
-    responseText: 'J’ai conçu et développé l’atlas comme une application de borne dédiée et hors ligne. La carte haute définition tuilée reste l’objet principal ; navigation tactile, sélection des lieux, lecture éditoriale, lieux associés et comportement d’inactivité forment un seul système continu. Cartographie, logique d’interaction et contenus éditoriaux restent séparés pour faire évoluer indépendamment la carte, les gestes et les textes.',
+    storyKicker: 'Contexte + demande + réponse',
+    storyTitle: 'Transformer un « roman-monde » en atlas tactile de consultation.',
+    briefText: 'Pour l’exposition Manuscrit trouvé à Saragosse | enquête sur un roman-monde, la demande consiste à rendre explorable la géographie du roman de Jean Potocki tout en conservant les liens entre lieux, récits, personnages et sources documentaires.',
+    responseText: 'J’ai conçu et développé une application de borne tactile dédiée et hors ligne, construite autour d’une carte haute définition tuilée. La carte reste l’objet principal : navigation tactile, sélection des lieux, lecture éditoriale, lieux associés et comportement d’inactivité forment une seule interface muséale continue.',
     flow: ['carte haute définition','navigation tactile','lieux interactifs','cartels éditoriaux','autres lieux','borne hors ligne'],
     tech: 'Electron / TypeScript / OpenSeadragon / pipeline de carte tuilée / pan + pinch + double-tap / contenus éditoriaux structurés / mode attract / reset d’inactivité / packaging borne / télémétrie + maintenance distante',
+    invitationAlt: 'État d’invitation de FJM Atlas avec le message Touchez la carte',
+    invitationCaption: 'État d’invitation / entrée tactile — capture de développement',
     galleryKicker: 'Interface',
     galleryTitle: 'De la carte-monde à la lecture éditoriale.',
     galleryText: 'La sélection d’un lieu conserve la carte visible tout en ouvrant son contenu éditorial. L’interface permet de passer de la géographie au texte puis aux lieux associés sans rompre le contexte spatial du visiteur.',
@@ -57,14 +58,14 @@ const copy = {
   es: {
     heroAlt: 'Vista general del mapa interactivo FJM Atlas',
     heroCaption: 'Interfaz actual / vista general del mapa — captura de desarrollo',
-    contextKicker: 'Contexto + encargo',
-    contextTitle: 'Hacer explorable una «novela-mundo» sin reducirla a un mapa convencional.',
-    contextText: 'La exposición investiga El manuscrito encontrado en Zaragoza de Jean Potocki y la circulación de sus relatos encajados a través de lugares y épocas. El dispositivo debe permitir explorar esos lugares, comprender sus vínculos con historias y personajes y pasar de uno a otro sin perder la continuidad de lectura ni el carácter documental de la exposición.',
-    responseKicker: 'Mi respuesta + sistema',
-    responseTitle: 'Una interfaz museística construida alrededor del mapa, no de menús.',
-    responseText: 'Diseñé y desarrollé el atlas como una aplicación de quiosco dedicada y offline. El mapa de alta resolución por teselas sigue siendo el objeto principal; navegación táctil, selección de lugares, lectura editorial, lugares relacionados y comportamiento de inactividad forman un único sistema continuo. Cartografía, lógica de interacción y contenidos editoriales permanecen separados para poder evolucionar de forma independiente.',
+    storyKicker: 'Contexto + encargo + respuesta',
+    storyTitle: 'Transformar una «novela-mundo» en un atlas táctil de consulta.',
+    briefText: 'Para la exposición Manuscrito encontrado en Zaragoza | investigación sobre una novela-mundo, el encargo consiste en hacer explorable la geografía de la novela de Jean Potocki conservando los vínculos entre lugares, relatos, personajes y fuentes documentales.',
+    responseText: 'Diseñé y desarrollé una aplicación de quiosco táctil dedicada y offline, construida alrededor de un mapa de alta resolución por teselas. El mapa sigue siendo el objeto principal: navegación táctil, selección de lugares, lectura editorial, lugares relacionados y comportamiento de inactividad forman una única interfaz museística continua.',
     flow: ['mapa de alta resolución','navegación táctil','lugares interactivos','carteles editoriales','lugares relacionados','quiosco offline'],
     tech: 'Electron / TypeScript / OpenSeadragon / pipeline de mapa por teselas / pan + pinch + double-tap / contenidos editoriales estructurados / modo attract / reset por inactividad / packaging de quiosco / telemetría + mantenimiento remoto',
+    invitationAlt: 'Estado de invitación de FJM Atlas con el mensaje para tocar el mapa',
+    invitationCaption: 'Estado de invitación / entrada táctil — captura de desarrollo',
     galleryKicker: 'Interfaz',
     galleryTitle: 'Del mapa-mundo a la lectura editorial.',
     galleryText: 'La selección de un lugar mantiene visible el mapa mientras abre su contenido editorial. La interfaz permite pasar de la geografía al texto y a los lugares relacionados sin romper el contexto espacial del visitante.',
@@ -75,15 +76,19 @@ const copy = {
   },
 };
 
-const style = `<style data-fjm-real-media-v3="">
+const style = `<style data-fjm-real-media-v4="">
 .fjm-atlas-page .project-hero-media img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
-.fjm-atlas-page .fjm-compact-section{padding-top:clamp(54px,5.6vw,92px);padding-bottom:clamp(54px,5.6vw,92px)}
-.fjm-atlas-page .fjm-compact-grid{display:grid;grid-template-columns:minmax(0,.44fr) minmax(0,1.56fr);gap:clamp(34px,5vw,84px);align-items:start}
-.fjm-atlas-page .fjm-compact-grid .section-kicker{padding-top:7px}
-.fjm-atlas-page .fjm-compact-copy h2{margin:0 0 24px;font-size:clamp(40px,4.8vw,78px);line-height:.92;letter-spacing:-.055em;max-width:1080px}
-.fjm-atlas-page .fjm-compact-copy p{margin:0;max-width:980px;color:#b9b7b1;font-size:clamp(16px,1.2vw,20px);line-height:1.5}
-.fjm-atlas-page .fjm-compact-flow{margin-top:clamp(28px,3vw,46px)}
-.fjm-atlas-page .fjm-compact-tech{margin:clamp(24px,2.6vw,40px) 0 0;padding-top:13px;border-top:1px solid var(--line);color:var(--grey);font-size:10px;line-height:1.6;letter-spacing:.07em;text-transform:uppercase}
+.fjm-atlas-page .fjm-story-section{padding-top:clamp(54px,5.4vw,88px);padding-bottom:clamp(54px,5.4vw,88px)}
+.fjm-atlas-page .fjm-story-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(34px,5vw,78px);align-items:center}
+.fjm-atlas-page .fjm-story-copy .section-kicker{margin-bottom:clamp(22px,2.6vw,38px)}
+.fjm-atlas-page .fjm-story-copy h2{margin:0 0 24px;font-size:clamp(40px,4.6vw,74px);line-height:.92;letter-spacing:-.055em;max-width:920px}
+.fjm-atlas-page .fjm-story-copy p{margin:0;max-width:860px;color:#b9b7b1;font-size:clamp(16px,1.08vw,19px);line-height:1.48}
+.fjm-atlas-page .fjm-story-copy p+p{margin-top:16px}
+.fjm-atlas-page .fjm-story-flow{margin-top:clamp(24px,2.5vw,38px)}
+.fjm-atlas-page .fjm-story-tech{margin:clamp(20px,2.1vw,30px) 0 0;padding-top:12px;border-top:1px solid var(--line);color:var(--grey);font-size:10px;line-height:1.55;letter-spacing:.07em;text-transform:uppercase}
+.fjm-atlas-page .fjm-story-media{margin:0;min-width:0}
+.fjm-atlas-page .fjm-story-media img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--line);background:#070707}
+.fjm-atlas-page .fjm-story-media figcaption,.fjm-atlas-page .fjm-real-shot figcaption{padding:10px 2px 0;color:var(--grey);font-size:9px;line-height:1.5;letter-spacing:.07em;text-transform:uppercase}
 .fjm-atlas-page .fjm-interface-head{margin-bottom:clamp(34px,4vw,62px)}
 .fjm-atlas-page .fjm-interface-head>.section-kicker{margin-bottom:clamp(22px,2.4vw,38px)}
 .fjm-atlas-page .fjm-interface-copy{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(320px,.82fr);gap:clamp(34px,5vw,90px);align-items:end}
@@ -92,47 +97,40 @@ const style = `<style data-fjm-real-media-v3="">
 .fjm-atlas-page .fjm-real-gallery{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:clamp(14px,1.5vw,24px);align-items:start}
 .fjm-atlas-page .fjm-real-shot{margin:0;min-width:0;background:transparent;overflow:visible}
 .fjm-atlas-page .fjm-real-shot img{display:block;width:100%;height:auto;object-fit:contain;background:#070707;border:1px solid var(--line)}
-.fjm-atlas-page .fjm-real-shot figcaption{padding:10px 2px 0;color:var(--grey);font-size:9px;line-height:1.5;letter-spacing:.07em;text-transform:uppercase}
-@media(max-width:900px){.fjm-atlas-page .fjm-compact-grid{grid-template-columns:1fr;gap:20px}.fjm-atlas-page .fjm-interface-copy{grid-template-columns:1fr;gap:18px}.fjm-atlas-page .fjm-interface-copy p{justify-self:start}.fjm-atlas-page .fjm-real-gallery{grid-template-columns:1fr}}
+@media(max-width:980px){.fjm-atlas-page .fjm-story-grid{grid-template-columns:1fr;gap:28px}.fjm-atlas-page .fjm-interface-copy{grid-template-columns:1fr;gap:18px}.fjm-atlas-page .fjm-interface-copy p{justify-self:start}.fjm-atlas-page .fjm-real-gallery{grid-template-columns:1fr}}
 </style>`;
 
 function read(rel) { return fs.readFileSync(path.join(ROOT, rel), 'utf8'); }
 function write(rel, value) { fs.writeFileSync(path.join(ROOT, rel), value, 'utf8'); }
-
-function flow(items) {
-  return items.map((item, i) => `${i ? '<b>→</b>' : ''}<span>${item}</span>`).join('');
-}
+function flow(items) { return items.map((item, i) => `${i ? '<b>→</b>' : ''}<span>${item}</span>`).join(''); }
 
 function patchProject(rel, lang) {
   const c = copy[lang];
   let html = read(rel);
 
-  html = html.replace(/<style data-fjm-real-media-v[123]="">[\s\S]*?<\/style>/g, '');
+  html = html.replace(/<style data-fjm-real-media-v[1234]="">[\s\S]*?<\/style>/g, '');
   html = html.replace('</head>', `${style}</head>`);
   html = html.replace(/<meta property="og:image" content="[^"]*">/i, `<meta property="og:image" content="${OG}">`);
 
   const hero = `<figure class="project-hero-media reveal" data-fjm-real-hero=""><img src="${OVERVIEW}" alt="${c.heroAlt}" loading="eager"><figcaption>${c.heroCaption}</figcaption></figure>`;
   html = html.replace(/<figure class="project-hero-media reveal"(?: data-fjm-real-hero="")?>[\s\S]*?<\/figure>/, hero);
 
-  const context = `<section class="project-section fjm-compact-section" data-fjm-compact-context=""><div class="fjm-compact-grid"><div class="section-kicker reveal"><span>01</span><p>${c.contextKicker}</p></div><div class="fjm-compact-copy reveal"><h2>${c.contextTitle}</h2><p>${c.contextText}</p></div></div></section>`;
-
-  const response = `<section class="project-section fjm-compact-section" data-fjm-compact-response=""><div class="fjm-compact-grid"><div class="section-kicker reveal"><span>02</span><p>${c.responseKicker}</p></div><div class="fjm-compact-copy"><div class="reveal"><h2>${c.responseTitle}</h2><p>${c.responseText}</p></div><div class="system-flow fjm-compact-flow reveal">${flow(c.flow)}</div><p class="fjm-compact-tech reveal">${c.tech}</p></div></div></section>`;
+  const story = `<section class="project-section fjm-story-section" data-fjm-story=""><div class="fjm-story-grid"><div class="fjm-story-copy"><div class="section-kicker reveal"><span>01</span><p>${c.storyKicker}</p></div><div class="reveal"><h2>${c.storyTitle}</h2><p>${c.briefText}</p><p>${c.responseText}</p></div><div class="system-flow fjm-story-flow reveal">${flow(c.flow)}</div><p class="fjm-story-tech reveal">${c.tech}</p></div><figure class="fjm-story-media reveal"><img src="${INVITATION}" alt="${c.invitationAlt}" loading="lazy"><figcaption>${c.invitationCaption}</figcaption></figure></div></section>`;
 
   const gallery = `<section class="project-section fjm-real-interface-v2" data-fjm-real-media-v2=""><div class="fjm-interface-head"><div class="section-kicker reveal"><span>03</span><p>${c.galleryKicker}</p></div><div class="fjm-interface-copy"><h2 class="reveal">${c.galleryTitle}</h2><p class="reveal">${c.galleryText}</p></div></div><div class="fjm-real-gallery"><figure class="fjm-real-shot reveal"><img src="${CARTEL}" alt="${c.cartelAlt}" loading="lazy"><figcaption>${c.cartelCaption}</figcaption></figure><figure class="fjm-real-shot reveal"><img src="${SELECTED}" alt="${c.selectedAlt}" loading="lazy"><figcaption>${c.selectedCaption}</figcaption></figure></div></section>`;
 
   const bodyPattern = /(<header class="project-hero">[\s\S]*?<\/header>)[\s\S]*?(<nav class="project-next">)/;
   if (!bodyPattern.test(html)) throw new Error(`Project body markers not found in ${rel}`);
-  html = html.replace(bodyPattern, `$1${context}${response}${gallery}$2`);
+  html = html.replace(bodyPattern, `$1${story}${gallery}$2`);
   html = html.replaceAll(OLD_SCHEMATIC, OVERVIEW);
   write(rel, html);
 }
 
 for (const [rel, lang] of PROJECTS) patchProject(rel, lang);
-
 for (const rel of ARCHIVES) {
   let html = read(rel);
   html = html.replaceAll(OLD_SCHEMATIC, OVERVIEW);
   write(rel, html);
 }
 
-console.log('FJM Atlas condensed to context, response/system and the approved interface section.');
+console.log('FJM Atlas reduced to one merged context/response section plus the approved interface section.');
