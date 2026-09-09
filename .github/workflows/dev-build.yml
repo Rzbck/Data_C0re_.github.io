@@ -118,6 +118,9 @@ jobs:
       - name: Apply FJM Atlas real interface media
         run: node scripts/fjm-atlas-real-media-v1.mjs
 
+      - name: Finalize FJM Atlas release metadata
+        run: node scripts/fjm-atlas-production-ready-v1.mjs
+
       - name: Apply shared small-file video behavior
         run: node scripts/low-bandwidth-video-fix.mjs
 
