@@ -79,13 +79,15 @@ const copy = {
 const style = `<style data-fjm-real-media-v4="">
 .fjm-atlas-page .project-hero-media img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
 .fjm-atlas-page .fjm-story-section{padding-top:clamp(54px,5.4vw,88px);padding-bottom:clamp(54px,5.4vw,88px)}
-.fjm-atlas-page .fjm-story-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(34px,5vw,78px);align-items:center}
+.fjm-atlas-page .fjm-story-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(34px,5vw,78px);align-items:start}
 .fjm-atlas-page .fjm-story-copy .section-kicker{margin-bottom:clamp(22px,2.6vw,38px)}
 .fjm-atlas-page .fjm-story-copy h2{margin:0 0 24px;font-size:clamp(40px,4.6vw,74px);line-height:.92;letter-spacing:-.055em;max-width:920px}
 .fjm-atlas-page .fjm-story-copy p{margin:0;max-width:860px;color:#b9b7b1;font-size:clamp(16px,1.08vw,19px);line-height:1.48}
 .fjm-atlas-page .fjm-story-copy p+p{margin-top:16px}
-.fjm-atlas-page .fjm-story-flow{margin-top:clamp(24px,2.5vw,38px)}
-.fjm-atlas-page .fjm-story-tech{margin:clamp(20px,2.1vw,30px) 0 0;padding-top:12px;border-top:1px solid var(--line);color:var(--grey);font-size:10px;line-height:1.55;letter-spacing:.07em;text-transform:uppercase}
+.fjm-atlas-page .fjm-story-flow{grid-column:1 / -1;width:100%;margin-top:clamp(4px,.6vw,10px);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:10px 14px;align-items:center}
+.fjm-atlas-page .fjm-story-flow span{min-width:0;text-align:center}
+.fjm-atlas-page .fjm-story-flow b{display:flex;align-items:center;justify-content:center;color:var(--acid);font-size:12px;line-height:1}
+.fjm-atlas-page .fjm-story-tech{grid-column:1 / -1;width:100%;margin:0;padding-top:12px;border-top:1px solid var(--line);color:var(--grey);font-size:10px;line-height:1.55;letter-spacing:.07em;text-transform:uppercase}
 .fjm-atlas-page .fjm-story-media{margin:0;min-width:0}
 .fjm-atlas-page .fjm-invitation-visual{position:relative;overflow:hidden;border:1px solid var(--line);background:#dff}
 .fjm-atlas-page .fjm-invitation-visual>img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
@@ -102,7 +104,7 @@ const style = `<style data-fjm-real-media-v4="">
 .fjm-atlas-page .fjm-real-gallery{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:clamp(14px,1.5vw,24px);align-items:start}
 .fjm-atlas-page .fjm-real-shot{margin:0;min-width:0;background:transparent;overflow:visible}
 .fjm-atlas-page .fjm-real-shot img{display:block;width:100%;height:auto;object-fit:contain;background:#070707;border:1px solid var(--line)}
-@media(max-width:980px){.fjm-atlas-page .fjm-story-grid{grid-template-columns:1fr;gap:28px}.fjm-atlas-page .fjm-interface-copy{grid-template-columns:1fr;gap:18px}.fjm-atlas-page .fjm-interface-copy p{justify-self:start}.fjm-atlas-page .fjm-real-gallery{grid-template-columns:1fr}}
+@media(max-width:980px){.fjm-atlas-page .fjm-story-grid{grid-template-columns:1fr;gap:28px}.fjm-atlas-page .fjm-story-flow{grid-template-columns:1fr;justify-items:center;gap:8px}.fjm-atlas-page .fjm-story-flow b{transform:rotate(90deg)}.fjm-atlas-page .fjm-interface-copy{grid-template-columns:1fr;gap:18px}.fjm-atlas-page .fjm-interface-copy p{justify-self:start}.fjm-atlas-page .fjm-real-gallery{grid-template-columns:1fr}}
 @media(max-width:620px){.fjm-atlas-page .fjm-invitation-card{width:46%;left:3.5%;bottom:5%;padding:12px}.fjm-atlas-page .fjm-invitation-card em{margin-top:6px;padding-bottom:8px}.fjm-atlas-page .fjm-invitation-card small{margin-top:7px}}
 </style>`;
 
@@ -121,7 +123,7 @@ function patchProject(rel, lang) {
   const hero = `<figure class="project-hero-media reveal" data-fjm-real-hero=""><img src="${OVERVIEW}" alt="${c.heroAlt}" loading="eager" ${AMBILIGHT_ATTR}><figcaption>${c.heroCaption}</figcaption></figure>`;
   html = html.replace(/<figure class="project-hero-media reveal"(?: data-fjm-real-hero="")?>[\s\S]*?<\/figure>/, hero);
 
-  const story = `<section class="project-section fjm-story-section" data-fjm-story=""><div class="fjm-story-grid"><div class="fjm-story-copy"><div class="section-kicker reveal"><span>01</span><p>${c.storyKicker}</p></div><div class="reveal"><h2>${c.storyTitle}</h2><p>${c.briefText}</p><p>${c.responseText}</p></div><div class="system-flow fjm-story-flow reveal">${flow(c.flow)}</div><p class="fjm-story-tech reveal">${c.tech}</p></div><figure class="fjm-story-media reveal"><div class="fjm-invitation-visual"><img src="${OVERVIEW}" alt="${c.invitationAlt}" loading="lazy" ${AMBILIGHT_ATTR}><div class="fjm-invitation-card" aria-hidden="true"><strong>Touchez la carte</strong><em>Explorez les lieux et leurs récits.</em><small>○—○ &nbsp; Pincez ou touchez deux fois pour zoomer</small></div></div><figcaption>${c.invitationCaption}</figcaption></figure></div></section>`;
+  const story = `<section class="project-section fjm-story-section" data-fjm-story=""><div class="fjm-story-grid"><div class="fjm-story-copy"><div class="section-kicker reveal"><span>01</span><p>${c.storyKicker}</p></div><div class="reveal"><h2>${c.storyTitle}</h2><p>${c.briefText}</p><p>${c.responseText}</p></div></div><figure class="fjm-story-media reveal"><div class="fjm-invitation-visual"><img src="${OVERVIEW}" alt="${c.invitationAlt}" loading="lazy" ${AMBILIGHT_ATTR}><div class="fjm-invitation-card" aria-hidden="true"><strong>Touchez la carte</strong><em>Explorez les lieux et leurs récits.</em><small>○—○ &nbsp; Pincez ou touchez deux fois pour zoomer</small></div></div><figcaption>${c.invitationCaption}</figcaption></figure><div class="system-flow fjm-story-flow reveal">${flow(c.flow)}</div><p class="fjm-story-tech reveal">${c.tech}</p></div></section>`;
 
   const gallery = `<section class="project-section fjm-real-interface-v2" data-fjm-real-media-v2=""><div class="fjm-interface-head"><div class="section-kicker reveal"><span>03</span><p>${c.galleryKicker}</p></div><div class="fjm-interface-copy"><h2 class="reveal">${c.galleryTitle}</h2><p class="reveal">${c.galleryText}</p></div></div><div class="fjm-real-gallery"><figure class="fjm-real-shot reveal"><img src="${CARTEL}" alt="${c.cartelAlt}" loading="lazy" ${AMBILIGHT_ATTR}><figcaption>${c.cartelCaption}</figcaption></figure><figure class="fjm-real-shot reveal"><img src="${SELECTED}" alt="${c.selectedAlt}" loading="lazy" ${AMBILIGHT_ATTR}><figcaption>${c.selectedCaption}</figcaption></figure></div></section>`;
 
