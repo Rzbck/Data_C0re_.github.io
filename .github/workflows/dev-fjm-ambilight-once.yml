@@ -1,0 +1,65 @@
+name: One-shot FJM Atlas Ambilight persistence
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - '.github/workflows/dev-fjm-ambilight-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout DEV
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Apply FJM Atlas Ambilight-safe markup
+        run: |
+          node --check assets/js/ambilight-white-image-guard-v1.js
+          node --check scripts/fjm-atlas-real-media-v1.mjs
+          node scripts/fjm-atlas-real-media-v1.mjs
+
+      - name: Verify targeted Ambilight persistence
+        shell: bash
+        run: |
+          grep -q "whiteGuardDisabled=img=>img.dataset.ambilightWhiteGuard==='off'" assets/js/ambilight-white-image-guard-v1.js
+          grep -q "ambilight-white-image-guard-v1.js?v=20260909-1" assets/js/language-routes.js
+          for page in projects/fjm-atlas.html en/projects/fjm-atlas.html fr/projects/fjm-atlas.html es/projects/fjm-atlas.html; do
+            test "$(grep -o 'data-ambilight-white-guard="off"' "$page" | wc -l)" -eq 4
+            test "$(grep -o '<section class="project-section' "$page" | wc -l)" -eq 2
+            grep -q 'data-fjm-story' "$page"
+            grep -q 'data-fjm-real-media-v2' "$page"
+            grep -q 'grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)' "$page"
+            grep -q '<span>03</span>' "$page"
+            ! grep -q 'interface-schematic.svg' "$page"
+            ! grep -q 'Current state' "$page"
+            ! grep -q 'État actuel' "$page"
+            ! grep -q 'Estado actual' "$page"
+          done
+          git diff --check
+
+      - name: Commit generated FJM Atlas pages on DEV
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects/fjm-atlas.html en/projects/fjm-atlas.html fr/projects/fjm-atlas.html es/projects/fjm-atlas.html archive.html en/archive.html fr/archive.html es/archive.html
+          if git diff --cached --quiet; then
+            echo "FJM Atlas Ambilight-safe markup already applied."
+          else
+            git commit -m "Keep FJM Atlas Ambilight active on bright map captures"
+            git push origin HEAD:dev
+          fi
