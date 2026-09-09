@@ -259,14 +259,44 @@
     }
   };
 
-  /* FJM Atlas mobile: static captures share one cyan visual language. During kinetic
-     scrolling, freeze the last sampled static emitter instead of letting IntersectionObserver
-     hand-offs briefly drop the page Ambilight between large images. Desktop and every other
-     project keep the standard runtime. */
+  /* FJM Atlas mobile: all page captures share the same cyan visual language.
+     Use one persistent page-level emitter sampled from the hero map instead of handing Ambilight
+     between individual images while scrolling. This removes IntersectionObserver/scroll-state
+     opacity hand-offs entirely on FJM mobile; desktop and every other page keep the standard runtime. */
   const fjmMobilePage=()=>coarse&&document.body?.classList.contains('fjm-atlas-page');
   const fjmStaticMedia=(media,state)=>Boolean(fjmMobilePage()&&state.kind==='image'&&media.dataset.ambilightWhiteGuard==='off');
-  let fjmLastStatic=null;
-  let fjmScrollCarry=null;
+  let fjmMasterStatic=null;
+
+  const setFjmViewportGeometry=state=>{
+    setPosition(state.emitter,'--amb-source-left',innerWidth*.08);
+    setPosition(state.emitter,'--amb-source-right',innerWidth*.92);
+    setPosition(state.emitter,'--amb-source-top',innerHeight*.12);
+    setPosition(state.emitter,'--amb-source-bottom',innerHeight*.88);
+    setPosition(state.emitter,'--amb-source-x',innerWidth*.50);
+    setPosition(state.emitter,'--amb-source-y',innerHeight*.50);
+    setNumber(state.emitter,'--amb-strength',clamp(.48+state.energy*.20,.46,.68));
+  };
+
+  const resolveFjmMaster=now=>{
+    if(!fjmMobilePage()){fjmMasterStatic=null;return null}
+    if(fjmMasterStatic&&states.has(fjmMasterStatic[0])&&fjmMasterStatic[1].energy>.008)return fjmMasterStatic;
+
+    let first=null,hero=null;
+    for(const [media,state] of states){
+      if(!fjmStaticMedia(media,state))continue;
+      if(!first)first=[media,state];
+      if(media.closest('.project-hero-media')){hero=[media,state];break}
+    }
+    const candidate=hero||first;
+    if(!candidate)return null;
+    const [media,state]=candidate;
+    if(state.energy<=.008&&media.complete&&media.naturalWidth&&media.naturalHeight){
+      state.lastSample=now;
+      sample(media,state);
+    }
+    if(state.energy>.008)fjmMasterStatic=candidate;
+    return fjmMasterStatic;
+  };
 
   const schedule=(delay=videoInterval)=>{
     if(timer||document.hidden)return;
@@ -274,55 +304,37 @@
   };
 
   const tick=now=>{
-    if(document.hidden)return;
-    const scrolling=document.documentElement.hasAttribute('data-dc-media-scrolling');
+    if(document.hidden)nreturn;
+
+    if(fjmMobilePage()){
+      const master=resolveFjmMaster(now);
+      if(master){
+        const [,masterState]=master;
+        for(const [media,state] of states){
+          if(fjmStaticMedia(media,state))state.emitter.classList.toggle('is-active',state===masterState);
+          else state.emitter.classList.remove('is-active');
+        }
+        masterState.emitter.classList.add('is-active');
+        setFjmViewportGeometry(masterState);
+        document.body?.classList.add('video-page-ambient','video-page-ambient-active');
+        schedule(coarse?260:180);
+        return;
+      }
+    }else fjmMasterStatic=null;
+
     const active=[];
-    const fjmVisible=[];
     for(const [media,state] of states){
       const on=state.kind==='video'?videoIsActive(media,state):imageIsActive(media,state);
       const carry=!on&&state.kind==='video'&&luminaCarryActive(media,state);
       if(on||carry){
         state.emitter.classList.toggle('is-active',state.energy>.008||on);
-        active.push([media,state,carry,false]);
-        if(on&&fjmStaticMedia(media,state))fjmVisible.push([media,state]);
+        active.push([media,state,carry]);
       }else state.emitter.classList.remove('is-active');
     }
-
-    if(fjmMobilePage()){
-      if(!scrolling){
-        if(fjmVisible.length){
-          fjmLastStatic=fjmVisible.reduce((best,row)=>row[1].ratio>best[1].ratio?row:best,fjmVisible[0]);
-        }
-        fjmScrollCarry=null;
-      }else{
-        if(!fjmScrollCarry){
-          const best=fjmVisible.length?fjmVisible.reduce((winner,row)=>row[1].ratio>winner[1].ratio?row:winner,fjmVisible[0]):null;
-          fjmScrollCarry=(fjmLastStatic&&fjmLastStatic[1].energy>.008)?fjmLastStatic:best;
-        }
-        if(fjmScrollCarry){
-          const [carryMedia,carryState]=fjmScrollCarry;
-          if(carryState.energy<=.008&&imageIsActive(carryMedia,carryState)){
-            carryState.lastSample=now;
-            sample(carryMedia,carryState);
-          }
-          for(const [media,state] of states){
-            if(fjmStaticMedia(media,state))state.emitter.classList.toggle('is-active',state===carryState&&carryState.energy>.008);
-          }
-          for(let i=active.length-1;i>=0;i--){
-            if(fjmStaticMedia(active[i][0],active[i][1]))active.splice(i,1);
-          }
-          if(carryState.energy>.008)active.push([carryMedia,carryState,false,true]);
-        }
-      }
-    }else{
-      fjmLastStatic=null;
-      fjmScrollCarry=null;
-    }
-
     if(!active.length){document.body?.classList.remove('video-page-ambient-active');return}
     document.body?.classList.add('video-page-ambient','video-page-ambient-active');
-    if(scrolling){
-      for(const [media,state,,freezeGeometry] of active)if(!freezeGeometry)updateGeometry(media,state,active.length);
+    if(document.documentElement.hasAttribute('data-dc-media-scrolling')){
+      for(const [media,state] of active)updateGeometry(media,state,active.length);
       schedule(coarse?260:180);
       return;
     }
