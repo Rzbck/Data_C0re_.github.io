@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/dev-fjm-atlas-once.yml'
       - 'scripts/fjm-atlas-dev-integration.mjs'
+      - 'scripts/fjm-atlas-copy-fix.mjs'
       - 'projects/fjm-atlas.html'
       - 'assets/media/fjm-atlas/interface-schematic.svg'
       - 'data/project-taxonomy.json'
@@ -34,11 +35,15 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Validate integration script syntax
-        run: node --check scripts/fjm-atlas-dev-integration.mjs
+      - name: Validate scripts
+        run: |
+          node --check scripts/fjm-atlas-dev-integration.mjs
+          node --check scripts/fjm-atlas-copy-fix.mjs
 
       - name: Integrate project into generated DEV pages
-        run: node scripts/fjm-atlas-dev-integration.mjs
+        run: |
+          node scripts/fjm-atlas-dev-integration.mjs
+          node scripts/fjm-atlas-copy-fix.mjs
 
       - name: Verify archive and locale structure
         shell: bash
@@ -50,6 +55,7 @@ jobs:
           done
           for f in projects/fjm-atlas.html en/projects/fjm-atlas.html fr/projects/fjm-atlas.html es/projects/fjm-atlas.html; do
             test -s "$f"
+            grep -q '<b>INDEX</b>' "$f"
           done
           git diff --check
 
@@ -58,10 +64,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add archive.html en/archive.html fr/archive.html es/archive.html en/projects/fjm-atlas.html fr/projects/fjm-atlas.html es/projects/fjm-atlas.html
+          git add projects/fjm-atlas.html archive.html en/archive.html fr/archive.html es/archive.html en/projects/fjm-atlas.html fr/projects/fjm-atlas.html es/projects/fjm-atlas.html
           if git diff --cached --quiet; then
             echo "FJM Atlas pages already integrated."
           else
-            git commit -m "Integrate FJM Atlas prototype into DEV archive"
+            git commit -m "Polish FJM Atlas prototype DEV pages"
             git push origin HEAD:dev
           fi
