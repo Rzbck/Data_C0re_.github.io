@@ -304,7 +304,7 @@
   };
 
   const tick=now=>{
-    if(document.hidden)nreturn;
+    if(document.hidden)return;
 
     if(fjmMobilePage()){
       const master=resolveFjmMaster(now);
