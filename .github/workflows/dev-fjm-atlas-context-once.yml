@@ -1,0 +1,61 @@
+name: One-shot FJM Atlas context V2
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - '.github/workflows/dev-fjm-atlas-context-once.yml'
+      - 'scripts/fjm-atlas-context-v2.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fjm-atlas-context-v2-once
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout DEV
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate context pass syntax
+        run: node --check scripts/fjm-atlas-context-v2.mjs
+
+      - name: Apply commissioned project context
+        run: node scripts/fjm-atlas-context-v2.mjs
+
+      - name: Verify generated pages
+        shell: bash
+        run: |
+          grep -q 'data-fjm-context-v2' projects/fjm-atlas.html
+          grep -q 'projet commandé / en développement / non livré' fr/projects/fjm-atlas.html
+          grep -q 'EN COURS' fr/archive.html
+          grep -q 'commissioned / in development / not yet delivered' projects/fjm-atlas.html
+          grep -q 'IN DEVELOPMENT' archive.html
+          git diff --check
+
+      - name: Commit DEV context pages
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects/fjm-atlas.html en/projects/fjm-atlas.html fr/projects/fjm-atlas.html es/projects/fjm-atlas.html archive.html en/archive.html fr/archive.html es/archive.html
+          if git diff --cached --quiet; then
+            echo "FJM Atlas context already applied."
+          else
+            git commit -m "Present FJM Atlas commissioned project context on DEV"
+            git push origin HEAD:dev
+          fi
