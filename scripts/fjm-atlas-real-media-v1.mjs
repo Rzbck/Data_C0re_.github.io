@@ -14,6 +14,7 @@ const CARTEL = 'assets/media/fjm-atlas/real/04-editorial-cartel.png';
 const SELECTED = 'assets/media/fjm-atlas/real/05-selected-location-map.png';
 const OLD_SCHEMATIC = 'assets/media/fjm-atlas/interface-schematic.svg';
 const OG = `https://datac0re.is-a.dev/${OVERVIEW}`;
+const AMBILIGHT_ATTR = 'data-ambilight-white-guard="off"';
 
 const copy = {
   en: {
@@ -117,12 +118,12 @@ function patchProject(rel, lang) {
   html = html.replace('</head>', `${style}</head>`);
   html = html.replace(/<meta property="og:image" content="[^"]*">/i, `<meta property="og:image" content="${OG}">`);
 
-  const hero = `<figure class="project-hero-media reveal" data-fjm-real-hero=""><img src="${OVERVIEW}" alt="${c.heroAlt}" loading="eager"><figcaption>${c.heroCaption}</figcaption></figure>`;
+  const hero = `<figure class="project-hero-media reveal" data-fjm-real-hero=""><img src="${OVERVIEW}" alt="${c.heroAlt}" loading="eager" ${AMBILIGHT_ATTR}><figcaption>${c.heroCaption}</figcaption></figure>`;
   html = html.replace(/<figure class="project-hero-media reveal"(?: data-fjm-real-hero="")?>[\s\S]*?<\/figure>/, hero);
 
-  const story = `<section class="project-section fjm-story-section" data-fjm-story=""><div class="fjm-story-grid"><div class="fjm-story-copy"><div class="section-kicker reveal"><span>01</span><p>${c.storyKicker}</p></div><div class="reveal"><h2>${c.storyTitle}</h2><p>${c.briefText}</p><p>${c.responseText}</p></div><div class="system-flow fjm-story-flow reveal">${flow(c.flow)}</div><p class="fjm-story-tech reveal">${c.tech}</p></div><figure class="fjm-story-media reveal"><div class="fjm-invitation-visual"><img src="${OVERVIEW}" alt="${c.invitationAlt}" loading="lazy"><div class="fjm-invitation-card" aria-hidden="true"><strong>Touchez la carte</strong><em>Explorez les lieux et leurs récits.</em><small>○—○ &nbsp; Pincez ou touchez deux fois pour zoomer</small></div></div><figcaption>${c.invitationCaption}</figcaption></figure></div></section>`;
+  const story = `<section class="project-section fjm-story-section" data-fjm-story=""><div class="fjm-story-grid"><div class="fjm-story-copy"><div class="section-kicker reveal"><span>01</span><p>${c.storyKicker}</p></div><div class="reveal"><h2>${c.storyTitle}</h2><p>${c.briefText}</p><p>${c.responseText}</p></div><div class="system-flow fjm-story-flow reveal">${flow(c.flow)}</div><p class="fjm-story-tech reveal">${c.tech}</p></div><figure class="fjm-story-media reveal"><div class="fjm-invitation-visual"><img src="${OVERVIEW}" alt="${c.invitationAlt}" loading="lazy" ${AMBILIGHT_ATTR}><div class="fjm-invitation-card" aria-hidden="true"><strong>Touchez la carte</strong><em>Explorez les lieux et leurs récits.</em><small>○—○ &nbsp; Pincez ou touchez deux fois pour zoomer</small></div></div><figcaption>${c.invitationCaption}</figcaption></figure></div></section>`;
 
-  const gallery = `<section class="project-section fjm-real-interface-v2" data-fjm-real-media-v2=""><div class="fjm-interface-head"><div class="section-kicker reveal"><span>03</span><p>${c.galleryKicker}</p></div><div class="fjm-interface-copy"><h2 class="reveal">${c.galleryTitle}</h2><p class="reveal">${c.galleryText}</p></div></div><div class="fjm-real-gallery"><figure class="fjm-real-shot reveal"><img src="${CARTEL}" alt="${c.cartelAlt}" loading="lazy"><figcaption>${c.cartelCaption}</figcaption></figure><figure class="fjm-real-shot reveal"><img src="${SELECTED}" alt="${c.selectedAlt}" loading="lazy"><figcaption>${c.selectedCaption}</figcaption></figure></div></section>`;
+  const gallery = `<section class="project-section fjm-real-interface-v2" data-fjm-real-media-v2=""><div class="fjm-interface-head"><div class="section-kicker reveal"><span>03</span><p>${c.galleryKicker}</p></div><div class="fjm-interface-copy"><h2 class="reveal">${c.galleryTitle}</h2><p class="reveal">${c.galleryText}</p></div></div><div class="fjm-real-gallery"><figure class="fjm-real-shot reveal"><img src="${CARTEL}" alt="${c.cartelAlt}" loading="lazy" ${AMBILIGHT_ATTR}><figcaption>${c.cartelCaption}</figcaption></figure><figure class="fjm-real-shot reveal"><img src="${SELECTED}" alt="${c.selectedAlt}" loading="lazy" ${AMBILIGHT_ATTR}><figcaption>${c.selectedCaption}</figcaption></figure></div></section>`;
 
   const bodyPattern = /(<header class="project-hero">[\s\S]*?<\/header>)[\s\S]*?(<nav class="project-next">)/;
   if (!bodyPattern.test(html)) throw new Error(`Project body markers not found in ${rel}`);
@@ -138,4 +139,4 @@ for (const rel of ARCHIVES) {
   write(rel, html);
 }
 
-console.log('FJM Atlas reduced to one merged context/response section plus the approved interface section.');
+console.log('FJM Atlas reduced to one merged context/response section plus the approved interface section, with chromatic Ambilight white-guard opt-out on its real UI images.');
