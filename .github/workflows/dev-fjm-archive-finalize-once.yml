@@ -1,0 +1,80 @@
+name: One-shot FJM Atlas archive finalization
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - '.github/workflows/dev-fjm-archive-finalize-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout DEV
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Apply final FJM Atlas archive metadata
+        run: |
+          node --check scripts/fjm-atlas-production-ready-v1.mjs
+          node scripts/fjm-atlas-production-ready-v1.mjs
+
+      - name: Persist finalizer in DEV build
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('.github/workflows/dev-build.yml')
+          s = p.read_text(encoding='utf-8')
+          needle = "      - name: Apply FJM Atlas real interface media\n        run: node scripts/fjm-atlas-real-media-v1.mjs\n"
+          block = needle + "\n      - name: Finalize FJM Atlas release metadata\n        run: node scripts/fjm-atlas-production-ready-v1.mjs\n"
+          if 'Finalize FJM Atlas release metadata' not in s:
+              if needle not in s:
+                  raise SystemExit('FJM real-media build step not found')
+              s = s.replace(needle, block, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Verify archive functionality and final wording
+        shell: bash
+        run: |
+          node scripts/check-project-taxonomy.mjs
+          node scripts/check-locale-parity.mjs
+          grep -q '"montricher"' data/project-taxonomy.json
+          grep -q '"fjm-atlas"' data/project-taxonomy.json
+          grep -q 'data-archive-project="fjm-atlas" data-archive-status="realized" data-archive-type="installation software"' fr/archive.html
+          grep -q 'data-archive-tags="montricher switzerland installation exhibition museum interactive interactive-map electron typescript openseadragon software kiosk offline-first"' fr/archive.html
+          grep -q 'data-archive-images="\[&quot;assets/media/fjm-atlas/real/02-map-overview.png&quot;,&quot;assets/media/fjm-atlas/real/04-editorial-cartel.png&quot;,&quot;assets/media/fjm-atlas/real/05-selected-location-map.png&quot;\]"' fr/archive.html
+          grep -q '<span class="archive-status status-realized">INSTALLATION</span>' fr/archive.html
+          grep -q '<strong>FJM Atlas / Carte interactive</strong>' fr/archive.html
+          grep -q 'Montricher, Suisse / Fondation Jan Michalski / atlas littéraire tactile / borne muséale hors ligne' fr/archive.html
+          grep -q '<option value="montricher">Montricher</option>' fr/archive.html
+          grep -q '<option value="exhibition">Exposition</option>' fr/archive.html
+          grep -q '<option value="museum">Musée</option>' fr/archive.html
+          ! grep -q '<option value="prototype">Prototype</option>' fr/archive.html
+          grep -q '<b>Statut</b> projet commandé / installé / opérationnel' fr/projects/fjm-atlas.html
+          ! grep -q 'en développement / non livré' fr/projects/fjm-atlas.html
+          ! grep -q 'capture de développement' fr/projects/fjm-atlas.html
+          ! grep -q 'interface de développement' fr/projects/fjm-atlas.html
+          grep -q 'Finalize FJM Atlas release metadata' .github/workflows/dev-build.yml
+          git diff --check
+
+      - name: Commit DEV final archive state
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/project-taxonomy.json archive.html en/archive.html fr/archive.html es/archive.html projects/fjm-atlas.html en/projects/fjm-atlas.html fr/projects/fjm-atlas.html es/projects/fjm-atlas.html .github/workflows/dev-build.yml
+          if git diff --cached --quiet; then
+            echo "FJM Atlas archive already final-ready."
+          else
+            git commit -m "Finalize FJM Atlas archive metadata for release"
+            git push origin HEAD:dev
+          fi
