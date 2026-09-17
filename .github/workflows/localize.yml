@@ -21,6 +21,21 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - name: Quarantine Google Search Console verification file
+        shell: bash
+        run: |
+          set -euo pipefail
+          file='googlea17a6d7e73755190.html'
+          expected='google-site-verification: googlea17a6d7e73755190.html'
+          actual="$(tr -d '\r\n' < "$file")"
+          if [ "$actual" != "$expected" ]; then
+            echo "::error::$file is not the exact Google verification token. Refusing to run generators."
+            exit 1
+          fi
+          cp "$file" "$RUNNER_TEMP/$file"
+          rm "$file"
+          echo "Google verification file quarantined outside the site generator input set."
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -112,6 +127,21 @@ jobs:
 
       - name: Enforce Archive indexability
         run: node scripts/archive-indexability-guard.mjs
+
+      - name: Restore and verify Google Search Console verification file
+        shell: bash
+        run: |
+          set -euo pipefail
+          file='googlea17a6d7e73755190.html'
+          expected='google-site-verification: googlea17a6d7e73755190.html'
+          cp "$RUNNER_TEMP/$file" "$file"
+          actual="$(tr -d '\r\n' < "$file")"
+          if [ "$actual" != "$expected" ]; then
+            echo "::error::$file changed during generation. Refusing to commit."
+            exit 1
+          fi
+          rm -f "en/$file" "fr/$file" "es/$file"
+          echo "Google verification file restored byte-for-byte and protected from localized copies."
 
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
