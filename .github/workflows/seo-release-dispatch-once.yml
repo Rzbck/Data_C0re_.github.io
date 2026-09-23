@@ -17,4 +17,4 @@ jobs:
       - name: Dispatch existing production localization workflow
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run localize.yml --ref main
+        run: gh workflow run localize.yml --repo Rzbck/Data_C0re_.github.io --ref main
