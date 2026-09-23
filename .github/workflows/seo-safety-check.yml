@@ -1,0 +1,105 @@
+name: SEO architecture safety check
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-architecture-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout proposed revision
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Quarantine Google Search Console verification file
+        shell: bash
+        run: |
+          set -euo pipefail
+          file='googlea17a6d7e73755190.html'
+          expected='google-site-verification: googlea17a6d7e73755190.html'
+          actual="$(tr -d '\r\n' < "$file")"
+          test "$actual" = "$expected"
+          cp "$file" "$RUNNER_TEMP/$file"
+          rm "$file"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install generator dependency
+        run: npm install --no-save --package-lock=false cheerio@1.0.0
+
+      - name: Run production generation pipeline without publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/portfolio-architecture.mjs
+          node scripts/international-service-seo.mjs
+          node scripts/build-localized.mjs
+          node scripts/seo-localized-overrides.mjs
+          node scripts/postprocess-localized.mjs
+          node scripts/international-service-seo.mjs
+          node scripts/professional-copy-cleanup.mjs
+          node scripts/contact-site-integration.mjs
+          node scripts/editorial-localization.mjs
+          node scripts/portfolio-architecture-polish.mjs
+          node scripts/portfolio-architecture-finalize.mjs
+          node scripts/menu-layout-integration.mjs
+          node scripts/display-heading-diacritics.mjs
+          node scripts/layout-balance-integration.mjs
+          node scripts/sync-origin.mjs
+          node scripts/portfolio-editorial-simplify.mjs
+          node scripts/lab-redirect-finalize.mjs
+          node scripts/portfolio-v2-finalize.mjs
+          node scripts/home-compact-v3.mjs
+          node scripts/static-language-links.mjs
+          node scripts/comedie-official-media-v1.mjs
+          node scripts/comedie-performance-v1.mjs
+          node scripts/localize-low-bandwidth-project.mjs
+          node scripts/archive-location-context-fix.mjs
+          node scripts/low-bandwidth-video-fix.mjs
+          node scripts/archive-video-autolink.mjs
+          node scripts/cv-one-page-v1.mjs
+          node scripts/archive-indexability-guard.mjs
+
+      - name: Restore Google verification token
+        shell: bash
+        run: |
+          set -euo pipefail
+          file='googlea17a6d7e73755190.html'
+          expected='google-site-verification: googlea17a6d7e73755190.html'
+          cp "$RUNNER_TEMP/$file" "$file"
+          actual="$(tr -d '\r\n' < "$file")"
+          test "$actual" = "$expected"
+          rm -f "en/$file" "fr/$file" "es/$file"
+
+      - name: Verify pre-finalization EN FR ES structural parity
+        run: node scripts/check-locale-parity.mjs
+
+      - name: Finalize default-English canonical architecture
+        run: node scripts/finalize-default-language-seo.mjs
+
+      - name: Verify final SEO and indexation architecture
+        run: node scripts/check-seo-indexation-architecture.mjs
+
+      - name: Reject whitespace errors
+        run: git diff --check
+
+      - name: Show generated SEO diff summary
+        shell: bash
+        run: |
+          echo "Canonical sitemap URLs: $(grep -c '<loc>' sitemap.xml)"
+          echo "Legacy /en sitemap URLs: $(grep -c '<loc>https://datac0re.is-a.dev/en/' sitemap.xml || true)"
+          echo "Generated /en redirect pages: $(find en -type f -name '*.html' | wc -l)"
+          git status --short
