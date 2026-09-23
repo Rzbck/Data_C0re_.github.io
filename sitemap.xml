@@ -1,421 +1,361 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://datac0re.is-a.dev/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/fr/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/es/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
-  </url>
-  <url>
     <loc>https://datac0re.is-a.dev/archive.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/archive.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/archive.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/archive.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/archive.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/archive.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/archive.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/archive.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/archive.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/archive.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/archive.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/archive.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/archive.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/archive.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/archive.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/archive.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/archive.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/archive.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/archive.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/archive.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/archive.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/archive.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/archive.html"/>
   </url>
   <url>
-    <loc>https://datac0re.is-a.dev/cv.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/cv.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/cv.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/cv.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/fr/cv.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/cv.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/es/cv.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/cv.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/cv.html"/>
-  </url>
-  <url>
     <loc>https://datac0re.is-a.dev/contact.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/contact.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/contact.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/contact.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/contact.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/contact.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/contact.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/contact.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/contact.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/contact.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/contact.html"/>
   </url>
   <url>
-    <loc>https://datac0re.is-a.dev/projects/ascii.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/ascii.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/ascii.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/ascii.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/ascii.html"/>
+    <loc>https://datac0re.is-a.dev/cv.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/cv.html"/>
   </url>
   <url>
-    <loc>https://datac0re.is-a.dev/en/projects/ascii.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/ascii.html"/>
+    <loc>https://datac0re.is-a.dev/fr/cv.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/cv.html"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/es/cv.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/cv.html"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/</loc>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/fr/</loc>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/es/</loc>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/"/>
+  </url>
+  <url>
+    <loc>https://datac0re.is-a.dev/projects/ascii.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/ascii.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/ascii.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/ascii.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/ascii.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/projects/ascii.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/ascii.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/ascii.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/ascii.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/ascii.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/ascii.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/projects/ascii.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/ascii.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/ascii.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/ascii.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/ascii.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/ascii.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/projects/cloud.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/cloud.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/cloud.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/cloud.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/cloud.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/projects/cloud.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/cloud.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/cloud.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/cloud.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/cloud.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/cloud.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/projects/cloud.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/cloud.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/cloud.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/cloud.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/cloud.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/cloud.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/projects/cloud.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/cloud.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/cloud.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/cloud.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/cloud.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/cloud.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/projects/comedie.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/comedie.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/comedie.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/comedie.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/comedie.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/projects/comedie.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/comedie.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/comedie.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/comedie.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/comedie.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/comedie.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/projects/comedie.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/comedie.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/comedie.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/comedie.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/comedie.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/comedie.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/projects/comedie.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/comedie.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/comedie.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/comedie.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/comedie.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/comedie.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/projects/grand-theatre.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/grand-theatre.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/grand-theatre.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/grand-theatre.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/grand-theatre.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/projects/grand-theatre.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/grand-theatre.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/grand-theatre.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/grand-theatre.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/grand-theatre.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/grand-theatre.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/projects/grand-theatre.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/grand-theatre.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/grand-theatre.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/grand-theatre.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/grand-theatre.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/grand-theatre.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/projects/grand-theatre.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/grand-theatre.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/grand-theatre.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/grand-theatre.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/grand-theatre.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/grand-theatre.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/projects/hardwinner.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/hardwinner.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/hardwinner.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/hardwinner.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/hardwinner.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/projects/hardwinner.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/hardwinner.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/hardwinner.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/hardwinner.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/hardwinner.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/hardwinner.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/projects/hardwinner.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/hardwinner.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/hardwinner.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/hardwinner.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/hardwinner.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/hardwinner.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/projects/hardwinner.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/hardwinner.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/hardwinner.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/hardwinner.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/hardwinner.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/hardwinner.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/projects/last-low-bandwidth-message.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/last-low-bandwidth-message.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/last-low-bandwidth-message.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/last-low-bandwidth-message.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/last-low-bandwidth-message.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/projects/last-low-bandwidth-message.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/last-low-bandwidth-message.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/last-low-bandwidth-message.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/last-low-bandwidth-message.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/last-low-bandwidth-message.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/last-low-bandwidth-message.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/projects/last-low-bandwidth-message.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/last-low-bandwidth-message.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/last-low-bandwidth-message.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/last-low-bandwidth-message.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/last-low-bandwidth-message.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/last-low-bandwidth-message.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/projects/last-low-bandwidth-message.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/last-low-bandwidth-message.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/last-low-bandwidth-message.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/last-low-bandwidth-message.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/last-low-bandwidth-message.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/last-low-bandwidth-message.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/projects/lumina.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/lumina.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/lumina.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/lumina.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/lumina.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/projects/lumina.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/lumina.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/lumina.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/lumina.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/lumina.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/lumina.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/projects/lumina.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/lumina.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/lumina.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/lumina.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/lumina.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/lumina.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/projects/lumina.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/lumina.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/lumina.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/lumina.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/lumina.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/lumina.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/projects/realtime.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/realtime.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/realtime.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/realtime.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/realtime.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/projects/realtime.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/realtime.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/realtime.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/realtime.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/realtime.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/realtime.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/projects/realtime.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/realtime.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/realtime.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/realtime.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/realtime.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/realtime.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/projects/realtime.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/realtime.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/realtime.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/realtime.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/realtime.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/realtime.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/projects/signal.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/signal.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/signal.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/signal.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/signal.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/projects/signal.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/signal.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/signal.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/signal.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/signal.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/signal.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/projects/signal.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/signal.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/signal.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/signal.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/signal.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/signal.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/projects/signal.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/signal.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/signal.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/signal.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/signal.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/signal.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/projects/snake.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/snake.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/snake.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/snake.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/snake.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/projects/snake.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/snake.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/snake.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/snake.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/snake.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/snake.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/projects/snake.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/snake.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/snake.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/snake.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/snake.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/snake.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/projects/snake.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/snake.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/snake.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/snake.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/snake.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/snake.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/projects/stage-systems.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/stage-systems.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/stage-systems.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/stage-systems.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/stage-systems.html"/>
-  </url>
-  <url>
-    <loc>https://datac0re.is-a.dev/en/projects/stage-systems.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/stage-systems.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/stage-systems.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/stage-systems.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/stage-systems.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/stage-systems.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/fr/projects/stage-systems.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/stage-systems.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/stage-systems.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/stage-systems.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/stage-systems.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/stage-systems.html"/>
   </url>
   <url>
     <loc>https://datac0re.is-a.dev/es/projects/stage-systems.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/en/projects/stage-systems.html"/>
+    <lastmod>2026-09-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://datac0re.is-a.dev/projects/stage-systems.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://datac0re.is-a.dev/fr/projects/stage-systems.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://datac0re.is-a.dev/es/projects/stage-systems.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://datac0re.is-a.dev/projects/stage-systems.html"/>
