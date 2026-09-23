@@ -146,6 +146,12 @@ jobs:
       - name: Verify EN FR ES structural parity
         run: node scripts/check-locale-parity.mjs
 
+      - name: Finalize default-English canonical SEO architecture
+        run: node scripts/finalize-default-language-seo.mjs
+
+      - name: Verify canonical SEO architecture
+        run: node scripts/check-seo-indexation-architecture.mjs
+
       - name: Commit generated localization layer
         shell: bash
         run: |
