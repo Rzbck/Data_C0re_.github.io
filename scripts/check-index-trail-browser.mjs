@@ -9,6 +9,7 @@ const expectedTitles={
 };
 const failures=[];
 const fail=(label,detail)=>failures.push(`${label}: ${detail}`);
+const localeHome=lang=>lang==='en'?`${base}/`:`${base}/${lang}/`;
 
 const browser=await chromium.launch({headless:true});
 
@@ -16,7 +17,7 @@ for(const lang of locales){
   const context=await browser.newContext({viewport:{width:1366,height:768},reducedMotion:'no-preference'});
   const page=await context.newPage();
   const label=`desktop ${lang}`;
-  await page.goto(`${base}/${lang}/`,{waitUntil:'domcontentloaded',timeout:30000});
+  await page.goto(localeHome(lang),{waitUntil:'domcontentloaded',timeout:30000});
 
   try{
     await page.waitForFunction(()=>document.querySelectorAll('.site-menu .menu-card-title--trail').length===3,null,{timeout:5000});
@@ -55,7 +56,7 @@ for(const lang of locales){
   const touchContext=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true,reducedMotion:'no-preference'});
   const touchPage=await touchContext.newPage();
   const touchLabel=`touch ${lang}`;
-  await touchPage.goto(`${base}/${lang}/`,{waitUntil:'domcontentloaded',timeout:30000});
+  await touchPage.goto(localeHome(lang),{waitUntil:'domcontentloaded',timeout:30000});
   try{
     await touchPage.waitForFunction(()=>document.querySelectorAll('.site-menu .menu-card-title--trail').length===3,null,{timeout:5000});
     const displays=await touchPage.evaluate(()=>[...document.querySelectorAll('.site-menu .home-gate-title__echo')].map(el=>getComputedStyle(el).display));
@@ -74,4 +75,4 @@ if(failures.length){
   process.exit(1);
 }
 
-console.log('INDEX directional trail OK: EN / FR / ES desktop interaction matches Home gates and touch/mobile stays static.');
+console.log('INDEX directional trail OK: canonical root EN / FR / ES desktop interaction matches Home gates and touch/mobile stays static.');
