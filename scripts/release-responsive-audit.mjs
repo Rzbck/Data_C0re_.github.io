@@ -5,7 +5,9 @@ import { chromium } from 'playwright';
 const base = process.env.AUDIT_BASE_URL || 'http://127.0.0.1:4173';
 const locales = ['en','fr','es'];
 const coreRoutes = ['', 'archive.html', 'cv.html', 'contact.html'];
-const projectDir = lang => path.join(process.cwd(), lang, 'projects');
+const localeRoot = lang => lang === 'en' ? process.cwd() : path.join(process.cwd(), lang);
+const projectDir = lang => path.join(localeRoot(lang), 'projects');
+const localeUrl = (lang, route='') => lang === 'en' ? `${base}/${route}` : `${base}/${lang}/${route}`;
 const projectFiles = fs.readdirSync(projectDir('en')).filter(name => name.endsWith('.html')).sort();
 const routes = [...coreRoutes, ...projectFiles.map(name => `projects/${name}`)];
 const viewports = [
@@ -42,7 +44,7 @@ for (const vp of viewports) {
       const isProject = route.startsWith('projects/');
       const pageErrors = [];
       page.on('pageerror', err => pageErrors.push(String(err.message || err)));
-      await page.goto(`${base}/${lang}/${route}`, { waitUntil:'domcontentloaded', timeout:30000 });
+      await page.goto(localeUrl(lang, route), { waitUntil:'domcontentloaded', timeout:30000 });
       await page.waitForTimeout(route === 'archive.html' ? 260 : 150);
 
       const checks = await page.evaluate(async ({isProject}) => {
@@ -62,7 +64,7 @@ for (const vp of viewports) {
         const html = document.documentElement;
         const body = document.body;
         const primary = qa('.site-header [data-v2-primary]');
-        const langs = qa('.site-header .lang-switcher a[data-lang]');
+        const langs = qa('.site-header .lang-switcher a');
 
         const clippingSelectors = [
           '.signal-hero-system', '.signal-tech-grid', '.project-grid', '.stack-grid',
@@ -231,4 +233,4 @@ if (failures.length) {
   failures.forEach(x => console.error(`- ${x}`));
   process.exit(1);
 }
-console.log(`Responsive release audit passed: ${viewports.length} viewports × ${locales.length} locales × ${routes.length} routes (${projectFiles.length} project pages per locale), with canonical Archive tag-filter parity.`);
+console.log(`Responsive release audit passed: ${viewports.length} viewports × ${locales.length} locales × ${routes.length} canonical routes (${projectFiles.length} project pages per locale), with Archive tag-filter parity.`);
