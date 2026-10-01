@@ -7,7 +7,6 @@ on:
       - 'site.config.json'
       - 'assets/js/analytics.js'
       - 'assets/js/language-routes.js'
-      - 'assets/css/analytics-consent.css'
       - 'scripts/check-analytics-integration.mjs'
       - '.github/workflows/analytics-safety-check.yml'
   workflow_dispatch:
@@ -25,7 +24,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Check analytics runtime syntax
         run: node --check assets/js/analytics.js

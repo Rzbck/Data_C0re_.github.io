@@ -4,10 +4,14 @@
   "languages": ["en", "fr", "es"],
   "defaultLanguage": "en",
   "analytics": {
-    "provider": "ga4",
+    "provider": "matomo",
     "enabled": false,
-    "measurementId": "",
-    "consentMode": "basic",
-    "consentStorageDays": 180
+    "baseUrl": "",
+    "siteId": "",
+    "cnilExemptionMode": true,
+    "disableCookies": true,
+    "respectDoNotTrack": true,
+    "referrerMode": "host-only",
+    "stripQueryString": true
   }
 }

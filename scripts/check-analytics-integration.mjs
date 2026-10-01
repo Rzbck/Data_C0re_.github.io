@@ -5,57 +5,69 @@ const ROOT = process.cwd();
 const config = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf8'));
 const analytics = config.analytics || {};
 const enabled = analytics.enabled === true;
-const measurementId = String(analytics.measurementId || '').trim();
+const baseUrl = String(analytics.baseUrl || '').trim();
+const siteId = String(analytics.siteId || '').trim();
 
-if (String(analytics.provider || '').toLowerCase() !== 'ga4') throw new Error('analytics.provider must be ga4.');
-if (String(analytics.consentMode || '').toLowerCase() !== 'basic') throw new Error('analytics.consentMode must be basic.');
-if (Number(analytics.consentStorageDays) !== 180) throw new Error('Consent choice retention must remain 180 days (6 months).');
-if (enabled && !/^G-[A-Z0-9]+$/i.test(measurementId)) throw new Error('Enabled GA4 requires a valid G- measurement ID.');
+if (String(analytics.provider || '').toLowerCase() !== 'matomo') throw new Error('analytics.provider must be matomo.');
+if (analytics.cnilExemptionMode !== true) throw new Error('Matomo CNIL exemption mode must remain explicitly required.');
+if (analytics.disableCookies !== true) throw new Error('Matomo must remain cookieless in the site runtime.');
+if (analytics.respectDoNotTrack !== true) throw new Error('Matomo must respect browser Do Not Track.');
+if (String(analytics.referrerMode || '').toLowerCase() !== 'host-only') throw new Error('Referrers must remain host-only.');
+if (analytics.stripQueryString !== true) throw new Error('Tracked page URLs must strip query strings.');
 
-for (const rel of ['assets/js/analytics.js', 'assets/css/analytics-consent.css', 'assets/js/language-routes.js']) {
+if (enabled) {
+  let parsed;
+  try { parsed = new URL(baseUrl); } catch { throw new Error('Enabled Matomo requires a valid baseUrl.'); }
+  if (parsed.protocol !== 'https:') throw new Error('Enabled Matomo baseUrl must use HTTPS.');
+  if (!/^\d+$/.test(siteId) || Number(siteId) < 1) throw new Error('Enabled Matomo requires a positive numeric siteId.');
+}
+
+for (const rel of ['assets/js/analytics.js', 'assets/js/language-routes.js']) {
   if (!fs.existsSync(path.join(ROOT, rel))) throw new Error(`Missing analytics asset: ${rel}`);
 }
 
 const analyticsJs = fs.readFileSync(path.join(ROOT, 'assets/js/analytics.js'), 'utf8');
 const routesJs = fs.readFileSync(path.join(ROOT, 'assets/js/language-routes.js'), 'utf8');
 
-for (const required of [
-  "analytics_storage: 'denied'",
-  "ad_storage: 'denied'",
-  "ad_user_data: 'denied'",
-  "ad_personalization: 'denied'",
-  'allow_google_signals: false',
-  'allow_ad_personalization_signals: false',
-  'googletagmanager.com/gtag/js',
-  'traffic_origin_hint',
-  'direct_or_dark',
-  "localStorage.setItem(CONSENT_KEY",
-  'location.reload()',
-  'const AUTO_DISMISS_MS = 10_000',
-  'setTimeout(dismissWithoutConsent, AUTO_DISMISS_MS)'
+for (const forbidden of [
+  'googletagmanager.com',
+  'google-analytics.com',
+  'Google Analytics',
+  'gtag(',
+  'window.gtag',
+  'dataLayer',
+  'traffic_origin_hint'
 ]) {
-  if (!analyticsJs.includes(required)) throw new Error(`Analytics runtime missing safeguard: ${required}`);
+  if (analyticsJs.includes(forbidden) || routesJs.includes(forbidden)) {
+    throw new Error(`GA4 residue detected: ${forbidden}`);
+  }
 }
 
 for (const required of [
-  "ensureCss('assets/css/analytics-consent.css?v=20261001-2','data-site-analytics-style')",
-  "ensureScript('assets/js/analytics.js?v=20261001-2','data-site-analytics')"
+  "queue.push(['disableCookies'])",
+  "queue.push(['setDoNotTrack', true])",
+  "queue.push(['setCustomUrl'",
+  "queue.push(['setReferrerUrl'",
+  "queue.push(['setTrackerUrl'",
+  "queue.push(['setSiteId'",
+  "queue.push(['trackPageView'])",
+  'matomo.php',
+  'matomo.js',
+  'clearLegacyGaState()',
+  "referrerMode || 'host-only'"
 ]) {
-  if (!routesJs.includes(required)) throw new Error(`Global route loader missing analytics wiring: ${required}`);
+  if (!analyticsJs.includes(required)) throw new Error(`Matomo runtime missing privacy safeguard: ${required}`);
 }
 
-const googleTagIndex = analyticsJs.indexOf('googletagmanager.com/gtag/js');
-const loadFunctionIndex = analyticsJs.indexOf('function loadGoogleAnalytics()');
-if (googleTagIndex < 0 || loadFunctionIndex < 0 || googleTagIndex < loadFunctionIndex) {
-  throw new Error('Google tag must only be created inside loadGoogleAnalytics after opt-in.');
+if (analyticsJs.includes('enableLinkTracking')) {
+  throw new Error('Automatic link/outlink tracking is intentionally disabled in the consent-exempt profile.');
 }
 
-const dismissStart = analyticsJs.indexOf('function dismissWithoutConsent()');
-const dismissEnd = analyticsJs.indexOf('function applyConsent', dismissStart);
-if (dismissStart < 0 || dismissEnd < 0) throw new Error('Missing safe auto-dismiss implementation.');
-const dismissBody = analyticsJs.slice(dismissStart, dismissEnd);
-if (dismissBody.includes("storeConsent('granted'") || dismissBody.includes('loadGoogleAnalytics()')) {
-  throw new Error('Inactivity must never grant analytics consent or load GA4.');
+if (routesJs.includes('analytics-consent.css') || routesJs.includes('data-site-analytics-style')) {
+  throw new Error('Consent banner CSS must not be loaded after GA4 removal.');
+}
+if (!routesJs.includes("ensureScript('assets/js/analytics.js?v=20261001-3','data-site-analytics')")) {
+  throw new Error('Global route loader is missing the Matomo runtime.');
 }
 
 const sitemap = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
@@ -94,4 +106,4 @@ if (fs.existsSync(enDir)) {
   }
 }
 
-console.log(`Analytics safety OK: shared loader reaches ${locs.length} canonical URLs, /en redirects are excluded, GA4 ${enabled ? 'enabled' : 'disabled pending measurement ID'}, basic opt-in consent enforced, inactivity remains non-consent.`);
+console.log(`Analytics safety OK: GA4 removed, no consent banner, Matomo CNIL-ready runtime reaches ${locs.length} canonical URLs, /en redirects are excluded, Matomo ${enabled ? 'enabled' : 'disabled pending CNIL-configured endpoint + site ID'}.`);

@@ -48,12 +48,11 @@
   ensureCss('assets/css/home-work-mobile-final.css?v=20260814-7','data-home-work-mobile-final');
   ensureCss('assets/css/home-gate-trail.css?v=20260816-3','data-home-gate-trail');
   ensureCss('assets/css/video-ambilight-v1.css?v=20260819-20','data-video-ambilight');
-  ensureCss('assets/css/analytics-consent.css?v=20261001-2','data-site-analytics-style');
   ensureScript('assets/js/menu-card-trail.js?v=20260816-1','data-menu-card-trail');
   ensureScript('assets/js/mobile-media-controller-v1.js?v=20260824-media4','data-mobile-media-controller');
   ensureScript('assets/js/video-ambilight-v1.js?v=20260820-22','data-video-ambilight');
   ensureScript('assets/js/ambilight-interpolator-v1.js?v=20260820-1','data-ambilight-interpolator');
-  ensureScript('assets/js/analytics.js?v=20261001-2','data-site-analytics');
+  ensureScript('assets/js/analytics.js?v=20261001-3','data-site-analytics');
   const archiveInteractive=Boolean(document.querySelector('[data-archive-interactive]'));
   if(!archiveInteractive)ensureScript('assets/js/ambilight-white-image-guard-v1.js?v=20260820-1','data-ambilight-white-image-guard');
   if(archiveInteractive)ensureScript('assets/js/archive-ambient-bridge-v1.js?v=20260819-1','data-archive-ambient-bridge');
