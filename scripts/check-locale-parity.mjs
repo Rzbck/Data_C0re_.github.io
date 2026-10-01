@@ -8,9 +8,18 @@ const routes=['index.html','archive.html','cv.html','contact.html'];
 const expectedPrimary=['home','archive','cv','contact'];
 const expectedLangs=['en','fr','es'];
 
+// Canonical architecture: English lives at the repository root. /en is now a
+// noindex compatibility redirect layer and must never be used as the English
+// parity source. FR and ES remain generated static locale directories.
+const localeRoots={en:'',fr:'fr',es:'es'};
+
+function localePath(lang,route){
+  const base=localeRoots[lang];
+  return base?path.join(ROOT,base,route):path.join(ROOT,route);
+}
 function read(lang,route){
-  const file=path.join(ROOT,lang,route);
-  if(!fs.existsSync(file))throw new Error(`Missing localized page: ${lang}/${route}`);
+  const file=localePath(lang,route);
+  if(!fs.existsSync(file))throw new Error(`Missing canonical locale page: ${lang}/${route}`);
   return load(fs.readFileSync(file,'utf8'),{decodeEntities:false});
 }
 function same(label,values){
@@ -18,8 +27,9 @@ function same(label,values){
   if(values.some(v=>JSON.stringify(v)!==first))throw new Error(`${label} differs across EN/FR/ES: ${JSON.stringify(values)}`);
 }
 function projectFiles(lang){
-  const dir=path.join(ROOT,lang,'projects');
-  if(!fs.existsSync(dir))throw new Error(`Missing localized project directory: ${lang}/projects`);
+  const base=localeRoots[lang];
+  const dir=base?path.join(ROOT,base,'projects'):path.join(ROOT,'projects');
+  if(!fs.existsSync(dir))throw new Error(`Missing canonical project directory for ${lang}: ${path.relative(ROOT,dir)}`);
   return fs.readdirSync(dir).filter(name=>name.endsWith('.html')).sort();
 }
 function structuralSignature($){
@@ -82,4 +92,4 @@ for(const lang of langs){
   if($('.smallfile-tech-note').length!==1)throw new Error(`${label}: generated-source/contact-sheet block missing.`);
 }
 
-console.log(`Locale parity OK: EN / FR / ES share the same primary UI and ${canonicalProjects.length} structurally identical project pages, including the low-bandwidth media composition.`);
+console.log(`Locale parity OK: canonical root EN / FR / ES share the same primary UI and ${canonicalProjects.length} structurally identical project pages, including the low-bandwidth media composition.`);
