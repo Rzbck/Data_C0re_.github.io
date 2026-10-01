@@ -48,12 +48,12 @@
   ensureCss('assets/css/home-work-mobile-final.css?v=20260814-7','data-home-work-mobile-final');
   ensureCss('assets/css/home-gate-trail.css?v=20260816-3','data-home-gate-trail');
   ensureCss('assets/css/video-ambilight-v1.css?v=20260819-20','data-video-ambilight');
-  ensureCss('assets/css/analytics-consent.css?v=20261001-1','data-site-analytics-style');
+  ensureCss('assets/css/analytics-consent.css?v=20261001-2','data-site-analytics-style');
   ensureScript('assets/js/menu-card-trail.js?v=20260816-1','data-menu-card-trail');
   ensureScript('assets/js/mobile-media-controller-v1.js?v=20260824-media4','data-mobile-media-controller');
   ensureScript('assets/js/video-ambilight-v1.js?v=20260820-22','data-video-ambilight');
   ensureScript('assets/js/ambilight-interpolator-v1.js?v=20260820-1','data-ambilight-interpolator');
-  ensureScript('assets/js/analytics.js?v=20261001-1','data-site-analytics');
+  ensureScript('assets/js/analytics.js?v=20261001-2','data-site-analytics');
   const archiveInteractive=Boolean(document.querySelector('[data-archive-interactive]'));
   if(!archiveInteractive)ensureScript('assets/js/ambilight-white-image-guard-v1.js?v=20260820-1','data-ambilight-white-image-guard');
   if(archiveInteractive)ensureScript('assets/js/archive-ambient-bridge-v1.js?v=20260819-1','data-archive-ambient-bridge');
@@ -75,7 +75,21 @@
     return `${location.origin}${normalized}${tail?'':'/'}${location.search||''}${location.hash||''}`;
   };
 
+  const canonicalHome=(pathLang)=>{
+    const locale=pathLang==='fr'||pathLang==='es'?pathLang:'';
+    const path=[repoSegment,locale].filter(Boolean).join('/').replace(/\/+/g,'/');
+    const normalized=path ? (path.startsWith('/')?path:`/${path}`) : '';
+    return `${location.origin}${normalized}/`;
+  };
+
   const state=routeState();
+
+  /* Some generated pages historically emitted href="" for Home, which reloads
+     the current route instead of returning home. Repair it centrally at runtime
+     and keep the brand aligned with the canonical home of the active locale. */
+  const homeHref=canonicalHome(state.pathLang);
+  document.querySelectorAll('.nav-primary--home,.site-header .brand').forEach(link=>link.setAttribute('href',homeHref));
+
   if(state.route==='cv.html')ensureScript('assets/js/cv-content-canonical-v1.js?v=20260820-1','data-cv-content-canonical');
   if(state.pathLang){
     try{localStorage.setItem(storage,state.pathLang)}catch{}
