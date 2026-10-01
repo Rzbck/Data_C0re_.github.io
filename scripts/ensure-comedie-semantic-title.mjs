@@ -15,23 +15,20 @@ for (const [rel, title] of Object.entries(pages)) {
   const file = path.join(ROOT, rel);
   if (!fs.existsSync(file)) throw new Error(`Missing Comédie page: ${rel}`);
   const $ = load(fs.readFileSync(file, 'utf8'), { decodeEntities: false });
-  let touched = false;
 
   $('style[data-comedie-semantic-title]').remove();
   $('head').append(`<style data-comedie-semantic-title>${style}</style>`);
-  touched = true;
 
   $('main h1.project-semantic-title').remove();
-  const article = $('main article').first();
-  if (!article.length) throw new Error(`${rel}: missing main article.`);
-  article.prepend(`<h1 class="project-semantic-title">${title}</h1>`);
-  touched = true;
+  const hero = $('main .project-hero').first();
+  if (!hero.length) throw new Error(`${rel}: missing project hero.`);
+  hero.prepend(`<h1 class="project-semantic-title">${title}</h1>`);
 
   if ($('main h1').length !== 1) throw new Error(`${rel}: expected exactly one semantic H1 after normalization.`);
-  if (touched) {
-    fs.writeFileSync(file, $.html(), 'utf8');
-    changed += 1;
-  }
+  if ($('main .project-hero h1.project-semantic-title').length !== 1) throw new Error(`${rel}: semantic H1 must live inside the project hero.`);
+
+  fs.writeFileSync(file, $.html(), 'utf8');
+  changed += 1;
 }
 
-console.log(`Comédie semantic H1 normalized on ${changed} canonical locale pages.`);
+console.log(`Comédie semantic H1 normalized inside the project hero on ${changed} canonical locale pages.`);
