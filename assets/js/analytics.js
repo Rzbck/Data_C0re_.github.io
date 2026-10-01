@@ -7,7 +7,9 @@
 
   const CONSENT_KEY = 'data-c0re-analytics-consent-v1';
   const SESSION_HINT_KEY = 'data-c0re-traffic-hint-sent-v1';
+  const SESSION_DISMISS_KEY = 'data-c0re-analytics-dismissed-v1';
   const PREVIEW_PARAM = 'analytics_preview';
+  const AUTO_DISMISS_MS = 10_000;
 
   const translations = {
     en: {
@@ -18,27 +20,27 @@
       settings: 'Analytics settings',
       detailsLabel: 'Details',
       preview: 'Preview only — no analytics data is sent.',
-      details: 'Source attribution is automatic when the browser provides a referrer. Email clients, Discord and some apps may hide it and appear as direct traffic. Your choice is kept for 6 months and can be changed at any time.'
+      details: 'Source attribution is automatic when the browser provides a referrer. Email clients, Discord and some apps may hide it and appear as direct traffic. If you do nothing, the notice closes after 10 seconds and analytics stays off. Your explicit choice is kept for 6 months and can be changed at any time.'
     },
     fr: {
       title: 'Mesure d’audience',
       body: 'La mesure d’audience facultative aide DATA C0RE à comprendre les visites, les pages consultées et la provenance des visiteurs. Google Analytics ne se charge qu’après votre accord. Aucune publicité ni remarketing.',
-      accept: 'Accepter la mesure',
+      accept: 'Accepter',
       refuse: 'Refuser',
       settings: 'Réglages analytics',
       detailsLabel: 'Détails',
       preview: 'Aperçu uniquement — aucune donnée analytics n’est envoyée.',
-      details: 'La provenance est détectée automatiquement lorsque le navigateur transmet un référent. Les e-mails, Discord et certaines applications peuvent le masquer et apparaître en trafic direct. Votre choix est conservé 6 mois et peut être modifié à tout moment.'
+      details: 'La provenance est détectée automatiquement lorsque le navigateur transmet un référent. Les e-mails, Discord et certaines applications peuvent le masquer et apparaître en trafic direct. Sans action, le bandeau se referme après 10 secondes et la mesure reste désactivée. Votre choix explicite est conservé 6 mois et peut être modifié à tout moment.'
     },
     es: {
       title: 'Analítica de audiencia',
       body: 'La analítica opcional ayuda a DATA C0RE a entender las visitas, las páginas consultadas y de dónde llegan los visitantes. Google Analytics solo se carga después de aceptar. No se usa publicidad ni remarketing.',
-      accept: 'Aceptar analítica',
+      accept: 'Aceptar',
       refuse: 'Rechazar',
       settings: 'Ajustes de analítica',
       detailsLabel: 'Detalles',
       preview: 'Solo vista previa — no se envían datos de analítica.',
-      details: 'La procedencia se detecta automáticamente cuando el navegador transmite un referente. El correo, Discord y algunas aplicaciones pueden ocultarlo y aparecer como tráfico directo. La elección se conserva 6 meses y puede cambiarse en cualquier momento.'
+      details: 'La procedencia se detecta automáticamente cuando el navegador transmite un referente. El correo, Discord y algunas aplicaciones pueden ocultarlo y aparecer como tráfico directo. Si no haces nada, el aviso se cierra después de 10 segundos y la analítica permanece desactivada. La elección explícita se conserva 6 meses y puede cambiarse en cualquier momento.'
     }
   };
 
@@ -111,6 +113,7 @@
     const text = languageCopy();
     let googleLoaded = false;
     let panel = null;
+    let dismissTimer = null;
 
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function gtag(){ window.dataLayer.push(arguments); };
@@ -139,6 +142,17 @@
     function storeConsent(value) {
       if (previewMode) return;
       try { localStorage.setItem(CONSENT_KEY, JSON.stringify({ value, ts: Date.now() })); } catch {}
+      try { sessionStorage.removeItem(SESSION_DISMISS_KEY); } catch {}
+    }
+
+    function wasDismissedThisSession() {
+      if (previewMode) return false;
+      try { return sessionStorage.getItem(SESSION_DISMISS_KEY) === '1'; } catch { return false; }
+    }
+
+    function markDismissedThisSession() {
+      if (previewMode) return;
+      try { sessionStorage.setItem(SESSION_DISMISS_KEY, '1'); } catch {}
     }
 
     function sendOriginHintOnce() {
@@ -198,8 +212,23 @@
       }
     }
 
+    function clearDismissTimer() {
+      if (dismissTimer !== null) {
+        clearTimeout(dismissTimer);
+        dismissTimer = null;
+      }
+    }
+
     function hidePanel() {
+      clearDismissTimer();
       if (panel) panel.hidden = true;
+    }
+
+    function dismissWithoutConsent() {
+      // Inactivity is never treated as consent. We only collapse the notice for
+      // the current browser session; analytics remains denied until a real click.
+      markDismissedThisSession();
+      hidePanel();
     }
 
     function applyConsent(value) {
@@ -229,13 +258,15 @@
       if (googleLoaded) location.reload();
     }
 
-    function showPanel() {
+    function showPanel({ autoDismiss = true } = {}) {
       if (!panel) buildUi();
+      clearDismissTimer();
       panel.hidden = false;
       const current = readConsent();
       panel.dataset.currentConsent = current || 'unset';
       const focusTarget = panel.querySelector(current === 'granted' ? '[data-consent-refuse]' : '[data-consent-accept]');
       if (focusTarget) requestAnimationFrame(() => focusTarget.focus({ preventScroll: true }));
+      if (autoDismiss && !current) dismissTimer = setTimeout(dismissWithoutConsent, AUTO_DISMISS_MS);
     }
 
     function buildUi() {
@@ -244,7 +275,7 @@
       settings.className = 'analytics-settings-trigger';
       settings.textContent = text.settings;
       settings.setAttribute('aria-haspopup', 'dialog');
-      settings.addEventListener('click', showPanel);
+      settings.addEventListener('click', () => showPanel({ autoDismiss: false }));
 
       panel = document.createElement('section');
       panel.className = 'analytics-consent';
@@ -276,7 +307,7 @@
       }
       const consent = readConsent();
       if (consent === 'granted') loadGoogleAnalytics();
-      else if (consent !== 'denied') showPanel();
+      else if (consent !== 'denied' && !wasDismissedThisSession()) showPanel();
     }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });

@@ -30,14 +30,16 @@ for (const required of [
   'traffic_origin_hint',
   'direct_or_dark',
   "localStorage.setItem(CONSENT_KEY",
-  'location.reload()'
+  'location.reload()',
+  'const AUTO_DISMISS_MS = 10_000',
+  'setTimeout(dismissWithoutConsent, AUTO_DISMISS_MS)'
 ]) {
   if (!analyticsJs.includes(required)) throw new Error(`Analytics runtime missing safeguard: ${required}`);
 }
 
 for (const required of [
-  "ensureCss('assets/css/analytics-consent.css?v=20261001-1','data-site-analytics-style')",
-  "ensureScript('assets/js/analytics.js?v=20261001-1','data-site-analytics')"
+  "ensureCss('assets/css/analytics-consent.css?v=20261001-2','data-site-analytics-style')",
+  "ensureScript('assets/js/analytics.js?v=20261001-2','data-site-analytics')"
 ]) {
   if (!routesJs.includes(required)) throw new Error(`Global route loader missing analytics wiring: ${required}`);
 }
@@ -46,6 +48,14 @@ const googleTagIndex = analyticsJs.indexOf('googletagmanager.com/gtag/js');
 const loadFunctionIndex = analyticsJs.indexOf('function loadGoogleAnalytics()');
 if (googleTagIndex < 0 || loadFunctionIndex < 0 || googleTagIndex < loadFunctionIndex) {
   throw new Error('Google tag must only be created inside loadGoogleAnalytics after opt-in.');
+}
+
+const dismissStart = analyticsJs.indexOf('function dismissWithoutConsent()');
+const dismissEnd = analyticsJs.indexOf('function applyConsent', dismissStart);
+if (dismissStart < 0 || dismissEnd < 0) throw new Error('Missing safe auto-dismiss implementation.');
+const dismissBody = analyticsJs.slice(dismissStart, dismissEnd);
+if (dismissBody.includes("storeConsent('granted'") || dismissBody.includes('loadGoogleAnalytics()')) {
+  throw new Error('Inactivity must never grant analytics consent or load GA4.');
 }
 
 const sitemap = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
@@ -84,4 +94,4 @@ if (fs.existsSync(enDir)) {
   }
 }
 
-console.log(`Analytics safety OK: shared loader reaches ${locs.length} canonical URLs, /en redirects are excluded, GA4 ${enabled ? 'enabled' : 'disabled pending measurement ID'}, basic opt-in consent enforced.`);
+console.log(`Analytics safety OK: shared loader reaches ${locs.length} canonical URLs, /en redirects are excluded, GA4 ${enabled ? 'enabled' : 'disabled pending measurement ID'}, basic opt-in consent enforced, inactivity remains non-consent.`);

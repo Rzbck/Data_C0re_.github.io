@@ -90,6 +90,12 @@ jobs:
       - name: Finalize default-English canonical architecture
         run: node scripts/finalize-default-language-seo.mjs
 
+      - name: Normalize Home navigation
+        run: node scripts/fix-home-navigation.mjs
+
+      - name: Verify Home navigation
+        run: node scripts/check-navigation-home-links.mjs
+
       - name: Verify final SEO and indexation architecture
         run: node scripts/check-seo-indexation-architecture.mjs
 
