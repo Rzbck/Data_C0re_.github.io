@@ -1,0 +1,40 @@
+name: Analytics privacy safety check
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site.config.json'
+      - 'assets/js/analytics.js'
+      - 'assets/js/language-routes.js'
+      - 'assets/css/analytics-consent.css'
+      - 'scripts/check-analytics-integration.mjs'
+      - '.github/workflows/analytics-safety-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout proposed revision
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check analytics runtime syntax
+        run: node --check assets/js/analytics.js
+
+      - name: Check route bootstrap syntax
+        run: node --check assets/js/language-routes.js
+
+      - name: Verify privacy-first analytics wiring
+        run: node scripts/check-analytics-integration.mjs
+
+      - name: Reject whitespace errors
+        run: git diff --check
