@@ -45,12 +45,18 @@ function structuralSignature($){
   walk(root);
   return signature;
 }
+function switcherLanguages($){
+  return $('.site-header .lang-switcher a').map((_,el)=>{
+    const node=$(el);
+    return node.attr('data-lang')||node.attr('data-default-lang')||'';
+  }).get().filter(Boolean);
+}
 
 for(const route of routes){
   const states=langs.map(lang=>{
     const $=read(lang,route);
     const primary=$('.site-header [data-v2-primary]').map((_,el)=>$(el).attr('data-v2-primary')).get();
-    const switcher=$('.site-header .lang-switcher [data-lang]').map((_,el)=>$(el).attr('data-lang')).get();
+    const switcher=switcherLanguages($);
     const motion=$('.site-header .motion-toggle').length;
     const active=$('.site-header [data-v2-primary][aria-current="page"]').attr('data-v2-primary')||'';
     return {primary,switcher,motion,active};
