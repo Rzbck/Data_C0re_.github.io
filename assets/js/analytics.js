@@ -7,6 +7,7 @@
 
   const CONSENT_KEY = 'data-c0re-analytics-consent-v1';
   const SESSION_HINT_KEY = 'data-c0re-traffic-hint-sent-v1';
+  const PREVIEW_PARAM = 'analytics_preview';
 
   const translations = {
     en: {
@@ -16,6 +17,7 @@
       refuse: 'Refuse',
       settings: 'Analytics settings',
       detailsLabel: 'Details',
+      preview: 'Preview only — no analytics data is sent.',
       details: 'Source attribution is automatic when the browser provides a referrer. Email clients, Discord and some apps may hide it and appear as direct traffic. Your choice is kept for 6 months and can be changed at any time.'
     },
     fr: {
@@ -25,6 +27,7 @@
       refuse: 'Refuser',
       settings: 'Réglages analytics',
       detailsLabel: 'Détails',
+      preview: 'Aperçu uniquement — aucune donnée analytics n’est envoyée.',
       details: 'La provenance est détectée automatiquement lorsque le navigateur transmet un référent. Les e-mails, Discord et certaines applications peuvent le masquer et apparaître en trafic direct. Votre choix est conservé 6 mois et peut être modifié à tout moment.'
     },
     es: {
@@ -34,6 +37,7 @@
       refuse: 'Rechazar',
       settings: 'Ajustes de analítica',
       detailsLabel: 'Detalles',
+      preview: 'Solo vista previa — no se envían datos de analítica.',
       details: 'La procedencia se detecta automáticamente cuando el navegador transmite un referente. El correo, Discord y algunas aplicaciones pueden ocultarlo y aparecer como tráfico directo. La elección se conserva 6 meses y puede cambiarse en cualquier momento.'
     }
   };
@@ -80,12 +84,15 @@
   }
 
   async function bootstrap() {
+    const previewMode = new URLSearchParams(location.search).get(PREVIEW_PARAM) === '1';
+
     let siteConfig;
     try {
       const response = await fetch(configUrl, { credentials: 'same-origin', cache: 'no-cache' });
       if (!response.ok) return;
       siteConfig = await response.json();
     } catch {
+      // Analytics is optional. A blocked/missing config must never affect the site.
       return;
     }
 
@@ -95,8 +102,11 @@
     const consentMode = String(analytics.consentMode || '').toLowerCase();
     const consentDays = Math.max(1, Number(analytics.consentStorageDays || 180));
     const maxAgeMs = consentDays * 24 * 60 * 60 * 1000;
+    const configured = enabled && consentMode === 'basic' && /^G-[A-Z0-9]+$/i.test(measurementId);
 
-    if (!enabled || consentMode !== 'basic' || !/^G-[A-Z0-9]+$/i.test(measurementId)) return;
+    // Normal visitors see nothing until GA4 is configured. The preview query is
+    // intentionally UI-only and can never send analytics data.
+    if (!configured && !previewMode) return;
 
     const text = languageCopy();
     let googleLoaded = false;
@@ -112,6 +122,7 @@
     });
 
     function readConsent() {
+      if (previewMode) return null;
       try {
         const parsed = JSON.parse(localStorage.getItem(CONSENT_KEY) || 'null');
         if (!parsed || !['granted', 'denied'].includes(parsed.value) || !Number.isFinite(parsed.ts)) return null;
@@ -126,6 +137,7 @@
     }
 
     function storeConsent(value) {
+      if (previewMode) return;
       try { localStorage.setItem(CONSENT_KEY, JSON.stringify({ value, ts: Date.now() })); } catch {}
     }
 
@@ -147,7 +159,7 @@
     }
 
     function loadGoogleAnalytics() {
-      if (googleLoaded) return;
+      if (previewMode || !configured || googleLoaded) return;
       googleLoaded = true;
 
       window.gtag('consent', 'update', {
@@ -161,6 +173,11 @@
       tag.async = true;
       tag.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
       tag.referrerPolicy = 'strict-origin-when-cross-origin';
+      tag.onerror = () => {
+        // Brave, uBlock, DNS filters, etc. may block Google. This is expected and
+        // intentionally silent: the portfolio never depends on analytics.
+        googleLoaded = false;
+      };
       document.head.appendChild(tag);
 
       window.gtag('js', new Date());
@@ -186,6 +203,11 @@
     }
 
     function applyConsent(value) {
+      if (previewMode) {
+        hidePanel();
+        return;
+      }
+
       storeConsent(value);
       if (value === 'granted') {
         loadGoogleAnalytics();
@@ -232,6 +254,7 @@
       panel.innerHTML = `
         <div class="analytics-consent__copy">
           <strong>${text.title}</strong>
+          ${previewMode ? `<span class="analytics-consent__preview">${text.preview}</span>` : ''}
           <p>${text.body}</p>
           <details><summary>${text.detailsLabel}</summary><p>${text.details}</p></details>
         </div>
@@ -247,6 +270,10 @@
 
     function init() {
       buildUi();
+      if (previewMode) {
+        showPanel();
+        return;
+      }
       const consent = readConsent();
       if (consent === 'granted') loadGoogleAnalytics();
       else if (consent !== 'denied') showPanel();
