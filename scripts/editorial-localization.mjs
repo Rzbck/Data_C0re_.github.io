@@ -348,4 +348,147 @@ for (const locale of locales) {
   }
 }
 
+
+// Grand Théâtre case study: preserve the project credits and technical values,
+// but keep the published FR/ES body aligned with its declared hreflang.
+const grandTheatreCopy = [
+  [
+    "Professional / institutional / selected systems / 2023—2025",
+    "Professionnel / institutionnel / systèmes sélectionnés / 2023—2025",
+    "Profesional / institucional / sistemas seleccionados / 2023—2025"
+  ],
+  [
+    "Projection systems for opera and ballet, from spatial calibration and moving-stage mapping to takeover of complex inherited media architectures.",
+    "Systèmes de projection pour l’opéra et le ballet : calibration spatiale, mapping sur scène mobile et reprise de dispositifs média complexes existants.",
+    "Sistemas de proyección para ópera y ballet: calibración espacial, mapping sobre escenario móvil y recuperación de sistemas multimedia complejos existentes."
+  ],
+  [
+    "projection mapping / cue integration / system takeover",
+    "mapping de projection / intégration des cues / reprise du système",
+    "mapping de proyección / integración de cues / recuperación del sistema"
+  ],
+  [
+    "opera / ballet / large-scale stage video",
+    "opéra / ballet / vidéo scénique grand format",
+    "ópera / ballet / vídeo escénico de gran formato"
+  ],
+  [
+    "Selected work across three productions: floor-projection calibration, moving-stage mapping and takeover of an inherited multi-output media system.",
+    "Travail sur trois productions : calibration d’une projection au sol, mapping sur scène mobile et reprise d’un système média multivoies existant.",
+    "Trabajos en tres producciones: calibración de proyección sobre el suelo, mapping en escenario móvil y recuperación de un sistema multimedia de múltiples salidas."
+  ],
+  [
+    "SMODE / FLOOR PROJECTION",
+    "SMODE / PROJECTION AU SOL",
+    "SMODE / PROYECCIÓN SOBRE SUELO"
+  ],
+  [
+    "Operational reprise, mapping and calibration of the Geneva floor-projection system in SMODE. GTG documentation specifies two 21K projectors, fixed 0.8 optics, fibre feeds and a shared overlap requiring on-site alignment.",
+    "Reprise opérationnelle, mapping et calibration sous SMODE du système de projection au sol de Genève. La documentation du GTG mentionne deux projecteurs 21K, des optiques fixes 0,8, des liaisons fibre et une zone de recouvrement commune exigeant un alignement sur site.",
+    "Recuperación operativa, mapping y calibración en SMODE del sistema de proyección sobre el suelo de Ginebra. La documentación del GTG especifica dos proyectores 21K, ópticas fijas 0,8, conexiones por fibra y una zona de solape compartida que exige alineación in situ."
+  ],
+  [
+    "Official page ↗",
+    "Page officielle ↗",
+    "Página oficial ↗"
+  ],
+  [
+    "Original work: concept &amp; choreography Damien Jalet / Sidi Larbi Cherkaoui; concept &amp; set Marina Abramović; video reprise Anouar Brissel.",
+    "Œuvre originale : concept et chorégraphie Damien Jalet / Sidi Larbi Cherkaoui ; concept et scénographie Marina Abramović ; reprise vidéo Anouar Brissel.",
+    "Obra original: concepto y coreografía Damien Jalet / Sidi Larbi Cherkaoui; concepto y escenografía Marina Abramović; reposición de vídeo Anouar Brissel."
+  ],
+  [
+    "VIDEO SYSTEMS / MOVING-STAGE MAPPING",
+    "SYSTÈMES VIDÉO / MAPPING SUR SCÈNE MOBILE",
+    "SISTEMAS DE VÍDEO / MAPPING EN ESCENARIO MÓVIL"
+  ],
+  [
+    "Mapping and cue integration across a four-projector system, including a 10K laser projector mounted on the rotating stage structure. Rehearsal cue sheets combine front, rear/onboard and upstage projection through more than fifty video states.",
+    "Mapping et intégration des cues sur un système à quatre projecteurs, dont un laser 10K monté sur la structure scénique tournante. Les feuilles de cues de répétition combinent projections avant, arrière/embarquée et fond de scène sur plus de cinquante états vidéo.",
+    "Mapping e integración de cues en un sistema de cuatro proyectores, incluido un láser 10K montado en la estructura giratoria del escenario. Las hojas de cues de ensayo combinan proyecciones frontal, trasera/integrada y de fondo en más de cincuenta estados de vídeo."
+  ],
+  [
+    "/ front + rear",
+    "/ avant + arrière",
+    "/ frontal + trasera"
+  ],
+  [
+    "/ video states",
+    "/ états vidéo",
+    "/ estados de vídeo"
+  ],
+  [
+    "Set design &amp; videos Momme Hinrichs. My contribution: technical video integration, mapping, cues and rehearsal-stage operation.",
+    "Scénographie et vidéos : Momme Hinrichs. Ma contribution : intégration vidéo technique, mapping, cues et exploitation durant les répétitions.",
+    "Escenografía y vídeos: Momme Hinrichs. Mi contribución: integración técnica de vídeo, mapping, cues y operación durante los ensayos."
+  ],
+  [
+    "SYSTEM TAKEOVER / LARGE-SCALE MAPPING",
+    "REPRISE DE SYSTÈME / MAPPING GRAND FORMAT",
+    "RECUPERACIÓN DE SISTEMA / MAPPING DE GRAN FORMATO"
+  ],
+  [
+    "Takeover of an existing projection-heavy system for the final December 2025 performances: understanding the inherited media/network architecture, restoring a reliable show state, troubleshooting and operating a multi-output mapping system without redesigning it.",
+    "Reprise d’un système de projection existant pour les dernières représentations de décembre 2025 : compréhension de l’architecture média/réseau héritée, rétablissement d’un état de spectacle fiable, dépannage et exploitation d’un mapping multivoies sans refonte du dispositif.",
+    "Recuperación de un complejo sistema de proyección existente para las últimas funciones de diciembre de 2025: comprensión de la arquitectura multimedia y de red heredada, restablecimiento de un estado de espectáculo fiable, resolución de incidencias y operación del mapping multisalida sin rediseñarlo."
+  ],
+  [
+    "Inherited system",
+    "Système existant",
+    "Sistema existente"
+  ],
+  [
+    "Media / network",
+    "Médias / réseau",
+    "Medios / red"
+  ],
+  [
+    "Large-scale mapping",
+    "Mapping grand format",
+    "Mapping de gran formato"
+  ],
+  [
+    "Final run · Dec. 2025",
+    "Dernières dates · déc. 2025",
+    "Últimas funciones · dic. 2025"
+  ],
+  [
+    "show files / system state",
+    "fichiers de spectacle / état du système",
+    "archivos del espectáculo / estado del sistema"
+  ],
+  [
+    "routing / troubleshooting",
+    "routage / dépannage",
+    "enrutamiento / resolución de incidencias"
+  ],
+  [
+    "large-scale mapping",
+    "mapping grand format",
+    "mapping de gran formato"
+  ],
+  [
+    "Video design 59 Studio; video collaborator Jon Lyle. My contribution: system takeover, troubleshooting, mapping and final-run operation.",
+    "Conception vidéo : 59 Studio ; collaboration vidéo : Jon Lyle. Ma contribution : reprise du système, dépannage, mapping et exploitation des dernières représentations.",
+    "Diseño de vídeo: 59 Studio; colaboración de vídeo: Jon Lyle. Mi contribución: recuperación del sistema, resolución de incidencias, mapping y operación de las últimas funciones."
+  ],
+  [
+    ">Scope<",
+    ">Périmètre<",
+    ">Alcance<"
+  ],
+  [
+    ">Context<",
+    ">Contexte<",
+    ">Contexto<"
+  ]
+];
+for (const [locale, column] of [['fr', 1], ['es', 2]]) {
+  const target = path.join(ROOT, locale, 'projects/grand-theatre.html');
+  if (!fs.existsSync(target)) continue;
+  let html = fs.readFileSync(target, 'utf8');
+  for (const entry of grandTheatreCopy) html = html.replaceAll(entry[0], entry[column]);
+  fs.writeFileSync(target, html, 'utf8');
+}
+
 console.log('Applied editorial French/Spanish localization across portfolio pages.');
