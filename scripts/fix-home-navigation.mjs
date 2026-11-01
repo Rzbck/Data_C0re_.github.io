@@ -55,7 +55,7 @@ for (const loc of locs) {
   // Avoid sending users and search crawlers through them.
   const locale = rel.startsWith('fr/') ? 'fr' : rel.startsWith('es/') ? 'es' : 'en';
   const archiveHref = locale === 'en' ? 'archive.html' : `${locale}/archive.html`;
-  const legacy = /^(?:\\.\\/)?(?:(?:fr|es)\\/)?(work|about|lab)\\.html$/;
+  const legacy = /^(?:\.\/)?(?:(?:fr|es)\/)?(work|about|lab)\.html$/;
   $('a[href]').each((_, el) => {
     const node = $(el);
     const match = (node.attr('href') || '').match(legacy);
