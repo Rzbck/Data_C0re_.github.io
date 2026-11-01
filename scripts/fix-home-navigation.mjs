@@ -50,6 +50,31 @@ for (const loc of locs) {
     }
   });
 
+  // Permanent direct links to the current editorial destinations. The older
+  // /work, /about and /lab routes are noindex compatibility pages only.
+  // Avoid sending users and search crawlers through them.
+  const locale = rel.startsWith('fr/') ? 'fr' : rel.startsWith('es/') ? 'es' : 'en';
+  const archiveHref = locale === 'en' ? 'archive.html' : `${locale}/archive.html`;
+  const legacy = /^(?:\\.\\/)?(?:(?:fr|es)\\/)?(work|about|lab)\\.html$/;
+  $('a[href]').each((_, el) => {
+    const node = $(el);
+    const match = (node.attr('href') || '').match(legacy);
+    if (!match) return;
+    const destination = match[1] === 'about' ? href : archiveHref;
+    node.attr('href', destination);
+    if (rel.endsWith('cv.html')) {
+      const label = match[1] === 'about'
+        ? { en: 'Home ↗', fr: 'Accueil ↗', es: 'Inicio ↗' }[locale]
+        : { en: 'Archive ↗', fr: 'Archives ↗', es: 'Archivo ↗' }[locale];
+      node.text(label);
+    } else if (rel.endsWith('projects/stage-systems.html')) {
+      node.find('b').first().text({ en: 'Archive', fr: 'Archives', es: 'Archivo' }[locale]);
+    } else if (rel.endsWith('projects/signal.html')) {
+      node.find('b').first().text({ en: 'Archive / R&D', fr: 'Archives / R&D', es: 'Archivo / I+D' }[locale]);
+    }
+    touched = true;
+  });
+
   if (touched) {
     fs.writeFileSync(file, $.html(), 'utf8');
     changed += 1;
