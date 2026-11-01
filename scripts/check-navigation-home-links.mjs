@@ -45,7 +45,39 @@ for (const loc of locs) {
     throw new Error(`${rel}: brand href is "${brand.attr('href') || ''}"; expected "${expected}".`);
   }
 
+  // Legacy pages may still exist for old bookmarks, but canonical pages must
+  // link directly to current destinations, never through noindex stubs.
+  const obsolete = /^(?:\\.\\/)?(?:(?:fr|es)\\/)?(?:work|about|lab)\\.html$/;
+  $('a[href]').each((_, element) => {
+    const link = $(element).attr('href') || '';
+    if (obsolete.test(link)) throw new Error(`${rel}: link to obsolete route "${link}".`);
+  });
+
   checked += 1;
 }
 
-console.log(`Navigation safety OK: ${checked} canonical pages have working Home and brand links.`);
+// Ensure sitemap project pages remain easy to discover in each language.
+const priorityProjects = ['lumina', 'grand-theatre', 'comedie', 'hardwinner', 'stage-systems'];
+const allProjects = [...new Set(locs
+  .map(url => new URL(url).pathname)
+  .filter(p => /^\\/projects\\/[^/]+\\.html$/.test(p))
+  .map(p => p.replace('/projects/', ''))
+)];
+for (const lang of ['en', 'fr', 'es']) {
+  const prefix = lang === 'en' ? '' : `${lang}/`;
+  for (const [source, names] of [
+    ['index.html', priorityProjects],
+    ['archive.html', allProjects]
+  ]) {
+    const sourceFile = path.join(ROOT, prefix + source);
+    const $ = load(fs.readFileSync(sourceFile, 'utf8'), { decodeEntities: false });
+    for (const name of names) {
+      const href = `${prefix}projects/${name}.html`;
+      if (!$('a[href]').toArray().some(node => $(node).attr('href') === href)) {
+        throw new Error(`${prefix + source}: missing discoverable link to ${href}.`);
+      }
+    }
+  }
+}
+
+console.log(`Navigation safety OK: ${checked} canonical pages; no obsolete links; all project links present in EN/FR/ES archives and priority projects on Home.`);
