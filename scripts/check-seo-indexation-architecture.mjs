@@ -85,6 +85,14 @@ for (const rootLoc of enLocs) {
 
   for (const lang of ['en', 'fr', 'es']) {
     const $ = readPage(variants[lang]);
+    // All published canonical pages must link directly to current editorial routes.
+    // /work, /about and /lab are noindex compatibility pages, not navigation targets.
+    $('a[href]').each((_, el) => {
+      const href = $(el).attr('href') || '';
+      if (/^(?:\.\/)?(?:(?:fr|es)\/)?(?:work|about|lab)\.html$/.test(href)) {
+        throw new Error(`${lang}/${route}: stale internal navigation to ${href}.`);
+      }
+    });
     if ($('html').attr('lang') !== lang) throw new Error(`${lang}/${route}: html lang is not ${lang}.`);
 
     const canonical = $('link[rel="canonical"]').first().attr('href') || '';
