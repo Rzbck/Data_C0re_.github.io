@@ -47,7 +47,7 @@ for (const loc of locs) {
 
   // Legacy pages may still exist for old bookmarks, but canonical pages must
   // link directly to current destinations, never through noindex stubs.
-  const obsolete = /^(?:\\.\\/)?(?:(?:fr|es)\\/)?(?:work|about|lab)\\.html$/;
+  const obsolete = /^(?:\.\/)?(?:(?:fr|es)\/)?(?:work|about|lab)\.html$/;
   $('a[href]').each((_, element) => {
     const link = $(element).attr('href') || '';
     if (obsolete.test(link)) throw new Error(`${rel}: link to obsolete route "${link}".`);
@@ -60,7 +60,7 @@ for (const loc of locs) {
 const priorityProjects = ['lumina', 'grand-theatre', 'comedie', 'hardwinner', 'stage-systems'];
 const allProjects = [...new Set(locs
   .map(url => new URL(url).pathname)
-  .filter(p => /^\\/projects\\/[^/]+\\.html$/.test(p))
+  .filter(p => /^\/projects\/[^/]+\.html$/.test(p))
   .map(p => p.replace('/projects/', ''))
 )];
 for (const lang of ['en', 'fr', 'es']) {
